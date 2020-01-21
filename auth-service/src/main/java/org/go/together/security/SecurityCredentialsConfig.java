@@ -1,6 +1,7 @@
 package org.go.together.security;
 
 import org.go.together.dto.JwtConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,12 +20,17 @@ import java.util.Arrays;
 @EnableWebSecurity    // Enable security config. This annotation denotes config for spring security.
 public class SecurityCredentialsConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsServiceImpl userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
 
-    private final JwtConfig jwtConfig;
+    private JwtConfig jwtConfig;
 
-    public SecurityCredentialsConfig(UserDetailsServiceImpl userDetailsService, JwtConfig jwtConfig) {
+    @Autowired
+    public void setUserDetailsService(UserDetailsServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;
+    }
+
+    @Autowired
+    public void setJwtConfig(JwtConfig jwtConfig) {
         this.jwtConfig = jwtConfig;
     }
 

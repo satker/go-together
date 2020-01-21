@@ -1,8 +1,11 @@
 server:
   port: 8090
 data:
-  solr:
-    host: http://localhost:8983/solr/
+  postgres:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: 13693509
+    ddl-auto: create
 eureka:
   client:
     serviceUrl:

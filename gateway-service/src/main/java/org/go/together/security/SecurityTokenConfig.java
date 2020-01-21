@@ -1,6 +1,7 @@
 package org.go.together.security;
 
 import org.go.together.dto.JwtConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,9 +18,10 @@ import java.util.Arrays;
 
 @EnableWebSecurity
 public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
-    private final JwtConfig jwtConfig;
+    private JwtConfig jwtConfig;
 
-    public SecurityTokenConfig(JwtConfig jwtConfig) {
+    @Autowired
+    public void setJwtConfig(JwtConfig jwtConfig) {
         this.jwtConfig = jwtConfig;
     }
 

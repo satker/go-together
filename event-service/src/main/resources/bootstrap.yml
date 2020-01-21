@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: event-service
+  cloud:
+    config:
+      uri: http://localhost:8888
+      fail-fast: true
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 160000000
+        readTimeout: 160000000
