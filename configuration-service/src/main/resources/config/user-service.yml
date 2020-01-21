@@ -1,0 +1,9 @@
+server:
+  port: 8085
+data:
+  solr:
+    host: http://localhost:8983/solr/
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:1111/eureka

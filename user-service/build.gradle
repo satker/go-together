@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+group 'org.go.together'
+version '1.0.1.SNAPSHOT'
+
+sourceCompatibility = 13
+targetCompatibility = 13
+
+repositories {
+    mavenCentral()
+}
+dependencies {
+    compile (
+            "org.springframework.boot:spring-boot-starter:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-data-solr:${springBootVersion}",
+
+            "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
+            "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}",
+            "org.springframework.cloud:spring-cloud-starter-openfeign:${springCloudVersion}",
+
+            "org.projectlombok:lombok:${lombokVersion}",
+            "org.mapstruct:mapstruct-processor:${mapstructVersion}",
+            "com.google.guava:guava:${guavaVersion}",
+            "org.mapstruct:mapstruct:${mapstructVersion}",
+            "com.google.code.gson:gson:${gsonVersion}"
+    )
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}

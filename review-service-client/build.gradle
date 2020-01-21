@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+}
+
+group 'org.go.together'
+version '1.0.1.SNAPSHOT'
+
+sourceCompatibility = 13
+targetCompatibility = 13
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile (
+            "org.springframework.cloud:spring-cloud-starter-openfeign:${springCloudVersion}",
+
+            "org.projectlombok:lombok:${lombokVersion}"
+    )
+
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    compile project (":user-service-client")
+}

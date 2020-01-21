@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+}
+
+group 'org.go.together'
+version '1.0.1.SNAPSHOT'
+
+sourceCompatibility = 13
+targetCompatibility = 13
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile(
+            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
+
+            "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}",
+            "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
+
+            "io.jsonwebtoken:jjwt:${jsonWebTokenVersion}",
+            "com.google.code.gson:gson:${gsonVersion}",
+            "jakarta.xml.bind:jakarta.xml.bind-api:${jakartaXmlBindApiVersion}",
+            "org.glassfish.jaxb:jaxb-runtime:${glassfishJaxbVersion}",
+
+            "org.projectlombok:lombok:${lombokVersion}"
+    )
+
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    compile project(":auth-service-client")
+    compile project(":user-service-client")
+}

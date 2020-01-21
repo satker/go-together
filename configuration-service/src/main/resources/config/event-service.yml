@@ -1,0 +1,12 @@
+server:
+  port: 8081
+data:
+  postgres:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: 13693509
+    ddl-auto: create
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:1111/eureka

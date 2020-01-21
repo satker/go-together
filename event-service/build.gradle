@@ -1,0 +1,79 @@
+plugins {
+    id 'java'
+}
+
+group 'org.go.together'
+version '1.0.1.SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'org.springframework.boot'
+//apply plugin: "com.palantir.docker"
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 13
+targetCompatibility = 13
+
+ext {
+    logstashLogsEncoderVersion = '4.6'
+    zipkinAutoconfigurerVersion= '2.3.1'
+    wait_for_it_script_path = rootProject.file("tools/wait-for").absolutePath
+}
+
+dependencies {
+    compile (
+            "org.springframework.boot:spring-boot-starter:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-data-solr:${springBootVersion}",
+
+            "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
+            "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}",
+            "org.springframework.cloud:spring-cloud-starter-openfeign:${springCloudVersion}",
+
+            "org.projectlombok:lombok:${lombokVersion}",
+            "org.mapstruct:mapstruct-processor:${mapstructVersion}",
+            "com.google.guava:guava:${guavaVersion}",
+            "org.mapstruct:mapstruct:${mapstructVersion}",
+            "com.google.code.gson:gson:${gsonVersion}"
+    )
+
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}
+
+/*
+tasks.getByName("docker").dependsOn("build")
+
+test.testLogging.showStandardStreams = true
+
+docker {
+    name "${group}/${rootProject.name}"
+    tags 'latest', "$version"
+    files jar.archivePath
+    buildArgs(['JAR_FILE' : "${jar.archiveName}"])
+}
+
+task docker_backend
+tasks.getByName("docker_backend").dependsOn("docker")
+
+jacoco {
+    toolVersion = '0.7.9'
+}
+
+jacocoTestReport {
+    group = "Reporting"
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination "${buildDir}/reports/coverage"
+    }
+}
+
+clean.doFirst {
+    delete "${rootDir}\\out"
+    println "delete ${rootDir}\\out"
+}
+*/

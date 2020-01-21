@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group 'org.go.together'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 13
+targetCompatibility = 13
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile(
+            "org.springframework.boot:spring-boot-gradle-plugin:${springCloudVersion}",
+            "org.springframework.boot:spring-boot-starter-test:${springCloudVersion}",
+            "org.springframework.cloud:spring-cloud-config-server:${springCloudVersion}"
+    )
+}
