@@ -1,12 +1,14 @@
 package org.go.together.dto;
 
 import lombok.Data;
+import org.go.together.interfaces.Dto;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Data
-public class UserDto {
-    private String id;
+public class UserDto implements Dto {
+    private UUID id;
     private String login;
     private String mail;
     private String firstName;
@@ -16,5 +18,6 @@ public class UserDto {
     private String password;
     private Role role;
     //private PhotoDto userPhoto;
-    private Set<String> languages;
+    private Set<LanguageDto> languages;
+    private Set<InterestDto> interests;
 }

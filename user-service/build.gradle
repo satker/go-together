@@ -1,6 +1,4 @@
-plugins {
-    id 'java'
-}
+apply plugin: 'java'
 
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
@@ -8,15 +6,41 @@ version '1.0.1.SNAPSHOT'
 sourceCompatibility = 13
 targetCompatibility = 13
 
-repositories {
-    mavenCentral()
+buildscript {
+    ext {
+        //----------------------------------------
+        // PLUGINS
+        //----------------------------------------
+        liquibasePluginVersion = '2.0.1'
+        jooqPluginVersion = '3.0.2'
+
+        //----------------------------------------
+        // REPOSITORIES
+        //----------------------------------------
+        jooqVersion = '3.11.5'
+        mysqlConnectorVersion = '5.1.47'
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath("nu.studer:gradle-jooq-plugin:4.0")
+    }
 }
+
 dependencies {
     compile (
             "org.springframework.boot:spring-boot-starter:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-data-solr:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-jooq:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
+            "org.jooq:jooq:3.12.3",
+            "org.jooq:jooq-meta-extensions:3.12.3",
+            'org.postgresql:postgresql:42.2.9',
 
             "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
             "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}",
@@ -29,4 +53,11 @@ dependencies {
             "com.google.code.gson:gson:${gsonVersion}"
     )
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    compile project(":user-service-client")
+    compile project(":content-service-client")
+    compile project(":location-service-client")
+    compile project(":common-service")
 }
+
+apply from: 'jooq.gradle'

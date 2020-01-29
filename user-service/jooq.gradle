@@ -1,0 +1,33 @@
+apply plugin: 'nu.studer.jooq'
+
+dependencies {
+    jooqRuntime("org.jooq:jooq:3.12.3")
+    jooqRuntime("org.jooq:jooq-meta-extensions:3.12.3")
+    jooqRuntime("org.postgresql:postgresql:42.2.9")
+    jooqRuntime(files(sourceSets.main.output.classesDirs))
+}
+
+jooq {
+    version = '3.12.3'
+    edition = 'OSS'
+    project(sourceSets.main) {
+        generator {
+            database {
+                name = 'org.jooq.meta.extensions.jpa.JPADatabase'
+                properties {
+                    property {
+                        key = "packages"
+                        value = "org.go.together.model"
+                    }
+                }
+                includes = ".*"
+            }
+            target {
+                packageName = 'my.repository'
+                directory = 'src/main/jooq'
+            }
+        }
+    }
+}
+
+project.tasks.getByName('compileJava').dependsOn -= 'generateProjectJooqSchemaSource'
