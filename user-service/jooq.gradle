@@ -23,7 +23,7 @@ jooq {
                 includes = ".*"
             }
             target {
-                packageName = 'my.repository'
+                packageName = 'org.go.together.repository'
                 directory = 'src/main/jooq'
             }
         }

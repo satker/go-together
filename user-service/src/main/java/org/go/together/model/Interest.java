@@ -5,20 +5,20 @@ package org.go.together.model;
 
 
 import lombok.Data;
-import org.go.together.interfaces.IdentifiedEntity;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.UUID;
 
 
 @Entity
 @Data
-public class Interest implements IdentifiedEntity {
+public class Interest {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @Type(type = "uuid-char")
+    private String id;
     private String name;
 }

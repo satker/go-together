@@ -1,14 +1,15 @@
 package org.go.together.repository;
 
+import org.go.together.repository.tables.records.LanguageRecord;
 import org.jooq.DSLContext;
-import org.jooq.impl.UpdatableRecordImpl;
+import org.jooq.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
+import static org.go.together.repository.tables.Language.LANGUAGE;
 
 @Repository
-public class LanguageRepository implements org.go.together.logic.Repository<UpdatableRecordImpl> {
+public class LanguageRepository implements org.go.together.logic.Repository<LanguageRecord> {
     private DSLContext dsl;
 
     @Autowired
@@ -17,21 +18,22 @@ public class LanguageRepository implements org.go.together.logic.Repository<Upda
     }
 
     @Override
-    public UpdatableRecordImpl create(UpdatableRecordImpl entity) {
+    public LanguageRecord create(LanguageRecord entity) {
         return null;
     }
 
     @Override
-    public void delete(UUID uuid) {
+    public void delete(String uuid) {
 
     }
 
     @Override
-    public UpdatableRecordImpl findById(UUID uuid) {
-        /*Record record = dsl.select(LANGUAGE.fields())
+    public LanguageRecord findById(String uuid) {
+        LanguageRecord languageRecord = new LanguageRecord();
+        Record record = dsl.select(LANGUAGE.fields())
                 .from(LANGUAGE)
                 .where(LANGUAGE.ID.eq(uuid))
-                .fetchOne();*/
+                .fetchOne();
         return null;
     }
 }

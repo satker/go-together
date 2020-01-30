@@ -2,27 +2,29 @@ package org.go.together.model;
 
 
 import lombok.Data;
-import org.go.together.interfaces.IdentifiedEntity;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Data
-public class AppUser implements IdentifiedEntity {
+public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @Type(type = "uuid-char")
+    private String id;
     private String login;
     private String mail;
     private String firstName;
     private String lastName;
     private String description;
     private String password;
-    private UUID locationId;
-    private UUID photoId;
+    @Type(type = "uuid-char")
+    private String locationId;
+    @Type(type = "uuid-char")
+    private String photoId;
     private String role;
 
     @ManyToMany

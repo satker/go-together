@@ -1,6 +1,15 @@
 package org.go.together.service;
 
-/*
+import org.go.together.dto.LanguageDto;
+import org.go.together.logic.CrudService;
+import org.go.together.mapper.LanguageMapper;
+import org.go.together.repository.LanguageRepository;
+import org.go.together.repository.tables.records.LanguageRecord;
+import org.go.together.validation.LanguageValidator;
+import org.springframework.stereotype.Service;
+
+import java.util.Set;
+
 @Service
 public class LanguageService extends CrudService<LanguageDto, LanguageRecord, LanguageRepository> {
     private final LanguageMapper languageMapper;
@@ -12,20 +21,16 @@ public class LanguageService extends CrudService<LanguageDto, LanguageRecord, La
     }
 
     public Set<LanguageDto> getLanguages() {
-        return null;
-        */
-/*return super.findAll().values().stream()
+        return /*super.findAll().values().stream()
                 .map(languageMapper::entityToDto)
-                .collect(Collectors.toSet());*//*
+                .collect(Collectors.toSet())*/ null;
 
     }
 
     public boolean existsById(String id) {
-        return false;
-        //return super.findAll().get(id) != null;
+        return /*super.findAll().get(id) != null*/ false;
     }
 
-    */
 /*@Override
     public ImmutableMap<String, FunctionToGetValue> getFields() {
         return null;
@@ -34,7 +39,6 @@ public class LanguageService extends CrudService<LanguageDto, LanguageRecord, La
     @Override
     public String getServiceName() {
         return "language";
-    }*//*
+    }*/
 
 }
-*/

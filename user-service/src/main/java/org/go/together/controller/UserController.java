@@ -1,6 +1,5 @@
 package org.go.together.controller;
 
-/*
 import org.go.together.client.UserClient;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.LanguageDto;
@@ -69,4 +68,3 @@ class UserController implements UserClient {
         return userService.read(UUID.fromString(id));
     }
 }
-*/

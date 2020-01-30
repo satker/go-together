@@ -1,12 +1,10 @@
 package org.go.together.repository;
 
+import org.go.together.repository.tables.records.InterestRecord;
 import org.jooq.DSLContext;
-import org.jooq.impl.UpdatableRecordImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.UUID;
-
-public class InterestRepository implements org.go.together.logic.Repository<UpdatableRecordImpl> {
+public class InterestRepository implements org.go.together.logic.Repository<InterestRecord> {
     private DSLContext dsl;
 
     @Autowired
@@ -15,17 +13,17 @@ public class InterestRepository implements org.go.together.logic.Repository<Upda
     }
 
     @Override
-    public UpdatableRecordImpl create(UpdatableRecordImpl entity) {
+    public InterestRecord create(InterestRecord entity) {
         return null;
     }
 
     @Override
-    public void delete(UUID uuid) {
+    public void delete(String uuid) {
 
     }
 
     @Override
-    public UpdatableRecordImpl findById(UUID uuid) {
+    public InterestRecord findById(String uuid) {
         return null;
     }
 }

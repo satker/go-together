@@ -1,9 +1,11 @@
 package org.go.together.mapper;
 
-/*import org.go.together.dto.LanguageDto;
+import org.go.together.dto.LanguageDto;
 import org.go.together.interfaces.Mapper;
-import org.jooq.generated.tables.records.LanguageRecord;
+import org.go.together.repository.tables.records.LanguageRecord;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 @Component
 public class LanguageMapper implements Mapper<LanguageDto, LanguageRecord> {
@@ -11,7 +13,7 @@ public class LanguageMapper implements Mapper<LanguageDto, LanguageRecord> {
     public LanguageDto entityToDto(LanguageRecord entity) {
         LanguageDto languageDto = new LanguageDto();
 
-        languageDto.setId(entity.getId());
+        languageDto.setId(UUID.fromString(entity.getId()));
         languageDto.setName(entity.getName());
         languageDto.setCode(entity.getCode());
         return languageDto;
@@ -20,9 +22,9 @@ public class LanguageMapper implements Mapper<LanguageDto, LanguageRecord> {
     @Override
     public LanguageRecord dtoToEntity(LanguageDto dto) {
         LanguageRecord language = new LanguageRecord();
-        language.setId(dto.getId());
+        language.setId(dto.getId().toString());
         language.setName(dto.getName());
         language.setCode(dto.getCode());
         return language;
     }
-}*/
+}

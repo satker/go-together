@@ -1,24 +1,22 @@
 package org.go.together.service;
 
-/*
-import com.google.common.collect.ImmutableMap;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.UserDto;
-import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.logic.CrudService;
 import org.go.together.mapper.UserMapper;
 import org.go.together.repository.UserRepository;
+import org.go.together.repository.tables.records.AppuserRecord;
 import org.go.together.validation.UserValidator;
-import org.jooq.DSLContext;
-import org.jooq.generated.tables.records.AppUserRecord;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
-public class UserService extends CrudService<UserDto, AppUserRecord, UserRepository> {
+public class UserService extends CrudService<UserDto, AppuserRecord, UserRepository> {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(UserService.class);
     private final UserMapper userMapper;
     private final UserRepository userRepository;
@@ -32,11 +30,11 @@ public class UserService extends CrudService<UserDto, AppUserRecord, UserReposit
 
     public UserDto findUserByLogin(String login) {
         log.debug("user found by login {}", login);
-        userRepository.findById(UUID.randomUUID());
+        userRepository.findById(UUID.randomUUID().toString());
         //Optional<User> userByLogin = Optional.ofNullable(getUserByLogin(login));
-        return */
-/*userByLogin.map(userMapper::entityToDto).orElse(null)*//*
-null;
+        return
+                /*userByLogin.map(userMapper::entityToDto).orElse(null)*/
+                null;
     }
 
     public boolean checkIsPresentedMail(String mail) {
@@ -67,17 +65,17 @@ null;
     }
 
     public IdDto findUserIdByLogin(String login) {
-        return new IdDto(*/
-/*getUserByLogin(login).getId()*//*
-null);
+        return new IdDto(
+                /*getUserByLogin(login).getId()*/
+                null);
     }
 
-    private Collection<AppUserRecord> getUserByMail(String mail) {
+    private Collection<AppuserRecord> getUserByMail(String mail) {
         return null;
         //return super.find(user -> user.getMail().matches(".*" + mail + ".*"));
     }
 
-    private AppUserRecord getUserByLogin(String login) {
+    private AppuserRecord getUserByLogin(String login) {
         return null;
         //return super.find(user -> user.getLogin().toLowerCase().equals(login.toLowerCase())).iterator().next();
     }
@@ -87,7 +85,6 @@ null);
         //return super.find(user -> user.getId().equals(ownerId)).iterator().next().getLanguagesId();
     }
 
-    */
 /*@Override
     public ImmutableMap<String, FunctionToGetValue> getFields() {
         return null;
@@ -96,6 +93,6 @@ null);
     @Override
     public String getServiceName() {
         return "user";
-    }*//*
+    }*/
 
-}*/
+}
