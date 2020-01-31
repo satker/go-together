@@ -37,6 +37,13 @@ public class LanguageRecord extends UpdatableRecordImpl<LanguageRecord> implemen
     }
 
     /**
+     * Getter for <code>LANGUAGE.ID</code>.
+     */
+    public String getId() {
+        return (String) get(0);
+    }
+
+    /**
      * Create a detached, initialised LanguageRecord
      */
     public LanguageRecord(String id, String code, String name) {
@@ -48,10 +55,10 @@ public class LanguageRecord extends UpdatableRecordImpl<LanguageRecord> implemen
     }
 
     /**
-     * Getter for <code>LANGUAGE.ID</code>.
+     * Getter for <code>LANGUAGE.CODE</code>.
      */
-    public String getId() {
-        return (String) get(0);
+    public String getCode() {
+        return (String) get(1);
     }
 
     /**
@@ -62,24 +69,6 @@ public class LanguageRecord extends UpdatableRecordImpl<LanguageRecord> implemen
     }
 
     /**
-     * Getter for <code>LANGUAGE.CODE</code>.
-     */
-    public String getCode() {
-        return (String) get(1);
-    }
-
-    /**
-     * Setter for <code>LANGUAGE.CODE</code>.
-     */
-    public void setCode(String value) {
-        set(1, value);
-    }
-
-    // -------------------------------------------------------------------------
-    // Primary key information
-    // -------------------------------------------------------------------------
-
-    /**
      * Getter for <code>LANGUAGE.NAME</code>.
      */
     public String getName() {
@@ -87,20 +76,17 @@ public class LanguageRecord extends UpdatableRecordImpl<LanguageRecord> implemen
     }
 
     // -------------------------------------------------------------------------
-    // Record3 type implementation
+    // Primary key information
     // -------------------------------------------------------------------------
-
-    /**
-     * Setter for <code>LANGUAGE.NAME</code>.
-     */
-    public void setName(String value) {
-        set(2, value);
-    }
 
     @Override
     public Record1<String> key() {
         return (Record1) super.key();
     }
+
+    // -------------------------------------------------------------------------
+    // Record3 type implementation
+    // -------------------------------------------------------------------------
 
     @Override
     public Row3<String, String, String> fieldsRow() {
@@ -169,10 +155,6 @@ public class LanguageRecord extends UpdatableRecordImpl<LanguageRecord> implemen
         return this;
     }
 
-    // -------------------------------------------------------------------------
-    // Constructors
-    // -------------------------------------------------------------------------
-
     @Override
     public LanguageRecord value3(String value) {
         setName(value);
@@ -185,5 +167,23 @@ public class LanguageRecord extends UpdatableRecordImpl<LanguageRecord> implemen
         value2(value2);
         value3(value3);
         return this;
+    }
+
+    // -------------------------------------------------------------------------
+    // Constructors
+    // -------------------------------------------------------------------------
+
+    /**
+     * Setter for <code>LANGUAGE.CODE</code>.
+     */
+    public void setCode(String value) {
+        set(1, value);
+    }
+
+    /**
+     * Setter for <code>LANGUAGE.NAME</code>.
+     */
+    public void setName(String value) {
+        set(2, value);
     }
 }

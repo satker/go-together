@@ -30,19 +30,31 @@ import java.util.List;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class Language extends TableImpl<LanguageRecord> {
 
+    private static final long serialVersionUID = 1180380162;
+
     /**
      * The reference instance of <code>LANGUAGE</code>
      */
     public static final Language LANGUAGE = new Language();
-    private static final long serialVersionUID = 1180380162;
+
+    /**
+     * The class holding records for this type
+     */
+    @Override
+    public Class<LanguageRecord> getRecordType() {
+        return LanguageRecord.class;
+    }
+
     /**
      * The column <code>LANGUAGE.ID</code>.
      */
     public final TableField<LanguageRecord, String> ID = createField(DSL.name("ID"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
+
     /**
      * The column <code>LANGUAGE.CODE</code>.
      */
     public final TableField<LanguageRecord, String> CODE = createField(DSL.name("CODE"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+
     /**
      * The column <code>LANGUAGE.NAME</code>.
      */
@@ -79,14 +91,6 @@ public class Language extends TableImpl<LanguageRecord> {
 
     public <O extends Record> Language(Table<O> child, ForeignKey<O, LanguageRecord> key) {
         super(child, key, LANGUAGE);
-    }
-
-    /**
-     * The class holding records for this type
-     */
-    @Override
-    public Class<LanguageRecord> getRecordType() {
-        return LanguageRecord.class;
     }
 
     @Override

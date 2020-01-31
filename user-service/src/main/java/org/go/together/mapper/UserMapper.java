@@ -6,7 +6,7 @@ import org.go.together.dto.Role;
 import org.go.together.dto.UserDto;
 import org.go.together.interfaces.Mapper;
 import org.go.together.repository.UserRepository;
-import org.go.together.repository.tables.records.AppuserRecord;
+import org.go.together.repository.tables.records.SystemUserRecord;
 import org.go.together.service.LanguageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
-public class UserMapper implements Mapper<UserDto, AppuserRecord> {
+public class UserMapper implements Mapper<UserDto, SystemUserRecord> {
     private final LocationClient locationClient;
     private LanguageService languageService;
     private final ContentClient contentClient;
@@ -37,15 +37,15 @@ public class UserMapper implements Mapper<UserDto, AppuserRecord> {
         this.languageService = languageService;
     }
 
-    public UserDto entityToDto(AppuserRecord user) {
+    public UserDto entityToDto(SystemUserRecord user) {
         UserDto userDTO = new UserDto();
         userDTO.setDescription(user.getDescription());
-        userDTO.setFirstName(user.getFirstname());
+        userDTO.setFirstName(user.getFirstName());
         userDTO.setId(UUID.fromString(user.getId()));
         userDTO.setLanguages(userRepository.getLanguagesByUser(user.getId()).stream()
                 .map(languageMapper::entityToDto)
                 .collect(Collectors.toSet()));
-        userDTO.setLastName(user.getLastname());
+        userDTO.setLastName(user.getLastName());
         //userDTO.setLocation(locationClient.findCityById(user.getLocationId()));
         userDTO.setLogin(user.getLogin());
         userDTO.setMail(user.getMail());
@@ -59,7 +59,7 @@ public class UserMapper implements Mapper<UserDto, AppuserRecord> {
     }
 
     @Override
-    public AppuserRecord dtoToEntity(UserDto dto) {
+    public SystemUserRecord dtoToEntity(UserDto dto) {
         return null;
     }
 

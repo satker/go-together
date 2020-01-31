@@ -29,25 +29,12 @@ import java.util.List;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class DefaultSchema extends SchemaImpl {
 
+    private static final long serialVersionUID = -1352819545;
+
     /**
      * The reference instance of <code></code>
      */
     public static final DefaultSchema DEFAULT_SCHEMA = new DefaultSchema();
-    private static final long serialVersionUID = -965013575;
-    /**
-     * The table <code>APPUSER</code>.
-     */
-    public final Appuser APPUSER = org.go.together.repository.tables.Appuser.APPUSER;
-
-    /**
-     * The table <code>APPUSER_INTEREST</code>.
-     */
-    public final AppuserInterest APPUSER_INTEREST = org.go.together.repository.tables.AppuserInterest.APPUSER_INTEREST;
-
-    /**
-     * The table <code>APPUSER_LANGUAGE</code>.
-     */
-    public final AppuserLanguage APPUSER_LANGUAGE = org.go.together.repository.tables.AppuserLanguage.APPUSER_LANGUAGE;
 
     /**
      * The table <code>INTEREST</code>.
@@ -58,6 +45,21 @@ public class DefaultSchema extends SchemaImpl {
      * The table <code>LANGUAGE</code>.
      */
     public final Language LANGUAGE = org.go.together.repository.tables.Language.LANGUAGE;
+
+    /**
+     * The table <code>SYSTEM_USER</code>.
+     */
+    public final SystemUser SYSTEM_USER = org.go.together.repository.tables.SystemUser.SYSTEM_USER;
+
+    /**
+     * The table <code>SYSTEM_USER_INTEREST</code>.
+     */
+    public final SystemUserInterest SYSTEM_USER_INTEREST = org.go.together.repository.tables.SystemUserInterest.SYSTEM_USER_INTEREST;
+
+    /**
+     * The table <code>SYSTEM_USER_LANGUAGE</code>.
+     */
+    public final SystemUserLanguage SYSTEM_USER_LANGUAGE = org.go.together.repository.tables.SystemUserLanguage.SYSTEM_USER_LANGUAGE;
 
     /**
      * No further instances allowed
@@ -93,10 +95,10 @@ public class DefaultSchema extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
-                Appuser.APPUSER,
-                AppuserInterest.APPUSER_INTEREST,
-                AppuserLanguage.APPUSER_LANGUAGE,
                 Interest.INTEREST,
-                Language.LANGUAGE);
+                Language.LANGUAGE,
+                SystemUser.SYSTEM_USER,
+                SystemUserInterest.SYSTEM_USER_INTEREST,
+                SystemUserLanguage.SYSTEM_USER_LANGUAGE);
     }
 }

@@ -37,6 +37,13 @@ public class InterestRecord extends UpdatableRecordImpl<InterestRecord> implemen
     }
 
     /**
+     * Getter for <code>INTEREST.ID</code>.
+     */
+    public String getId() {
+        return (String) get(0);
+    }
+
+    /**
      * Create a detached, initialised InterestRecord
      */
     public InterestRecord(String id, String name) {
@@ -47,24 +54,6 @@ public class InterestRecord extends UpdatableRecordImpl<InterestRecord> implemen
     }
 
     /**
-     * Getter for <code>INTEREST.ID</code>.
-     */
-    public String getId() {
-        return (String) get(0);
-    }
-
-    /**
-     * Setter for <code>INTEREST.ID</code>.
-     */
-    public void setId(String value) {
-        set(0, value);
-    }
-
-    // -------------------------------------------------------------------------
-    // Primary key information
-    // -------------------------------------------------------------------------
-
-    /**
      * Getter for <code>INTEREST.NAME</code>.
      */
     public String getName() {
@@ -72,20 +61,17 @@ public class InterestRecord extends UpdatableRecordImpl<InterestRecord> implemen
     }
 
     // -------------------------------------------------------------------------
-    // Record2 type implementation
+    // Primary key information
     // -------------------------------------------------------------------------
-
-    /**
-     * Setter for <code>INTEREST.NAME</code>.
-     */
-    public void setName(String value) {
-        set(1, value);
-    }
 
     @Override
     public Record1<String> key() {
         return (Record1) super.key();
     }
+
+    // -------------------------------------------------------------------------
+    // Record2 type implementation
+    // -------------------------------------------------------------------------
 
     @Override
     public Row2<String, String> fieldsRow() {
@@ -133,10 +119,6 @@ public class InterestRecord extends UpdatableRecordImpl<InterestRecord> implemen
         return this;
     }
 
-    // -------------------------------------------------------------------------
-    // Constructors
-    // -------------------------------------------------------------------------
-
     @Override
     public InterestRecord value2(String value) {
         setName(value);
@@ -148,5 +130,23 @@ public class InterestRecord extends UpdatableRecordImpl<InterestRecord> implemen
         value1(value1);
         value2(value2);
         return this;
+    }
+
+    // -------------------------------------------------------------------------
+    // Constructors
+    // -------------------------------------------------------------------------
+
+    /**
+     * Setter for <code>INTEREST.ID</code>.
+     */
+    public void setId(String value) {
+        set(0, value);
+    }
+
+    /**
+     * Setter for <code>INTEREST.NAME</code>.
+     */
+    public void setName(String value) {
+        set(1, value);
     }
 }

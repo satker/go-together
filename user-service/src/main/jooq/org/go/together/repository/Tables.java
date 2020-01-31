@@ -23,21 +23,6 @@ import javax.annotation.processing.Generated;
 public class Tables {
 
     /**
-     * The table <code>APPUSER</code>.
-     */
-    public static final Appuser APPUSER = Appuser.APPUSER;
-
-    /**
-     * The table <code>APPUSER_INTEREST</code>.
-     */
-    public static final AppuserInterest APPUSER_INTEREST = AppuserInterest.APPUSER_INTEREST;
-
-    /**
-     * The table <code>APPUSER_LANGUAGE</code>.
-     */
-    public static final AppuserLanguage APPUSER_LANGUAGE = AppuserLanguage.APPUSER_LANGUAGE;
-
-    /**
      * The table <code>INTEREST</code>.
      */
     public static final Interest INTEREST = Interest.INTEREST;
@@ -46,4 +31,19 @@ public class Tables {
      * The table <code>LANGUAGE</code>.
      */
     public static final Language LANGUAGE = Language.LANGUAGE;
+
+    /**
+     * The table <code>SYSTEM_USER</code>.
+     */
+    public static final SystemUser SYSTEM_USER = SystemUser.SYSTEM_USER;
+
+    /**
+     * The table <code>SYSTEM_USER_INTEREST</code>.
+     */
+    public static final SystemUserInterest SYSTEM_USER_INTEREST = SystemUserInterest.SYSTEM_USER_INTEREST;
+
+    /**
+     * The table <code>SYSTEM_USER_LANGUAGE</code>.
+     */
+    public static final SystemUserLanguage SYSTEM_USER_LANGUAGE = SystemUserLanguage.SYSTEM_USER_LANGUAGE;
 }

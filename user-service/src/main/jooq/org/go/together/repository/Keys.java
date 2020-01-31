@@ -5,7 +5,10 @@ package org.go.together.repository;
 
 
 import org.go.together.repository.tables.*;
-import org.go.together.repository.tables.records.*;
+import org.go.together.repository.tables.records.LanguageRecord;
+import org.go.together.repository.tables.records.SystemUserInterestRecord;
+import org.go.together.repository.tables.records.SystemUserLanguageRecord;
+import org.go.together.repository.tables.records.SystemUserRecord;
 import org.jooq.ForeignKey;
 import org.jooq.UniqueKey;
 import org.jooq.impl.Internal;
@@ -36,37 +39,37 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<AppuserRecord> CONSTRAINT_F = UniqueKeys0.CONSTRAINT_F;
-    public static final UniqueKey<AppuserInterestRecord> CONSTRAINT_5 = UniqueKeys0.CONSTRAINT_5;
-    public static final UniqueKey<AppuserLanguageRecord> CONSTRAINT_D = UniqueKeys0.CONSTRAINT_D;
-    public static final UniqueKey<InterestRecord> CONSTRAINT_50 = UniqueKeys0.CONSTRAINT_50;
+    public static final UniqueKey<InterestRecord> CONSTRAINT_5 = UniqueKeys0.CONSTRAINT_5;
     public static final UniqueKey<LanguageRecord> CONSTRAINT_C = UniqueKeys0.CONSTRAINT_C;
+    public static final UniqueKey<SystemUserRecord> CONSTRAINT_2 = UniqueKeys0.CONSTRAINT_2;
+    public static final UniqueKey<SystemUserInterestRecord> CONSTRAINT_D = UniqueKeys0.CONSTRAINT_D;
+    public static final UniqueKey<SystemUserLanguageRecord> CONSTRAINT_56 = UniqueKeys0.CONSTRAINT_56;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final ForeignKey<AppuserInterestRecord, AppuserRecord> FKAAHACQ6KG6FXN7DVR4DKTGR4V = ForeignKeys0.FKAAHACQ6KG6FXN7DVR4DKTGR4V;
-    public static final ForeignKey<AppuserInterestRecord, InterestRecord> FKI7C4EASMWHYS38SFYF7DB6V1L = ForeignKeys0.FKI7C4EASMWHYS38SFYF7DB6V1L;
-    public static final ForeignKey<AppuserLanguageRecord, AppuserRecord> FKQCLSSGWN43V98PP5WIDS6GKSF = ForeignKeys0.FKQCLSSGWN43V98PP5WIDS6GKSF;
-    public static final ForeignKey<AppuserLanguageRecord, LanguageRecord> FK2NEKN68EYN2CVQK4S480SRYNP = ForeignKeys0.FK2NEKN68EYN2CVQK4S480SRYNP;
+    public static final ForeignKey<SystemUserInterestRecord, SystemUserRecord> FKFK5SWC6M71I98F34WJ5XJ02W3 = ForeignKeys0.FKFK5SWC6M71I98F34WJ5XJ02W3;
+    public static final ForeignKey<SystemUserInterestRecord, InterestRecord> FKJOKHBS177RB5WFALVJFOEDMUP = ForeignKeys0.FKJOKHBS177RB5WFALVJFOEDMUP;
+    public static final ForeignKey<SystemUserLanguageRecord, SystemUserRecord> FK2LVTM4349YMCQPY8BW1ATXHPW = ForeignKeys0.FK2LVTM4349YMCQPY8BW1ATXHPW;
+    public static final ForeignKey<SystemUserLanguageRecord, LanguageRecord> FKHQKEATSFIMT3R8N7KFKQI7BBY = ForeignKeys0.FKHQKEATSFIMT3R8N7KFKQI7BBY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
     private static class UniqueKeys0 {
-        public static final UniqueKey<AppuserRecord> CONSTRAINT_F = Internal.createUniqueKey(Appuser.APPUSER, "CONSTRAINT_F", Appuser.APPUSER.ID);
-        public static final UniqueKey<AppuserInterestRecord> CONSTRAINT_5 = Internal.createUniqueKey(AppuserInterest.APPUSER_INTEREST, "CONSTRAINT_5", AppuserInterest.APPUSER_INTEREST.APPUSER_ID, AppuserInterest.APPUSER_INTEREST.INTERESTS_ID);
-        public static final UniqueKey<AppuserLanguageRecord> CONSTRAINT_D = Internal.createUniqueKey(AppuserLanguage.APPUSER_LANGUAGE, "CONSTRAINT_D", AppuserLanguage.APPUSER_LANGUAGE.APPUSER_ID, AppuserLanguage.APPUSER_LANGUAGE.LANGUAGES_ID);
-        public static final UniqueKey<InterestRecord> CONSTRAINT_50 = Internal.createUniqueKey(Interest.INTEREST, "CONSTRAINT_50", Interest.INTEREST.ID);
+        public static final UniqueKey<InterestRecord> CONSTRAINT_5 = Internal.createUniqueKey(Interest.INTEREST, "CONSTRAINT_5", Interest.INTEREST.ID);
         public static final UniqueKey<LanguageRecord> CONSTRAINT_C = Internal.createUniqueKey(Language.LANGUAGE, "CONSTRAINT_C", Language.LANGUAGE.ID);
+        public static final UniqueKey<SystemUserRecord> CONSTRAINT_2 = Internal.createUniqueKey(SystemUser.SYSTEM_USER, "CONSTRAINT_2", SystemUser.SYSTEM_USER.ID);
+        public static final UniqueKey<SystemUserInterestRecord> CONSTRAINT_D = Internal.createUniqueKey(SystemUserInterest.SYSTEM_USER_INTEREST, "CONSTRAINT_D", SystemUserInterest.SYSTEM_USER_INTEREST.USER_ID, SystemUserInterest.SYSTEM_USER_INTEREST.INTEREST_ID);
+        public static final UniqueKey<SystemUserLanguageRecord> CONSTRAINT_56 = Internal.createUniqueKey(SystemUserLanguage.SYSTEM_USER_LANGUAGE, "CONSTRAINT_56", SystemUserLanguage.SYSTEM_USER_LANGUAGE.USER_ID, SystemUserLanguage.SYSTEM_USER_LANGUAGE.LANGUAGE_ID);
     }
 
     private static class ForeignKeys0 {
-        public static final ForeignKey<AppuserInterestRecord, AppuserRecord> FKAAHACQ6KG6FXN7DVR4DKTGR4V = Internal.createForeignKey(org.go.together.repository.Keys.CONSTRAINT_F, AppuserInterest.APPUSER_INTEREST, "FKAAHACQ6KG6FXN7DVR4DKTGR4V", AppuserInterest.APPUSER_INTEREST.APPUSER_ID);
-        public static final ForeignKey<AppuserInterestRecord, InterestRecord> FKI7C4EASMWHYS38SFYF7DB6V1L = Internal.createForeignKey(org.go.together.repository.Keys.CONSTRAINT_50, AppuserInterest.APPUSER_INTEREST, "FKI7C4EASMWHYS38SFYF7DB6V1L", AppuserInterest.APPUSER_INTEREST.INTERESTS_ID);
-        public static final ForeignKey<AppuserLanguageRecord, AppuserRecord> FKQCLSSGWN43V98PP5WIDS6GKSF = Internal.createForeignKey(org.go.together.repository.Keys.CONSTRAINT_F, AppuserLanguage.APPUSER_LANGUAGE, "FKQCLSSGWN43V98PP5WIDS6GKSF", AppuserLanguage.APPUSER_LANGUAGE.APPUSER_ID);
-        public static final ForeignKey<AppuserLanguageRecord, LanguageRecord> FK2NEKN68EYN2CVQK4S480SRYNP = Internal.createForeignKey(org.go.together.repository.Keys.CONSTRAINT_C, AppuserLanguage.APPUSER_LANGUAGE, "FK2NEKN68EYN2CVQK4S480SRYNP", AppuserLanguage.APPUSER_LANGUAGE.LANGUAGES_ID);
+        public static final ForeignKey<SystemUserInterestRecord, SystemUserRecord> FKFK5SWC6M71I98F34WJ5XJ02W3 = Internal.createForeignKey(org.go.together.repository.Keys.CONSTRAINT_2, SystemUserInterest.SYSTEM_USER_INTEREST, "FKFK5SWC6M71I98F34WJ5XJ02W3", SystemUserInterest.SYSTEM_USER_INTEREST.USER_ID);
+        public static final ForeignKey<SystemUserInterestRecord, InterestRecord> FKJOKHBS177RB5WFALVJFOEDMUP = Internal.createForeignKey(org.go.together.repository.Keys.CONSTRAINT_5, SystemUserInterest.SYSTEM_USER_INTEREST, "FKJOKHBS177RB5WFALVJFOEDMUP", SystemUserInterest.SYSTEM_USER_INTEREST.INTEREST_ID);
+        public static final ForeignKey<SystemUserLanguageRecord, SystemUserRecord> FK2LVTM4349YMCQPY8BW1ATXHPW = Internal.createForeignKey(org.go.together.repository.Keys.CONSTRAINT_2, SystemUserLanguage.SYSTEM_USER_LANGUAGE, "FK2LVTM4349YMCQPY8BW1ATXHPW", SystemUserLanguage.SYSTEM_USER_LANGUAGE.USER_ID);
+        public static final ForeignKey<SystemUserLanguageRecord, LanguageRecord> FKHQKEATSFIMT3R8N7KFKQI7BBY = Internal.createForeignKey(org.go.together.repository.Keys.CONSTRAINT_C, SystemUserLanguage.SYSTEM_USER_LANGUAGE, "FKHQKEATSFIMT3R8N7KFKQI7BBY", SystemUserLanguage.SYSTEM_USER_LANGUAGE.LANGUAGE_ID);
     }
 }

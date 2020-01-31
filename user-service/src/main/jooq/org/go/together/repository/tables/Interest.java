@@ -30,15 +30,26 @@ import java.util.List;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class Interest extends TableImpl<InterestRecord> {
 
+    private static final long serialVersionUID = -827585324;
+
     /**
      * The reference instance of <code>INTEREST</code>
      */
     public static final Interest INTEREST = new Interest();
-    private static final long serialVersionUID = -1329003522;
+
+    /**
+     * The class holding records for this type
+     */
+    @Override
+    public Class<InterestRecord> getRecordType() {
+        return InterestRecord.class;
+    }
+
     /**
      * The column <code>INTEREST.ID</code>.
      */
     public final TableField<InterestRecord, String> ID = createField(DSL.name("ID"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
+
     /**
      * The column <code>INTEREST.NAME</code>.
      */
@@ -77,14 +88,6 @@ public class Interest extends TableImpl<InterestRecord> {
         super(child, key, INTEREST);
     }
 
-    /**
-     * The class holding records for this type
-     */
-    @Override
-    public Class<InterestRecord> getRecordType() {
-        return InterestRecord.class;
-    }
-
     @Override
     public Schema getSchema() {
         return DefaultSchema.DEFAULT_SCHEMA;
@@ -92,17 +95,17 @@ public class Interest extends TableImpl<InterestRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.PRIMARY_KEY_50);
+        return Arrays.<Index>asList(Indexes.PRIMARY_KEY_5);
     }
 
     @Override
     public UniqueKey<InterestRecord> getPrimaryKey() {
-        return Keys.CONSTRAINT_50;
+        return Keys.CONSTRAINT_5;
     }
 
     @Override
     public List<UniqueKey<InterestRecord>> getKeys() {
-        return Arrays.<UniqueKey<InterestRecord>>asList(Keys.CONSTRAINT_50);
+        return Arrays.<UniqueKey<InterestRecord>>asList(Keys.CONSTRAINT_5);
     }
 
     @Override

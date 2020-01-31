@@ -19,10 +19,19 @@ jooq {
                         key = "packages"
                         value = "org.go.together.model"
                     }
+                    property {
+                        key = "useAttributeConverters"
+                        value = "true"
+                    }
+                    property {
+                        key = "unqualifiedSchema"
+                        value = "none"
+                    }
                 }
                 includes = ".*"
             }
             target {
+                clean = false
                 packageName = 'org.go.together.repository'
                 directory = 'src/main/jooq'
             }

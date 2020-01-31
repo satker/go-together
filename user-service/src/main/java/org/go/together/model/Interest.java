@@ -7,14 +7,12 @@ package org.go.together.model;
 import lombok.Data;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 
 @Entity
 @Data
+@Table(name = "interest")
 public class Interest {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

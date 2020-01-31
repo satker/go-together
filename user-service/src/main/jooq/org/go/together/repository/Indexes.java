@@ -29,29 +29,29 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
-    public static final Index PRIMARY_KEY_F = Indexes0.PRIMARY_KEY_F;
-    public static final Index FKAAHACQ6KG6FXN7DVR4DKTGR4V_INDEX_5 = Indexes0.FKAAHACQ6KG6FXN7DVR4DKTGR4V_INDEX_5;
-    public static final Index FKI7C4EASMWHYS38SFYF7DB6V1L_INDEX_5 = Indexes0.FKI7C4EASMWHYS38SFYF7DB6V1L_INDEX_5;
     public static final Index PRIMARY_KEY_5 = Indexes0.PRIMARY_KEY_5;
-    public static final Index FK2NEKN68EYN2CVQK4S480SRYNP_INDEX_D = Indexes0.FK2NEKN68EYN2CVQK4S480SRYNP_INDEX_D;
-    public static final Index FKQCLSSGWN43V98PP5WIDS6GKSF_INDEX_D = Indexes0.FKQCLSSGWN43V98PP5WIDS6GKSF_INDEX_D;
-    public static final Index PRIMARY_KEY_D = Indexes0.PRIMARY_KEY_D;
-    public static final Index PRIMARY_KEY_50 = Indexes0.PRIMARY_KEY_50;
     public static final Index PRIMARY_KEY_C = Indexes0.PRIMARY_KEY_C;
+    public static final Index PRIMARY_KEY_2 = Indexes0.PRIMARY_KEY_2;
+    public static final Index FKFK5SWC6M71I98F34WJ5XJ02W3_INDEX_D = Indexes0.FKFK5SWC6M71I98F34WJ5XJ02W3_INDEX_D;
+    public static final Index FKJOKHBS177RB5WFALVJFOEDMUP_INDEX_D = Indexes0.FKJOKHBS177RB5WFALVJFOEDMUP_INDEX_D;
+    public static final Index PRIMARY_KEY_D = Indexes0.PRIMARY_KEY_D;
+    public static final Index FK2LVTM4349YMCQPY8BW1ATXHPW_INDEX_5 = Indexes0.FK2LVTM4349YMCQPY8BW1ATXHPW_INDEX_5;
+    public static final Index FKHQKEATSFIMT3R8N7KFKQI7BBY_INDEX_5 = Indexes0.FKHQKEATSFIMT3R8N7KFKQI7BBY_INDEX_5;
+    public static final Index PRIMARY_KEY_56 = Indexes0.PRIMARY_KEY_56;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
-        public static Index PRIMARY_KEY_F = Internal.createIndex("PRIMARY_KEY_F", Appuser.APPUSER, new OrderField[]{Appuser.APPUSER.ID}, true);
-        public static Index FKAAHACQ6KG6FXN7DVR4DKTGR4V_INDEX_5 = Internal.createIndex("FKAAHACQ6KG6FXN7DVR4DKTGR4V_INDEX_5", AppuserInterest.APPUSER_INTEREST, new OrderField[]{AppuserInterest.APPUSER_INTEREST.APPUSER_ID}, false);
-        public static Index FKI7C4EASMWHYS38SFYF7DB6V1L_INDEX_5 = Internal.createIndex("FKI7C4EASMWHYS38SFYF7DB6V1L_INDEX_5", AppuserInterest.APPUSER_INTEREST, new OrderField[]{AppuserInterest.APPUSER_INTEREST.INTERESTS_ID}, false);
-        public static Index PRIMARY_KEY_5 = Internal.createIndex("PRIMARY_KEY_5", AppuserInterest.APPUSER_INTEREST, new OrderField[]{AppuserInterest.APPUSER_INTEREST.APPUSER_ID, AppuserInterest.APPUSER_INTEREST.INTERESTS_ID}, true);
-        public static Index FK2NEKN68EYN2CVQK4S480SRYNP_INDEX_D = Internal.createIndex("FK2NEKN68EYN2CVQK4S480SRYNP_INDEX_D", AppuserLanguage.APPUSER_LANGUAGE, new OrderField[]{AppuserLanguage.APPUSER_LANGUAGE.LANGUAGES_ID}, false);
-        public static Index FKQCLSSGWN43V98PP5WIDS6GKSF_INDEX_D = Internal.createIndex("FKQCLSSGWN43V98PP5WIDS6GKSF_INDEX_D", AppuserLanguage.APPUSER_LANGUAGE, new OrderField[]{AppuserLanguage.APPUSER_LANGUAGE.APPUSER_ID}, false);
-        public static Index PRIMARY_KEY_D = Internal.createIndex("PRIMARY_KEY_D", AppuserLanguage.APPUSER_LANGUAGE, new OrderField[]{AppuserLanguage.APPUSER_LANGUAGE.APPUSER_ID, AppuserLanguage.APPUSER_LANGUAGE.LANGUAGES_ID}, true);
-        public static Index PRIMARY_KEY_50 = Internal.createIndex("PRIMARY_KEY_50", Interest.INTEREST, new OrderField[]{Interest.INTEREST.ID}, true);
+        public static Index PRIMARY_KEY_5 = Internal.createIndex("PRIMARY_KEY_5", Interest.INTEREST, new OrderField[]{Interest.INTEREST.ID}, true);
         public static Index PRIMARY_KEY_C = Internal.createIndex("PRIMARY_KEY_C", Language.LANGUAGE, new OrderField[]{Language.LANGUAGE.ID}, true);
+        public static Index PRIMARY_KEY_2 = Internal.createIndex("PRIMARY_KEY_2", SystemUser.SYSTEM_USER, new OrderField[]{SystemUser.SYSTEM_USER.ID}, true);
+        public static Index FKFK5SWC6M71I98F34WJ5XJ02W3_INDEX_D = Internal.createIndex("FKFK5SWC6M71I98F34WJ5XJ02W3_INDEX_D", SystemUserInterest.SYSTEM_USER_INTEREST, new OrderField[]{SystemUserInterest.SYSTEM_USER_INTEREST.USER_ID}, false);
+        public static Index FKJOKHBS177RB5WFALVJFOEDMUP_INDEX_D = Internal.createIndex("FKJOKHBS177RB5WFALVJFOEDMUP_INDEX_D", SystemUserInterest.SYSTEM_USER_INTEREST, new OrderField[]{SystemUserInterest.SYSTEM_USER_INTEREST.INTEREST_ID}, false);
+        public static Index PRIMARY_KEY_D = Internal.createIndex("PRIMARY_KEY_D", SystemUserInterest.SYSTEM_USER_INTEREST, new OrderField[]{SystemUserInterest.SYSTEM_USER_INTEREST.USER_ID, SystemUserInterest.SYSTEM_USER_INTEREST.INTEREST_ID}, true);
+        public static Index FK2LVTM4349YMCQPY8BW1ATXHPW_INDEX_5 = Internal.createIndex("FK2LVTM4349YMCQPY8BW1ATXHPW_INDEX_5", SystemUserLanguage.SYSTEM_USER_LANGUAGE, new OrderField[]{SystemUserLanguage.SYSTEM_USER_LANGUAGE.USER_ID}, false);
+        public static Index FKHQKEATSFIMT3R8N7KFKQI7BBY_INDEX_5 = Internal.createIndex("FKHQKEATSFIMT3R8N7KFKQI7BBY_INDEX_5", SystemUserLanguage.SYSTEM_USER_LANGUAGE, new OrderField[]{SystemUserLanguage.SYSTEM_USER_LANGUAGE.LANGUAGE_ID}, false);
+        public static Index PRIMARY_KEY_56 = Internal.createIndex("PRIMARY_KEY_56", SystemUserLanguage.SYSTEM_USER_LANGUAGE, new OrderField[]{SystemUserLanguage.SYSTEM_USER_LANGUAGE.USER_ID, SystemUserLanguage.SYSTEM_USER_LANGUAGE.LANGUAGE_ID}, true);
     }
 }
