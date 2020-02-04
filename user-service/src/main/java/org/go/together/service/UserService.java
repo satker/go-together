@@ -2,21 +2,21 @@ package org.go.together.service;
 
 import org.go.together.dto.IdDto;
 import org.go.together.dto.UserDto;
+import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.logic.CrudService;
 import org.go.together.mapper.UserMapper;
+import org.go.together.model.Language;
+import org.go.together.model.SystemUser;
 import org.go.together.repository.UserRepository;
-import org.go.together.repository.tables.records.SystemUserRecord;
 import org.go.together.validation.UserValidator;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-public class UserService extends CrudService<UserDto, SystemUserRecord, UserRepository> {
+public class UserService extends CrudService<UserDto, SystemUser, UserRepository> {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(UserService.class);
     private final UserMapper userMapper;
     private final UserRepository userRepository;
@@ -30,11 +30,11 @@ public class UserService extends CrudService<UserDto, SystemUserRecord, UserRepo
 
     public UserDto findUserByLogin(String login) {
         log.debug("user found by login {}", login);
-        userRepository.findById(UUID.randomUUID().toString());
-        //Optional<User> userByLogin = Optional.ofNullable(getUserByLogin(login));
-        return
-                /*userByLogin.map(userMapper::entityToDto).orElse(null)*/
-                null;
+        Optional<SystemUser> userByLogin = getUserByLogin(login);
+        if (userByLogin.isPresent()) {
+            return userMapper.entityToDto(userByLogin.get());
+        }
+        throw new CannotFindEntityException("Cannot find user by login");
     }
 
     public boolean checkIsPresentedMail(String mail) {
@@ -44,7 +44,7 @@ public class UserService extends CrudService<UserDto, SystemUserRecord, UserRepo
 
     public boolean checkIsPresentedUsername(String username) {
         log.debug("user found by login {}", username);
-        return getUserByLogin(username.replaceAll("\"", "")) != null;
+        return getUserByLogin(username.replaceAll("\"", "")).isPresent();
     }
 
     public boolean checkIsGoodMailForUpdate(String userMail, String mail) {
@@ -55,34 +55,41 @@ public class UserService extends CrudService<UserDto, SystemUserRecord, UserRepo
     }
 
 
-    public boolean checkLanguages(String ownerId, List<String> languagesForCompare) {
+    public boolean checkLanguages(UUID ownerId, List<UUID> languagesForCompare) {
         if (languagesForCompare.size() != 0) {
-            return true;
-            //return languagesForCompare.containsAll(super.findAll().get(ownerId).getLanguagesId());
+            Set<UUID> userLanguages = userRepository.findById(ownerId).getLanguages().stream()
+                    .map(Language::getId)
+                    .collect(Collectors.toSet());
+            return languagesForCompare.containsAll(userLanguages);
         } else {
             return true;
         }
     }
 
     public IdDto findUserIdByLogin(String login) {
-        return new IdDto(
-                /*getUserByLogin(login).getId()*/
-                null);
+        Optional<SystemUser> userByLogin = getUserByLogin(login);
+        if (userByLogin.isPresent()) {
+            return new IdDto(userByLogin.get().getId());
+        }
+        throw new CannotFindEntityException("Cannot find user by login");
     }
 
-    private Collection<SystemUserRecord> getUserByMail(String mail) {
-        return null;
-        //return super.find(user -> user.getMail().matches(".*" + mail + ".*"));
+    private Collection<SystemUser> getUserByMail(String mail) {
+        return userRepository.findUserByMail(mail);
     }
 
-    private SystemUserRecord getUserByLogin(String login) {
-        return null;
-        //return super.find(user -> user.getLogin().toLowerCase().equals(login.toLowerCase())).iterator().next();
+    private Optional<SystemUser> getUserByLogin(String login) {
+        return userRepository.findUserByLogin(login);
+        /*if (userByLogin.isPresent()){
+            return userByLogin.get();
+        }
+        throw new CannotFindEntityException("Cannot find user by login");*/
     }
 
-    public Set<String> getIdLanguagesByOwnerId(String ownerId) {
-        return null;
-        //return super.find(user -> user.getId().equals(ownerId)).iterator().next().getLanguagesId();
+    public Set<UUID> getIdLanguagesByOwnerId(UUID ownerId) {
+        return userRepository.findById(ownerId).getLanguages().stream()
+                .map(Language::getId)
+                .collect(Collectors.toSet());
     }
 
 /*@Override

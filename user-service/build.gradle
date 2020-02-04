@@ -6,31 +6,6 @@ version '1.0.1.SNAPSHOT'
 sourceCompatibility = 11
 targetCompatibility = 11
 
-buildscript {
-    ext {
-        //----------------------------------------
-        // PLUGINS
-        //----------------------------------------
-        liquibasePluginVersion = '2.0.1'
-        jooqPluginVersion = '3.0.2'
-
-        //----------------------------------------
-        // REPOSITORIES
-        //----------------------------------------
-        jooqVersion = '3.11.5'
-        mysqlConnectorVersion = '5.1.47'
-    }
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-        maven { url "https://plugins.gradle.org/m2/" }
-    }
-    dependencies {
-        classpath("nu.studer:gradle-jooq-plugin:4.1")
-    }
-}
-
 repositories {
     mavenCentral()
 }
@@ -40,10 +15,7 @@ dependencies {
             "org.springframework.boot:spring-boot-starter:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-jooq:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
-            "org.jooq:jooq:3.12.3",
-            "org.jooq:jooq-meta-extensions:3.12.3",
             'org.postgresql:postgresql:42.2.9',
 
             "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
@@ -63,5 +35,3 @@ dependencies {
     compile project(":location-service-client")
     compile project(":common-service")
 }
-
-apply from: 'jooq.gradle'

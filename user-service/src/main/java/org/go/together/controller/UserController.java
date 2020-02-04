@@ -23,35 +23,43 @@ class UserController implements UserClient {
         this.languageService = languageService;
     }
 
+    @Override
     public IdDto add(UserDto input) {
         return userService.create(input);
     }
 
+    @Override
     public boolean checkIsGoodUsername(String username) {
         return userService.checkIsPresentedUsername(username);
     }
 
+    @Override
     public boolean checkIsGoodMail(String mail) {
         return userService.checkIsPresentedMail(mail);
     }
 
+    @Override
     public boolean checkIsGoodMailForUpdate(String mail, Principal principal) {
         return userService.checkIsGoodMailForUpdate(principal.getName(), mail);
     }
 
+    @Override
     public IdDto updateValidateUser(UserDto user) {
         return userService.update(user);
     }
 
+    @Override
     public Set<LanguageDto> getLanguages() {
         return languageService.getLanguages();
     }
 
-    public Set<String> getLanguagesByOwnerId(String ownerId) {
+    @Override
+    public Set<UUID> getLanguagesByOwnerId(UUID ownerId) {
         return userService.getIdLanguagesByOwnerId(ownerId);
     }
 
-    public boolean checkLanguages(String ownerId, List<String> languagesForCompare) {
+    @Override
+    public boolean checkLanguages(UUID ownerId, List<UUID> languagesForCompare) {
         return userService.checkLanguages(ownerId, languagesForCompare);
     }
 
@@ -60,10 +68,12 @@ class UserController implements UserClient {
         return userService.findUserByLogin(login);
     }
 
+    @Override
     public IdDto findUserIdByLogin(String login) {
         return userService.findUserIdByLogin(login);
     }
 
+    @Override
     public UserDto findById(String id) {
         return userService.read(UUID.fromString(id));
     }

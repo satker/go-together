@@ -4,18 +4,19 @@ import org.go.together.dto.IdDto;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.exceptions.ValidationException;
 import org.go.together.interfaces.Dto;
+import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.interfaces.Mapper;
-import org.jooq.impl.UpdatableRecordImpl;
+import org.go.together.logic.repository.CustomRepository;
 import org.jooq.tools.StringUtils;
 
 import java.util.UUID;
 
-public abstract class CrudService<D extends Dto, E extends UpdatableRecordImpl, R extends Repository<E>> {
+public abstract class CrudService<D extends Dto, E extends IdentifiedEntity, R extends CustomRepository<E>> {
     private Mapper<D, E> mapper;
     private Validator<D> validator;
-    private Repository<E> repository;
+    private CustomRepository<E> repository;
 
-    protected CrudService(Repository<E> repository, Mapper<D, E> mapper, Validator<D> validator) {
+    protected CrudService(CustomRepository<E> repository, Mapper<D, E> mapper, Validator<D> validator) {
         this.repository = repository;
         this.mapper = mapper;
         this.validator = validator;
@@ -34,8 +35,8 @@ public abstract class CrudService<D extends Dto, E extends UpdatableRecordImpl, 
         String validate = validator.validateForCreate(dto);
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
-            E createdEntity = repository.create(entity);
-            return new IdDto((UUID) createdEntity.get("id"));
+            E createdEntity = repository.save(entity);
+            return new IdDto(createdEntity.getId());
         } else {
             throw new ValidationException(validate);
         }
@@ -45,23 +46,23 @@ public abstract class CrudService<D extends Dto, E extends UpdatableRecordImpl, 
         String validate = validator.validateForUpdate(dto);
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
-            E createdEntity = repository.create(entity);
-            return new IdDto((UUID) createdEntity.get("id"));
+            E createdEntity = repository.save(entity);
+            return new IdDto(createdEntity.getId());
         } else {
             throw new ValidationException(validate);
         }
     }
 
-    public D read(UUID id) {
-        E entityById = repository.findById(id);
+    public D read(UUID uuid) {
+        E entityById = repository.findById(uuid);
         return mapper.entityToDto(entityById);
     }
 
-    public void delete(UUID dtoId) {
-        E entityById = repository.findById(dtoId);
+    public void delete(UUID uuid) {
+        E entityById = repository.findById(uuid);
         if (entityById != null) {
-            repository.delete(dtoId);
+            repository.delete(entityById);
         }
-        throw new CannotFindEntityException("Cannot find entity by id " + dtoId);
+        throw new CannotFindEntityException("Cannot find entity by id " + uuid);
     }
 }

@@ -1,11 +1,9 @@
 package org.go.together.interfaces;
 
-import org.jooq.impl.UpdatableRecordImpl;
-
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public interface Mapper<D extends Dto, E extends UpdatableRecordImpl> {
+public interface Mapper<D extends Dto, E extends IdentifiedEntity> {
     D entityToDto(E entity);
 
     E dtoToEntity(D dto);

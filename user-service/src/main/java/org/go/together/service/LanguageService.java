@@ -3,32 +3,36 @@ package org.go.together.service;
 import org.go.together.dto.LanguageDto;
 import org.go.together.logic.CrudService;
 import org.go.together.mapper.LanguageMapper;
+import org.go.together.model.Language;
 import org.go.together.repository.LanguageRepository;
-import org.go.together.repository.tables.records.LanguageRecord;
 import org.go.together.validation.LanguageValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
-public class LanguageService extends CrudService<LanguageDto, LanguageRecord, LanguageRepository> {
+public class LanguageService extends CrudService<LanguageDto, Language, LanguageRepository> {
     private final LanguageMapper languageMapper;
+    private final LanguageRepository languageRepository;
 
     protected LanguageService(LanguageRepository languageRepository, LanguageMapper languageMapper,
                               LanguageValidator languageValidator) {
         super(languageRepository, languageMapper, languageValidator);
         this.languageMapper = languageMapper;
+        this.languageRepository = languageRepository;
     }
 
     public Set<LanguageDto> getLanguages() {
-        return /*super.findAll().values().stream()
+        return languageRepository.findAll().stream()
                 .map(languageMapper::entityToDto)
-                .collect(Collectors.toSet())*/ null;
+                .collect(Collectors.toSet());
 
     }
 
-    public boolean existsById(String id) {
-        return /*super.findAll().get(id) != null*/ false;
+    public boolean existsById(UUID id) {
+        return languageRepository.findById(id) != null;
     }
 
 /*@Override

@@ -2,25 +2,23 @@ package org.go.together.mapper;
 
 import org.go.together.dto.InterestDto;
 import org.go.together.interfaces.Mapper;
-import org.go.together.repository.tables.records.InterestRecord;
+import org.go.together.model.Interest;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
-public class InterestMapper implements Mapper<InterestDto, InterestRecord> {
+public class InterestMapper implements Mapper<InterestDto, Interest> {
     @Override
-    public InterestDto entityToDto(InterestRecord entity) {
+    public InterestDto entityToDto(Interest entity) {
         InterestDto interestDto = new InterestDto();
-        interestDto.setId(UUID.fromString(entity.getId()));
+        interestDto.setId(entity.getId());
         interestDto.setName(entity.getName());
         return interestDto;
     }
 
     @Override
-    public InterestRecord dtoToEntity(InterestDto dto) {
-        InterestRecord interestRecord = new InterestRecord();
-        interestRecord.setId(dto.getId().toString());
+    public Interest dtoToEntity(InterestDto dto) {
+        Interest interestRecord = new Interest();
+        interestRecord.setId(dto.getId());
         interestRecord.setName(dto.getName());
         return interestRecord;
     }
