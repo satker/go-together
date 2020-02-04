@@ -31,13 +31,13 @@ public class UserValidator extends Validator<UserDto> {
             errors.append("Cannot find location");
         }
 
-        /*if (dto.getLanguages().isEmpty() || dto.getLanguages()
+        if (dto.getLanguages().isEmpty() || dto.getLanguages()
                 .stream()
-                .anyMatch(lang -> !languageRepository.existsById(lang.getId()))) {
+                .anyMatch(lang -> !languageRepository.findById(lang.getId()).isPresent())) {
             errors.append("User languages are empty or incorrect");
         }
 
-        errors.append(contentClient.validate(dto.getUserPhoto()));*/
+        /*errors.append(contentClient.validate(dto.getUserPhoto()));*/
 
         return errors.toString();
     }

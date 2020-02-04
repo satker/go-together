@@ -9,6 +9,7 @@ import org.go.together.interfaces.Mapper;
 import org.go.together.logic.repository.CustomRepository;
 import org.jooq.tools.StringUtils;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public abstract class CrudService<D extends Dto, E extends IdentifiedEntity, R extends CustomRepository<E>> {
@@ -54,15 +55,13 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity, R e
     }
 
     public D read(UUID uuid) {
-        E entityById = repository.findById(uuid);
-        return mapper.entityToDto(entityById);
+        Optional<E> entityById = repository.findById(uuid);
+        return entityById.map(mapper::entityToDto).orElse(null);
     }
 
     public void delete(UUID uuid) {
-        E entityById = repository.findById(uuid);
-        if (entityById != null) {
-            repository.delete(entityById);
-        }
+        Optional<E> entityById = repository.findById(uuid);
+        entityById.ifPresent(e -> repository.delete(e));
         throw new CannotFindEntityException("Cannot find entity by id " + uuid);
     }
 }

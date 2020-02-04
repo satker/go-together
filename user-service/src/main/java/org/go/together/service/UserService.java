@@ -1,6 +1,5 @@
 package org.go.together.service;
 
-import org.go.together.dto.IdDto;
 import org.go.together.dto.UserDto;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.logic.CrudService;
@@ -30,7 +29,7 @@ public class UserService extends CrudService<UserDto, SystemUser, UserRepository
 
     public UserDto findUserByLogin(String login) {
         log.debug("user found by login {}", login);
-        Optional<SystemUser> userByLogin = getUserByLogin(login);
+        Optional<SystemUser> userByLogin = userRepository.findUserByLogin(login);
         if (userByLogin.isPresent()) {
             return userMapper.entityToDto(userByLogin.get());
         }
@@ -44,52 +43,34 @@ public class UserService extends CrudService<UserDto, SystemUser, UserRepository
 
     public boolean checkIsPresentedUsername(String username) {
         log.debug("user found by login {}", username);
-        return getUserByLogin(username.replaceAll("\"", "")).isPresent();
-    }
-
-    public boolean checkIsGoodMailForUpdate(String userMail, String mail) {
-        UserDto currentUser = findUserByLogin(userMail);
-        if (currentUser.getMail().equals(mail)) {
-            return true;
-        } else return !getUserByMail(mail).isEmpty();
+        return userRepository.findUserByLogin(username.replaceAll("\"", "")).isPresent();
     }
 
 
     public boolean checkLanguages(UUID ownerId, List<UUID> languagesForCompare) {
         if (languagesForCompare.size() != 0) {
-            Set<UUID> userLanguages = userRepository.findById(ownerId).getLanguages().stream()
-                    .map(Language::getId)
-                    .collect(Collectors.toSet());
-            return languagesForCompare.containsAll(userLanguages);
+            Optional<SystemUser> user = userRepository.findById(ownerId);
+            if (user.isPresent()) {
+                Set<UUID> userLanguages = user.get().getLanguages().stream()
+                        .map(Language::getId)
+                        .collect(Collectors.toSet());
+                return languagesForCompare.containsAll(userLanguages);
+            }
+            return false;
         } else {
             return true;
         }
-    }
-
-    public IdDto findUserIdByLogin(String login) {
-        Optional<SystemUser> userByLogin = getUserByLogin(login);
-        if (userByLogin.isPresent()) {
-            return new IdDto(userByLogin.get().getId());
-        }
-        throw new CannotFindEntityException("Cannot find user by login");
     }
 
     private Collection<SystemUser> getUserByMail(String mail) {
         return userRepository.findUserByMail(mail);
     }
 
-    private Optional<SystemUser> getUserByLogin(String login) {
-        return userRepository.findUserByLogin(login);
-        /*if (userByLogin.isPresent()){
-            return userByLogin.get();
-        }
-        throw new CannotFindEntityException("Cannot find user by login");*/
-    }
-
-    public Set<UUID> getIdLanguagesByOwnerId(UUID ownerId) {
-        return userRepository.findById(ownerId).getLanguages().stream()
+    public Set<UUID> getIdLanguagesByOwnerId(UUID userId) {
+        Optional<SystemUser> user = userRepository.findById(userId);
+        return user.map(systemUser -> systemUser.getLanguages().stream()
                 .map(Language::getId)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet())).orElse(Collections.emptySet());
     }
 
 /*@Override

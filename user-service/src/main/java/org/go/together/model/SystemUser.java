@@ -2,6 +2,7 @@ package org.go.together.model;
 
 
 import lombok.Data;
+import org.go.together.dto.Role;
 import org.go.together.interfaces.IdentifiedEntity;
 
 import javax.persistence.*;
@@ -24,7 +25,7 @@ public class SystemUser implements IdentifiedEntity {
     private String password;
     private UUID locationId;
     private UUID photoId;
-    private String role;
+    private Role role;
 
     @ManyToMany
     @JoinTable(name = "system_user_interest",

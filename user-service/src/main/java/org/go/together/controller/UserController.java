@@ -8,7 +8,6 @@ import org.go.together.service.LanguageService;
 import org.go.together.service.UserService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -39,23 +38,13 @@ class UserController implements UserClient {
     }
 
     @Override
-    public boolean checkIsGoodMailForUpdate(String mail, Principal principal) {
-        return userService.checkIsGoodMailForUpdate(principal.getName(), mail);
-    }
-
-    @Override
-    public IdDto updateValidateUser(UserDto user) {
-        return userService.update(user);
-    }
-
-    @Override
     public Set<LanguageDto> getLanguages() {
         return languageService.getLanguages();
     }
 
     @Override
-    public Set<UUID> getLanguagesByOwnerId(UUID ownerId) {
-        return userService.getIdLanguagesByOwnerId(ownerId);
+    public Set<UUID> getLanguagesByOwnerId(UUID userId) {
+        return userService.getIdLanguagesByOwnerId(userId);
     }
 
     @Override
@@ -64,17 +53,17 @@ class UserController implements UserClient {
     }
 
     @Override
+    public IdDto updateUser(UserDto user) {
+        return userService.update(user);
+    }
+
+    @Override
     public UserDto findUserByLogin(String login) {
         return userService.findUserByLogin(login);
     }
 
     @Override
-    public IdDto findUserIdByLogin(String login) {
-        return userService.findUserIdByLogin(login);
-    }
-
-    @Override
-    public UserDto findById(String id) {
-        return userService.read(UUID.fromString(id));
+    public UserDto findById(UUID id) {
+        return userService.read(id);
     }
 }

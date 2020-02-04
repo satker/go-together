@@ -2,7 +2,6 @@ package org.go.together.mapper;
 
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
-import org.go.together.dto.Role;
 import org.go.together.dto.UserDto;
 import org.go.together.interfaces.Mapper;
 import org.go.together.model.SystemUser;
@@ -47,7 +46,7 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
         userDTO.setLogin(user.getLogin());
         userDTO.setMail(user.getMail());
         userDTO.setPassword(user.getPassword());
-        userDTO.setRole(Role.valueOf(user.getRole()));
+        userDTO.setRole(user.getRole());
         /*userDTO.setInterests(userRepository.getInterestsByUser(user.getId()).stream()
                 .map(interestMapper::entityToDto)
                 .collect(Collectors.toSet()));*/

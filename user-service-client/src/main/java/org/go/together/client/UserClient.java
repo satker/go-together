@@ -4,12 +4,8 @@ import org.go.together.dto.IdDto;
 import org.go.together.dto.LanguageDto;
 import org.go.together.dto.UserDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -22,21 +18,24 @@ public interface UserClient {
     @PutMapping("/users")
     IdDto add(@RequestBody UserDto input);
 
-    boolean checkIsGoodUsername(String username);
+    @GetMapping("/users/check/login/{login}")
+    boolean checkIsGoodUsername(@PathVariable("login") String username);
 
-    boolean checkIsGoodMail(String mail);
+    @GetMapping("/users/check/mail/{mail}")
+    boolean checkIsGoodMail(@PathVariable("mail") String mail);
 
-    boolean checkIsGoodMailForUpdate(String mail, Principal principal);
+    @GetMapping("/users/{userId}/check/languages")
+    boolean checkLanguages(@PathVariable("userId") UUID userId, @RequestBody List<UUID> languagesForCompare);
 
-    IdDto updateValidateUser(@RequestBody UserDto user);
+    @PostMapping("/users")
+    IdDto updateUser(@RequestBody UserDto user);
 
+    @GetMapping("/users/languages")
     Set<LanguageDto> getLanguages();
 
-    Set<UUID> getLanguagesByOwnerId(UUID ownerId);
+    @GetMapping("/users/{userId}/languages")
+    Set<UUID> getLanguagesByOwnerId(@PathVariable("userId") UUID userId);
 
-    boolean checkLanguages(UUID ownerId, List<UUID> languagesForCompare);
-
-    IdDto findUserIdByLogin(String login);
-
-    UserDto findById(String id);
+    @GetMapping("/users/{userId}")
+    UserDto findById(@PathVariable("userId") UUID id);
 }

@@ -9,7 +9,6 @@ import org.go.together.validation.LanguageValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,10 +28,6 @@ public class LanguageService extends CrudService<LanguageDto, Language, Language
                 .map(languageMapper::entityToDto)
                 .collect(Collectors.toSet());
 
-    }
-
-    public boolean existsById(UUID id) {
-        return languageRepository.findById(id) != null;
     }
 
 /*@Override
