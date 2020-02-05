@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService extends CrudService<UserDto, SystemUser, UserRepository> {
+public class UserService extends CrudService<UserDto, SystemUser> {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(UserService.class);
     private final UserMapper userMapper;
     private final UserRepository userRepository;

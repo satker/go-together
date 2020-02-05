@@ -12,7 +12,7 @@ import org.jooq.tools.StringUtils;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class CrudService<D extends Dto, E extends IdentifiedEntity, R extends CustomRepository<E>> {
+public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> {
     private Mapper<D, E> mapper;
     private Validator<D> validator;
     private CustomRepository<E> repository;

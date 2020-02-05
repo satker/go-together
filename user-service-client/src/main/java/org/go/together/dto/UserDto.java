@@ -13,11 +13,11 @@ public class UserDto implements Dto {
     private String mail;
     private String firstName;
     private String lastName;
-    //private CityDto location;
+    private LocationDto location;
     private String description;
     private String password;
     private Role role;
-    //private PhotoDto userPhoto;
+    private PhotoDto userPhoto;
     private Set<LanguageDto> languages;
     private Set<InterestDto> interests;
 }

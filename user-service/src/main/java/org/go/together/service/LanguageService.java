@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class LanguageService extends CrudService<LanguageDto, Language, LanguageRepository> {
+public class LanguageService extends CrudService<LanguageDto, Language> {
     private final LanguageMapper languageMapper;
     private final LanguageRepository languageRepository;
 

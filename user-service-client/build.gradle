@@ -20,4 +20,5 @@ dependencies {
     )
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     compile project(":common-service")
+    compile project(":location-service-client")
 }

@@ -16,7 +16,7 @@ dependencies {
     compile ("org.springframework.boot:spring-boot-starter:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-data-solr:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
 
             "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
             "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}",
@@ -31,4 +31,7 @@ dependencies {
     )
 
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    compile project(":content-service-client")
+    compile project(":common-service")
 }

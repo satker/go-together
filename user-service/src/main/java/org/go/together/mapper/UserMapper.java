@@ -8,6 +8,7 @@ import org.go.together.model.SystemUser;
 import org.go.together.repository.UserRepository;
 import org.go.together.service.LanguageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,14 +19,16 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
     private final UserRepository userRepository;
     private final LanguageMapper languageMapper;
     private final InterestMapper interestMapper;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public UserMapper(LocationClient locationClient, ContentClient contentClient, UserRepository userRepository,
-                      LanguageMapper languageMapper, InterestMapper interestMapper) {
+                      LanguageMapper languageMapper, InterestMapper interestMapper, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.locationClient = locationClient;
         this.contentClient = contentClient;
         this.userRepository = userRepository;
         this.languageMapper = languageMapper;
         this.interestMapper = interestMapper;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Autowired
@@ -56,6 +59,10 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
 
     @Override
     public SystemUser dtoToEntity(UserDto dto) {
+        SystemUser user = new SystemUser();
+        if (dto.getId() != null) {
+            user.setId(dto.getId());
+        }
         return null;
     }
 
