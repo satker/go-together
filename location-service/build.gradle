@@ -17,6 +17,7 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
+            "org.postgresql:postgresql:${postgresDriver}",
 
             "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
             "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}",
