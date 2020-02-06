@@ -3,18 +3,23 @@ package org.go.together.client;
 import org.go.together.dto.EventLocationDto;
 import org.go.together.dto.IdDto;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 import java.util.UUID;
 
 @FeignClient(name = "location-service", url = "http://localhost:8090")
 public interface LocationClient {
-    Set<EventLocationDto> getEventRoute(UUID eventId);
+    @GetMapping("/events/{eventId}/routes")
+    Set<EventLocationDto> getEventRoute(@PathVariable("eventId") UUID eventId);
 
-    Set<IdDto> saveEventRoutes(Set<EventLocationDto> eventLocationDtos);
+    @GetMapping("/routes/{routeId}")
+    EventLocationDto getRouteById(@PathVariable("routeId") UUID routeId);
 
-    Set<IdDto> updateEventRoute(Set<EventLocationDto> eventLocationDtos);
+    @PostMapping("/routes")
+    Set<IdDto> saveOrUpdateEventRoutes(@RequestBody Set<EventLocationDto> eventLocationDtos);
 
-    boolean deleteRoutes(Set<EventLocationDto> eventLocationDtos);
+    @DeleteMapping("/routes")
+    boolean deleteRoutes(@RequestBody Set<EventLocationDto> eventLocationDtos);
 
 }

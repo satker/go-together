@@ -15,7 +15,6 @@ repositories {
 dependencies {
     compile (
             "org.springframework.cloud:spring-cloud-starter-openfeign:${springCloudVersion}",
-
             "org.projectlombok:lombok:${lombokVersion}",
     )
 

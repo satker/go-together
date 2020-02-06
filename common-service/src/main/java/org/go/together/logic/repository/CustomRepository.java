@@ -8,7 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,7 +32,7 @@ public abstract class CustomRepository<E extends IdentifiedEntity> {
     }
 
     @Transactional
-    public List<E> findAll() {
+    public Collection<E> findAll() {
         return createQuery().fetchAll();
     }
 

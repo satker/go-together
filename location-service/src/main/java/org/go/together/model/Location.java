@@ -2,12 +2,8 @@ package org.go.together.model;
 
 import lombok.Data;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.springframework.data.annotation.Id;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Data
@@ -19,5 +15,8 @@ public class Location implements IdentifiedEntity {
     private UUID id;
     private String name;
     private String state;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "country_id", referencedColumnName = "id")
     private Country country;
 }

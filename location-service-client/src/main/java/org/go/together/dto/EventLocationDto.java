@@ -9,7 +9,7 @@ import java.util.UUID;
 public class EventLocationDto implements Dto {
     private UUID id;
     private LocationDto location;
-    private Integer number;
+    private int routeNumber;
     private String address;
     private Double latitude;
     private Double longitude;

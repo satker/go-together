@@ -9,8 +9,7 @@ import org.go.together.repository.EventLocationRepository;
 import org.go.together.validation.EventLocationValidator;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,18 +44,6 @@ public class EventLocationService extends CrudService<EventLocationDto, EventLoc
                 .collect(Collectors.toSet());
     }
 
-    public Set<IdDto> saveEventRoutes(Set<EventLocationDto> eventLocationDtos) {
-        return eventLocationDtos.stream()
-                .map(super::create)
-                .collect(Collectors.toSet());
-    }
-
-    public Set<IdDto> updateEventRoutes(Set<EventLocationDto> eventLocationDtos) {
-        return eventLocationDtos.stream()
-                .map(super::update)
-                .collect(Collectors.toSet());
-    }
-
     public boolean deleteByEventId(Set<EventLocationDto> eventLocationDtos) {
         try {
             eventLocationDtos.stream()
@@ -66,5 +53,35 @@ public class EventLocationService extends CrudService<EventLocationDto, EventLoc
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public Set<IdDto> saveOrUpdateEventRoutes(Set<EventLocationDto> eventLocationDtos) {
+        Collection<EventLocation> eventLocationsFromRepository = eventLocationDtos.stream()
+                .filter(eventLocationDto -> eventLocationDto.getId() != null)
+                .map(EventLocationDto::getId)
+                .filter(Objects::nonNull)
+                .map(eventLocationRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
+        Set<IdDto> result = new HashSet<>();
+
+        eventLocationsFromRepository.stream()
+                .filter(eventLocation -> eventLocationDtos.stream()
+                        .noneMatch(eventLocationDto -> eventLocationDto.getId().equals(eventLocation.getId())))
+                .map(EventLocation::getId)
+                .forEach(super::delete);
+
+        eventLocationDtos.stream()
+                .filter(eventLocation -> eventLocation.getId() == null)
+                .forEach(eventLocationDtoEntry -> {
+                    if (eventLocationDtoEntry.getId() == null) {
+                        result.add(super.create(eventLocationDtoEntry));
+                    } else {
+                        result.add(super.update(eventLocationDtoEntry));
+                    }
+                });
+
+        return result;
     }
 }

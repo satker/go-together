@@ -23,13 +23,13 @@ public class LocationController implements LocationClient {
     }
 
     @Override
-    public Set<IdDto> saveEventRoutes(Set<EventLocationDto> eventLocationDtos) {
-        return eventLocationService.saveEventRoutes(eventLocationDtos);
+    public EventLocationDto getRouteById(UUID routeId) {
+        return eventLocationService.read(routeId);
     }
 
     @Override
-    public Set<IdDto> updateEventRoute(Set<EventLocationDto> eventLocationDtos) {
-        return eventLocationService.updateEventRoutes(eventLocationDtos);
+    public Set<IdDto> saveOrUpdateEventRoutes(Set<EventLocationDto> eventLocationDtos) {
+        return eventLocationService.saveOrUpdateEventRoutes(eventLocationDtos);
     }
 
     @Override

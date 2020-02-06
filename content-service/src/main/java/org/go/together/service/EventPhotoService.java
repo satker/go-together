@@ -7,7 +7,6 @@ import org.go.together.dto.PhotoDto;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.logic.CrudService;
 import org.go.together.mapper.EventPhotoMapper;
-import org.go.together.mapper.PhotoMapper;
 import org.go.together.model.EventPhoto;
 import org.go.together.model.Photo;
 import org.go.together.repository.EventPhotoRepository;
@@ -26,7 +25,6 @@ public class EventPhotoService extends CrudService<EventPhotoDto, EventPhoto> {
     private final EventPhotoRepository eventPhotoRepository;
     private final EventPhotoMapper eventPhotoMapper;
     private PhotoService photoService;
-    private PhotoMapper photoMapper;
 
     public EventPhotoService(EventPhotoRepository eventPhotoRepository,
                              EventPhotoMapper eventPhotoMapper,
@@ -39,11 +37,6 @@ public class EventPhotoService extends CrudService<EventPhotoDto, EventPhoto> {
     @Autowired
     public void setPhotoService(PhotoService photoService) {
         this.photoService = photoService;
-    }
-
-    @Autowired
-    public void setPhotoMapper(PhotoMapper photoMapper) {
-        this.photoMapper = photoMapper;
     }
 
     public Set<EventPhotoDto> savePhotosForEvent(Set<EventPhotoDto> eventPhotoDtos) {

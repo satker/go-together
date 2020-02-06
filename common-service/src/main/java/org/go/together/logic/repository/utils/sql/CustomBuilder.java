@@ -1,11 +1,15 @@
 package org.go.together.logic.repository.utils.sql;
 
+import org.apache.commons.lang3.StringUtils;
 import org.go.together.interfaces.IdentifiedEntity;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.go.together.logic.repository.utils.sql.ObjectStringParser.parseToString;
 
@@ -20,13 +24,36 @@ public class CustomBuilder<E extends IdentifiedEntity> {
         this.clazz = clazz;
     }
 
+    public CustomBuilder<E> groupingByLastRow(String groupingField, String fieldDate, WhereBuilder whereBuilder) {
+        String fields = Stream.of(clazz.getFields()).map(Field::getName).collect(Collectors.joining(", "));
+        query.append("(select ")
+                .append(fields)
+                .append(", row_number() over (partition by ")
+                .append(groupingField)
+                .append(" order by ")
+                .append(fieldDate)
+                .append(" desc) as rn")
+                .append(query)
+                .append(whereBuilder.getWhereQuery())
+                .append(") t")
+                .append(" WHERE rn = 1");
+        return orderBy(groupingField, false);
+    }
+
+    public CustomBuilder<E> orderBy(String field, Boolean isUnique) {
+        query.append(" ORDER BY ")
+                .append(field)
+                .append(isUnique ? " DESC " : StringUtils.EMPTY);
+        return this;
+    }
+
     public CustomBuilder<E> where(WhereBuilder whereBuilder) {
         query.append(whereBuilder.getWhereQuery());
         return this;
     }
 
     @Transactional
-    public List<E> fetchAll() {
+    public Collection<E> fetchAll() {
         return entityManager.createQuery(query.toString(), clazz).getResultList();
     }
 
@@ -49,6 +76,13 @@ public class CustomBuilder<E extends IdentifiedEntity> {
         public WhereBuilder condition(String field, SqlOperator sqlOperator, Object value) {
             String parsedValue = parseToString(value);
             whereQuery.append(sqlOperator.getBiFunction().apply(field, parsedValue));
+            return this;
+        }
+
+        public WhereBuilder group(WhereBuilder whereBuilder) {
+            whereQuery.append("(")
+                    .append(whereBuilder.getWhereQuery())
+                    .append(")");
             return this;
         }
 

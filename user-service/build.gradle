@@ -33,5 +33,4 @@ dependencies {
     compile project(":user-service-client")
     compile project(":content-service-client")
     compile project(":location-service-client")
-    compile project(":common-service")
 }

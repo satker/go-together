@@ -15,7 +15,7 @@ zuul:
       url: http://localhost:8088
     order-service:
       url: http://localhost:8066
-    review-service:
+    message-service:
       url: http://localhost:8064
     room-service:
       url: http://localhost:8068

@@ -6,7 +6,7 @@ import org.go.together.model.SystemUser;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 @Repository
@@ -19,7 +19,7 @@ public class UserRepository extends CustomRepository<SystemUser> {
     }
 
     @Transactional
-    public List<SystemUser> findUserByMail(String mail) {
+    public Collection<SystemUser> findUserByMail(String mail) {
         return createQuery()
                 .where(createWhere().condition("mail", SqlOperator.LIKE, mail))
                 .fetchAll();

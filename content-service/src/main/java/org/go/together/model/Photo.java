@@ -3,12 +3,8 @@ package org.go.together.model;
 import lombok.Data;
 import org.go.together.dto.PhotoCategory;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.springframework.data.annotation.Id;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Data

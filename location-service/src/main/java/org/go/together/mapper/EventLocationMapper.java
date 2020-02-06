@@ -20,17 +20,19 @@ public class EventLocationMapper implements Mapper<EventLocationDto, EventLocati
         eventLocationDto.setLongitude(eventLocation.getLongitude());
         eventLocationDto.setLocation(locationMapper.entityToDto(eventLocation.getLocation()));
         eventLocationDto.setEventId(eventLocation.getEventId());
+        eventLocationDto.setRouteNumber(eventLocation.getRouteNumber());
         return eventLocationDto;
     }
 
     public EventLocation dtoToEntity(EventLocationDto locationDto) {
-        EventLocation apartmentLocation = new EventLocation();
-        apartmentLocation.setId(locationDto.getId());
-        apartmentLocation.setAddress(locationDto.getAddress());
-        apartmentLocation.setLatitude(locationDto.getLatitude());
-        apartmentLocation.setLongitude(locationDto.getLongitude());
-        apartmentLocation.setLocation(locationMapper.dtoToEntity(locationDto.getLocation()));
-        apartmentLocation.setEventId(locationDto.getEventId());
-        return apartmentLocation;
+        EventLocation eventLocation = new EventLocation();
+        eventLocation.setId(locationDto.getId());
+        eventLocation.setAddress(locationDto.getAddress());
+        eventLocation.setLatitude(locationDto.getLatitude());
+        eventLocation.setLongitude(locationDto.getLongitude());
+        eventLocation.setLocation(locationMapper.dtoToEntity(locationDto.getLocation()));
+        eventLocation.setEventId(locationDto.getEventId());
+        eventLocation.setRouteNumber(locationDto.getRouteNumber());
+        return eventLocation;
     }
 }

@@ -34,5 +34,4 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     compile project(":content-service-client")
-    compile project(":common-service")
 }

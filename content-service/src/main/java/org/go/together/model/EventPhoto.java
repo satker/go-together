@@ -2,7 +2,6 @@ package org.go.together.model;
 
 import lombok.Data;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 import java.util.Set;

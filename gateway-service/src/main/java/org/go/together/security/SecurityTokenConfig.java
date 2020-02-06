@@ -46,7 +46,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/services/content-service/**").permitAll()
                 .antMatchers("/services/location-service/**").permitAll()
                 .antMatchers("/services/user-service/**").permitAll()
-                .antMatchers("/services/review-service/**").permitAll()
+                .antMatchers("/services/message-service/**").permitAll()
                 .antMatchers("/services/room-service/**").permitAll()
                 .antMatchers("/services/order-service/**").permitAll()
                 // Any other request must be authenticated

@@ -17,7 +17,7 @@ public class UserDto implements Dto {
     private String description;
     private String password;
     private Role role;
-    private PhotoDto userPhoto;
+    //private PhotoDto userPhoto;
     private Set<LanguageDto> languages;
     private Set<InterestDto> interests;
 }

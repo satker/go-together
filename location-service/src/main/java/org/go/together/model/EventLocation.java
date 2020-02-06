@@ -2,12 +2,8 @@ package org.go.together.model;
 
 import lombok.Data;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.springframework.data.annotation.Id;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Data
@@ -19,8 +15,11 @@ public class EventLocation implements IdentifiedEntity {
     private UUID id;
     private String address;
     private double latitude;
-    private double longitude;
-    private Location location;
-    private UUID eventId;
     private int routeNumber;
+    private double longitude;
+    private UUID eventId;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "location_id", referencedColumnName = "id")
+    private Location location;
 }
