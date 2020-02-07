@@ -48,22 +48,29 @@ public class EventPhotoService extends CrudService<EventPhotoDto, EventPhoto> {
     }
 
     public EventPhoto createOrUpdatePhotosByEventPhotoDto(EventPhotoDto eventPhotoDto) {
-        Set<UUID> updatedPhotos = eventPhotoDto.getPhotos().stream()
+        EventPhoto eventPhoto = getEntityEventPhotos(eventPhotoDto.getId());
+
+        Set<Photo> newPhotos = saveOfUpdatePhotos(eventPhotoDto.getPhotos(), eventPhoto.getPhotos());
+
+        eventPhoto.setPhotos(newPhotos);
+        return eventPhotoRepository.save(eventPhoto);
+    }
+
+    private Set<Photo> saveOfUpdatePhotos(Set<PhotoDto> newPhotosDto, Set<Photo> oldPhotos) {
+        Set<UUID> updatedPhotos = newPhotosDto.stream()
                 .map(PhotoDto::getId)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
-        EventPhoto eventPhoto = getEntityEventPhotos(eventPhotoDto.getId());
-
-        Set<UUID> photoIdsFromRepository = eventPhoto.getPhotos().stream()
+        Set<UUID> photoIdsFromRepository = oldPhotos.stream()
                 .map(Photo::getId)
                 .collect(Collectors.toSet());
 
-        Set<Photo> photosForDeleting = eventPhoto.getPhotos().stream()
+        Set<Photo> photosForDeleting = oldPhotos.stream()
                 .filter(p -> !updatedPhotos.contains(p.getId()))
                 .collect(Collectors.toSet());
 
-        Set<Photo> newEventPhotoDtos = eventPhotoDto.getPhotos().stream()
+        Set<Photo> newEventPhotoDtos = newPhotosDto.stream()
                 .filter(photoDto -> photoDto.getId() == null || !photoIdsFromRepository.contains(photoDto.getId()))
                 .peek(photoDto -> photoDto.setPhotoCategory(PhotoCategory.EVENT))
                 .map(photoService::createEntity)
@@ -73,13 +80,11 @@ public class EventPhotoService extends CrudService<EventPhotoDto, EventPhoto> {
             deleteContentByRoomId(photosForDeleting);
         }
 
-        Set<Photo> newPhotos = eventPhoto.getPhotos().stream()
+        Set<Photo> newPhotos = oldPhotos.stream()
                 .filter(photo -> photosForDeleting.stream().map(Photo::getId).noneMatch(deletedPhoto -> deletedPhoto.equals(photo.getId())))
                 .collect(Collectors.toSet());
         newPhotos.addAll(newEventPhotoDtos);
-
-        eventPhoto.setPhotos(newPhotos);
-        return eventPhotoRepository.save(eventPhoto);
+        return newPhotos;
     }
 
     private EventPhoto getEntityEventPhotos(UUID eventId) {

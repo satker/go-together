@@ -1,11 +1,13 @@
 package org.go.together.client;
 
 import org.go.together.dto.IdDto;
+import org.go.together.dto.InterestDto;
 import org.go.together.dto.LanguageDto;
 import org.go.together.dto.UserDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -32,6 +34,9 @@ public interface UserClient {
 
     @GetMapping("/users/languages")
     Set<LanguageDto> getLanguages();
+
+    @GetMapping("/users/interests")
+    Collection<InterestDto> getInterests();
 
     @GetMapping("/users/{userId}/languages")
     Set<UUID> getLanguagesByOwnerId(@PathVariable("userId") UUID userId);

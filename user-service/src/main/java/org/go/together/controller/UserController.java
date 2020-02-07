@@ -2,12 +2,15 @@ package org.go.together.controller;
 
 import org.go.together.client.UserClient;
 import org.go.together.dto.IdDto;
+import org.go.together.dto.InterestDto;
 import org.go.together.dto.LanguageDto;
 import org.go.together.dto.UserDto;
+import org.go.together.service.InterestService;
 import org.go.together.service.LanguageService;
 import org.go.together.service.UserService;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -16,10 +19,14 @@ import java.util.UUID;
 class UserController implements UserClient {
     private final UserService userService;
     private final LanguageService languageService;
+    private final InterestService interestService;
 
-    public UserController(UserService userService, LanguageService languageService) {
+    public UserController(UserService userService,
+                          LanguageService languageService,
+                          InterestService interestService) {
         this.userService = userService;
         this.languageService = languageService;
+        this.interestService = interestService;
     }
 
     @Override
@@ -40,6 +47,11 @@ class UserController implements UserClient {
     @Override
     public Set<LanguageDto> getLanguages() {
         return languageService.getLanguages();
+    }
+
+    @Override
+    public Collection<InterestDto> getInterests() {
+        return interestService.getInterests();
     }
 
     @Override

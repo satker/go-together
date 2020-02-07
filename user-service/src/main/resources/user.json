@@ -1,0 +1,54 @@
+{
+  "login": "art",
+  "mail": "art_kun@mail.com",
+  "firstName": "artem",
+  "lastName": "kunats",
+  "location": {
+    "id": "19800899-2a73-47c2-8bf0-671be086cf83",
+    "name": "Aixas",
+    "state": null,
+    "country": {
+      "id": "d5c96f27-942f-40d9-bafc-e151d1e7db91",
+      "countryCode": "AD",
+      "name": "ANDORRA"
+    }
+  },
+  "description": "good lifefull man",
+  "password": "13693509",
+  "userPhoto": {
+    "id": null,
+    "photoUrl": "https://img.icons8.com/officel/2x/user.png",
+    "photoCategory": "USER",
+    "content": null
+  },
+  "languages": [
+    {
+      "id": "b96c2579-f0a8-4a20-b267-b80dc1a24221",
+      "name": "Ukrainian",
+      "code": "uk"
+    },
+    {
+      "id": "30f6c3ff-c122-427a-92a4-be96d44bcd50",
+      "name": "Belarusian",
+      "code": "be"
+    }
+  ],
+  "interests": [
+    {
+      "id": "ae4cd335-0dd7-4b64-ac28-5ae86a23b102",
+      "name": "Blogging"
+    },
+    {
+      "id": "91c9779a-862e-475d-8182-b476e2c32903",
+      "name": "Volunteering"
+    },
+    {
+      "id": "539cab30-c08c-47e5-8ff1-cba7b0c5d719",
+      "name": "Traveling"
+    },
+    {
+      "id": "cedbc55b-b56c-4897-b36e-3f22089eb757",
+      "name": "Music"
+    }
+  ]
+}

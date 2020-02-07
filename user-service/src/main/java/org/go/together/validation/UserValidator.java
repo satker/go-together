@@ -1,6 +1,7 @@
 package org.go.together.validation;
 
 import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.LocationDto;
@@ -37,7 +38,10 @@ public class UserValidator extends Validator<UserDto> {
             errors.append("User languages are empty or incorrect");
         }
 
-        errors.append(contentClient.validate(dto.getUserPhoto()));
+        String validatePhoto = contentClient.validate(dto.getUserPhoto());
+        if (StringUtils.isNotBlank(validatePhoto)) {
+            errors.append(validatePhoto);
+        }
 
         return errors.toString();
     }
