@@ -38,4 +38,7 @@ public interface UserClient {
 
     @GetMapping("/users/{userId}")
     UserDto findById(@PathVariable("userId") UUID id);
+
+    @GetMapping("/users/{userId}/presents")
+    boolean checkIfUserPresentsById(@PathVariable("userId") UUID id);
 }

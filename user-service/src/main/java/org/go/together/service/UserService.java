@@ -73,6 +73,10 @@ public class UserService extends CrudService<UserDto, SystemUser> {
                 .collect(Collectors.toSet())).orElse(Collections.emptySet());
     }
 
+    public boolean checkIfUserPresentsById(UUID id) {
+        return userRepository.findById(id).isPresent();
+    }
+
 /*@Override
     public ImmutableMap<String, FunctionToGetValue> getFields() {
         return null;

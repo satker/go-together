@@ -15,6 +15,7 @@ public class Event implements IdentifiedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+    private String name;
     private int peopleCount;
     private int like;
     private UUID authorId;
@@ -22,6 +23,7 @@ public class Event implements IdentifiedEntity {
     private String description;
     private Set<UUID> users;
     private Set<UUID> routes;
+    private UUID eventPhotoId;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "photo_id")

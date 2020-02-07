@@ -44,11 +44,9 @@ public class EventLocationService extends CrudService<EventLocationDto, EventLoc
                 .collect(Collectors.toSet());
     }
 
-    public boolean deleteByEventId(Set<EventLocationDto> eventLocationDtos) {
+    public boolean deleteByEventId(Set<UUID> eventLocationDtos) {
         try {
-            eventLocationDtos.stream()
-                    .map(EventLocationDto::getId)
-                    .forEach(super::delete);
+            eventLocationDtos.forEach(super::delete);
             return true;
         } catch (Exception e) {
             return false;

@@ -1,12 +1,15 @@
 package org.go.together.utils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.dto.SimpleDto;
 import org.go.together.dto.validation.DateIntervalDto;
 import org.go.together.dto.validation.NumberIntervalDto;
 import org.go.together.dto.validation.StringRegexDto;
+import org.go.together.interfaces.Dto;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -30,10 +33,19 @@ public class ValidatorUtils {
 
     }
 
-    public static String checkZeroNumber(Map<String, Number> numbersForCheck) {
-        final String message = "Number %s is zero ";
+    public static String checkZeroOrNegativeNumber(Map<String, Number> numbersForCheck) {
+        final String message = "Number %s is zero or negative ";
         return numbersForCheck.entrySet().stream()
-                .map(number -> number.getValue().doubleValue() == 0 ?
+                .map(number -> number.getValue().doubleValue() <= 0 ?
+                        String.format(message, number.getKey()) :
+                        StringUtils.EMPTY)
+                .collect(Collectors.joining());
+    }
+
+    public static String checkNegativeNumber(Map<String, Number> numbersForCheck) {
+        final String message = "Number %s is negative ";
+        return numbersForCheck.entrySet().stream()
+                .map(number -> number.getValue().doubleValue() < 0 ?
                         String.format(message, number.getKey()) :
                         StringUtils.EMPTY)
                 .collect(Collectors.joining());
@@ -93,12 +105,29 @@ public class ValidatorUtils {
                 .collect(Collectors.joining());
     }
 
-    public static String checkUUIDIsCorrect(Map<String, String> uuidMap) {
+    public static String checkUUIDIsCorrect(Map<String, UUID> uuidMap) {
         final String message = "Id %s is incorrect. ";
         return uuidMap.entrySet().stream()
-                .map(string -> !isUUIDCorrect(string.getValue()) ?
-                        String.format(message, string.getKey()) :
+                .map(uuid -> uuid.getValue() == null ?
+                        String.format(message, uuid.getKey()) :
                         StringUtils.EMPTY)
+                .collect(Collectors.joining());
+    }
+
+    public static String checkAnotherServiceValidationCorrectCheck(Map<String, Pair<Function<Dto, String>,
+            Collection<Dto>>> mapForCheck) {
+        final String message = "Dto field %s don't pass validation: ";
+        return mapForCheck.entrySet().stream()
+                .map(stringPairEntry -> {
+                    String errorsCollection = stringPairEntry.getValue().getValue().stream()
+                            .map(stringPairEntry.getValue().getKey())
+                            .filter(StringUtils::isNotBlank)
+                            .collect(Collectors.joining(". "));
+                    if (StringUtils.isNotBlank(errorsCollection)) {
+                        return String.format(message, stringPairEntry.getKey()).concat(errorsCollection);
+                    }
+                    return StringUtils.EMPTY;
+                })
                 .collect(Collectors.joining());
     }
 
@@ -119,5 +148,4 @@ public class ValidatorUtils {
         return simpleDto.stream().anyMatch(dto ->
                 dto == null || StringUtils.isBlank(dto.getId()) || StringUtils.isBlank(dto.getName()));
     }
-
 }

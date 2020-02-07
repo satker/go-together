@@ -3,6 +3,7 @@ package org.go.together.validation;
 import com.google.common.collect.ImmutableMap;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
+import org.go.together.dto.LocationDto;
 import org.go.together.dto.UserDto;
 import org.go.together.logic.Validator;
 import org.go.together.repository.LanguageRepository;
@@ -25,9 +26,8 @@ public class UserValidator extends Validator<UserDto> {
     @Override
     public String validateForCreateCustom(UserDto dto) {
         StringBuilder errors = new StringBuilder();
-        try {
-            //locationClient.findCityById(dto.getLocation().getId());
-        } catch (Exception e) {
+        LocationDto locationById = locationClient.getLocationById(dto.getLocation().getId());
+        if (locationById == null) {
             errors.append("Cannot find location");
         }
 
@@ -37,7 +37,7 @@ public class UserValidator extends Validator<UserDto> {
             errors.append("User languages are empty or incorrect");
         }
 
-        /*errors.append(contentClient.validate(dto.getUserPhoto()));*/
+        errors.append(contentClient.validate(dto.getUserPhoto()));
 
         return errors.toString();
     }
@@ -45,11 +45,11 @@ public class UserValidator extends Validator<UserDto> {
     @Override
     public void getMapsForCheck(UserDto dto) {
         super.STRINGS_FOR_BLANK_CHECK = ImmutableMap.<String, String>builder()
-                .put("room description", dto.getFirstName())
-                .put("room description", dto.getLastName())
-                .put("room description", dto.getDescription())
-                .put("room description", dto.getLogin())
-                .put("room description", dto.getMail())
+                .put("first name", dto.getFirstName())
+                .put("last name", dto.getLastName())
+                .put("description", dto.getDescription())
+                .put("login", dto.getLogin())
+                .put("mail", dto.getMail())
                 .build();
     }
 }

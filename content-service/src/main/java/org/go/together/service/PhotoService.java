@@ -26,8 +26,4 @@ public class PhotoService extends CrudService<PhotoDto, Photo> {
         Photo photoEntity = photoMapper.dtoToEntity(photo);
         return photoRepository.save(photoEntity);
     }
-
-    public String validate(PhotoDto photo) {
-        return photoValidator.validate(photo);
-    }
 }

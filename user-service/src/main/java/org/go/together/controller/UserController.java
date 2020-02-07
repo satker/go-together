@@ -66,4 +66,9 @@ class UserController implements UserClient {
     public UserDto findById(UUID id) {
         return userService.read(id);
     }
+
+    @Override
+    public boolean checkIfUserPresentsById(UUID id) {
+        return userService.checkIfUserPresentsById(id);
+    }
 }

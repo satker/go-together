@@ -4,7 +4,7 @@ import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventDto;
-import org.go.together.dto.IdDto;
+import org.go.together.dto.EventLocationDto;
 import org.go.together.dto.UserDto;
 import org.go.together.interfaces.Mapper;
 import org.go.together.model.Event;
@@ -47,16 +47,14 @@ public class EventMapper implements Mapper<EventDto, Event> {
         eventDto.setUsers(entity.getUsers().stream()
                 .map(userClient::findById)
                 .collect(Collectors.toSet()));
-        eventDto.setPhoto(contentClient.getPhotosByEventId(entity.getId()).getPhotos().stream()
-                .findFirst()
-                .orElse(null));
+        eventDto.setEventPhotoDto(contentClient.getEventPhotosById(entity.getEventPhotoId()));
+        eventDto.setName(entity.getName());
         return eventDto;
     }
 
     @Override
     public Event dtoToEntity(EventDto dto) {
         Event event = new Event();
-        Set<IdDto> routes = locationClient.saveOrUpdateEventRoutes(dto.getRoute());
         event.setId(dto.getId());
         event.setAuthorId(dto.getAuthor().getId());
         event.setDescription(dto.getDescription());
@@ -64,12 +62,13 @@ public class EventMapper implements Mapper<EventDto, Event> {
         event.setLike(dto.getLike());
         event.setPaidThings((Set<EventPaidThing>) eventPaidThingMapper.dtosToEntities(dto.getPaidThings()));
         event.setPeopleCount(dto.getPeopleCount());
-        event.setRoutes(routes.stream()
-                .map(IdDto::getId)
+        event.setRoutes(dto.getRoute().stream()
+                .map(EventLocationDto::getId)
                 .collect(Collectors.toSet()));
         event.setUsers(dto.getUsers().stream()
                 .map(UserDto::getId)
                 .collect(Collectors.toSet()));
+        event.setName(dto.getName());
         return null;
     }
 }

@@ -10,13 +10,14 @@ import java.util.UUID;
 @Data
 public class EventDto implements Dto {
     private UUID id;
+    private String name;
     private int peopleCount;
     private int like;
     private UserDto author;
     private HousingType housingType;
     private String description;
     private Collection<UserDto> users;
-    private PhotoDto photo;
+    private EventPhotoDto eventPhotoDto;
     private Collection<EventPaidThingDto> paidThings;
     private Set<EventLocationDto> route;
 }

@@ -8,7 +8,6 @@ import org.go.together.service.EventPhotoService;
 import org.go.together.service.PhotoService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -27,13 +26,13 @@ public class ContentController implements ContentClient {
     }
 
     @Override
-    public Set<EventPhotoDto> savePhotosForEvent(Set<EventPhotoDto> eventPhotoDtos) {
-        return eventPhotoService.savePhotosForEvent(eventPhotoDtos);
+    public IdDto savePhotosForEvent(EventPhotoDto eventPhotoDto) {
+        return eventPhotoService.savePhotosForEvent(eventPhotoDto);
     }
 
     @Override
-    public EventPhotoDto getPhotosByEventId(UUID eventId) {
-        return eventPhotoService.getPhotosByEventId(eventId);
+    public EventPhotoDto getEventPhotosById(UUID eventPhotoId) {
+        return eventPhotoService.getEventPhotosById(eventPhotoId);
     }
 
     @Override
@@ -42,7 +41,7 @@ public class ContentController implements ContentClient {
     }
 
     @Override
-    public void delete(UUID eventId) {
-        eventPhotoService.delete(eventId);
+    public void delete(UUID eventPhotoId) {
+        eventPhotoService.delete(eventPhotoId);
     }
 }

@@ -1,6 +1,7 @@
 package org.go.together.validation;
 
 import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Strings;
 import org.go.together.dto.EventLocationDto;
 import org.go.together.logic.Validator;
@@ -11,9 +12,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class EventLocationValidator extends Validator<EventLocationDto> {
     private final CountryMapper countryMapper;
+    private final LocationValidator locationValidator;
 
-    public EventLocationValidator(CountryMapper countryMapper) {
+    public EventLocationValidator(CountryMapper countryMapper,
+                                  LocationValidator locationValidator) {
         this.countryMapper = countryMapper;
+        this.locationValidator = locationValidator;
     }
 
     @Override
@@ -36,6 +40,11 @@ public class EventLocationValidator extends Validator<EventLocationDto> {
         }
         if (country == null) {
             errors.append("Некорректное название страны. ");
+        }
+
+        String validateLocation = locationValidator.validate(eventLocationDto.getLocation());
+        if (StringUtils.isNotBlank(validateLocation)) {
+            errors.append(validateLocation);
         }
         return errors.toString();
     }

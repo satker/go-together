@@ -2,6 +2,7 @@ package org.go.together.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.EventPhotoDto;
+import org.go.together.dto.IdDto;
 import org.go.together.dto.PhotoCategory;
 import org.go.together.dto.PhotoDto;
 import org.go.together.exceptions.CannotFindEntityException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -39,15 +41,13 @@ public class EventPhotoService extends CrudService<EventPhotoDto, EventPhoto> {
         this.photoService = photoService;
     }
 
-    public Set<EventPhotoDto> savePhotosForEvent(Set<EventPhotoDto> eventPhotoDtos) {
-        return eventPhotoDtos.stream()
-                .map(this::createOrUpdatePhotosByRoomId)
-                .map(eventPhotoMapper::entityToDto)
-                .collect(Collectors.toSet());
+    public IdDto savePhotosForEvent(EventPhotoDto eventPhotoDto) {
+        EventPhoto eventPhoto = createOrUpdatePhotosByEventPhotoDto(eventPhotoDto);
+        return new IdDto(eventPhoto.getId());
 
     }
 
-    public EventPhoto createOrUpdatePhotosByRoomId(EventPhotoDto eventPhotoDto) {
+    public EventPhoto createOrUpdatePhotosByEventPhotoDto(EventPhotoDto eventPhotoDto) {
         Set<UUID> updatedPhotos = eventPhotoDto.getPhotos().stream()
                 .map(PhotoDto::getId)
                 .filter(Objects::nonNull)
@@ -82,10 +82,6 @@ public class EventPhotoService extends CrudService<EventPhotoDto, EventPhoto> {
         return eventPhotoRepository.save(eventPhoto);
     }
 
-    public EventPhotoDto getPhotosByEventId(UUID eventPhotoId) {
-        return eventPhotoMapper.entityToDto(getEntityEventPhotos(eventPhotoId));
-    }
-
     private EventPhoto getEntityEventPhotos(UUID eventId) {
         return eventPhotoRepository.findByEventId(eventId)
                 .orElseThrow(() -> new CannotFindEntityException("Cannot find photos by event id " + eventId));
@@ -104,9 +100,20 @@ public class EventPhotoService extends CrudService<EventPhotoDto, EventPhoto> {
     }
 
     @Override
-    public void delete(UUID uuid) {
-        Set<Photo> photos = getEntityEventPhotos(uuid).getPhotos();
-        deleteContentByRoomId(photos);
-        super.delete(uuid);
+    public void delete(UUID eventPhotoId) {
+        Optional<EventPhoto> eventPhotoIfPresent = eventPhotoRepository.findById(eventPhotoId);
+        if (eventPhotoIfPresent.isPresent()) {
+            EventPhoto eventPhoto = eventPhotoIfPresent.get();
+            deleteContentByRoomId(eventPhoto.getPhotos());
+            super.delete(eventPhotoId);
+        } else {
+            throw new CannotFindEntityException("Cannot find event photos for id " + eventPhotoId);
+        }
+    }
+
+    public EventPhotoDto getEventPhotosById(UUID eventPhotoId) {
+        return eventPhotoRepository.findById(eventPhotoId)
+                .map(eventPhotoMapper::entityToDto)
+                .orElse(null);
     }
 }

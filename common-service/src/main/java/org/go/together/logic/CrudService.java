@@ -61,7 +61,14 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> {
 
     public void delete(UUID uuid) {
         Optional<E> entityById = repository.findById(uuid);
-        entityById.ifPresent(e -> repository.delete(e));
-        throw new CannotFindEntityException("Cannot find entity by id " + uuid);
+        if (entityById.isPresent()) {
+            repository.delete(entityById.get());
+        } else {
+            throw new CannotFindEntityException("Cannot find entity by id " + uuid);
+        }
+    }
+
+    public String validate(D dto) {
+        return validator.validate(dto);
     }
 }
