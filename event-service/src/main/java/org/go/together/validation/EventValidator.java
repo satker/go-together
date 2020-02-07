@@ -31,7 +31,7 @@ public class EventValidator extends Validator<EventDto> {
                 .put("event description", dto.getDescription())
                 .build();
         super.NUMBER_CORRECT_NEGATIVE_CHECK = ImmutableMap.<String, Number>builder()
-                .put("event likes", dto.getLike())
+                .put("event likes", dto.getPeopleLike())
                 .build();
         super.NUMBER_CORRECT_ZERO_OR_NEGATIVE_CHECK = ImmutableMap.<String, Number>builder()
                 .put("event people capacity", dto.getPeopleCount())

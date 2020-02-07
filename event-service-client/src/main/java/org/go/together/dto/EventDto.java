@@ -12,7 +12,7 @@ public class EventDto implements Dto {
     private UUID id;
     private String name;
     private int peopleCount;
-    private int like;
+    private int peopleLike;
     private UserDto author;
     private HousingType housingType;
     private String description;

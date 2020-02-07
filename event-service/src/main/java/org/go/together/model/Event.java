@@ -17,11 +17,15 @@ public class Event implements IdentifiedEntity {
     private UUID id;
     private String name;
     private int peopleCount;
-    private int like;
+    private int peopleLike;
     private UUID authorId;
     private HousingType housingType;
     private String description;
+
+    @ElementCollection
     private Set<UUID> users;
+
+    @ElementCollection
     private Set<UUID> routes;
     private UUID eventPhotoId;
 

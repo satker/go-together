@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@FeignClient(name = "content-service", url = "http://localhost:8081")
+@FeignClient(name = "event-service", url = "http://localhost:8081")
 public interface EventClient {
     @GetMapping("/events/{eventId}")
     EventDto getEventById(@PathVariable("eventId") UUID eventId);

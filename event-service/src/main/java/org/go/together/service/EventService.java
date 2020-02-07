@@ -76,7 +76,8 @@ public class EventService extends CrudService<EventDto, Event> {
             locationClient.deleteRoutes(event.getRoutes());
             contentClient.delete(event.getEventPhotoId());
             super.delete(eventId);
+        } else {
+            throw new CannotFindEntityException("Cannot find entity by id " + eventId);
         }
-        throw new CannotFindEntityException("Cannot find entity by id " + eventId);
     }
 }
