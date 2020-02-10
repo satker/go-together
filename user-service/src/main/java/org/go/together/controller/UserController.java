@@ -80,6 +80,11 @@ class UserController implements UserClient {
     }
 
     @Override
+    public void deleteUserById(UUID id) {
+        userService.delete(id);
+    }
+
+    @Override
     public boolean checkIfUserPresentsById(UUID id) {
         return userService.checkIfUserPresentsById(id);
     }

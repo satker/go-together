@@ -2,68 +2,73 @@ package org.go.together.mapper;
 
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
+import org.go.together.dto.PhotoDto;
 import org.go.together.dto.UserDto;
 import org.go.together.interfaces.Mapper;
 import org.go.together.model.SystemUser;
-import org.go.together.repository.UserRepository;
-import org.go.together.service.LanguageService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
 
 @Component
 public class UserMapper implements Mapper<UserDto, SystemUser> {
     private final LocationClient locationClient;
-    private LanguageService languageService;
     private final ContentClient contentClient;
-    private final UserRepository userRepository;
     private final LanguageMapper languageMapper;
     private final InterestMapper interestMapper;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserMapper(LocationClient locationClient, ContentClient contentClient, UserRepository userRepository,
-                      LanguageMapper languageMapper, InterestMapper interestMapper, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserMapper(LocationClient locationClient, ContentClient contentClient,
+                      LanguageMapper languageMapper, InterestMapper interestMapper) {
         this.locationClient = locationClient;
         this.contentClient = contentClient;
-        this.userRepository = userRepository;
         this.languageMapper = languageMapper;
         this.interestMapper = interestMapper;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    @Autowired
-    public void setLanguageService(LanguageService languageService) {
-        this.languageService = languageService;
-    }
-
-    public UserDto entityToDto(SystemUser user) {
+    @Override
+    public UserDto entityToDto(SystemUser entity) {
         UserDto userDTO = new UserDto();
-        userDTO.setDescription(user.getDescription());
-        userDTO.setFirstName(user.getFirstName());
-        userDTO.setId(user.getId());
-        /*userDTO.setLanguages(userRepository.getLanguagesByUser(user.getId()).stream()
+        userDTO.setDescription(entity.getDescription());
+        userDTO.setFirstName(entity.getFirstName());
+        userDTO.setId(entity.getId());
+        userDTO.setLanguages(entity.getLanguages().stream()
                 .map(languageMapper::entityToDto)
-                .collect(Collectors.toSet()));*/
-        userDTO.setLastName(user.getLastName());
-        //userDTO.setLocation(locationClient.findCityById(user.getLocationId()));
-        userDTO.setLogin(user.getLogin());
-        userDTO.setMail(user.getMail());
-        userDTO.setPassword(user.getPassword());
-        userDTO.setRole(user.getRole());
-        /*userDTO.setInterests(userRepository.getInterestsByUser(user.getId()).stream()
+                .collect(Collectors.toSet()));
+        userDTO.setLastName(entity.getLastName());
+        userDTO.setLocation(locationClient.getLocationById(entity.getLocationId()));
+        userDTO.setLogin(entity.getLogin());
+        userDTO.setMail(entity.getMail());
+        userDTO.setPassword(entity.getPassword());
+        userDTO.setRole(entity.getRole());
+        userDTO.setInterests(entity.getInterests().stream()
                 .map(interestMapper::entityToDto)
-                .collect(Collectors.toSet()));*/
-        //userDTO.setUserPhoto(contentClient.findPhotoById(user.getPhotoId()));
+                .collect(Collectors.toSet()));
+        userDTO.setUserPhotos(contentClient.getPhotosByIds(entity.getPhotoIds()));
         return userDTO;
     }
 
     @Override
     public SystemUser dtoToEntity(UserDto dto) {
         SystemUser user = new SystemUser();
-        if (dto.getId() != null) {
-            user.setId(dto.getId());
-        }
-        return null;
+        user.setId(dto.getId());
+        user.setPhotoIds(dto.getUserPhotos().stream()
+                .map(PhotoDto::getId)
+                .collect(Collectors.toSet()));
+        user.setMail(dto.getMail());
+        user.setLogin(dto.getLogin());
+        user.setLocationId(dto.getLocation().getId());
+        user.setLastName(dto.getLastName());
+        user.setFirstName(dto.getFirstName());
+        user.setDescription(dto.getDescription());
+        user.setPassword(dto.getPassword());
+        user.setInterests(dto.getInterests().stream()
+                .map(interestMapper::dtoToEntity)
+                .collect(Collectors.toSet()));
+        user.setLanguages(dto.getLanguages().stream()
+                .map(languageMapper::dtoToEntity)
+                .collect(Collectors.toSet()));
+        user.setRole(dto.getRole());
+        return user;
     }
 
 }

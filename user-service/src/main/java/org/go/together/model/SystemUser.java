@@ -6,6 +6,7 @@ import org.go.together.dto.Role;
 import org.go.together.interfaces.IdentifiedEntity;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -24,8 +25,10 @@ public class SystemUser implements IdentifiedEntity {
     private String description;
     private String password;
     private UUID locationId;
-    private UUID photoId;
     private Role role;
+
+    @ElementCollection
+    private Collection<UUID> photoIds;
 
     @ManyToMany
     @JoinTable(name = "system_user_interest",

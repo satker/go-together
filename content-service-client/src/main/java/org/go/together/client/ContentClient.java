@@ -6,14 +6,22 @@ import org.go.together.dto.PhotoDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 @FeignClient(name = "content-service", url = "http://localhost:8099")
 public interface ContentClient {
-    @PostMapping("/users/photos")
-    IdDto save(@RequestBody PhotoDto userPhoto);
+    @PutMapping("/photos")
+    Collection<IdDto> savePhotos(@RequestBody Set<PhotoDto> userPhotos);
 
     @PostMapping("/photos")
+    Set<PhotoDto> getPhotosByIds(@RequestBody Collection<UUID> photoIds);
+
+    @DeleteMapping("/photos")
+    void deletePhotoById(@RequestBody Collection<UUID> photoIds);
+
+    @PostMapping("/events/photos")
     IdDto savePhotosForEvent(@RequestBody EventPhotoDto eventPhotoDto);
 
     @GetMapping("events/photos/{eventPhotoId}")

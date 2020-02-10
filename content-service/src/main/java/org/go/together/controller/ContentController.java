@@ -8,7 +8,10 @@ import org.go.together.service.EventPhotoService;
 import org.go.together.service.PhotoService;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 public class ContentController implements ContentClient {
@@ -21,8 +24,20 @@ public class ContentController implements ContentClient {
     }
 
     @Override
-    public IdDto save(PhotoDto userPhoto) {
-        return photoService.create(userPhoto);
+    public Collection<IdDto> savePhotos(Set<PhotoDto> photos) {
+        return photoService.savePhotos(photos);
+    }
+
+    @Override
+    public Set<PhotoDto> getPhotosByIds(Collection<UUID> photoIds) {
+        return photoIds.stream()
+                .map(photoService::read)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public void deletePhotoById(Collection<UUID> photoIds) {
+        photoIds.forEach(photoService::delete);
     }
 
     @Override

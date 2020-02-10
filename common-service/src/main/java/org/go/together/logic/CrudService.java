@@ -36,6 +36,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> {
         String validate = validator.validateForCreate(dto);
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
+            updateEntityForCreate(entity, dto);
             E createdEntity = repository.save(entity);
             return new IdDto(createdEntity.getId());
         } else {
@@ -47,6 +48,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> {
         String validate = validator.validateForUpdate(dto);
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
+            updateEntityForUpdate(entity, dto);
             E createdEntity = repository.save(entity);
             return new IdDto(createdEntity.getId());
         } else {
@@ -62,7 +64,9 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> {
     public void delete(UUID uuid) {
         Optional<E> entityById = repository.findById(uuid);
         if (entityById.isPresent()) {
-            repository.delete(entityById.get());
+            E entity = entityById.get();
+            actionsBeforeDelete(entity);
+            repository.delete(entity);
         } else {
             throw new CannotFindEntityException("Cannot find entity by id " + uuid);
         }
@@ -70,5 +74,14 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> {
 
     public String validate(D dto) {
         return validator.validate(dto);
+    }
+
+    protected void updateEntityForCreate(E entity, D dto) {
+    }
+
+    protected void updateEntityForUpdate(E entity, D dto) {
+    }
+
+    protected void actionsBeforeDelete(E entity) {
     }
 }

@@ -10,6 +10,8 @@ import org.go.together.logic.Validator;
 import org.go.together.repository.LanguageRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
 @Service
 public class UserValidator extends Validator<UserDto> {
     private LocationClient locationClient;
@@ -34,11 +36,14 @@ public class UserValidator extends Validator<UserDto> {
 
         if (dto.getLanguages().isEmpty() || dto.getLanguages()
                 .stream()
-                .anyMatch(lang -> !languageRepository.findById(lang.getId()).isPresent())) {
+                .anyMatch(lang -> languageRepository.findById(lang.getId()).isEmpty())) {
             errors.append("User languages are empty or incorrect");
         }
 
-        String validatePhoto = contentClient.validate(dto.getUserPhoto());
+        String validatePhoto = dto.getUserPhotos().stream()
+                .map(contentClient::validate)
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.joining(". "));
         if (StringUtils.isNotBlank(validatePhoto)) {
             errors.append(validatePhoto);
         }

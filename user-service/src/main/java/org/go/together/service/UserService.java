@@ -1,5 +1,8 @@
 package org.go.together.service;
 
+import org.go.together.client.ContentClient;
+import org.go.together.dto.IdDto;
+import org.go.together.dto.Role;
 import org.go.together.dto.UserDto;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.logic.CrudService;
@@ -9,6 +12,7 @@ import org.go.together.model.SystemUser;
 import org.go.together.repository.UserRepository;
 import org.go.together.validation.UserValidator;
 import org.slf4j.Logger;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -19,12 +23,17 @@ public class UserService extends CrudService<UserDto, SystemUser> {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(UserService.class);
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ContentClient contentClient;
 
     public UserService(UserRepository userRepository, UserMapper userMapper,
-                       UserValidator userValidator) {
+                       UserValidator userValidator, BCryptPasswordEncoder bCryptPasswordEncoder,
+                       ContentClient contentClient) {
         super(userRepository, userMapper, userValidator);
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.contentClient = contentClient;
     }
 
     public UserDto findUserByLogin(String login) {
@@ -75,6 +84,36 @@ public class UserService extends CrudService<UserDto, SystemUser> {
 
     public boolean checkIfUserPresentsById(UUID id) {
         return userRepository.findById(id).isPresent();
+    }
+
+    @Override
+    public void updateEntityForCreate(SystemUser entity, UserDto dto) {
+        Collection<IdDto> savedPhoto = contentClient.savePhotos(dto.getUserPhotos());
+        entity.setPhotoIds(savedPhoto.stream()
+                .map(IdDto::getId)
+                .collect(Collectors.toSet()));
+        entity.setPassword(bCryptPasswordEncoder.encode(entity.getPassword()));
+        entity.setRole(Role.ROLE_USER);
+    }
+
+    @Override
+    public void updateEntityForUpdate(SystemUser entity, UserDto dto) {
+        Collection<UUID> previousPhotos = userRepository.findById(entity.getId())
+                .map(SystemUser::getPhotoIds)
+                .orElse(Collections.emptySet());
+        Role role = userRepository.findById(entity.getId()).map(SystemUser::getRole).orElse(Role.ROLE_USER);
+        contentClient.deletePhotoById(previousPhotos);
+        Collection<IdDto> savedPhoto = contentClient.savePhotos(dto.getUserPhotos());
+        entity.setPhotoIds(savedPhoto.stream()
+                .map(IdDto::getId)
+                .collect(Collectors.toSet()));
+        entity.setPassword(bCryptPasswordEncoder.encode(entity.getPassword()));
+        entity.setRole(role);
+    }
+
+    @Override
+    protected void actionsBeforeDelete(SystemUser entity) {
+        contentClient.deletePhotoById(entity.getPhotoIds());
     }
 
 /*@Override
