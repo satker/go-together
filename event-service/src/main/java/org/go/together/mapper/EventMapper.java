@@ -11,6 +11,8 @@ import org.go.together.model.Event;
 import org.go.together.model.EventPaidThing;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,7 +37,7 @@ public class EventMapper implements Mapper<EventDto, Event> {
     public EventDto entityToDto(Event entity) {
         EventDto eventDto = new EventDto();
         eventDto.setId(entity.getId());
-        eventDto.setAuthor(userClient.findById(entity.getId()));
+        eventDto.setAuthor(userClient.findById(entity.getAuthorId()));
         eventDto.setDescription(entity.getDescription());
         eventDto.setHousingType(entity.getHousingType());
         eventDto.setPeopleLike(entity.getPeopleLike());
@@ -65,10 +67,11 @@ public class EventMapper implements Mapper<EventDto, Event> {
         event.setRoutes(dto.getRoute().stream()
                 .map(EventLocationDto::getId)
                 .collect(Collectors.toSet()));
-        event.setUsers(dto.getUsers().stream()
+        event.setUsers(Optional.ofNullable(dto.getUsers())
+                .orElse(Collections.emptySet()).stream()
                 .map(UserDto::getId)
                 .collect(Collectors.toSet()));
         event.setName(dto.getName());
-        return null;
+        return event;
     }
 }

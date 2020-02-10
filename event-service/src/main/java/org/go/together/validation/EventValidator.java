@@ -10,18 +10,24 @@ import org.go.together.dto.UserDto;
 import org.go.together.logic.Validator;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Optional;
+
 @Component
 public class EventValidator extends Validator<EventDto> {
     private final UserClient userClient;
     private final ContentClient contentClient;
     private final LocationClient locationClient;
+    private final EventPaidThingValidator eventPaidThingValidator;
 
     public EventValidator(UserClient userClient,
                           ContentClient contentClient,
-                          LocationClient locationClient) {
+                          LocationClient locationClient,
+                          EventPaidThingValidator eventPaidThingValidator) {
         this.userClient = userClient;
         this.contentClient = contentClient;
         this.locationClient = locationClient;
+        this.eventPaidThingValidator = eventPaidThingValidator;
     }
 
     @Override
@@ -42,18 +48,28 @@ public class EventValidator extends Validator<EventDto> {
     protected String commonValidateCustom(EventDto dto) {
         StringBuilder errors = new StringBuilder();
 
+        if (Optional.ofNullable(dto.getAuthor()).map(UserDto::getId).isEmpty()) {
+            errors.append("Should be an event author. ");
+        }
+
         if (!userClient.checkIfUserPresentsById(dto.getAuthor().getId())) {
             errors.append("Author has incorrect uuid: ")
                     .append(dto.getAuthor().getId())
                     .append(". ");
         }
 
-        dto.getUsers().stream()
+        Optional.ofNullable(dto.getUsers())
+                .orElse(Collections.emptySet()).stream()
                 .map(UserDto::getId)
                 .filter(userDtoId -> !userClient.checkIfUserPresentsById(userDtoId))
                 .map(userDtoId -> "User has incorrect uuid: " + userDtoId + ". ")
                 .forEach(errors::append);
 
+
+        dto.getPaidThings().stream()
+                .map(eventPaidThingValidator::validate)
+                .filter(StringUtils::isNotBlank)
+                .forEach(errors::append);
 
         dto.getEventPhotoDto().getPhotos().stream()
                 .map(contentClient::validate)

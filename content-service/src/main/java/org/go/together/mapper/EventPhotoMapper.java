@@ -7,7 +7,6 @@ import org.go.together.model.EventPhoto;
 import org.go.together.model.Photo;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,7 +28,7 @@ public class EventPhotoMapper implements Mapper<EventPhotoDto, EventPhoto> {
                 .map(photoMapper::entityToDto)
                 .collect(Collectors.toSet());
         eventPhotoDto.setPhotos(photos);
-        return null;
+        return eventPhotoDto;
     }
 
     @Override
@@ -37,9 +36,9 @@ public class EventPhotoMapper implements Mapper<EventPhotoDto, EventPhoto> {
         EventPhoto apartmentPhoto = new EventPhoto();
         apartmentPhoto.setId(dto.getId());
         apartmentPhoto.setEventId(dto.getEventId());
-        Set<Photo> photos = /*dto.getPhotos().stream()
+        Set<Photo> photos = dto.getPhotos().stream()
                 .map(photoMapper::dtoToEntity)
-                .collect(Collectors.toSet())*/new HashSet<>();
+                .collect(Collectors.toSet());
         apartmentPhoto.setPhotos(photos);
         return apartmentPhoto;
     }

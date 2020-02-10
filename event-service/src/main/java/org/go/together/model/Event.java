@@ -13,7 +13,7 @@ import java.util.UUID;
 @Table(name = "event", schema = "public")
 public class Event implements IdentifiedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
     private String name;
     private int peopleCount;

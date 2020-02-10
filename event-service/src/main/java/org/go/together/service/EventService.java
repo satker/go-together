@@ -3,6 +3,7 @@ package org.go.together.service;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.EventDto;
+import org.go.together.dto.EventLocationDto;
 import org.go.together.dto.EventPhotoDto;
 import org.go.together.dto.IdDto;
 import org.go.together.logic.CrudService;
@@ -32,10 +33,17 @@ public class EventService extends CrudService<EventDto, Event> {
     }
 
     @Override
-    public void updateEntityForCreate(Event entity, EventDto dto) {
+    protected void updateEntityForCreate(Event entity, EventDto dto) {
         UUID uuid = UUID.randomUUID();
         entity.setId(uuid);
-        Set<IdDto> routes = locationClient.saveOrUpdateEventRoutes(dto.getRoute());
+        updateEntity(entity, dto, uuid);
+    }
+
+    private void updateEntity(Event entity, EventDto dto, UUID uuid) {
+        Set<EventLocationDto> newRoute = dto.getRoute().stream()
+                .peek(routeItem -> routeItem.setEventId(uuid))
+                .collect(Collectors.toSet());
+        Set<IdDto> routes = locationClient.saveOrUpdateEventRoutes(newRoute);
         entity.setRoutes(routes.stream()
                 .map(IdDto::getId)
                 .collect(Collectors.toSet()));
@@ -43,6 +51,11 @@ public class EventService extends CrudService<EventDto, Event> {
         eventPhotoDto.setEventId(uuid);
         IdDto photoId = contentClient.savePhotosForEvent(eventPhotoDto);
         entity.setEventPhotoId(photoId.getId());
+    }
+
+    @Override
+    protected void updateEntityForUpdate(Event entity, EventDto dto) {
+        updateEntity(entity, dto, entity.getId());
     }
 
     @Override

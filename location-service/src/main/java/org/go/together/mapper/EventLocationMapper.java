@@ -15,6 +15,7 @@ public class EventLocationMapper implements Mapper<EventLocationDto, EventLocati
 
     public EventLocationDto entityToDto(EventLocation eventLocation) {
         EventLocationDto eventLocationDto = new EventLocationDto();
+        eventLocationDto.setId(eventLocation.getId());
         eventLocationDto.setAddress(eventLocation.getAddress());
         eventLocationDto.setLatitude(eventLocation.getLatitude());
         eventLocationDto.setLongitude(eventLocation.getLongitude());

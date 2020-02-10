@@ -12,6 +12,6 @@ import java.util.Optional;
 public class CountryRepository extends CustomRepository<Country> {
     @Transactional
     public Optional<Country> findByName(String name) {
-        return createQuery().where(createWhere().condition("name", SqlOperator.EQUAL, name.toLowerCase())).fetchOne();
+        return createQuery().where(createWhere().condition("name", SqlOperator.EQUAL, name.toUpperCase())).fetchOne();
     }
 }
