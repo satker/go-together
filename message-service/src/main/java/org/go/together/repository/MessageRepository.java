@@ -2,7 +2,7 @@ package org.go.together.repository;
 
 import org.go.together.dto.MessageType;
 import org.go.together.logic.repository.CustomRepository;
-import org.go.together.logic.repository.utils.sql.CustomBuilder;
+import org.go.together.logic.repository.utils.sql.CustomSqlBuilder;
 import org.go.together.logic.repository.utils.sql.SqlOperator;
 import org.go.together.model.Message;
 import org.springframework.stereotype.Repository;
@@ -29,10 +29,10 @@ public class MessageRepository extends CustomRepository<Message> {
 
     @Transactional
     public Collection<Message> findMessagesBetweenUsers(UUID myId, UUID otherUser) {
-        CustomBuilder.WhereBuilder whereMyIdPresented = createWhere().condition("authorId", SqlOperator.EQUAL, myId)
+        CustomSqlBuilder.WhereBuilder whereMyIdPresented = createWhere().condition("authorId", SqlOperator.EQUAL, myId)
                 .or()
                 .condition("recipientId", SqlOperator.EQUAL, myId);
-        CustomBuilder.WhereBuilder whereUserIdPresented = createWhere().condition("authorId", SqlOperator.EQUAL, otherUser)
+        CustomSqlBuilder.WhereBuilder whereUserIdPresented = createWhere().condition("authorId", SqlOperator.EQUAL, otherUser)
                 .or()
                 .condition("recipientId", SqlOperator.EQUAL, otherUser);
         return createQuery()

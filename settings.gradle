@@ -15,4 +15,6 @@ include 'message-service-client'
 include 'location-service-client'
 include 'content-service-client'
 include 'content-service'
+include 'auth-service'
+include 'auth-service-client'
 

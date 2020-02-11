@@ -23,15 +23,6 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> {
         this.validator = validator;
     }
 
-
-    public void setViewMapper(Mapper<D, E> mapper) {
-        this.mapper = mapper;
-    }
-
-    public void setValidator(Validator<D> validator) {
-        this.validator = validator;
-    }
-
     public IdDto create(D dto) {
         String validate = validator.validateForCreate(dto);
         if (StringUtils.isBlank(validate)) {

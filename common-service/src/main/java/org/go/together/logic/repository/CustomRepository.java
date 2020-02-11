@@ -1,7 +1,7 @@
 package org.go.together.logic.repository;
 
 import org.go.together.interfaces.IdentifiedEntity;
-import org.go.together.logic.repository.utils.sql.CustomBuilder;
+import org.go.together.logic.repository.utils.sql.CustomSqlBuilder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -36,12 +36,12 @@ public abstract class CustomRepository<E extends IdentifiedEntity> {
         return createQuery().fetchAll();
     }
 
-    public CustomBuilder<E> createQuery() {
-        return new CustomBuilder<>(getEntityClass(), entityManager);
+    public CustomSqlBuilder<E> createQuery() {
+        return new CustomSqlBuilder<>(getEntityClass(), entityManager);
     }
 
-    public CustomBuilder.WhereBuilder createWhere() {
-        return new CustomBuilder.WhereBuilder();
+    public CustomSqlBuilder.WhereBuilder createWhere() {
+        return new CustomSqlBuilder.WhereBuilder();
     }
 
     private Class<E> getEntityClass() {

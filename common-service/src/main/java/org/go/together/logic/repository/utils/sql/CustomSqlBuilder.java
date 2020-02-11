@@ -13,18 +13,18 @@ import java.util.stream.Stream;
 
 import static org.go.together.logic.repository.utils.sql.ObjectStringParser.parseToString;
 
-public class CustomBuilder<E extends IdentifiedEntity> {
+public class CustomSqlBuilder<E extends IdentifiedEntity> {
     private final StringBuilder query;
     private final EntityManager entityManager;
     private final Class<E> clazz;
 
-    public CustomBuilder(Class<E> clazz, EntityManager entityManager) {
+    public CustomSqlBuilder(Class<E> clazz, EntityManager entityManager) {
         query = new StringBuilder("FROM " + clazz.getSimpleName());
         this.entityManager = entityManager;
         this.clazz = clazz;
     }
 
-    public CustomBuilder<E> groupingByLastRow(String groupingField, String fieldDate, WhereBuilder whereBuilder) {
+    public CustomSqlBuilder<E> groupingByLastRow(String groupingField, String fieldDate, WhereBuilder whereBuilder) {
         String fields = Stream.of(clazz.getFields()).map(Field::getName).collect(Collectors.joining(", "));
         query.append("(select ")
                 .append(fields)
@@ -40,14 +40,14 @@ public class CustomBuilder<E extends IdentifiedEntity> {
         return orderBy(groupingField, false);
     }
 
-    public CustomBuilder<E> orderBy(String field, Boolean isUnique) {
+    public CustomSqlBuilder<E> orderBy(String field, Boolean isUnique) {
         query.append(" ORDER BY ")
                 .append(field)
                 .append(isUnique ? " DESC " : StringUtils.EMPTY);
         return this;
     }
 
-    public CustomBuilder<E> where(WhereBuilder whereBuilder) {
+    public CustomSqlBuilder<E> where(WhereBuilder whereBuilder) {
         query.append(whereBuilder.getWhereQuery());
         return this;
     }
