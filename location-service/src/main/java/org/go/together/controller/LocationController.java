@@ -4,6 +4,7 @@ import org.go.together.client.LocationClient;
 import org.go.together.dto.EventLocationDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.LocationDto;
+import org.go.together.dto.SimpleDto;
 import org.go.together.service.EventLocationService;
 import org.go.together.service.LocationService;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,5 +51,10 @@ public class LocationController implements LocationClient {
     @Override
     public LocationDto getLocationById(UUID locationId) {
         return locationService.read(locationId);
+    }
+
+    @Override
+    public Set<SimpleDto> autocompleteLocations(String name) {
+        return locationService.getLocationsByName(name);
     }
 }

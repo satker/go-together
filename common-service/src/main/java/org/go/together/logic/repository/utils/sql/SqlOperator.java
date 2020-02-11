@@ -5,8 +5,8 @@ import java.util.function.BiFunction;
 public enum SqlOperator {
     IN((field, val) -> field + " in " + val),
     NOT_IN((field, val) -> field + " not in " + val),
-    LIKE((field, val) -> field + " like %" + val + "%"),
-    NOT_LIKE((field, val) -> field + " not like %" + val + "%"),
+    LIKE((field, val) -> field + " like '%" + val.replaceAll("'", "") + "%'"),
+    NOT_LIKE((field, val) -> field + " not like '%" + val.replaceAll("'", "") + "%'"),
     EQUAL((field, val) -> field + " = " + val),
     NOT_EQUAL((field, val) -> field + " <> " + val),
     LESS((field, val) -> field + " < " + val),

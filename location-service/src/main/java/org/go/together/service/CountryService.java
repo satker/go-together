@@ -8,6 +8,7 @@ import org.go.together.repository.CountryRepository;
 import org.go.together.validation.CountryValidator;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -35,6 +36,10 @@ public class CountryService extends CrudService<CountryDto, Country> {
     public Country findByName(String name) {
         Optional<Country> country = countryRepository.findByName(name);
         return country.orElse(null);
+    }
+
+    public Collection<Country> findCountriesLike(String countryName) {
+        return countryRepository.findCountriesLike(countryName);
     }
 
     /*private void getCountries() {

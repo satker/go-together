@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.interfaces.IdentifiedEntity;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -60,6 +61,14 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
     @Transactional
     public Optional<E> fetchOne() {
         return entityManager.createQuery(query.toString(), clazz).getResultStream().findFirst();
+    }
+
+    @Transactional
+    public Collection<E> fetchAllPageable(int start, int end) {
+        TypedQuery<E> query = entityManager.createQuery(this.query.toString(), clazz);
+        query.setFirstResult(start);
+        query.setMaxResults(end);
+        return query.getResultList();
     }
 
     public static class WhereBuilder {

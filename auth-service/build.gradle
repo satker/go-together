@@ -16,6 +16,7 @@ dependencies {
     compile(
             "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
+            "com.h2database:h2:1.4.200",
 
             "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}",
             "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",

@@ -3,9 +3,13 @@ package org.go.together.controller;
 import org.go.together.client.EventClient;
 import org.go.together.dto.EventDto;
 import org.go.together.dto.IdDto;
+import org.go.together.dto.ResponseDto;
+import org.go.together.dto.SimpleDto;
+import org.go.together.dto.filter.FormDto;
 import org.go.together.service.EventService;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -22,6 +26,11 @@ public class EventController implements EventClient {
     }
 
     @Override
+    public ResponseDto<EventDto> find(FormDto formDto) {
+        return new ResponseDto<EventDto>(formDto.getPage(), eventService.findAll());
+    }
+
+    @Override
     public IdDto createEvent(EventDto eventDto) {
         return eventService.create(eventDto);
     }
@@ -34,5 +43,10 @@ public class EventController implements EventClient {
     @Override
     public void deleteEvent(UUID eventId) {
         eventService.delete(eventId);
+    }
+
+    @Override
+    public Set<SimpleDto> autocompleteEvents(String name) {
+        return eventService.autocompleteEvents(name);
     }
 }

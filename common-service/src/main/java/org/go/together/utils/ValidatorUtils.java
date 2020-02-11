@@ -146,6 +146,6 @@ public class ValidatorUtils {
             return false;
         }
         return simpleDto.stream().anyMatch(dto ->
-                dto == null || StringUtils.isBlank(dto.getId()) || StringUtils.isBlank(dto.getName()));
+                dto == null || dto.getId() == null || StringUtils.isBlank(dto.getName()));
     }
 }

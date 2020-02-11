@@ -1,11 +1,9 @@
 package org.go.together.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
-import org.go.together.dto.EventDto;
-import org.go.together.dto.EventLocationDto;
-import org.go.together.dto.EventPhotoDto;
-import org.go.together.dto.IdDto;
+import org.go.together.dto.*;
 import org.go.together.logic.CrudService;
 import org.go.together.mapper.EventMapper;
 import org.go.together.model.Event;
@@ -13,6 +11,7 @@ import org.go.together.repository.EventRepository;
 import org.go.together.validation.EventValidator;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -21,6 +20,8 @@ import java.util.stream.Collectors;
 public class EventService extends CrudService<EventDto, Event> {
     private final LocationClient locationClient;
     private final ContentClient contentClient;
+    private final EventRepository eventRepository;
+    private final EventMapper eventMapper;
 
     protected EventService(EventRepository eventRepository,
                            EventMapper eventMapper,
@@ -30,6 +31,8 @@ public class EventService extends CrudService<EventDto, Event> {
         super(eventRepository, eventMapper, eventValidator);
         this.locationClient = locationClient;
         this.contentClient = contentClient;
+        this.eventRepository = eventRepository;
+        this.eventMapper = eventMapper;
     }
 
     @Override
@@ -62,5 +65,21 @@ public class EventService extends CrudService<EventDto, Event> {
     public void actionsBeforeDelete(Event event) {
         locationClient.deleteRoutes(event.getRoutes());
         contentClient.delete(event.getEventPhotoId());
+    }
+
+    public Collection<EventDto> findAll() {
+        return eventMapper.entitiesToDtos(eventRepository.findAll());
+    }
+
+    public Set<SimpleDto> autocompleteEvents(String name) {
+        Collection<Event> events;
+        if (StringUtils.isNotBlank(name)) {
+            events = eventRepository.findEventsByNameLike(name, 0, 5);
+        } else {
+            events = eventRepository.createQuery().fetchAllPageable(0, 5);
+        }
+        return events.stream()
+                .map(event -> new SimpleDto(event.getId(), event.getName()))
+                .collect(Collectors.toSet());
     }
 }

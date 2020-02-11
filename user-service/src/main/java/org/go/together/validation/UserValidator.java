@@ -7,6 +7,7 @@ import org.go.together.client.LocationClient;
 import org.go.together.dto.LocationDto;
 import org.go.together.dto.UserDto;
 import org.go.together.logic.Validator;
+import org.go.together.repository.InterestRepository;
 import org.go.together.repository.LanguageRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,16 +15,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserValidator extends Validator<UserDto> {
-    private LocationClient locationClient;
-    private LanguageRepository languageRepository;
-    private ContentClient contentClient;
+    private final LocationClient locationClient;
+    private final LanguageRepository languageRepository;
+    private final InterestRepository interestRepository;
+    private final ContentClient contentClient;
 
     public UserValidator(LocationClient locationClient,
                          LanguageRepository languageRepository,
-                         ContentClient contentClient) {
+                         ContentClient contentClient,
+                         InterestRepository interestRepository) {
         this.locationClient = locationClient;
         this.contentClient = contentClient;
         this.languageRepository = languageRepository;
+        this.interestRepository = interestRepository;
     }
 
     @Override
@@ -38,6 +42,12 @@ public class UserValidator extends Validator<UserDto> {
                 .stream()
                 .anyMatch(lang -> languageRepository.findById(lang.getId()).isEmpty())) {
             errors.append("User languages are empty or incorrect");
+        }
+
+        if (dto.getInterests().isEmpty() || dto.getInterests()
+                .stream()
+                .anyMatch(lang -> interestRepository.findById(lang.getId()).isEmpty())) {
+            errors.append("User interests are empty or incorrect");
         }
 
         String validatePhoto = dto.getUserPhotos().stream()

@@ -3,6 +3,7 @@ package org.go.together.client;
 import org.go.together.dto.EventLocationDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.LocationDto;
+import org.go.together.dto.SimpleDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,10 @@ public interface LocationClient {
     @PostMapping("/routes/validate")
     String validate(@RequestBody EventLocationDto eventLocationDto);
 
-    @GetMapping("/location/{locationId}")
+    @GetMapping("/locations/{locationId}")
     LocationDto getLocationById(@PathVariable("locationId") UUID locationId);
+
+    @GetMapping("/locations")
+    Set<SimpleDto> autocompleteLocations(@RequestParam("name") String name);
 
 }

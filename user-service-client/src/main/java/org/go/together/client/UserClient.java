@@ -14,8 +14,8 @@ import java.util.UUID;
 
 @FeignClient(name = "user-service", url = "http://localhost:8085")
 public interface UserClient {
-    @GetMapping("/users/login/{login}")
-    UserDto findUserByLogin(@PathVariable("login") String login);
+    @GetMapping("/users")
+    UserDto findUserByLogin(@RequestParam("login") String login);
 
     @PutMapping("/users")
     IdDto add(@RequestBody UserDto input);
@@ -32,10 +32,10 @@ public interface UserClient {
     @PostMapping("/users")
     IdDto updateUser(@RequestBody UserDto user);
 
-    @GetMapping("/users/languages")
+    @GetMapping("/languages")
     Set<LanguageDto> getLanguages();
 
-    @GetMapping("/users/interests")
+    @GetMapping("/interests")
     Collection<InterestDto> getInterests();
 
     @GetMapping("/users/{userId}/languages")
