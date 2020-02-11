@@ -1,0 +1,113 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+.container-search-apartments {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.container-main-info {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+}
+
+.container-main-info-item {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+}
+
+.container-review {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.container-review-item {
+    display: flex;
+    flex-direction: row;
+    align-content: flex-start;
+}
+
+.fixed-width-content {
+    width: 600px;
+}
+
+.fixed-width-profile {
+    width: 400px;
+}
+
+.container-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.container-cards-item {
+    display: flex;
+    flex-direction: row;
+}
+
+.fixed-width-card {
+    width: 400px;
+}
+
+.fixed-width-sub-card {
+    width: 150px;
+}
+
+.fixed-width-min {
+    width: 100px;
+    height: 70px;
+}
+
+.center-items {
+    align-items: center;
+}
+
+.overflow-y-custom {
+    overflow-y: hidden;
+}
+
+.overflow-x-custom {
+    overflow-x: hidden;
+}
+
+.select-box-custom {
+    overflow-y: hidden;
+}
+
+.form-group {
+    margin-top: 5px;
+}
+
+.margin-left-custom {
+    margin-left: 20px;
+}
+
+.margin-left-item {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.margin-right-item {
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.fixed-width-main-image-card {
+    width: 300px;
+    height: 250px;
+}
+
+.login-input {
+    width: 150px;
+    height: 20px;
+}
