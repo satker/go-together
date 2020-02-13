@@ -40,6 +40,10 @@ body {
     width: 600px;
 }
 
+.fixed-width-content-paid-things {
+    width: 300px;
+}
+
 .fixed-width-profile {
     width: 400px;
 }

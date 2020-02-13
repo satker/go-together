@@ -1,4 +1,3 @@
-import {createFileReaderToParsePhoto, createPhotoObj} from "../utils/utils";
 import {
     EMPTY_FIRST_NAME,
     EMPTY_LAST_NAME,
@@ -21,7 +20,6 @@ import {
     NOT_GOOD_MAIL,
     NOT_GOOD_PASSWORD,
     NOT_GOOD_PHOTO_FILE_EXT,
-    NOT_GOOD_PHOTO_FILE_WITH_WRONG_SIZE,
     NOT_GOOD_PHOTO_URL,
     PATTERN_TO_CHECK_FILE_EXTENSION,
     PATTERN_TO_CHECK_MAIL,
@@ -30,23 +28,6 @@ import {
 } from "./constants";
 
 import {USER_SERVICE_URL} from "../utils/constants";
-
-export const onFileChangeHandler = (setCheckedPhoto, setIsPhotoReadyForRegister, setUserPhoto) => evt => {
-    const file = evt.target.files.item(0);
-    let regexChecker = new RegExp(PATTERN_TO_CHECK_FILE_EXTENSION);
-    if (!regexChecker.test(file.type)) {
-        setCheckedPhoto(NOT_GOOD_PHOTO_FILE_EXT);
-        setIsPhotoReadyForRegister(false);
-    } else if (file.size < 0 || file.size / 1024 / 1024 > 5) {
-        setCheckedPhoto(NOT_GOOD_PHOTO_FILE_WITH_WRONG_SIZE);
-        setIsPhotoReadyForRegister(false);
-    } else {
-        setCheckedPhoto(GOOD_PHOTO);
-        setIsPhotoReadyForRegister(true);
-        createFileReaderToParsePhoto(file, (parsedPhoto) =>
-            setUserPhoto(createPhotoObj(false, parsedPhoto)))
-    }
-};
 
 export const handleUserName = (evt, setCheckedUserName, setIsUserNameReadyForRegister, fetchWithToken) => {
     let value = evt.target.value;
@@ -173,13 +154,34 @@ export const handleDescription = (evt, setCheckedDescription, setIsDescriptionRe
     }
 };
 
-export const handlePhoto = (evt, setCheckedPhoto, setIsPhotoReadyForRegister) => {
-    const photoURL = evt.target.value;
+export const handlePhoto = (photo, setCheckedPhoto, setIsPhotoReadyForRegister) => {
+    if (photo.photoUrl) {
+        handleUrlPhoto(photo.photoUrl, setCheckedPhoto, setIsPhotoReadyForRegister);
+    } else {
+        onFileChangeHandler(photo, setCheckedPhoto, setIsPhotoReadyForRegister)
+    }
+};
+
+export const handleUrlPhoto = (photoURL, setCheckedPhoto, setIsPhotoReadyForRegister) => {
     let regexChecker = new RegExp(PATTERN_TO_CHECK_URL);
     if (photoURL && !regexChecker.test(photoURL)) {
         setCheckedPhoto(NOT_GOOD_PHOTO_URL);
         setIsPhotoReadyForRegister(false);
     } else {
+        setCheckedPhoto(GOOD_PHOTO);
+        setIsPhotoReadyForRegister(true);
+    }
+};
+
+export const onFileChangeHandler = (file, setCheckedPhoto, setIsPhotoReadyForRegister) => {
+    let regexChecker = new RegExp(PATTERN_TO_CHECK_FILE_EXTENSION);
+    if (!regexChecker.test(file.content.type)) {
+        setCheckedPhoto(NOT_GOOD_PHOTO_FILE_EXT);
+        setIsPhotoReadyForRegister(false);
+    } /*else if (file.size < 0 || file.size / 1024 / 1024 > 5) {
+        setCheckedPhoto(NOT_GOOD_PHOTO_FILE_WITH_WRONG_SIZE);
+        setIsPhotoReadyForRegister(false);
+    } */ else {
         setCheckedPhoto(GOOD_PHOTO);
         setIsPhotoReadyForRegister(true);
     }

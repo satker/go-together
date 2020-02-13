@@ -33,6 +33,18 @@ export const PhotoObject = PropTypes.exact({
     })
 });
 
+export const Language = PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    code: PropTypes.string.isRequired
+});
+
+export const Interest = PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    code: PropTypes.string.isRequired
+});
+
 export const User = PropTypes.exact({
     id: PropTypes.string,
     login: PropTypes.string,
@@ -43,81 +55,48 @@ export const User = PropTypes.exact({
     description: PropTypes.string,
     password: PropTypes.string,
     role: PropTypes.string,
-    userPhoto: PhotoObject,
-    languages: PropTypes.arrayOf(PropTypes.string)
+    userPhoto: PropTypes.arrayOf(PhotoObject),
+    languages: PropTypes.arrayOf(Language),
+    interests: PropTypes.arrayOf(Interest)
 });
 
-export const SearchApartment = PropTypes.exact({
+export const EventPhoto = PropTypes.exact({
     id: PropTypes.string,
-    apartmentName: PropTypes.string,
-    apartmentType: SimpleObject,
-    mainPhoto: PhotoObject,
-    location: Location,
-
-    rating: PropTypes.number,
-    peopleLiked: PropTypes.number,
-    price: PropTypes.number,
-    photos: PropTypes.arrayOf(PhotoObject),
-    roomCount: PropTypes.number
+    photos: PropTypes.arrayOf(PhotoObject)
 });
 
-export const CreateApartment = PropTypes.exact({
+export const PaidThing = PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+});
+
+export const CashPaidThing = PropTypes.exact({
     id: PropTypes.string,
-    apartmentName: PropTypes.string,
-    apartmentType: SimpleObject,
-    mainPhoto: PhotoObject,
-    location: Location,
-
-    description: PropTypes.string,
-    parameters: PropTypes.arrayOf(SimpleObject),
-
-    userId: PropTypes.string,
-    rooms: PropTypes.object
+    cashCategory: PropTypes.string.isRequired,
+    paidThing: PaidThing
 });
 
-export const ApartmentView = PropTypes.exact({
+export const Route = PropTypes.exact({
     id: PropTypes.string,
-    apartmentName: PropTypes.string,
-    apartmentType: SimpleObject,
-    mainPhoto: PhotoObject,
-    location: Location,
-
-    description: PropTypes.string,
-    parameters: PropTypes.arrayOf(SimpleObject),
-
-    rating: PropTypes.number,
-    price: PropTypes.number,
-    photos: PropTypes.arrayOf(PhotoObject),
-    roomCount: PropTypes.number,
-    ownerId: PropTypes.string.isRequired
+    routeNumber: PropTypes.number.isRequired,
+    address: PropTypes.string.isRequired,
+    latitude: PropTypes.number,
+    longitude: PropTypes.number,
+    location: Location
 });
 
-export const Capacity = PropTypes.exact({
-    adults: PropTypes.number,
-    children: PropTypes.number
-});
-
-export const Bed = PropTypes.exact({
+export const Event = PropTypes.exact({
     id: PropTypes.string,
-    bedType: PropTypes.exact({
-        id: PropTypes.string,
-        description: PropTypes.string,
-        photo: PhotoObject,
-        capacity: Capacity
-    }),
-    icon: PhotoObject,
-    count: PropTypes.number
-});
-
-export const Room = PropTypes.exact({
-    id: PropTypes.string,
-    isSnoozed: PropTypes.bool,
-    roomType: PropTypes.string,
-    roomSize: PropTypes.number,
-    photos: PropTypes.arrayOf(PhotoObject),
-    description: PropTypes.string,
-    costNight: PropTypes.number,
-    beds: PropTypes.arrayOf(Bed)
+    name: PropTypes.string.isRequired,
+    author: User,
+    peopleCount: PropTypes.number.isRequired,
+    housingType: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    eventPhotoDto: EventPhoto,
+    paidThings: PropTypes.arrayOf(CashPaidThing),
+    users: PropTypes.arrayOf(User),
+    peopleLike: PropTypes.number,
+    route: PropTypes.arrayOf(Route)
 });
 
 export const Review = PropTypes.exact({
@@ -128,13 +107,9 @@ export const Review = PropTypes.exact({
 });
 
 export const SearchObject = PropTypes.exact({
-    minCostNight: PropTypes.number,
-    maxCostNight: PropTypes.number,
     location: SimpleObject,
-    arrivalDate: PropTypes.object,
-    departureDate: PropTypes.object,
-    adult: PropTypes.number,
-    children: PropTypes.number,
+    startDate: PropTypes.object,
+    endDate: PropTypes.object,
     advancedSearch: {
         beds: PropTypes.number,
         rooms: PropTypes.number,

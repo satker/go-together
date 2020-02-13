@@ -3,7 +3,7 @@ import {Card, CardBody, CardLink, CardSubtitle, CardText, CardTitle} from "react
 import Gallery from "../Galery";
 import PropTypes from "prop-types";
 import {getSrcForImg} from "../../utils";
-import {SearchApartment} from "../../../types";
+import {Event} from "../../../types";
 import FormReference from "../FormReference";
 import DeleteButton from "../DeleteButton/DeleteButton";
 
@@ -38,7 +38,7 @@ const ItemEvent = ({event, onClickChooseApartment, onDelete}) =>
     </Card>;
 
 ItemEvent.propTypes = {
-    event: SearchApartment.isRequired,
+    event: Event.isRequired,
     onClickChooseApartment: PropTypes.func.isRequired,
     onDelete: PropTypes.func
 };

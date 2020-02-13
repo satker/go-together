@@ -1,23 +1,27 @@
 package org.go.together.controller;
 
 import org.go.together.client.EventClient;
-import org.go.together.dto.EventDto;
-import org.go.together.dto.IdDto;
-import org.go.together.dto.ResponseDto;
-import org.go.together.dto.SimpleDto;
+import org.go.together.dto.*;
 import org.go.together.dto.filter.FormDto;
 import org.go.together.service.EventService;
+import org.go.together.service.PaidThingService;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 public class EventController implements EventClient {
     private final EventService eventService;
+    private final PaidThingService paidThingService;
 
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService,
+                           PaidThingService paidThingService) {
         this.eventService = eventService;
+        this.paidThingService = paidThingService;
     }
 
     @Override
@@ -48,5 +52,24 @@ public class EventController implements EventClient {
     @Override
     public Set<SimpleDto> autocompleteEvents(String name) {
         return eventService.autocompleteEvents(name);
+    }
+
+    @Override
+    public Collection<SimpleDto> getHousingTypes() {
+        return Stream.of(HousingType.values())
+                .map(type -> new SimpleDto(type.name(), type.getDescription()))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Collection<PaidThingDto> getPaidThings() {
+        return paidThingService.getPaidThings();
+    }
+
+    @Override
+    public Collection<SimpleDto> getCashCategories() {
+        return Stream.of(CashCategory.values())
+                .map(type -> new SimpleDto(type.name(), type.getDescription()))
+                .collect(Collectors.toSet());
     }
 }

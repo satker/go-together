@@ -4,6 +4,7 @@ import lombok.Data;
 import org.go.together.interfaces.Dto;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,4 +21,6 @@ public class EventDto implements Dto {
     private EventPhotoDto eventPhotoDto;
     private Collection<EventPaidThingDto> paidThings;
     private Set<EventLocationDto> route;
+    private Date startDate;
+    private Date endDate;
 }

@@ -2,9 +2,9 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Context} from "../../Context";
 import {DEFAULT_CREATE_EVENT, EVENT_SERVICE_URL} from "../../utils/constants";
 import * as PropTypes from "prop-types";
-import ViewApartment from "./ViewApartment";
+import ViewEvent from "./ViewEvent";
 
-const CreateApartment = ({id}) => {
+const CreateEvent = ({id}) => {
     const [event, setEvents] = useState(null);
 
     const [state] = useContext(Context);
@@ -15,11 +15,11 @@ const CreateApartment = ({id}) => {
         }
     }, [id, state]);
 
-    return ((id && event) || !id) && <ViewApartment apartment={id ? event : {...DEFAULT_CREATE_EVENT}}/>
+    return ((id && event) || !id) && <ViewEvent event={id ? event : {...DEFAULT_CREATE_EVENT}}/>
 };
 
-CreateApartment.propTypes = {
+CreateEvent.propTypes = {
     id: PropTypes.string
 };
 
-export default CreateApartment;
+export default CreateEvent;

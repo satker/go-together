@@ -47,7 +47,7 @@ public class LocationService extends CrudService<LocationDto, Location> {
             locations = locationRepository.createQuery().fetchAllPageable(0, 5);
         }
         return locations.stream()
-                .map(loc -> new SimpleDto(loc.getId(), loc.getName() + ", " +
+                .map(loc -> new SimpleDto(loc.getId().toString(), loc.getName() + ", " +
                         loc.getCountry().getName()))
                 .collect(Collectors.toSet());
     }

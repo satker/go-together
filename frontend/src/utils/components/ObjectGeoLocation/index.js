@@ -5,8 +5,17 @@ import GoogleMapReact from 'google-map-react';
 import "./style_place.css";
 import AddressFields from "./AddressFields";
 import {fetchAndSet} from "../../api/request";
+import Marker from "./Marker";
 
 const GOOGLE_API_KEY = "AIzaSyBSjnMkN8ckymUWZO5v0q-cZW9WppoFsyM";
+const getMapOptions = () => {
+    return {
+        disableDefaultUI: true,
+        mapTypeControl: true,
+        streetViewControl: true,
+        styles: [{featureType: 'poi', elementType: 'labels', stylers: [{visibility: 'on'}]}],
+    };
+};
 
 const ObjectGeoLocation = ({header, latitude, longitude, draggable, onChange, zoom}) => {
     const [center, setCenter] = useState([latitude, longitude]);
@@ -60,18 +69,19 @@ const ObjectGeoLocation = ({header, latitude, longitude, draggable, onChange, zo
                             onChange={_onChange}
                             center={center}
                             zoom={zoomValue}
+                            options={getMapOptions}
                             onChildMouseDown={draggable ? onCircleInteraction : () => null}
                             onChildMouseUp={draggable ? onCircleInteraction3 : () => null}
                             onChildMouseMove={draggable ? onCircleInteraction : () => null}
                             onChildClick={draggable ? endDrag : () => null}
                             onClick={() => null}
             >
-                <div
-                    className="place"
+                <Marker
                     lat={lat}
-                    lng={lng}>
-                    {header}
-                </div>
+                    lng={lng}
+                    name={header}
+                    color="red"
+                />
             </GoogleMapReact>
         </div>
     </div>;

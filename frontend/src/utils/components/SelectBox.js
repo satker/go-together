@@ -13,7 +13,7 @@ const SelectBox = ({items, value, onChange, labelText}) => {
             native
             labelId={"select-label" + componentId}
             value={items.length !== 0 ? value || '' : ''}
-            onChange={onChange}
+            onChange={evt => onChange(evt.target.value)}
         >
             <option value=""/>
             {items.map(type => <option key={type.id} value={type.id}>{type.name}</option>)}
@@ -22,7 +22,7 @@ const SelectBox = ({items, value, onChange, labelText}) => {
 };
 
 SelectBox.propTypes = {
-    items: PropTypes.arrayOf(SimpleObject),
+    items: PropTypes.arrayOf(SimpleObject).isRequired,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     labelText: PropTypes.string.isRequired,

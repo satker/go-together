@@ -19,16 +19,10 @@ export const DEFAULT_MAIN_INFO = {
     name: null,
     description: null,
     housingType: null,
+    startDate: null,
+    endDate: null,
     eventPhotoDto: {
-        photos: {
-            id: null,
-            photoUrl: null,
-            photoCategory: null,
-            content: {
-                type: null,
-                photoContent: null
-            }
-        }
+        photos: []
     }
 
 };

@@ -79,7 +79,7 @@ public class EventService extends CrudService<EventDto, Event> {
             events = eventRepository.createQuery().fetchAllPageable(0, 5);
         }
         return events.stream()
-                .map(event -> new SimpleDto(event.getId(), event.getName()))
+                .map(event -> new SimpleDto(event.getId().toString(), event.getName()))
                 .collect(Collectors.toSet());
     }
 }

@@ -1,13 +1,11 @@
 package org.go.together.client;
 
-import org.go.together.dto.EventDto;
-import org.go.together.dto.IdDto;
-import org.go.together.dto.ResponseDto;
-import org.go.together.dto.SimpleDto;
+import org.go.together.dto.*;
 import org.go.together.dto.filter.FormDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,4 +28,13 @@ public interface EventClient {
 
     @GetMapping("/events")
     Set<SimpleDto> autocompleteEvents(@RequestParam("name") String name);
+
+    @GetMapping("/events/housingTypes")
+    Collection<SimpleDto> getHousingTypes();
+
+    @GetMapping("/events/payedThings")
+    Collection<PaidThingDto> getPaidThings();
+
+    @GetMapping("/events/cashCategories")
+    Collection<SimpleDto> getCashCategories();
 }

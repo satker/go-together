@@ -5,6 +5,7 @@ import org.go.together.dto.HousingType;
 import org.go.together.interfaces.IdentifiedEntity;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -21,6 +22,8 @@ public class Event implements IdentifiedEntity {
     private UUID authorId;
     private HousingType housingType;
     private String description;
+    private Date startDate;
+    private Date endDate;
 
     @ElementCollection
     private Set<UUID> users;

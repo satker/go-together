@@ -18,7 +18,6 @@ import {
     handlePassword,
     handlePhoto,
     handleUserName,
-    onFileChangeHandler
 } from "./validation";
 import {
     EMPTY_FIRST_NAME,
@@ -62,7 +61,6 @@ const FormRegister = () => {
     const [description, setDescription] = useState(null);
     const [userPhoto, setUserPhoto] = useState(null);
     const [password, setPassword] = useState(null);
-    const [isUrlPhoto, setIsUrlPhoto] = useState(null);
     const [languages, setLanguages] = useState([]);
     const [allLanguages, setAllLanguages] = useState([]);
     const [interests, setInterests] = useState([]);
@@ -178,15 +176,12 @@ const FormRegister = () => {
                            onChange={setInterests}/>
         <FormGroup>
             {userPhoto && <CardImg width={"20%"} src={getSrcForImg(userPhoto)}/>}
-            <ImageSelector isUrlPhoto={isUrlPhoto}
-                           onFileChangeHandler={onFileChangeHandler(setCheckedPhoto, setIsPhotoReadyForRegister,
-                               setUserPhoto)}
-                           onPhotoUrlChangeHandler={(evt) => {
-                               handleChange(setUserPhoto, evt);
-                               handlePhoto(evt, setCheckedPhoto, setIsPhotoReadyForRegister);
+            <ImageSelector photos={userPhoto}
+                           setPhotos={photo => {
+                               handlePhoto(photo, setCheckedPhoto, setIsPhotoReadyForRegister);
+                               setUserPhoto(photo)
                            }}
                            multiple={false}
-                           setIsUrlPhoto={setIsUrlPhoto}
             />
             <FormFeedback invalid>{checkedPhoto}</FormFeedback>
         </FormGroup>

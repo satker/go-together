@@ -2,7 +2,7 @@ import React, {useContext} from "react";
 import Profile from "./Profile";
 import Reviews from "./Reviews";
 import {Context} from "../../Context";
-import {ApartmentView} from "../../types";
+import {Event} from "../../types";
 import FormReference from "../../utils/components/FormReference";
 import ObjectGeoLocation from "../../utils/components/ObjectGeoLocation";
 import Rating from "@material-ui/lab/Rating";
@@ -56,7 +56,7 @@ const ViewEvent = ({event}) => {
 };
 
 ViewEvent.propTypes = {
-    event: ApartmentView.isRequired
+    event: Event.isRequired
 };
 
 export default ViewEvent;

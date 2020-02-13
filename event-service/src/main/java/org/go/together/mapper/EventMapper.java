@@ -51,6 +51,8 @@ public class EventMapper implements Mapper<EventDto, Event> {
                 .collect(Collectors.toSet()));
         eventDto.setEventPhotoDto(contentClient.getEventPhotosById(entity.getEventPhotoId()));
         eventDto.setName(entity.getName());
+        eventDto.setStartDate(entity.getStartDate());
+        eventDto.setEndDate(entity.getEndDate());
         return eventDto;
     }
 
@@ -72,6 +74,8 @@ public class EventMapper implements Mapper<EventDto, Event> {
                 .map(UserDto::getId)
                 .collect(Collectors.toSet()));
         event.setName(dto.getName());
+        event.setStartDate(dto.getStartDate());
+        event.setEndDate(dto.getEndDate());
         return event;
     }
 }

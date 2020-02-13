@@ -7,6 +7,7 @@ import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventDto;
 import org.go.together.dto.UserDto;
+import org.go.together.dto.validation.DateIntervalDto;
 import org.go.together.logic.Validator;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +42,9 @@ public class EventValidator extends Validator<EventDto> {
                 .build();
         super.NUMBER_CORRECT_ZERO_OR_NEGATIVE_CHECK = ImmutableMap.<String, Number>builder()
                 .put("event people capacity", dto.getPeopleCount())
+                .build();
+        super.DATES_CORRECT_CHECK = ImmutableMap.<String, DateIntervalDto>builder()
+                .put("event dates", new DateIntervalDto(dto.getStartDate(), dto.getEndDate()))
                 .build();
     }
 

@@ -26,7 +26,6 @@ const IntegrationAutosuggest = ({formId, setResult, placeholder, url, urlParam})
 
     useEffect(() => {
         const chooseItem = options.filter(option => option.name === value)[0];
-        console.log('chooseItem', chooseItem)
         if (chooseItem) {
             setResult(chooseItem);
         }

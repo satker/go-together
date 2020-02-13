@@ -8,13 +8,11 @@ export const getSrcForImg = (photoObj) => {
     }
 };
 
-export const createFileReaderToParsePhoto = (photo, func) => {
-    const fr = new FileReader();
-    fr.onload = function (event) {
-        func(event.target.result);
-    };
-    fr.readAsDataURL(photo);
-};
+export const createFileReaderToParsePhoto = (photo) => new Promise((resolve) => {
+    const fileReader = new FileReader();
+    fileReader.onloadend = () => resolve(fileReader.result);
+    fileReader.readAsDataURL(photo);
+});
 
 export const createPhotoObj = (isUrl, data) => {
 
