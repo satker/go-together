@@ -3,6 +3,7 @@ import {Context} from "../../Context";
 import {DEFAULT_CREATE_EVENT, EVENT_SERVICE_URL} from "../../utils/constants";
 import * as PropTypes from "prop-types";
 import ViewEvent from "./ViewEvent";
+import moment from 'moment';
 
 const CreateEvent = ({id}) => {
     const [event, setEvent] = useState(null);
@@ -11,7 +12,11 @@ const CreateEvent = ({id}) => {
 
     useEffect(() => {
         if (id) {
-            state.fetchWithToken(EVENT_SERVICE_URL + '/events/' + id, setEvent)
+            state.fetchWithToken(EVENT_SERVICE_URL + '/events/' + id, event => {
+                event.startDate = moment(event.startDate);
+                event.endDate = moment(event.endDate);
+                setEvent(event);
+            })
         }
     }, [id, state]);
 
