@@ -5,13 +5,13 @@ import * as PropTypes from "prop-types";
 import ViewEvent from "./ViewEvent";
 
 const CreateEvent = ({id}) => {
-    const [event, setEvents] = useState(null);
+    const [event, setEvent] = useState(null);
 
     const [state] = useContext(Context);
 
     useEffect(() => {
         if (id) {
-            state.fetchWithToken(EVENT_SERVICE_URL + '/events/' + id, setEvents)
+            state.fetchWithToken(EVENT_SERVICE_URL + '/events/' + id, setEvent)
         }
     }, [id, state]);
 

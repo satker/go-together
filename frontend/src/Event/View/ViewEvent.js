@@ -45,11 +45,11 @@ const ViewEvent = ({event}) => {
         <b>Route: </b> {event.route.map(location => location.location.name + ", " +
         location.location.country.name).join(" -> ")}
         <ObjectGeoLocation
-            header={event.name}
-            latitude={event.route[0].latitude}
-            longitude={event.route[0].longitude}
+            isViewedAddress={false}
             draggable={false}
-            zoom={15}
+            latlngPairs={event.route.map(r => ({latitude: r.latitude, longitude: r.longitude}))}
+            header={'V'}
+            height={400}
         />
         <Reviews eventId={event.id}/>
     </Container>;

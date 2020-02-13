@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 import GroupItems from "../../../utils/components/CardItems";
 import CheckInOutDates from "../../../utils/components/CheckInOutDates";
 
-const MainInfo = ({event, onChange}) => {
+const MainInfo = ({event, onChangeEvent}) => {
     const [housingTypes, setHousingTypes] = useState([]);
     const [state] = useContext(Context);
 
@@ -25,10 +25,10 @@ const MainInfo = ({event, onChange}) => {
                        id="name"
                        value={event.apartmentName}
                        placeholder='Enter event name'
-                       onChange={(evt) => onChange(evt.target.value, 'name')}/>
+                       onChange={(evt) => onChangeEvent('name', evt.target.value)}/>
             </FormGroup>
-            <SelectBox onChange={(value) => onChange(housingTypes
-                .filter(type => type.id === value)[0].id, 'housingType')}
+            <SelectBox onChange={(value) => onChangeEvent('housingType', housingTypes
+                .filter(type => type.id === value)[0].id)}
                        labelText='Housing type'
                        value={event.housingType}
                        items={housingTypes}/>
@@ -39,12 +39,20 @@ const MainInfo = ({event, onChange}) => {
                        id="description"
                        value={event.description}
                        placeholder="Home, dear home..."
-                       onChange={(evt) => onChange(evt.target.value, 'description')}/>
+                       onChange={(evt) => onChangeEvent('description', evt.target.value)}/>
+            </FormGroup>
+            <FormGroup>
+                <Label for="peopleCount">People count: </Label>
+                <Input type="number"
+                       name="text"
+                       id="peopleCount"
+                       value={event.peopleCount}
+                       onChange={(evt) => onChangeEvent('peopleCount', evt.target.value)}/>
             </FormGroup>
             Trip dates: <CheckInOutDates startDate={event.startDate}
                                          endDate={event.endDate}
-                                         setStartDate={startDate => onChange(startDate, 'startDate')}
-                                         setEndDate={endDate => onChange(endDate, 'endDate')}
+                                         setStartDate={startDate => onChangeEvent('startDate', startDate)}
+                                         setEndDate={endDate => onChangeEvent('endDate', endDate)}
         />
         </div>
         <div className='container-main-info-item center-items fixed-width-content'>
@@ -53,9 +61,7 @@ const MainInfo = ({event, onChange}) => {
                         onDelete={(id) => console.log('delete: ', id)}/>
             <ImageSelector
                 photos={event.eventPhotoDto.photos}
-                setPhotos={(photos) => {
-                    onChange(photos, 'eventPhotoDto.photos')
-                }}
+                setPhotos={(photos) => onChangeEvent('eventPhotoDto.photos', photos)}
                 multiple={true}
             />
         </div>
@@ -64,7 +70,7 @@ const MainInfo = ({event, onChange}) => {
 
 MainInfo.propTypes = {
     event: Event.isRequired,
-    onChange: PropTypes.func.isRequired
+    onChangeEvent: PropTypes.func.isRequired
 };
 
 export default MainInfo;

@@ -1,3 +1,6 @@
+import {get, set} from "lodash";
+import {PHOTO_OBJECT} from "./constants";
+
 export const getSrcForImg = (photoObj) => {
     if (photoObj.photoUrl) {
         return photoObj.photoUrl
@@ -16,14 +19,7 @@ export const createFileReaderToParsePhoto = (photo) => new Promise((resolve) => 
 
 export const createPhotoObj = (isUrl, data) => {
 
-    const newPhotoObj = {
-        id: null,
-        photoUrl: null,
-        content: {
-            type: null,
-            photoContent: null
-        }
-    };
+    const newPhotoObj = {...PHOTO_OBJECT}
 
     if (isUrl) {
         newPhotoObj.photoUrl = data;
@@ -39,3 +35,23 @@ export const createPhotoObj = (isUrl, data) => {
 export const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 
 export const getRandomNum = () => s4() + s4();
+
+export const onChange = (state, setState) => (path, value) => {
+    if (path instanceof Array && value instanceof Array) {
+        if (path.length === value.length) {
+            const newState = {...state};
+            for (let i = 0; i < path.length; i++) {
+                if (get(state, path[i]) !== value[i]) {
+                    set(newState, path[i], value[i]);
+                }
+            }
+            setState(newState);
+        }
+    } else {
+        if (get(state, path) !== value) {
+            const newState = {...state};
+            set(newState, path, value);
+            setState(newState);
+        }
+    }
+};

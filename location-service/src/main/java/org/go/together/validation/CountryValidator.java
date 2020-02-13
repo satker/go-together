@@ -10,7 +10,6 @@ public class CountryValidator extends Validator<CountryDto> {
     @Override
     public void getMapsForCheck(CountryDto dto) {
         super.STRINGS_FOR_BLANK_CHECK = ImmutableMap.<String, String>builder()
-                .put("country code", dto.getCountryCode())
                 .put("country name", dto.getName())
                 .build();
     }

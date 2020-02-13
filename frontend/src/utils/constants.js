@@ -21,6 +21,7 @@ export const DEFAULT_MAIN_INFO = {
     housingType: null,
     startDate: null,
     endDate: null,
+    peopleCount: 0,
     eventPhotoDto: {
         photos: []
     }
@@ -46,8 +47,8 @@ export const DEFAULT_ROUTE = {
     id: null,
     routeNumber: null,
     address: null,
-    latitude: null,
-    longitude: null,
+    latitude: 18.5204,
+    longitude: 73.8567,
     location: {
         id: null,
         name: null,
@@ -70,20 +71,6 @@ export const END_DATE_DEFAULT = null;
 export const BEDS_DEFAULT = 0;
 export const ROOMS_DEFAULT = 0;
 export const EMPTY_ARRAY = [];
-
-export const DEFAULT_ROOM_BED_TYPE = {
-    id: null,
-    bedType: {
-        id: null,
-        description: '',
-        photo: null,
-        capacity: {
-            adults: 0,
-            children: 0
-        }
-    },
-    count: 0
-};
 
 export const SEARCH_OBJECT_DEFAULT = {
     minCostNight: MIN_COST_DEFAULT,
@@ -117,4 +104,13 @@ export const FORM_DTO = (mainFieldId) => ({
 export const FILTER_DTO = {
     filterType: null,
     values: []
+};
+
+export const PHOTO_OBJECT = {
+    id: null,
+    photoUrl: null,
+    content: {
+        type: null,
+        photoContent: null
+    }
 };

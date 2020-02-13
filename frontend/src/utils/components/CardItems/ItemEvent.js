@@ -6,11 +6,13 @@ import {getSrcForImg} from "../../utils";
 import {Event} from "../../../types";
 import FormReference from "../FormReference";
 import DeleteButton from "../DeleteButton/DeleteButton";
+import {PHOTO_OBJECT} from "../../constants";
 
 const ItemEvent = ({event, onClickChooseApartment, onDelete}) =>
     <Card body style={{align: 'center'}}>
         <DeleteButton onDelete={() => onDelete(event.id)}/>
-        <img className='fixed-width-main-image-card' src={getSrcForImg(event.eventPhotoDto.photos[0])} alt=""/>
+        <img className='fixed-width-main-image-card'
+             src={getSrcForImg(event.eventPhotoDto.photos[0] || {...PHOTO_OBJECT})} alt=""/>
         <CardBody>
             <CardTitle>{event.name}</CardTitle>
             <CardSubtitle>{event.description}</CardSubtitle>

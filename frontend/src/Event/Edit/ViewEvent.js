@@ -4,21 +4,23 @@ import Button from "reactstrap/es/Button";
 import {Context} from "../../Context";
 import {EVENT_SERVICE_URL} from "../../utils/constants";
 import {Event} from "../../types";
-import ObjectGeoLocation from "../../utils/components/ObjectGeoLocation";
-import {get, set} from 'lodash';
+import {onChange} from "../../utils/utils";
 import {navigate} from 'hookrouter';
 import Container from "@material-ui/core/Container";
 import PaidThings from "./PaidThings";
+import Route from "./Route";
 
 const ViewEvent = ({event}) => {
     const [createEvent, setCreateEvent] = useState(event);
 
     const [state] = useContext(Context);
-
+    console.log(event)
     const saveEvent = () => {
         let saveObj = {...createEvent};
         saveObj.id = createEvent.id;
-        saveObj.userId = state.userId;
+        saveObj.author = {
+            id: state.userId
+        };
         if (createEvent.id) {
             state.fetchWithToken(EVENT_SERVICE_URL + '/events', (response) =>
                 response.id && navigate('/events/' + response.id), 'POST', saveObj);
@@ -28,28 +30,13 @@ const ViewEvent = ({event}) => {
         }
     };
 
-    const onChangeField = (obj, field) => {
-        const updatedEvent = {...createEvent};
-        const currentValue = get(updatedEvent, field);
-        if (currentValue !== obj) {
-            set(updatedEvent, field, obj);
-            setCreateEvent(updatedEvent);
-        }
-    };
-
     return <Container>
         <MainInfo event={createEvent}
-                  onChange={onChangeField}/>
+                  onChangeEvent={onChange(createEvent, setCreateEvent)}/>
         <PaidThings event={createEvent}
-                    onChange={onChangeField}/>
-        <ObjectGeoLocation
-            onChange={onChangeField}
-            draggable={true}
-            longitude={createEvent.route.length !== 0 ? createEvent.route[0].longitude : 73.8567}
-            latitude={createEvent.route.length !== 0 ? createEvent.route[0].latitude : 18.5204}
-            header={'V'}
-            height={400}
-        />
+                    onChangeEvent={onChange(createEvent, setCreateEvent)}/>
+        <Route event={createEvent}
+               onChangeEvent={onChange(createEvent, setCreateEvent)}/>
         <Button className="btn btn-success" onClick={saveEvent}>Save</Button>
     </Container>
 };

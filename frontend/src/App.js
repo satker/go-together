@@ -8,7 +8,7 @@ import PersonalArea from "./PersonalArea";
 import NavBar from "./NavBar";
 import FormRegister from "./Register";
 import {Context, context} from "./Context";
-import {get, set} from "lodash";
+import {onChange} from "./utils/utils";
 
 const routers = {
     '/events': () => <Events/>,
@@ -24,28 +24,7 @@ const App = () => {
     useRedirect('/', '/events');
     const [state, setState] = useState({...context});
 
-    const onChange = (path, value) => {
-        if (path instanceof Array && value instanceof Array) {
-            if (path.length === value.length) {
-                const newState = {...state};
-                for (let i = 0; i < path.length; i++) {
-                    if (get(state, path[i]) !== value[i]) {
-                        set(newState, path[i], value[i]);
-                    }
-                }
-                setState(newState);
-            }
-        }
-        if (path instanceof String) {
-            if (get(state, path) !== value) {
-                const newState = {...state};
-                set(newState, path, value);
-                setState(newState);
-            }
-        }
-    };
-
-    return <Context.Provider value={[state, onChange]}>
+    return <Context.Provider value={[state, onChange(state, setState)]}>
         <NavBar/>
         <div className="Content">{route}</div>
     </Context.Provider>;

@@ -5,7 +5,7 @@ const AddressFields = ({response, onChange}) => {
 
     const getAddress = () => {
         const address = response.results[0].formatted_address;
-        onChange(address, 'location.address');
+        onChange('address', address);
         return address;
     };
 
@@ -14,7 +14,7 @@ const AddressFields = ({response, onChange}) => {
         for (let i = 0; i < addressArray.length; i++) {
             if (addressArray[i].types[0] && 'administrative_area_level_2' === addressArray[i].types[0]) {
                 city = addressArray[i].long_name;
-                onChange(city, 'location.city.name');
+                onChange('location.name', city);
                 return city;
             }
         }
@@ -26,7 +26,7 @@ const AddressFields = ({response, onChange}) => {
             for (let i = 0; i < addressArray.length; i++) {
                 if (addressArray[i].types[0] && 'country' === addressArray[i].types[0]) {
                     country = addressArray[i].long_name;
-                    onChange(country, 'location.city.country.name');
+                    onChange('location.country.name', country);
                     return country;
                 }
             }
@@ -39,7 +39,7 @@ const AddressFields = ({response, onChange}) => {
             for (let i = 0; i < addressArray.length; i++) {
                 if (addressArray[i].types[0] && 'administrative_area_level_1' === addressArray[i].types[0]) {
                     state = addressArray[i].long_name;
-                    onChange(state, 'location.city.state');
+                    onChange('location.state', state);
                     return state;
                 }
             }

@@ -17,8 +17,8 @@ const getMapOptions = () => {
     };
 };
 
-const ObjectGeoLocation = ({header, latitude, longitude, draggable, onChange, zoom}) => {
-    const [center, setCenter] = useState([latitude, longitude]);
+const ObjectGeoLocation = ({header, isViewedAddress, latitude, longitude, latlngPairs, draggable, onChange, zoom}) => {
+    const [center, setCenter] = useState([latitude || 18.5204, longitude || 73.8567]);
     const [isDraggable, setIsDraggable] = useState(true);
     const [zoomValue, setZoomValue] = useState(zoom || 9);
     const [lat, setLat] = useState(latitude);
@@ -29,10 +29,10 @@ const ObjectGeoLocation = ({header, latitude, longitude, draggable, onChange, zo
     &key=${GOOGLE_API_KEY}&language=en`;
 
     useEffect(() => {
-        if (lat && lng && !response && draggable) {
+        if (lat && lng && lat !== latitude && lng !== longitude && !response && draggable) {
+            console.log(lat, lng)
             fetchAndSet(URL_FROM_LAN_LNG_TO_LOCATION, setResponse);
-            onChange(lat, 'location.latitude');
-            onChange(lng, 'location.longitude');
+            onChange(['latitude', 'longitude'], [lat, lng]);
         }
     }, [lat, lng, response, draggable, URL_FROM_LAN_LNG_TO_LOCATION, onChange]);
 
@@ -55,14 +55,25 @@ const ObjectGeoLocation = ({header, latitude, longitude, draggable, onChange, zo
     const endDrag = () => {
         fetchAndSet(URL_FROM_LAN_LNG_TO_LOCATION, (result) => {
             setResponse(result);
-            onChange(lat, 'location.latitude');
-            onChange(lng, 'location.longitude')
+            onChange(['latitude', 'longitude'], [lat, lng]);
         });
     };
 
+    const viewMarkers = isViewedAddress ? <Marker
+        lat={lat}
+        lng={lng}
+        name={header}
+        color="red"
+    /> : latlngPairs.map(latlng => <Marker
+        lat={latlng.latitude}
+        lng={latlng.longitude}
+        name={header}
+        color="red"
+    />);
+
     return <div className='flex'>
-        {response && response.results[0] && <AddressFields response={response}
-                                                           onChange={onChange}/>}
+        {isViewedAddress && response && response.results[0] && <AddressFields response={response}
+                                                                              onChange={onChange}/>}
         <div style={{width: '100%', height: 400}}>
             <GoogleMapReact bootstrapURLKeys={{key: GOOGLE_API_KEY}}
                             draggable={isDraggable}
@@ -76,21 +87,18 @@ const ObjectGeoLocation = ({header, latitude, longitude, draggable, onChange, zo
                             onChildClick={draggable ? endDrag : () => null}
                             onClick={() => null}
             >
-                <Marker
-                    lat={lat}
-                    lng={lng}
-                    name={header}
-                    color="red"
-                />
+                {viewMarkers}
             </GoogleMapReact>
         </div>
     </div>;
 };
 
 ObjectGeoLocation.props = {
+    isViewedAddress: PropTypes.bool.isRequired,
     header: PropTypes.string.isRequired,
     latitude: PropTypes.number.isRequired,
     longitude: PropTypes.number.isRequired,
+    latlngPairs: PropTypes.array,
     draggable: PropTypes.bool.isRequired,
     onChange: PropTypes.func,
     zoom: PropTypes.number

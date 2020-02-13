@@ -5,7 +5,7 @@ import PaidThingItem from "./PaidThingItem";
 import {DEFAULT_PAID_THING, EVENTS_URL} from "../../../utils/constants";
 import {Context} from "../../../Context";
 
-const PaidThings = ({event, onChange}) => {
+const PaidThings = ({event, onChangeEvent}) => {
     const [payedThings, setPayedThings] = useState([]);
     const [cashCategories, setCashCategories] = useState([]);
     const [state] = useContext(Context);
@@ -20,14 +20,14 @@ const PaidThings = ({event, onChange}) => {
                 newPaidThings.push(newElement);
             }
             setPayedThings(newPaidThings);
-            onChange(newPaidThings, 'paidThings');
+            onChangeEvent('paidThings', newPaidThings);
         })
     }, [state]);
 
     const onChangePaidThing = (arrayIndex) => (value) => {
         let oldArray = [...event.paidThings];
         oldArray[arrayIndex].cashCategory = value;
-        onChange(oldArray, 'paidThings');
+        onChangeEvent('paidThings', oldArray);
     };
 
     return <div className='flex-column'>
@@ -44,7 +44,7 @@ const PaidThings = ({event, onChange}) => {
 
 PaidThings.propTypes = {
     event: Event.isRequired,
-    onChange: PropTypes.func.isRequired
+    onChangeEvent: PropTypes.func.isRequired
 };
 
 export default PaidThings;
