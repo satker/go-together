@@ -21,7 +21,6 @@ const Route = ({event, onChangeEvent}) => {
         onChangeEvent('route', newArray);
     };
 
-
     const addLocation = () => {
         const newElement = {...DEFAULT_ROUTE};
         newElement.latitude = currentCenter.lat;

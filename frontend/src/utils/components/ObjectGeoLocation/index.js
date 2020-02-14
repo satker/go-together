@@ -22,18 +22,21 @@ const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, 
     const [isDraggable, setIsDraggable] = useState(true);
     const [zoomValue, setZoomValue] = useState(zoom || 9);
     const [currentKey, setCurrentKey] = useState(0);
-    const [currentLat, setCurrentLat] = useState(routes[currentKey].latitude);
-    const [currentLng, setCurrentLng] = useState(routes[currentKey].longitude);
+    const [currentLat, setCurrentLat] = useState(center[0]);
+    const [currentLng, setCurrentLng] = useState(center[1]);
     const [response, setResponse] = useState(null);
 
     const URL_FROM_LAN_LNG_TO_LOCATION = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${currentLat},${currentLng}
     &key=${GOOGLE_API_KEY}&language=en`;
 
+    const getCurrentRoute = routes.filter(route => route.routeNumber === currentKey)[0];
+
     useEffect(() => {
-        if (routes[currentKey].latitude && routes[currentKey].longitude &&
-            routes[currentKey].latitude !== currentLat &&
-            routes[currentKey].longitude !== currentLng && /*!response && */draggable) {
-            fetchAndSet(URL_FROM_LAN_LNG_TO_LOCATION, setResponse);
+        if (routes.length !== 0 && currentKey && getCurrentRoute.latitude && getCurrentRoute.longitude &&
+            (getCurrentRoute.latitude !== currentLat && currentLat !== 18.5204) &&
+            (getCurrentRoute.longitude !== currentLng && currentLng !== 73.8567)
+            && /*!response && */draggable) {
+            //fetchAndSet(URL_FROM_LAN_LNG_TO_LOCATION, setResponse);
             onChange(currentKey, ['latitude', 'longitude'], [currentLat, currentLng]);
         }
     }, [routes, currentKey, response, draggable, URL_FROM_LAN_LNG_TO_LOCATION, onChange, currentLat, currentLng]);
@@ -59,7 +62,7 @@ const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, 
     const endDrag = () => {
         fetchAndSet(URL_FROM_LAN_LNG_TO_LOCATION, (result) => {
             setResponse(result);
-            onChange(currentKey, ['latitude', 'longitude'], [currentLat, currentLng]);
+            //onChange(currentKey, ['latitude', 'longitude'], [currentLat, currentLng]);
         });
     };
 
