@@ -17,30 +17,33 @@ const getMapOptions = () => {
     };
 };
 
-const ObjectGeoLocation = ({header, isViewedAddress, latitude, longitude, latlngPairs, draggable, onChange, zoom}) => {
-    const [center, setCenter] = useState([latitude || 18.5204, longitude || 73.8567]);
+const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, setCurrentCenter}) => {
+    const [center, setCenter] = useState([18.5204, 73.8567]);
     const [isDraggable, setIsDraggable] = useState(true);
     const [zoomValue, setZoomValue] = useState(zoom || 9);
-    const [lat, setLat] = useState(latitude);
-    const [lng, setLng] = useState(longitude);
+    const [currentKey, setCurrentKey] = useState(0);
+    const [currentLat, setCurrentLat] = useState(routes[currentKey].latitude);
+    const [currentLng, setCurrentLng] = useState(routes[currentKey].longitude);
     const [response, setResponse] = useState(null);
 
-    const URL_FROM_LAN_LNG_TO_LOCATION = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}
+    const URL_FROM_LAN_LNG_TO_LOCATION = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${currentLat},${currentLng}
     &key=${GOOGLE_API_KEY}&language=en`;
 
     useEffect(() => {
-        if (lat && lng && lat !== latitude && lng !== longitude && !response && draggable) {
-            console.log(lat, lng)
+        if (routes[currentKey].latitude && routes[currentKey].longitude &&
+            routes[currentKey].latitude !== currentLat &&
+            routes[currentKey].longitude !== currentLng && /*!response && */draggable) {
             fetchAndSet(URL_FROM_LAN_LNG_TO_LOCATION, setResponse);
-            onChange(['latitude', 'longitude'], [lat, lng]);
+            onChange(currentKey, ['latitude', 'longitude'], [currentLat, currentLng]);
         }
-    }, [lat, lng, response, draggable, URL_FROM_LAN_LNG_TO_LOCATION, onChange]);
+    }, [routes, currentKey, response, draggable, URL_FROM_LAN_LNG_TO_LOCATION, onChange, currentLat, currentLng]);
 
     const onCircleInteraction = (childKey, childProps, mouse) => {
         // function is just a stub to test callbacks
         setIsDraggable(false);
-        setLat(mouse.lat);
-        setLng(mouse.lng);
+        setCurrentKey(parseInt(childKey));
+        setCurrentLat(mouse.lat);
+        setCurrentLng(mouse.lng);
     };
 
     const onCircleInteraction3 = (childKey, childProps, mouse) => {
@@ -49,27 +52,16 @@ const ObjectGeoLocation = ({header, isViewedAddress, latitude, longitude, latlng
 
     const _onChange = ({center, zoom}) => {
         setCenter(center);
+        setCurrentCenter(center);
         setZoomValue(zoom);
     };
 
     const endDrag = () => {
         fetchAndSet(URL_FROM_LAN_LNG_TO_LOCATION, (result) => {
             setResponse(result);
-            onChange(['latitude', 'longitude'], [lat, lng]);
+            onChange(currentKey, ['latitude', 'longitude'], [currentLat, currentLng]);
         });
     };
-
-    const viewMarkers = isViewedAddress ? <Marker
-        lat={lat}
-        lng={lng}
-        name={header}
-        color="red"
-    /> : latlngPairs.map(latlng => <Marker
-        lat={latlng.latitude}
-        lng={latlng.longitude}
-        name={header}
-        color="red"
-    />);
 
     return <div className='flex'>
         {isViewedAddress && response && response.results[0] && <AddressFields response={response}
@@ -87,7 +79,13 @@ const ObjectGeoLocation = ({header, isViewedAddress, latitude, longitude, latlng
                             onChildClick={draggable ? endDrag : () => null}
                             onClick={() => null}
             >
-                {viewMarkers}
+                {routes.map(route => <Marker
+                    key={route.routeNumber}
+                    lat={route.latitude}
+                    lng={route.longitude}
+                    name={route.routeNumber}
+                    color="red"
+                />)}
             </GoogleMapReact>
         </div>
     </div>;
@@ -95,10 +93,8 @@ const ObjectGeoLocation = ({header, isViewedAddress, latitude, longitude, latlng
 
 ObjectGeoLocation.props = {
     isViewedAddress: PropTypes.bool.isRequired,
-    header: PropTypes.string.isRequired,
-    latitude: PropTypes.number.isRequired,
-    longitude: PropTypes.number.isRequired,
-    latlngPairs: PropTypes.array,
+    setCurrentCenter: PropTypes.func,
+    routes: PropTypes.array,
     draggable: PropTypes.bool.isRequired,
     onChange: PropTypes.func,
     zoom: PropTypes.number

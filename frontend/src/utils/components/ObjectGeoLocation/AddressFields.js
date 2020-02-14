@@ -1,52 +1,8 @@
 import React from 'react';
 import * as PropTypes from "prop-types";
+import {getAddress, getCity, getCountry, getState} from "./utils";
 
 const AddressFields = ({response, onChange}) => {
-
-    const getAddress = () => {
-        const address = response.results[0].formatted_address;
-        onChange('address', address);
-        return address;
-    };
-
-    const getCity = (addressArray) => {
-        let city = '';
-        for (let i = 0; i < addressArray.length; i++) {
-            if (addressArray[i].types[0] && 'administrative_area_level_2' === addressArray[i].types[0]) {
-                city = addressArray[i].long_name;
-                onChange('location.name', city);
-                return city;
-            }
-        }
-    };
-
-    const getCountry = (addressArray) => {
-        let country = '';
-        for (let i = 0; i < addressArray.length; i++) {
-            for (let i = 0; i < addressArray.length; i++) {
-                if (addressArray[i].types[0] && 'country' === addressArray[i].types[0]) {
-                    country = addressArray[i].long_name;
-                    onChange('location.country.name', country);
-                    return country;
-                }
-            }
-        }
-    };
-
-    const getState = (addressArray) => {
-        let state = '';
-        for (let i = 0; i < addressArray.length; i++) {
-            for (let i = 0; i < addressArray.length; i++) {
-                if (addressArray[i].types[0] && 'administrative_area_level_1' === addressArray[i].types[0]) {
-                    state = addressArray[i].long_name;
-                    onChange('location.state', state);
-                    return state;
-                }
-            }
-        }
-    };
-
-    const addressArray = response.results[0].address_components;
 
     return <div className='flex-fill'>
         <div className="form-group">
@@ -55,7 +11,7 @@ const AddressFields = ({response, onChange}) => {
                    name="state"
                    className="form-control"
                    readOnly="readOnly"
-                   value={getCountry(addressArray)}/>
+                   value={getCountry(response)}/>
         </div>
         <div className="form-group">
             <label htmlFor="">State</label>
@@ -63,7 +19,7 @@ const AddressFields = ({response, onChange}) => {
                    name="state"
                    className="form-control"
                    readOnly="readOnly"
-                   value={getState(addressArray)}/>
+                   value={getState(response)}/>
         </div>
         <div className="form-group">
             <label htmlFor="">City</label>
@@ -71,7 +27,7 @@ const AddressFields = ({response, onChange}) => {
                    name="city"
                    className="form-control"
                    readOnly="readOnly"
-                   value={getCity(addressArray)}/>
+                   value={getCity(response)}/>
         </div>
         <div className="form-group">
             <label htmlFor="">Address</label>
@@ -79,7 +35,7 @@ const AddressFields = ({response, onChange}) => {
                    name="address"
                    className="form-control"
                    readOnly="readOnly"
-                   value={getAddress()}/>
+                   value={getAddress(response)}/>
         </div>
     </div>;
 };
