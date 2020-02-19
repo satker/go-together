@@ -31,15 +31,7 @@ const Route = ({event, onChangeEvent}) => {
     };
 
     return <>
-        Add {routeNumber} route point: {/*<ObjectGeoLocation
-        isViewedAddress={true}
-        onChange={onChange(currentRoute, setCurrentRoute)}
-        draggable={true}
-        longitude={currentRoute.longitude}
-        latitude={currentRoute.latitude}
-        header={'V'}
-        height={400}
-    />*/}
+        Add {routeNumber} route point:
         <Button onClick={addLocation}>Add location</Button>
         <ObjectGeoLocation
             isViewedAddress={false}
@@ -48,7 +40,9 @@ const Route = ({event, onChangeEvent}) => {
             onChange={onChangeLocation}
             height={400}
             setCurrentCenter={setCurrentCenter}
-        /></>;
+        />
+
+    </>;
 };
 
 Route.propTypes = {

@@ -47,8 +47,8 @@ const ViewEvent = ({event}) => {
         <ObjectGeoLocation
             isViewedAddress={false}
             draggable={false}
-            latlngPairs={event.route.map(r => ({latitude: r.latitude, longitude: r.longitude}))}
-            header={'V'}
+            setCurrentCenter={() => null}
+            routes={event.route}
             height={400}
         />
         <Reviews eventId={event.id}/>
