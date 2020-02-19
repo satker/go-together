@@ -42,7 +42,6 @@ export const Language = PropTypes.exact({
 export const Interest = PropTypes.exact({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    code: PropTypes.string.isRequired
 });
 
 export const User = PropTypes.exact({

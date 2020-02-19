@@ -28,19 +28,17 @@ export const DEFAULT_MAIN_INFO = {
 
 };
 
-export const DEFAULT_CREATE_EVENT = {
-    ...DEFAULT_MAIN_INFO,
-    paidThings: [],
-    route: []
+export const DEFAULT_COUNTRY = {
+    id: null,
+    countryCode: null,
+    name: null
 };
 
-export const DEFAULT_PAID_THING = {
+export const DEFAULT_LOCATION = {
     id: null,
-    cashCategory: null,
-    paidThing: {
-        id: null,
-        name: null
-    }
+    name: null,
+    state: null,
+    country: {...DEFAULT_COUNTRY}
 };
 
 export const DEFAULT_ROUTE = {

@@ -7,6 +7,8 @@ import AddressFields from "./AddressFields";
 import {fetchAndSet} from "../../api/request";
 import Marker from "./Marker";
 import {getAddress, getCity, getCountry, getState} from "./utils";
+import RouteItem from "./RouteItem";
+import {ListGroup} from "reactstrap";
 
 const GOOGLE_API_KEY = "AIzaSyBSjnMkN8ckymUWZO5v0q-cZW9WppoFsyM";
 const getMapOptions = () => {
@@ -18,7 +20,7 @@ const getMapOptions = () => {
     };
 };
 
-const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, setCurrentCenter}) => {
+const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, setCurrentCenter, onDelete}) => {
     const [center, setCenter] = useState([18.5204, 73.8567]);
     const [isDraggable, setIsDraggable] = useState(true);
     const [zoomValue, setZoomValue] = useState(zoom || 9);
@@ -56,7 +58,7 @@ const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, 
             //fetchAndSet(URL_FROM_LAN_LNG_TO_LOCATION, setResponse);
             onChange(currentKey, ['latitude', 'longitude'], [currentLat, currentLng]);
         }
-    }, [routes, currentKey, response, draggable, URL_FROM_LAN_LNG_TO_LOCATION, onChange, currentLat, currentLng]);
+    }, [routes, currentKey, draggable, URL_FROM_LAN_LNG_TO_LOCATION, onChange, currentLat, currentLng]);
 
     const onCircleInteraction = (childKey, childProps, mouse) => {
         // function is just a stub to test callbacks
@@ -137,10 +139,10 @@ const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, 
         }
     };
 
-    return <div className='flex'>
+    return <div className='container-main-info'>
         {isViewedAddress && response && response.results[0] && <AddressFields response={response}
                                                                               onChange={onChange}/>}
-        <div style={{width: '100%', height: 400}}>
+        <div className='container-main-info-item' style={{width: '70%', height: 400}}>
             <GoogleMapReact bootstrapURLKeys={{key: GOOGLE_API_KEY}}
                             yesIWantToUseGoogleMapApiInternals
                             onGoogleApiLoaded={handleGoogleMapApi}
@@ -159,6 +161,13 @@ const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, 
                 {getRoutes()}
             </GoogleMapReact>
         </div>
+        <div className='container-main-info-item' style={{width: '30%'}}><ListGroup>
+            {routes.map(route => <RouteItem onDelete={onDelete}
+                                            route={route}
+                                            center={center}
+                                            setCenter={setCenter}/>)}
+        </ListGroup>
+        </div>
     </div>;
 };
 
@@ -168,7 +177,8 @@ ObjectGeoLocation.props = {
     routes: PropTypes.array,
     draggable: PropTypes.bool.isRequired,
     onChange: PropTypes.func,
-    zoom: PropTypes.number
+    zoom: PropTypes.number,
+    onDelete: PropTypes.func
 };
 
 export default ObjectGeoLocation;
