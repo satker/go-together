@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import GoogleMapReact from 'google-map-react';
 
 import "./style_place.css";
-import AddressFields from "./AddressFields";
 import {fetchAndSet} from "../../api/request";
 import Marker from "./Marker";
 import {getAddress, getCity, getCountry, getState} from "./utils";
@@ -20,14 +19,13 @@ const getMapOptions = () => {
     };
 };
 
-const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, setCurrentCenter, onDelete}) => {
+const ObjectGeoLocation = ({routes, draggable, onChange, zoom, onDelete, onAdd}) => {
     const [center, setCenter] = useState([18.5204, 73.8567]);
     const [isDraggable, setIsDraggable] = useState(true);
     const [zoomValue, setZoomValue] = useState(zoom || 9);
     const [currentKey, setCurrentKey] = useState(0);
     const [currentLat, setCurrentLat] = useState(center[0]);
     const [currentLng, setCurrentLng] = useState(center[1]);
-    const [response, setResponse] = useState(null);
     const [googleMap, setGoogleMap] = useState(null);
     const [polyline, setPolyline] = useState(null);
     const [lock, setLock] = useState(false);
@@ -42,7 +40,6 @@ const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, 
                 const URL_FROM_LAN_LNG_TO_LOCATION_CUSTOM = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${route.latitude},
                 ${route.longitude}&key=${GOOGLE_API_KEY}&language=en`;
                 fetchAndSet(URL_FROM_LAN_LNG_TO_LOCATION_CUSTOM, (result) => {
-                    setResponse(result);
                     setLock(false);
                     onChange(route.routeNumber, ['location.name', 'location.country.name', 'location.state', 'address'],
                         [getCity(result), getCountry(result), getState(result), getAddress(result)]);
@@ -51,11 +48,10 @@ const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, 
     }, [routes, onChange]);
     useEffect(() => {
         const getCurrentRoute = routes.filter(route => route.routeNumber === currentKey)[0];
-        if (routes.length !== 0 && currentKey && getCurrentRoute.latitude && getCurrentRoute.longitude &&
+        if (routes.length !== 0 && currentKey && getCurrentRoute && getCurrentRoute.latitude && getCurrentRoute.longitude &&
             (getCurrentRoute.latitude !== currentLat && currentLat !== 18.5204) &&
             (getCurrentRoute.longitude !== currentLng && currentLng !== 73.8567)
-            && /*!response && */draggable) {
-            //fetchAndSet(URL_FROM_LAN_LNG_TO_LOCATION, setResponse);
+            && draggable) {
             onChange(currentKey, ['latitude', 'longitude'], [currentLat, currentLng]);
         }
     }, [routes, currentKey, draggable, URL_FROM_LAN_LNG_TO_LOCATION, onChange, currentLat, currentLng]);
@@ -78,14 +74,12 @@ const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, 
 
     const _onChange = ({center, zoom}) => {
         setCenter(center);
-        setCurrentCenter(center);
         setZoomValue(zoom);
         setLock(false)
     };
 
     const endDrag = () => {
         fetchAndSet(URL_FROM_LAN_LNG_TO_LOCATION, (result) => {
-            setResponse(result);
             setLock(false);
             onChange(currentKey, ['location.name', 'location.country.name', 'location.state', 'address'],
                 [getCity(result), getCountry(result), getState(result), getAddress(result)]);
@@ -100,13 +94,13 @@ const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, 
     };
 
     const handlePolyline = (google) => {
-        const o = googleMap || google;
+        const currentGoogleMap = googleMap || google;
 
         if (!lock) {
             if (polyline) {
                 polyline.setMap();
             }
-            const flightPath = new o.maps.Polyline({
+            const flightPath = new currentGoogleMap.maps.Polyline({
                 path: routes.map(route => ({lat: route.latitude, lng: route.longitude})),
                 geodesic: true,
                 strokeColor: '#33BD4E',
@@ -114,7 +108,7 @@ const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, 
                 strokeWeight: 5
             });
 
-            flightPath.setMap(o.map);
+            flightPath.setMap(currentGoogleMap.map);
             setPolyline(flightPath);
             setLock(true)
         }
@@ -124,8 +118,7 @@ const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, 
         key={route.routeNumber}
         lat={route.latitude}
         lng={route.longitude}
-        name={route.routeNumber}
-        onRightClick={() => console.log('dddd')}
+        name={route.address}
         color={getColorByRouteNumber(route.routeNumber)}
     />);
 
@@ -140,8 +133,6 @@ const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, 
     };
 
     return <div className='container-main-info'>
-        {isViewedAddress && response && response.results[0] && <AddressFields response={response}
-                                                                              onChange={onChange}/>}
         <div className='container-main-info-item' style={{width: '70%', height: 400}}>
             <GoogleMapReact bootstrapURLKeys={{key: GOOGLE_API_KEY}}
                             yesIWantToUseGoogleMapApiInternals
@@ -155,14 +146,17 @@ const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, 
                             onChildMouseUp={draggable ? onCircleInteraction3 : () => null}
                             onChildMouseMove={draggable ? onCircleInteraction : () => null}
                             onChildClick={draggable ? endDrag : () => null}
-                            onClick={() => null}
+                            onClick={draggable ? (evt) => onAdd(evt.lat, evt.lng) : () => null}
             >
                 {googleMap && handlePolyline(googleMap)}
                 {getRoutes()}
             </GoogleMapReact>
         </div>
         <div className='container-main-info-item' style={{width: '30%'}}><ListGroup>
-            {routes.map(route => <RouteItem onDelete={onDelete}
+            {routes.map(route => <RouteItem onDelete={(routeNumber) => {
+                onDelete(routeNumber);
+                setLock(false);
+            }}
                                             route={route}
                                             center={center}
                                             setCenter={setCenter}/>)}
@@ -172,13 +166,12 @@ const ObjectGeoLocation = ({isViewedAddress, routes, draggable, onChange, zoom, 
 };
 
 ObjectGeoLocation.props = {
-    isViewedAddress: PropTypes.bool.isRequired,
-    setCurrentCenter: PropTypes.func,
     routes: PropTypes.array,
     draggable: PropTypes.bool.isRequired,
     onChange: PropTypes.func,
     zoom: PropTypes.number,
-    onDelete: PropTypes.func
+    onDelete: PropTypes.func,
+    onAdd: PropTypes.func
 };
 
 export default ObjectGeoLocation;

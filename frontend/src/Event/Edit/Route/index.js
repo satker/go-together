@@ -2,12 +2,10 @@ import React, {useState} from 'react';
 import ObjectGeoLocation from "../../../utils/components/ObjectGeoLocation";
 import {Event} from "../../../types";
 import PropTypes from "prop-types";
-import Button from "reactstrap/es/Button";
 import {onChange} from "../../../utils/utils";
 import {DEFAULT_COUNTRY, DEFAULT_LOCATION, DEFAULT_ROUTE} from "../../../utils/constants";
 
 const Route = ({event, onChangeEvent}) => {
-    const [currentCenter, setCurrentCenter] = useState({lat: 18.5204, lng: 73.8567});
     const [routeNumber, setRouteNumber] = useState(event.route.length || 1);
 
     const onChangeLocation = (updatedRouteNumber, path, value) => {
@@ -34,10 +32,10 @@ const Route = ({event, onChangeEvent}) => {
         setRouteNumber(routeNumber - 1);
     };
 
-    const addLocation = () => {
+    const addLocation = (lat, lng) => {
         const newElement = {...DEFAULT_ROUTE};
-        newElement.latitude = currentCenter.lat;
-        newElement.longitude = currentCenter.lng;
+        newElement.latitude = lat;
+        newElement.longitude = lng;
         newElement.routeNumber = routeNumber;
         newElement.location = {...DEFAULT_LOCATION};
         newElement.location.country = {...DEFAULT_COUNTRY};
@@ -46,16 +44,14 @@ const Route = ({event, onChangeEvent}) => {
     };
 
     return <>
-        Add {routeNumber} route point:
-        <Button onClick={addLocation}>Add location</Button>
+        Add {routeNumber} route point (left click to add location):
         <ObjectGeoLocation
+            onAdd={addLocation}
             onDelete={onDelete}
-            isViewedAddress={false}
             draggable={true}
             routes={event.route}
             onChange={onChangeLocation}
             height={400}
-            setCurrentCenter={setCurrentCenter}
         />
 
     </>;

@@ -1,7 +1,8 @@
 import React from 'react';
 import './Marker.css';
+import PropTypes from "prop-types";
 
-const Marker = ({color, name, id}) => {
+const Marker = ({color, name}) => {
     return (
         <div>
             <div
@@ -14,6 +15,9 @@ const Marker = ({color, name, id}) => {
     );
 };
 
-Marker.propTypes = {};
+Marker.propTypes = {
+    color: PropTypes.string.isRequired,
+    name: PropTypes.string
+};
 
 export default Marker;
