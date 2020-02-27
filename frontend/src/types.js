@@ -1,6 +1,6 @@
 import * as PropTypes from "prop-types";
 
-export const City = PropTypes.exact({
+export const Location = PropTypes.exact({
     id: PropTypes.string,
     name: PropTypes.string,
     state: PropTypes.string,
@@ -9,14 +9,6 @@ export const City = PropTypes.exact({
         countryCode: PropTypes.string,
         name: PropTypes.string
     })
-});
-
-export const Location = PropTypes.exact({
-    city: City,
-    address: PropTypes.string,
-    latitude: PropTypes.number,
-    longitude: PropTypes.number,
-    apartmentId: PropTypes.string
 });
 
 export const SimpleObject = PropTypes.exact({
@@ -50,7 +42,7 @@ export const User = PropTypes.exact({
     mail: PropTypes.string,
     firstName: PropTypes.string,
     lastName: PropTypes.string,
-    location: City,
+    location: Location,
     description: PropTypes.string,
     password: PropTypes.string,
     role: PropTypes.string,
@@ -78,7 +70,7 @@ export const CashPaidThing = PropTypes.exact({
 export const Route = PropTypes.exact({
     id: PropTypes.string,
     routeNumber: PropTypes.number.isRequired,
-    address: PropTypes.string.isRequired,
+    address: PropTypes.string,
     latitude: PropTypes.number,
     longitude: PropTypes.number,
     location: Location

@@ -14,7 +14,6 @@ const ViewEvent = ({event}) => {
     const [createEvent, setCreateEvent] = useState(event);
 
     const [state] = useContext(Context);
-    console.log(createEvent)
     const saveEvent = () => {
         let saveObj = {...createEvent};
         saveObj.id = createEvent.id;

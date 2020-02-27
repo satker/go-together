@@ -14,7 +14,7 @@ public class CountryRepository extends CustomRepository<Country> {
     @Transactional
     public Optional<Country> findByName(String name) {
         return createQuery()
-                .where(createWhere().condition("name", SqlOperator.EQUAL, name.toUpperCase()))
+                .where(createWhere().condition("name", SqlOperator.EQUAL, name.split("\\(")[0].trim().toUpperCase()))
                 .fetchOne();
     }
 

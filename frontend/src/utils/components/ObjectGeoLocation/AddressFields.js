@@ -1,48 +1,41 @@
-import React from 'react';
-import * as PropTypes from "prop-types";
-import {getAddress, getCity, getCountry, getState} from "./utils";
+import React, {useEffect, useState} from 'react';
+import PropTypes from "prop-types";
 
-const AddressFields = ({response, onChange}) => {
+const AddressFields = ({google, setCenter}) => {
+    const [autocompleteInput] = useState(React.createRef);
 
-    return <div className='flex-fill'>
+    useEffect(() => {
+        const options = {
+            types: ['(cities)'],
+        };
+
+        const autocompleteCustom = new google.maps.places.Autocomplete(autocompleteInput.current, options);
+
+        autocompleteCustom.setFields(['address_components', 'formatted_address', 'geometry']);
+
+        autocompleteCustom.addListener('place_changed', () => {
+            const addressObject = autocompleteCustom.getPlace();
+            setCenter([addressObject.geometry.location.lat(), addressObject.geometry.location.lng()]);
+        });
+    }, [autocompleteInput, google, setCenter]);
+
+    return (
         <div className="form-group">
             <label htmlFor="">Country</label>
             <input type="text"
-                   name="state"
+                   id='autocomplete'
+                   name="autocomplete"
+                //onChange={evt => handlePlaceSelect(evt.target.value)}
                    className="form-control"
-                   readOnly="readOnly"
-                   value={getCountry(response)}/>
+                   ref={autocompleteInput}
+            />
         </div>
-        <div className="form-group">
-            <label htmlFor="">State</label>
-            <input type="text"
-                   name="state"
-                   className="form-control"
-                   readOnly="readOnly"
-                   value={getState(response)}/>
-        </div>
-        <div className="form-group">
-            <label htmlFor="">City</label>
-            <input type="text"
-                   name="city"
-                   className="form-control"
-                   readOnly="readOnly"
-                   value={getCity(response)}/>
-        </div>
-        <div className="form-group">
-            <label htmlFor="">Address</label>
-            <input type="text"
-                   name="address"
-                   className="form-control"
-                   readOnly="readOnly"
-                   value={getAddress(response)}/>
-        </div>
-    </div>;
+    );
 };
 
 AddressFields.propTypes = {
-    response: PropTypes.object.isRequired,
-    onChange: PropTypes.func.isRequired
+    google: PropTypes.object.isRequired,
+    setCenter: PropTypes.func.isRequired
 };
 
 export default AddressFields;

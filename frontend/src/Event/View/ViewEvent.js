@@ -45,7 +45,7 @@ const ViewEvent = ({event}) => {
         <b>Route: </b> {event.route.map(location => location.location.name + ", " +
         location.location.country.name).join(" -> ")}
         <ObjectGeoLocation
-            draggable={false}
+            editable={false}
             setCurrentCenter={() => null}
             routes={event.route}
             height={400}

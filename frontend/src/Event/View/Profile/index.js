@@ -5,7 +5,6 @@ import {getSrcForImg} from "../../../utils/utils";
 import {User} from "../../../types";
 
 const Profile = ({user}) => {
-    console.log('user', user);
     return <Card body style={{align: 'center'}}>
         {user.userPhotos ?
             <CardImg top width="50%" height="255" src={getSrcForImg(user.userPhotos[0])}

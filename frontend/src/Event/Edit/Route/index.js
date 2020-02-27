@@ -48,7 +48,7 @@ const Route = ({event, onChangeEvent}) => {
         <ObjectGeoLocation
             onAdd={addLocation}
             onDelete={onDelete}
-            draggable={true}
+            editable={true}
             routes={event.route}
             onChange={onChangeLocation}
             height={400}

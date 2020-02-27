@@ -21,7 +21,6 @@ const GroupItems = ({
                 key = 'photos_';
                 parseItems = mapPhotos(items, onDelete, key)
             } else if (isEvents) {
-                console.log('items', items)
                 key = 'events_';
                 parseItems = mapEvents(items, onClick, onDelete, key)
             }

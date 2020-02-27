@@ -23,7 +23,7 @@ RouteItem.propTypes = {
     center: PropTypes.arrayOf(PropTypes.number),
     route: Route.isRequired,
     setCenter: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired
+    onDelete: PropTypes.func
 };
 
 export default RouteItem;
