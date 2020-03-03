@@ -81,7 +81,7 @@ export const SEARCH_OBJECT_DEFAULT = {
     advancedSearch: {
         beds: BEDS_DEFAULT,
         rooms: ROOMS_DEFAULT,
-        apartmentTypes: EMPTY_ARRAY,
+        eventTypes: EMPTY_ARRAY,
         parameters: EMPTY_ARRAY,
         languages: EMPTY_ARRAY
     },

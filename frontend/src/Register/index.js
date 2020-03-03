@@ -32,8 +32,8 @@ import CustomReference from "../utils/components/CustomReference";
 import MultipleSelectBox from "../utils/components/MultipleSelectBox";
 
 const URL = USER_SERVICE_URL + "/users";
-const URL_APARTMENTS_LANGUAGES = USER_SERVICE_URL + "/languages";
-const URL_APARTMENTS_INTERESTS = USER_SERVICE_URL + "/interests";
+const URL_USERS_LANGUAGES = USER_SERVICE_URL + "/languages";
+const URL_USERS_INTERESTS = USER_SERVICE_URL + "/interests";
 
 const FormRegister = () => {
     const [checkedUserName, setCheckedUserName] = useState(EMPTY_LOGIN);
@@ -69,8 +69,8 @@ const FormRegister = () => {
     const [state] = useContext(Context);
 
     useEffect(() => {
-        state.fetchWithToken(URL_APARTMENTS_LANGUAGES, setAllLanguages);
-        state.fetchWithToken(URL_APARTMENTS_INTERESTS, setAllInterests);
+        state.fetchWithToken(URL_USERS_LANGUAGES, setAllLanguages);
+        state.fetchWithToken(URL_USERS_INTERESTS, setAllInterests);
     }, [state]);
 
     const handleChange = (set, evt) => set(evt.target.value);

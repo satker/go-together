@@ -38,9 +38,13 @@ public class MessageService extends CrudService<MessageDto, Message> {
     }
 
     public Map<UUID, List<MessageDto>> getAllChatsByUserId(UUID myId) {
-        return messageRepository.findLastMessagesForUserId(myId).entrySet().stream()
-                .map(ob -> messageMapper.entitiesToDtos(ob.getValue()))
+        return messageRepository.findLastMessagesForUserId(myId).values().stream()
+                .map(messageMapper::entitiesToDtos)
                 .flatMap(Collection::stream)
                 .collect(Collectors.groupingBy(MessageDto::getRecipientId));
+    }
+
+    protected void updateEntityForCreate(Message entity, MessageDto dto) {
+        entity.setDate(new Date());
     }
 }

@@ -104,7 +104,7 @@ export const SearchObject = PropTypes.exact({
     advancedSearch: {
         beds: PropTypes.number,
         rooms: PropTypes.number,
-        apartmentTypes: PropTypes.array,
+        eventTypes: PropTypes.array,
         parameters: PropTypes.array,
         languages: PropTypes.array
     },

@@ -8,7 +8,7 @@ import FormReference from "../FormReference";
 import DeleteButton from "../DeleteButton/DeleteButton";
 import {PHOTO_OBJECT} from "../../constants";
 
-const ItemEvent = ({event, onClickChooseApartment, onDelete}) =>
+const ItemEvent = ({event, onClickChooseEvent, onDelete}) =>
     <Card body style={{align: 'center'}}>
         <DeleteButton onDelete={() => onDelete(event.id)}/>
         <img className='fixed-width-main-image-card'
@@ -28,7 +28,7 @@ const ItemEvent = ({event, onClickChooseApartment, onDelete}) =>
             <CardText>{event.peopleLike} people liked this trip</CardText>
             <CardText>Live by {event.housingType}</CardText>
             <FormReference formRef={'/events/' + event.id}
-                           action={() => onClickChooseApartment(event)}
+                           action={() => onClickChooseEvent(event)}
                            description='Choose event'/>
             {event.eventPhotoDto.photos.length !== 0 ?
                 <CardLink><Gallery
@@ -41,7 +41,7 @@ const ItemEvent = ({event, onClickChooseApartment, onDelete}) =>
 
 ItemEvent.propTypes = {
     event: Event.isRequired,
-    onClickChooseApartment: PropTypes.func.isRequired,
+    onClickChooseEvent: PropTypes.func.isRequired,
     onDelete: PropTypes.func
 };
 

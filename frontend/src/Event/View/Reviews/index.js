@@ -16,7 +16,7 @@ const Reviews = ({eventId}) => {
     }, [eventId, setReviewsByEvent, state]);
 
     return <>
-        {state.userId ? <InputComment setReviewsByApartment={setReviewsByEvent}
+        {state.userId ? <InputComment setReviewsByEvent={setReviewsByEvent}
                                       eventId={eventId}
         /> : null}
         <h3>Reviews</h3>

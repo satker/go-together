@@ -10,7 +10,7 @@ import GroupItems from "../utils/components/CardItems";
 
 const EVENT_PAGE_FIND_URL = EVENTS_URL + '/find';
 
-const Apartments = () => {
+const Events = () => {
     const [events, setEvents] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [searchObject, setSearchObject] = useState({...SEARCH_OBJECT_DEFAULT});
@@ -31,7 +31,7 @@ const Apartments = () => {
         }, 'POST', filterObject);
     }, [state, filterObject]);
 
-    const onClickChooseApartment = (event) => setState('eventId', event.id);
+    const onClickChooseEvent = (event) => setState('eventId', event.id);
 
     const onClickNextPage = page => {
         filterObject.page.size = state.pageSize;
@@ -64,7 +64,7 @@ const Apartments = () => {
 
     return <>
         <Container className='search-container'>
-            <SearchForm setApartments={setEvents}
+            <SearchForm setEvents={setEvents}
                         filterObject={filterObject}
                         setFilterObject={setFilterObject}
                         setPageCount={setPageCount}
@@ -73,10 +73,10 @@ const Apartments = () => {
                         onClearSearchObject={onClearSearchObject}
             />
         </Container>
-        <Container className='apartments-container'>
+        <Container className='events-container'>
             <GroupItems
                 onDelete={onDelete}
-                onClick={onClickChooseApartment}
+                onClick={onClickChooseEvent}
                 items={events.events}
                 isEvents
             />
@@ -103,4 +103,4 @@ const Apartments = () => {
     </>;
 };
 
-export default Apartments;
+export default Events;

@@ -1,5 +1,6 @@
 package org.go.together.client;
 
+import org.go.together.dto.IdDto;
 import org.go.together.dto.MessageDto;
 import org.go.together.dto.NotificationDto;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -37,8 +38,8 @@ public interface MessageClient {
                                              @RequestBody MessageDto messageDto);
 
     @PutMapping("events/{eventId}/messages")
-    Set<MessageDto> sentMessageToEvent(@PathVariable("eventId") UUID eventId,
-                                       @RequestBody MessageDto messageDto);
+    IdDto sentMessageToEvent(@PathVariable("eventId") UUID eventId,
+                             @RequestBody MessageDto messageDto);
 
     @PutMapping("users/{userId}/reviews")
     Set<MessageDto> sentReviewToUser(@PathVariable("userId") UUID userId,

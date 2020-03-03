@@ -99,7 +99,7 @@ const NavBar = () => {
         setState(['userId', 'fetchWithToken'], [null, fetchAndSetToken(null)]);
     };
 
-    const goToEventPage = (apartment) => navigate('/events/' + apartment.id);
+    const goToEventPage = (event) => navigate('/events/' + event.id);
 
     const handleProfileMenuOpen = event => {
         setAnchorEl(event.currentTarget);
@@ -136,7 +136,7 @@ const NavBar = () => {
             </MenuItem>
             <MenuItem button={false}
                       component={menuId}
-                      onClick={handleMenuClose}>My apartments
+                      onClick={handleMenuClose}>My events
             </MenuItem>
             <MenuItem button={false}
                       component={menuId}

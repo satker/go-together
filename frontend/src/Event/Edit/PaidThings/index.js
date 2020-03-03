@@ -6,22 +6,24 @@ import {DEFAULT_PAID_THING, EVENTS_URL} from "../../../utils/constants";
 import {Context} from "../../../Context";
 
 const PaidThings = ({event, onChangeEvent}) => {
-    const [payedThings, setPayedThings] = useState([]);
+    const [payedThings, setPayedThings] = useState([...event.paidThings]);
     const [cashCategories, setCashCategories] = useState([]);
     const [state] = useContext(Context);
 
     useEffect(() => {
         state.fetchWithToken(EVENTS_URL + '/cashCategories', setCashCategories);
-        state.fetchWithToken(EVENTS_URL + '/payedThings', result => {
-            const newPaidThings = [];
-            for (const paidThing of result) {
-                const newElement = {...DEFAULT_PAID_THING};
-                newElement.paidThing = paidThing;
-                newPaidThings.push(newElement);
-            }
-            setPayedThings(newPaidThings);
-            onChangeEvent('paidThings', newPaidThings);
-        })
+        if (payedThings.length === 0) {
+            state.fetchWithToken(EVENTS_URL + '/payedThings', result => {
+                const newPaidThings = [];
+                for (const paidThing of result) {
+                    const newElement = {...DEFAULT_PAID_THING};
+                    newElement.paidThing = paidThing;
+                    newPaidThings.push(newElement);
+                }
+                setPayedThings(newPaidThings);
+                onChangeEvent('paidThings', newPaidThings);
+            })
+        }
     }, [state]);
 
     const onChangePaidThing = (arrayIndex) => (value) => {

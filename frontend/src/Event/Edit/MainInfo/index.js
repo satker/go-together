@@ -23,7 +23,7 @@ const MainInfo = ({event, onChangeEvent}) => {
                 <Label for="name">Event name:</Label>
                 <Input type="text"
                        id="name"
-                       value={event.apartmentName}
+                       value={event.name}
                        placeholder='Enter event name'
                        onChange={(evt) => onChangeEvent('name', evt.target.value)}/>
             </FormGroup>

@@ -1,6 +1,7 @@
 package org.go.together.controller;
 
 import org.go.together.client.MessageClient;
+import org.go.together.dto.IdDto;
 import org.go.together.dto.MessageDto;
 import org.go.together.dto.NotificationDto;
 import org.go.together.service.MessageService;
@@ -61,8 +62,9 @@ public class MessageController implements MessageClient {
     }
 
     @Override
-    public Set<MessageDto> sentMessageToEvent(UUID eventId, MessageDto messageDto) {
-        return null;
+    public IdDto sentMessageToEvent(UUID eventId, MessageDto messageDto) {
+        messageDto.setMessageType(TO_EVENT);
+        return messageService.create(messageDto);
     }
 
     @Override

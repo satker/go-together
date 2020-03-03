@@ -62,5 +62,5 @@ const mapEvents = (events, onClick, onDelete, key) =>
             onDelete={onDelete}
             key={key + event.id}
             event={event}
-            onClickChooseApartment={onClick}
+            onClickChooseEvent={onClick}
         />);

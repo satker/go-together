@@ -4,7 +4,7 @@ import {EVENTS_URL} from '../../utils/constants'
 import ViewEvent from "./ViewEvent";
 import PropTypes from 'prop-types';
 
-const GetAndViewApartment = ({id}) => {
+const GetAndViewEvent = ({id}) => {
     const [event, setEvent] = useState(null);
 
     const [state] = useContext(Context);
@@ -16,8 +16,8 @@ const GetAndViewApartment = ({id}) => {
     return event && <ViewEvent event={event}/>;
 };
 
-GetAndViewApartment.propTypes = {
+GetAndViewEvent.propTypes = {
     id: PropTypes.string.isRequired
 };
 
-export default GetAndViewApartment;
+export default GetAndViewEvent;

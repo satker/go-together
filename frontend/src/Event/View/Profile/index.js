@@ -15,6 +15,7 @@ const Profile = ({user}) => {
                 <h7>{user.location.name + ' ' + user.location.country.name}</h7>
             </CardSubtitle>
             <CardLink href={"#"}>{user.mail}</CardLink>
+            <CardText>My interests: {user.interests.map(interest => interest.name).join(', ')}</CardText>
             <CardText>Languages: {user.languages.map(lang => lang.name).join(', ')}</CardText>
             <CardText>About owner: {user.description}</CardText>
         </CardBody>

@@ -49,10 +49,13 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
     }, [routes, onChange]);
     useEffect(() => {
         const getCurrentRoute = routes.filter(route => route.routeNumber === currentKey)[0];
-        if (routes.length !== 0 && currentKey && getCurrentRoute && getCurrentRoute.latitude && getCurrentRoute.longitude &&
+        if (routes.length !== 0 &&
+            currentKey &&
+            getCurrentRoute &&
+            getCurrentRoute.latitude && getCurrentRoute.longitude &&
             (getCurrentRoute.latitude !== currentLat && currentLat !== 18.5204) &&
-            (getCurrentRoute.longitude !== currentLng && currentLng !== 73.8567)
-            && editable) {
+            (getCurrentRoute.longitude !== currentLng && currentLng !== 73.8567) &&
+            editable) {
             onChange(currentKey, ['latitude', 'longitude'], [currentLat, currentLng]);
         }
     }, [routes, currentKey, editable, URL_FROM_LAN_LNG_TO_LOCATION, onChange, currentLat, currentLng]);
@@ -97,30 +100,38 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
             google.map.fitBounds(bounds);
         }
         if (google) {
+            console.log('loaded')
             setGoogleMap(google);
             handlePolyline(google);
         }
     };
 
     const handlePolyline = (google) => {
-            if (polyline) {
-                polyline.setMap();
-            }
-        const flightPath = new google.maps.Polyline({
-            path: routes.map(route => ({lat: route.latitude, lng: route.longitude})),
-            geodesic: true,
-            strokeColor: '#33BD4E',
-            strokeOpacity: 1,
-            strokeWeight: 5
-        });
-
-        flightPath.setMap(google.map);
-        setPolyline(flightPath);
+        let newPolyline = polyline;
+        const newRoutes = getSortedRoutes().map(route => ({lat: route.latitude, lng: route.longitude}));
+        if (newPolyline) {
+            console.log(newPolyline)
+            newPolyline.setMap(null);
+            newPolyline.setPath(newRoutes);
+            newPolyline.setMap(google.map);
+        } else {
+            newPolyline = new google.maps.Polyline({
+                path: newRoutes,
+                geodesic: true,
+                strokeColor: '#33BD4E',
+                strokeOpacity: 1,
+                strokeWeight: 5
+            });
+            newPolyline.setMap(google.map);
+            setPolyline(newPolyline);
+        }
         setLock(true)
     };
 
-    const getRoutes = () => routes
-        .sort((route1, route2) => route1.routeNumber > route2.routeNumber ? 1 : -1)
+    const getSortedRoutes = () => routes
+        .sort((route1, route2) => route1.routeNumber > route2.routeNumber ? 1 : -1);
+
+    const getRoutes = () => getSortedRoutes()
         .map(route => <Marker
             key={route.routeNumber}
             lat={route.latitude}
@@ -140,7 +151,7 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
     };
 
     return <div>
-        {googleMap && <AddressFields google={googleMap} setCenter={setCenter}/>}
+        {editable && googleMap && <AddressFields google={googleMap} setCenter={setCenter}/>}
         <div className='container-main-info'>
             <div className='container-main-info-item' style={{width: '70%', height: 400}}>
                 <GoogleMapReact bootstrapURLKeys={{key: GOOGLE_API_KEY}}
@@ -162,13 +173,14 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
                 </GoogleMapReact>
         </div>
             <div className='container-main-info-item' style={{width: '30%'}}><ListGroup>
-                {routes.map(route => <RouteItem key={route.routeNumber} onDelete={editable && ((routeNumber) => {
-                    onDelete(routeNumber);
-                    setLock(false);
-                })}
-                                                route={route}
-                                                center={center}
-                                                setCenter={setCenter}/>)}
+                {getSortedRoutes().map(route => <RouteItem key={route.routeNumber}
+                                                           onDelete={editable && ((routeNumber) => {
+                                                               onDelete(routeNumber);
+                                                               setLock(false);
+                                                           })}
+                                                           route={route}
+                                                           center={center}
+                                                           setCenter={setCenter}/>)}
             </ListGroup>
             </div>
         </div>

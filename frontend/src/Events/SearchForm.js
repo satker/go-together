@@ -14,7 +14,7 @@ import {Context} from "../Context";
 import {isEqual} from "lodash";
 import {SearchObject} from "../types";
 
-const SearchForm = ({setApartments, searchObject, onChangeSearchObject, filterObject, setFilterObject, onClearSearchObject}) => {
+const SearchForm = ({setEvents, searchObject, onChangeSearchObject, filterObject, setFilterObject, onClearSearchObject}) => {
     const [state, setState] = useContext(Context);
     const [dropdownPriceOpen, setDropdownPriceOpen] = useState(false);
     const [dropdownCapacityOpen, setDropdownCapacityOpen] = useState(false);
@@ -124,7 +124,7 @@ const SearchForm = ({setApartments, searchObject, onChangeSearchObject, filterOb
             setState('page', 0);
             setFilterObject(newFilterObject);
         }
-    }, [focus, state, searchObject, setFilterObject, setApartments, setState]);
+    }, [focus, state, searchObject, setFilterObject, setEvents, setState]);
 
     const onAfterChange = (value) => {
         onChangeSearchObject('minCostNight', value[0]);
@@ -133,13 +133,13 @@ const SearchForm = ({setApartments, searchObject, onChangeSearchObject, filterOb
 
     const clearFilters = () => {
         onClearSearchObject();
-        setFilterObject({...FORM_DTO("apartment.id")});
+        setFilterObject({...FORM_DTO("event.id")});
         setState(['arrivalDate', 'departureDate'],
             [null, null]);
         setState('page', 0);
     };
 
-    return <div className='container-search-apartments'>
+    return <div className='container-search-events'>
         <div className='flex'>
             <AutosuggestionLocation formId='search_form_'
                                     setResult={(location) => onChangeSearchObject('location', location)}
@@ -217,7 +217,7 @@ SearchForm.propTypes = {
     searchObject: SearchObject.isRequired,
     onChangeSearchObject: PropTypes.func.isRequired,
     onClearSearchObject: PropTypes.func.isRequired,
-    setApartments: PropTypes.func.isRequired,
+    setEvents: PropTypes.func.isRequired,
     setFilterObject: PropTypes.object
 };
 

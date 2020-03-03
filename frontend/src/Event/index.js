@@ -1,15 +1,15 @@
 import React from 'react';
-import GetAndViewApartment from "./View";
+import GetAndViewEvent from "./View";
 import CreateEvent from "./Edit";
 import * as PropTypes from "prop-types";
 
-const Apartment = ({id, isView}) => isView ?
-    <GetAndViewApartment id={id}/> :
+const Event = ({id, isView}) => isView ?
+    <GetAndViewEvent id={id}/> :
     <CreateEvent id={id}/>;
 
-Apartment.propTypes = {
+Event.propTypes = {
     id: PropTypes.string,
     isView: PropTypes.bool.isRequired
 };
 
-export default Apartment;
+export default Event;

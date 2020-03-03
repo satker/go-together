@@ -5,7 +5,6 @@ import {Context} from "../../Context";
 import {Event} from "../../types";
 import FormReference from "../../utils/components/FormReference";
 import ObjectGeoLocation from "../../utils/components/ObjectGeoLocation";
-import Rating from "@material-ui/lab/Rating";
 import Container from "@material-ui/core/Container";
 import ListOfUsers from "./ListOfUsers";
 
@@ -22,10 +21,7 @@ const ViewEvent = ({event}) => {
                     <h4>{event.name}</h4>
                 </div>
                 <div className='margin-right-item'>
-                    <Rating
-                        size='small'
-                        value={event.peopleLiked}
-                        readOnly/>
+                    {event.peopleLiked} people liked
                 </div>
                 <div className='margin-right-item' dangerouslySetInnerHTML={{__html: event.description}}/>
                 <div className='margin-right-item'>
