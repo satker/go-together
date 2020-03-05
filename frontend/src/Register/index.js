@@ -6,7 +6,7 @@ import {LOCATION_SERVICE_URL, USER_SERVICE_URL} from '../utils/constants'
 import {registerFetch} from "../utils/api/request";
 import {Context} from "../Context";
 import FormText from "reactstrap/es/FormText";
-import {createPhotoObj, getSrcForImg} from "../utils/utils";
+import {getSrcForImg} from "../utils/utils";
 import CardImg from "reactstrap/es/CardImg";
 import {navigate} from 'hookrouter';
 import ImageSelector from "../utils/components/ImageSelector";
@@ -83,7 +83,7 @@ const FormRegister = () => {
         body.lastName = lastName;
         body.location = location;
         body.description = description;
-        body.userPhotos = [createPhotoObj(true, userPhoto)];
+        body.userPhotos = [userPhoto];//
         body.password = password;
         body.languages = languages.map(lang => ({id: lang.value, name: lang.label}));
         body.interests = interests.map(interest => ({id: interest.value, name: interest.label}));

@@ -29,10 +29,10 @@ public class MessageRepository extends CustomRepository<Message> {
 
     @Transactional
     public Collection<Message> findMessagesBetweenUsers(UUID myId, UUID otherUser) {
-        CustomSqlBuilder.WhereBuilder whereMyIdPresented = createWhere().condition("authorId", SqlOperator.EQUAL, myId)
+        CustomSqlBuilder<Message>.WhereBuilder whereMyIdPresented = createWhere().condition("authorId", SqlOperator.EQUAL, myId)
                 .or()
                 .condition("recipientId", SqlOperator.EQUAL, myId);
-        CustomSqlBuilder.WhereBuilder whereUserIdPresented = createWhere().condition("authorId", SqlOperator.EQUAL, otherUser)
+        CustomSqlBuilder<Message>.WhereBuilder whereUserIdPresented = createWhere().condition("authorId", SqlOperator.EQUAL, otherUser)
                 .or()
                 .condition("recipientId", SqlOperator.EQUAL, otherUser);
         return createQuery()

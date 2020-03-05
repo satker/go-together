@@ -40,7 +40,6 @@ public class EventMapper implements Mapper<EventDto, Event> {
         eventDto.setAuthor(userClient.findById(entity.getAuthorId()));
         eventDto.setDescription(entity.getDescription());
         eventDto.setHousingType(entity.getHousingType());
-        eventDto.setPeopleLike(entity.getPeopleLike());
         eventDto.setPaidThings(eventPaidThingMapper.entitiesToDtos(entity.getPaidThings()));
         eventDto.setPeopleCount(entity.getPeopleCount());
         eventDto.setRoute(entity.getRoutes().stream()
@@ -63,7 +62,6 @@ public class EventMapper implements Mapper<EventDto, Event> {
         event.setAuthorId(dto.getAuthor().getId());
         event.setDescription(dto.getDescription());
         event.setHousingType(dto.getHousingType());
-        event.setPeopleLike(dto.getPeopleLike());
         event.setPaidThings((Set<EventPaidThing>) eventPaidThingMapper.dtosToEntities(dto.getPaidThings()));
         event.setPeopleCount(dto.getPeopleCount());
         event.setRoutes(dto.getRoute().stream()

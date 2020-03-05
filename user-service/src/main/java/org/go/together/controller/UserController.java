@@ -88,4 +88,24 @@ class UserController implements UserClient {
     public boolean checkIfUserPresentsById(UUID id) {
         return userService.checkIfUserPresentsById(id);
     }
+
+    @Override
+    public Set<UUID> saveLikedEventsByUserId(UUID userId, Set<UUID> eventIds) {
+        return userService.saveLikedEventsByUserId(userId, eventIds);
+    }
+
+    @Override
+    public Set<UUID> getLikedEventsByUserId(UUID userId) {
+        return userService.getLikedEventsByUserId(userId);
+    }
+
+    @Override
+    public Set<UUID> deleteLikedEventsByUserId(UUID userId, Set<UUID> eventIds) {
+        return userService.deleteLikedEventsByUserId(userId, eventIds);
+    }
+
+    @Override
+    public Set<String> getUsersLoginLikedEventId(UUID eventId) {
+        return userService.getUsersLoginLikedEventId(eventId);
+    }
 }

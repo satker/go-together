@@ -91,7 +91,6 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
     };
 
     const handleGoogleMapApi = (google) => {
-        console.log('loaded', google);
         if (routes.length !== 0) {
             // center map to route
             const bounds = new google.maps.LatLngBounds();
@@ -100,7 +99,6 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
             google.map.fitBounds(bounds);
         }
         if (google) {
-            console.log('loaded')
             setGoogleMap(google);
             handlePolyline(google);
         }
@@ -110,13 +108,12 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
         let newPolyline = polyline;
         const newRoutes = getSortedRoutes().map(route => ({lat: route.latitude, lng: route.longitude}));
         if (newPolyline) {
-            console.log(newPolyline)
             newPolyline.setMap(null);
             newPolyline.setPath(newRoutes);
             newPolyline.setMap(google.map);
         } else {
             newPolyline = new google.maps.Polyline({
-                path: newRoutes,
+                path: [],
                 geodesic: true,
                 strokeColor: '#33BD4E',
                 strokeOpacity: 1,

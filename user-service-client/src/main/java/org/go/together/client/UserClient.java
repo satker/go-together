@@ -49,4 +49,18 @@ public interface UserClient {
 
     @GetMapping("/users/{userId}/presents")
     boolean checkIfUserPresentsById(@PathVariable("userId") UUID id);
+
+    @PutMapping("/users/{userId}/events")
+    Set<UUID> saveLikedEventsByUserId(@PathVariable("userId") UUID userId,
+                                      @RequestBody Set<UUID> eventIds);
+
+    @GetMapping("/users/{userId}/events")
+    Set<UUID> getLikedEventsByUserId(@PathVariable("userId") UUID userId);
+
+    @DeleteMapping("/users/{userId}/events")
+    Set<UUID> deleteLikedEventsByUserId(@PathVariable("userId") UUID userId,
+                                        @RequestBody Set<UUID> eventIds);
+
+    @GetMapping("/events/{eventId}/users")
+    Set<String> getUsersLoginLikedEventId(@PathVariable("eventId") UUID eventId);
 }

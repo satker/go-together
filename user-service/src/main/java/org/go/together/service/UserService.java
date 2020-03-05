@@ -116,6 +116,40 @@ public class UserService extends CrudService<UserDto, SystemUser> {
         contentClient.deletePhotoById(entity.getPhotoIds());
     }
 
+    public Set<UUID> saveLikedEventsByUserId(UUID userId, Set<UUID> eventIds) {
+        Optional<SystemUser> byId = userRepository.findById(userId);
+        if (byId.isPresent()) {
+            SystemUser user = byId.get();
+            user.getEventLikeIds().addAll(eventIds);
+            return userRepository.save(user).getEventLikeIds();
+        }
+        return Collections.emptySet();
+    }
+
+    public Set<UUID> getLikedEventsByUserId(UUID userId) {
+        Optional<SystemUser> byId = userRepository.findById(userId);
+        if (byId.isPresent()) {
+            return byId.get().getEventLikeIds();
+        }
+        return Collections.emptySet();
+    }
+
+    public Set<UUID> deleteLikedEventsByUserId(UUID userId, Set<UUID> eventIds) {
+        Optional<SystemUser> byId = userRepository.findById(userId);
+        if (byId.isPresent()) {
+            SystemUser user = byId.get();
+            user.getEventLikeIds().removeAll(eventIds);
+            return userRepository.save(user).getEventLikeIds();
+        }
+        return Collections.emptySet();
+    }
+
+    public Set<String> getUsersLoginLikedEventId(UUID eventId) {
+        return userRepository.findUsersLoginLikedEventId(eventId).stream()
+                .map(SystemUser::getLogin)
+                .collect(Collectors.toSet());
+    }
+
 /*@Override
     public ImmutableMap<String, FunctionToGetValue> getFields() {
         return null;

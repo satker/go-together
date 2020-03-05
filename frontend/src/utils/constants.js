@@ -43,19 +43,25 @@ export const DEFAULT_LOCATION = {
 
 export const DEFAULT_ROUTE = {
     id: null,
-    routeNumber: null,
+    routeNumber: 0,
     address: null,
     latitude: 18.5204,
     longitude: 73.8567,
-    location: {
+    location: {...DEFAULT_LOCATION}
+};
+
+export const DEFAULT_CREATE_EVENT = {
+    ...DEFAULT_MAIN_INFO,
+    paidThings: [],
+    route: []
+};
+
+export const DEFAULT_PAID_THING = {
+    id: null,
+    cashCategory: null,
+    paidThing: {
         id: null,
-        name: null,
-        state: null,
-        country: {
-            id: null,
-            countryCode: null,
-            name: null
-        }
+        name: null
     }
 };
 
@@ -81,7 +87,7 @@ export const SEARCH_OBJECT_DEFAULT = {
     advancedSearch: {
         beds: BEDS_DEFAULT,
         rooms: ROOMS_DEFAULT,
-        eventTypes: EMPTY_ARRAY,
+        apartmentTypes: EMPTY_ARRAY,
         parameters: EMPTY_ARRAY,
         languages: EMPTY_ARRAY
     },

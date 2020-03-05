@@ -86,7 +86,6 @@ export const Event = PropTypes.exact({
     eventPhotoDto: EventPhoto,
     paidThings: PropTypes.arrayOf(CashPaidThing),
     users: PropTypes.arrayOf(User),
-    peopleLike: PropTypes.number,
     route: PropTypes.arrayOf(Route)
 });
 

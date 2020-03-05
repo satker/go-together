@@ -16,6 +16,8 @@ public abstract class CustomRepository<E extends IdentifiedEntity> {
     @PersistenceContext
     private EntityManager entityManager;
 
+    private CustomSqlBuilder<E> newQuery;
+
     @Transactional
     public E save(E entity) {
         return entityManager.merge(entity);
@@ -37,11 +39,13 @@ public abstract class CustomRepository<E extends IdentifiedEntity> {
     }
 
     public CustomSqlBuilder<E> createQuery() {
-        return new CustomSqlBuilder<>(getEntityClass(), entityManager);
+        CustomSqlBuilder<E> customSqlBuilder = new CustomSqlBuilder<>(getEntityClass(), entityManager);
+        newQuery = customSqlBuilder;
+        return customSqlBuilder;
     }
 
-    public CustomSqlBuilder.WhereBuilder createWhere() {
-        return new CustomSqlBuilder.WhereBuilder();
+    public CustomSqlBuilder<E>.WhereBuilder createWhere() {
+        return newQuery.new WhereBuilder(getEntityClass());
     }
 
     private Class<E> getEntityClass() {
