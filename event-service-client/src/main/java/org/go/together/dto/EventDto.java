@@ -5,7 +5,6 @@ import org.go.together.interfaces.Dto;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -16,10 +15,9 @@ public class EventDto implements Dto {
     private UserDto author;
     private HousingType housingType;
     private String description;
-    private Collection<UserDto> users;
     private EventPhotoDto eventPhotoDto;
     private Collection<EventPaidThingDto> paidThings;
-    private Set<EventLocationDto> route;
+    private Collection<EventLocationDto> route;
     private Date startDate;
     private Date endDate;
 }

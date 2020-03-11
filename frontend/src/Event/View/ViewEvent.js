@@ -6,7 +6,8 @@ import {Event} from "../../types";
 import FormReference from "../../utils/components/FormReference";
 import ObjectGeoLocation from "../../utils/components/ObjectGeoLocation";
 import Container from "@material-ui/core/Container";
-import ListOfUsers from "./ListOfUsers";
+import EventLikes from "../../utils/components/Event/EventLikes";
+import Users from "./Users";
 
 const ViewEvent = ({event}) => {
     const [state] = useContext(Context);
@@ -21,7 +22,7 @@ const ViewEvent = ({event}) => {
                     <h4>{event.name}</h4>
                 </div>
                 <div className='margin-right-item'>
-                    {event.peopleLiked} people liked
+                    <EventLikes eventId={event.id}/>
                 </div>
                 <div className='margin-right-item' dangerouslySetInnerHTML={{__html: event.description}}/>
                 <div className='margin-right-item'>
@@ -37,7 +38,7 @@ const ViewEvent = ({event}) => {
             </div>
         </div>
         Max count of users: {event.peopleCount}
-        <ListOfUsers users={event.users}/>
+        <Users eventId={event.id}/>
         <b>Route: </b> {event.route.map(location => location.location.name + ", " +
         location.location.country.name).join(" -> ")}
         <ObjectGeoLocation

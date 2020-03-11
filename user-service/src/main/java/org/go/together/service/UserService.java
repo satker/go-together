@@ -3,9 +3,11 @@ package org.go.together.service;
 import org.go.together.client.ContentClient;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.Role;
+import org.go.together.dto.SimpleUserDto;
 import org.go.together.dto.UserDto;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.logic.CrudService;
+import org.go.together.mapper.SimpleUserMapper;
 import org.go.together.mapper.UserMapper;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
@@ -25,15 +27,18 @@ public class UserService extends CrudService<UserDto, SystemUser> {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ContentClient contentClient;
+    private final SimpleUserMapper simpleUserMapper;
 
     public UserService(UserRepository userRepository, UserMapper userMapper,
                        UserValidator userValidator, BCryptPasswordEncoder bCryptPasswordEncoder,
-                       ContentClient contentClient) {
+                       ContentClient contentClient,
+                       SimpleUserMapper simpleUserMapper) {
         super(userRepository, userMapper, userValidator);
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.contentClient = contentClient;
+        this.simpleUserMapper = simpleUserMapper;
     }
 
     public UserDto findUserByLogin(String login) {
@@ -116,16 +121,6 @@ public class UserService extends CrudService<UserDto, SystemUser> {
         contentClient.deletePhotoById(entity.getPhotoIds());
     }
 
-    public Set<UUID> saveLikedEventsByUserId(UUID userId, Set<UUID> eventIds) {
-        Optional<SystemUser> byId = userRepository.findById(userId);
-        if (byId.isPresent()) {
-            SystemUser user = byId.get();
-            user.getEventLikeIds().addAll(eventIds);
-            return userRepository.save(user).getEventLikeIds();
-        }
-        return Collections.emptySet();
-    }
-
     public Set<UUID> getLikedEventsByUserId(UUID userId) {
         Optional<SystemUser> byId = userRepository.findById(userId);
         if (byId.isPresent()) {
@@ -144,10 +139,33 @@ public class UserService extends CrudService<UserDto, SystemUser> {
         return Collections.emptySet();
     }
 
-    public Set<String> getUsersLoginLikedEventId(UUID eventId) {
+    public Set<SimpleUserDto> getUsersLoginLikedEventId(UUID eventId) {
         return userRepository.findUsersLoginLikedEventId(eventId).stream()
-                .map(SystemUser::getLogin)
+                .map(simpleUserMapper::entityToDto)
                 .collect(Collectors.toSet());
+    }
+
+    public boolean saveLikedEventByUserId(UUID userId, UUID eventId) {
+        Optional<SystemUser> byId = userRepository.findById(userId);
+        if (byId.isPresent()) {
+            SystemUser user = byId.get();
+            Set<UUID> eventLikeIds = user.getEventLikeIds();
+            if (eventLikeIds.stream().anyMatch(eventLike -> eventLike.equals(eventId))) {
+                eventLikeIds.remove(eventId);
+                Set<UUID> newUserLikes = userRepository.save(user).getEventLikeIds();
+                return newUserLikes.stream().anyMatch(userLikeEvent -> userLikeEvent.equals(eventId));
+            } else {
+                eventLikeIds.add(eventId);
+                Set<UUID> newUserLikes = userRepository.save(user).getEventLikeIds();
+                return newUserLikes.stream().anyMatch(userLikeEvent -> userLikeEvent.equals(eventId));
+            }
+        }
+        return false;
+    }
+
+    public Collection<SimpleUserDto> findSimpleUserDtosByUserIds(Set<UUID> userIds) {
+        Collection<SystemUser> allUsersByIds = userRepository.findAllByIds(userIds);
+        return simpleUserMapper.entitiesToDtos(allUsersByIds);
     }
 
 /*@Override

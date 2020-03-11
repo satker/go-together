@@ -20,6 +20,6 @@ public class EventLocation implements IdentifiedEntity {
     private UUID eventId;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "location_id", referencedColumnName = "id")
+    @JoinColumn(name = "event_location_id")
     private Location location;
 }

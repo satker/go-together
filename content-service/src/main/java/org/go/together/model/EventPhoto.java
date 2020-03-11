@@ -17,6 +17,6 @@ public class EventPhoto implements IdentifiedEntity {
     private UUID eventId;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "photo_id")
+    @JoinColumn(name = "event_photo_id")
     private Set<Photo> photos;
 }

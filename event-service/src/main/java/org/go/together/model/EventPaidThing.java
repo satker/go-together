@@ -17,6 +17,6 @@ public class EventPaidThing implements IdentifiedEntity {
     private CashCategory cashCategory;
 
     @OneToOne(cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "paid_thing_id", referencedColumnName = "id")
+    @JoinColumn(name = "event_paid_thing_id", referencedColumnName = "id")
     private PaidThing paidThing;
 }

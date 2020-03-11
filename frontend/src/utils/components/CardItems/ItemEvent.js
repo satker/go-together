@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React from 'react';
 import {Card, CardBody, CardLink, CardSubtitle, CardText, CardTitle} from "reactstrap";
 import Gallery from "../Galery";
 import PropTypes from "prop-types";
@@ -6,17 +6,10 @@ import {getSrcForImg} from "../../utils";
 import {Event} from "../../../types";
 import FormReference from "../FormReference";
 import DeleteButton from "../DeleteButton/DeleteButton";
-import {PHOTO_OBJECT, USER_SERVICE_URL} from "../../constants";
-import {Context} from "../../../Context";
+import {PHOTO_OBJECT} from "../../constants";
+import EventLikes from "../Event/EventLikes";
 
 const ItemEvent = ({event, onClickChooseEvent, onDelete}) => {
-    const [peopleLiked, setPeopleLiked] = useState([]);
-    const [state] = useContext(Context);
-
-    useEffect(() => {
-        state.fetchWithToken(USER_SERVICE_URL + '/events/' + event.id + '/users', setPeopleLiked);
-    }, [state, setPeopleLiked, event]);
-
     return <Card body style={{align: 'center'}}>
         <DeleteButton onDelete={() => onDelete(event.id)}/>
         <img className='fixed-width-main-image-card'
@@ -32,8 +25,7 @@ const ItemEvent = ({event, onClickChooseEvent, onDelete}) => {
             <CardSubtitle>Going to travel through {event.route.map(location => location.location.name + ", " +
                 location.location.country.name).join(" -> ")}</CardSubtitle>
             <CardText>With {event.peopleCount} friends</CardText>
-            <CardText>And I found {event.users.length} friends</CardText>
-            <CardText>{peopleLiked.length} people liked this trip</CardText>
+            <CardText><EventLikes eventId={event.id}/></CardText>
             <CardText>Live by {event.housingType}</CardText>
             <FormReference formRef={'/events/' + event.id}
                            action={() => onClickChooseEvent(event)}

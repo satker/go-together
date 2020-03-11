@@ -51,6 +51,14 @@ export const User = PropTypes.exact({
     interests: PropTypes.arrayOf(Interest)
 });
 
+export const SimpleUser = PropTypes.exact({
+    id: PropTypes.string,
+    login: PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    userPhoto: PhotoObject,
+});
+
 export const EventPhoto = PropTypes.exact({
     id: PropTypes.string,
     photos: PropTypes.arrayOf(PhotoObject)

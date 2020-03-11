@@ -37,4 +37,18 @@ public interface EventClient {
 
     @GetMapping("/events/cashCategories")
     Collection<SimpleDto> getCashCategories();
+
+    @GetMapping("/events/{eventId}/users/statuses")
+    EventUserStatus[] getUserStatuses();
+
+    @GetMapping("/events/{eventId}/users")
+    Collection<EventUserDto> getEventUsersByEventId(@PathVariable("eventId") UUID eventId);
+
+    @PostMapping("/events/{eventId}/users")
+    boolean saveEventUserByEventId(@PathVariable("eventId") UUID eventId,
+                                   @RequestBody EventUserDto eventUserDto);
+
+    @DeleteMapping("/events/{eventId}/users")
+    boolean deleteEventUserByEventId(@PathVariable("eventId") UUID eventId,
+                                     @RequestBody EventUserDto eventUserDto);
 }

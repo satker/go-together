@@ -23,20 +23,19 @@ public class Event implements IdentifiedEntity {
     private Date startDate;
     private Date endDate;
 
-    @ElementCollection
-    @CollectionTable(name = "event_user", joinColumns = @JoinColumn(name = "id"))
-    @Column(name = "user_id")
-    private Set<UUID> users;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "event_id")
+    private Set<EventUser> users;
 
     @ElementCollection
-    @CollectionTable(name = "event_route", joinColumns = @JoinColumn(name = "id"))
+    @CollectionTable(name = "event_route", joinColumns = @JoinColumn(name = "event_id"))
     @Column(name = "route_id")
     private Set<UUID> routes;
 
     private UUID eventPhotoId;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "photo_id")
+    @JoinColumn(name = "event_id")
     private Set<EventPaidThing> paidThings;
 
 }
