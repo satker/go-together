@@ -31,6 +31,7 @@ public class EventUserMapper implements Mapper<EventUserDto, EventUser> {
         eventUser.setId(dto.getId());
         eventUser.setUserId(dto.getUser().getId());
         eventUser.setUserStatus(dto.getUserStatus());
+        eventUser.setEventId(dto.getEventId());
         return eventUser;
     }
 }

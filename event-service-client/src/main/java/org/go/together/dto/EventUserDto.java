@@ -10,4 +10,5 @@ public class EventUserDto implements Dto {
     private UUID id;
     private SimpleUserDto user;
     private EventUserStatus userStatus;
+    private UUID eventId;
 }

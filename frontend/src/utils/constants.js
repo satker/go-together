@@ -65,6 +65,21 @@ export const DEFAULT_PAID_THING = {
     }
 };
 
+export const SIMPLE_USER = {
+    id: null,
+    login: null,
+    firstName: null,
+    lastName: null,
+    userPhoto: null
+};
+
+export const DEFAULT_EVENT_USER = {
+    id: null,
+    user: SIMPLE_USER,
+    userStatus: 'WAITING_APPROVE',
+    eventId: null
+};
+
 export const LOCATION_DEFAULT = null;
 export const MIN_COST_DEFAULT = 0;
 export const MAX_COST_DEFAULT = 100;

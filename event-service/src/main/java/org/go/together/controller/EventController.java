@@ -88,12 +88,12 @@ public class EventController implements EventClient {
     }
 
     @Override
-    public boolean saveEventUserByEventId(UUID eventId, EventUserDto eventUserDto) {
-        return eventUserService.saveEventUserByEventId(eventId, eventUserDto);
+    public IdDto saveEventUserByEventId(EventUserDto eventUserDto) {
+        return eventUserService.create(eventUserDto);
     }
 
     @Override
-    public boolean deleteEventUserByEventId(UUID eventId, EventUserDto eventUserDto) {
-        return eventUserService.deleteEventUserByEventId(eventId, eventUserDto);
+    public boolean deleteEventUserByEventId(EventUserDto eventUserDto) {
+        return eventUserService.deleteEventUserByEventId(eventUserDto);
     }
 }

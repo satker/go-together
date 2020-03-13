@@ -7,11 +7,11 @@ import {SimpleUser} from "../../../../types";
 const SimpleUserView = ({item}) => {
     return <Container>
         <Row>
-            <Col xs={6} md={4}>
-                <Image src={getSrcForImg(item.userPhoto)} roundedCircle/>
-            </Col>
-            <Col xs={6} md={4}>
+            <Col>
+                <Row><Image className='simple_user_img' src={getSrcForImg(item.userPhoto)} roundedCircle/></Row>
                 <Row>{item.login}</Row>
+            </Col>
+            <Col>
                 <Row>{item.firstName}, {item.lastName}</Row>
             </Col>
         </Row>

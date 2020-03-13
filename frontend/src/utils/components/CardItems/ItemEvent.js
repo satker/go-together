@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Card, CardBody, CardLink, CardSubtitle, CardText, CardTitle} from "reactstrap";
 import Gallery from "../Galery";
 import PropTypes from "prop-types";
@@ -8,8 +8,10 @@ import FormReference from "../FormReference";
 import DeleteButton from "../DeleteButton/DeleteButton";
 import {PHOTO_OBJECT} from "../../constants";
 import EventLikes from "../Event/EventLikes";
+import {Context} from "../../../Context";
 
 const ItemEvent = ({event, onClickChooseEvent, onDelete}) => {
+    const [state] = useContext(Context);
     return <Card body style={{align: 'center'}}>
         <DeleteButton onDelete={() => onDelete(event.id)}/>
         <img className='fixed-width-main-image-card'
@@ -25,17 +27,16 @@ const ItemEvent = ({event, onClickChooseEvent, onDelete}) => {
             <CardSubtitle>Going to travel through {event.route.map(location => location.location.name + ", " +
                 location.location.country.name).join(" -> ")}</CardSubtitle>
             <CardText>With {event.peopleCount} friends</CardText>
-            <CardText><EventLikes eventId={event.id}/></CardText>
+            <CardText>{state.userId && <EventLikes eventId={event.id}/>}</CardText>
             <CardText>Live by {event.housingType}</CardText>
             <FormReference formRef={'/events/' + event.id}
                            action={() => onClickChooseEvent(event)}
                            description='Choose event'/>
-            {event.eventPhotoDto.photos.length !== 0 ?
-                <CardLink><Gallery
-                    images={event.eventPhotoDto.photos.map(photo => getSrcForImg(photo))}
-                    showThumbnails={true}
-                /></CardLink>
-                : null}
+            {event.eventPhotoDto.photos.length !== 0 &&
+            <CardLink><Gallery
+                images={event.eventPhotoDto.photos.map(photo => getSrcForImg(photo))}
+                showThumbnails={true}
+            /></CardLink>}
         </CardBody>
     </Card>;
 };

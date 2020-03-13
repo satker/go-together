@@ -9,6 +9,7 @@ import org.go.together.validation.EventUserValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -28,11 +29,13 @@ public class EventUserService extends CrudService<EventUserDto, EventUser> {
         return eventUserMapper.entitiesToDtos(eventUserRepository.findEventUserByEventId(eventId));
     }
 
-    public boolean saveEventUserByEventId(UUID eventId, EventUserDto eventUserDto) {
-        return false;
-    }
-
-    public boolean deleteEventUserByEventId(UUID eventId, EventUserDto eventUserDto) {
-        return false;
+    public boolean deleteEventUserByEventId(EventUserDto eventUserDto) {
+        Optional<EventUser> eventUserByUserIdAndEventId =
+                eventUserRepository.findEventUserByUserIdAndEventId(eventUserDto.getUser().getId(), eventUserDto.getEventId());
+        if (eventUserByUserIdAndEventId.isEmpty()) {
+            return false;
+        }
+        super.delete(eventUserByUserIdAndEventId.get().getId());
+        return true;
     }
 }

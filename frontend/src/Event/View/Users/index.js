@@ -1,26 +1,20 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Context} from "../../../Context";
-import {EVENT_SERVICE_URL} from "../../../utils/constants";
+import React from 'react';
 import SimpleUserView from "../../../utils/components/Event/SimpleUser";
 import ElementTabs from "../../../utils/components/Tabs";
+import PropTypes from "prop-types";
+import {SimpleUser} from "../../../types";
 
-const Users = ({eventId}) => {
-    const [users, setUsers] = useState([]);
-    const [statuses, setStatuses] = useState([]);
-    const [state] = useContext(Context);
-
-
-    useEffect(() => {
-        state.fetchWithToken(EVENT_SERVICE_URL + '/events/' + eventId + '/users/statuses', setStatuses);
-        state.fetchWithToken(EVENT_SERVICE_URL + '/events/' + eventId + '/users', setUsers);
-    }, [state, setUsers, setStatuses, eventId]);
-
+const Users = ({users, statuses}) => {
     return <ElementTabs elements={users}
+                        mapElement={user => user.user}
                         Form={SimpleUserView}
                         elementsFieldTab={"userStatus"}
                         tabs={statuses}/>;
 };
 
-Users.propTypes = {};
+Users.propTypes = {
+    users: PropTypes.arrayOf(SimpleUser),
+    statuses: PropTypes.arrayOf(PropTypes.string)
+};
 
 export default Users;

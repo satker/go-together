@@ -44,11 +44,9 @@ public interface EventClient {
     @GetMapping("/events/{eventId}/users")
     Collection<EventUserDto> getEventUsersByEventId(@PathVariable("eventId") UUID eventId);
 
-    @PostMapping("/events/{eventId}/users")
-    boolean saveEventUserByEventId(@PathVariable("eventId") UUID eventId,
-                                   @RequestBody EventUserDto eventUserDto);
+    @PostMapping("/events/users")
+    IdDto saveEventUserByEventId(@RequestBody EventUserDto eventUserDto);
 
-    @DeleteMapping("/events/{eventId}/users")
-    boolean deleteEventUserByEventId(@PathVariable("eventId") UUID eventId,
-                                     @RequestBody EventUserDto eventUserDto);
+    @DeleteMapping("/events/users")
+    boolean deleteEventUserByEventId(@RequestBody EventUserDto eventUserDto);
 }
