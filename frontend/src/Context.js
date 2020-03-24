@@ -11,8 +11,7 @@ export const context = {
     arrivalDate: null,
     departureDate: null,
     page: 0,
-    pageSize: 9,
-    countRowItems: 3
+    pageSize: 9
 };
 
 export const Context = React.createContext({});

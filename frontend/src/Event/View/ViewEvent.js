@@ -57,7 +57,9 @@ const ViewEvent = ({event}) => {
             </div>
         </div>
         Max count of users: {event.peopleCount}
-        <Users users={users}
+        <Users setUsers={setUsers}
+               eventId={event.id}
+               users={users}
                statuses={statuses}/>
         <b>Route: </b> {event.route.map(location => location.location.name + ", " +
         location.location.country.name).join(" -> ")}

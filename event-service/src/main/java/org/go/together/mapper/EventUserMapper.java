@@ -22,6 +22,7 @@ public class EventUserMapper implements Mapper<EventUserDto, EventUser> {
         eventUserDto.setId(entity.getId());
         eventUserDto.setUser(userClient.findSimpleUserDtosByUserIds(Collections.singleton(entity.getUserId())).iterator().next());
         eventUserDto.setUserStatus(entity.getUserStatus());
+        eventUserDto.setEventId(entity.getEventId());
         return eventUserDto;
     }
 

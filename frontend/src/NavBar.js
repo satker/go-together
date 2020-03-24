@@ -169,6 +169,7 @@ const NavBar = () => {
     const mobileMenuId = 'primary-search-account-menu-mobile';
     const renderMobileMenu = [
         <Menu
+            key={mobileMenuId + '_menu'}
             anchorEl={mobileMoreAnchorEl}
             anchorOrigin={{vertical: 'top', horizontal: 'right'}}
             id={mobileMenuId}
@@ -179,6 +180,7 @@ const NavBar = () => {
         >
             {state.userId ? [
                 <MenuItem button={true}
+                          key={mobileMenuId + '_create'}
                           component={mobileMenuId}
                           onClick={() => navigate('/create', true)}>
                     <IconButton href='#'
@@ -191,6 +193,7 @@ const NavBar = () => {
                     </IconButton>
                 </MenuItem>,
                 <MenuItem button={true}
+                          key={mobileMenuId + '_notification'}
                           component={mobileMenuId}>
                     <IconButton href='#'
                                 aria-label="show 11 new notifications"
@@ -202,6 +205,7 @@ const NavBar = () => {
                     </IconButton>
                 </MenuItem>,
                 <MenuItem button={true}
+                          key={mobileMenuId + '_account'}
                           component={mobileMenuId}
                           onClick={handleProfileMenuOpen}>
                     <IconButton href='#'
@@ -235,6 +239,7 @@ const NavBar = () => {
                     <div className={classes.grow}/>
                     <div className={classes.sectionDesktop}>
                         {state.userId ? [<IconButton onClick={() => navigate('/create', true)}
+                                                     key={menuId + '_create'}
                                                      aria-label="show 4 new mails"
                                                      color="inherit">
                                 <Badge color="secondary">
@@ -242,6 +247,7 @@ const NavBar = () => {
                                 </Badge>
                             </IconButton>,
                                 <IconButton href='/#'
+                                            key={menuId + '_notification'}
                                             aria-label="show 17 new notifications"
                                             color="inherit">
                                     <Badge badgeContent={17}
@@ -250,6 +256,7 @@ const NavBar = () => {
                                     </Badge>
                                 </IconButton>,
                                 <IconButton
+                                    key={menuId + '_account'}
                                     edge="end"
                                     aria-label="account of current user"
                                     aria-controls={menuId}

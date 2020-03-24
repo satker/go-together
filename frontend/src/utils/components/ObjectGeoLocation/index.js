@@ -159,11 +159,11 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
                                 center={center}
                                 zoom={zoomValue}
                                 options={getMapOptions}
-                                onChildMouseDown={editable && onCircleInteraction}
-                                onChildMouseUp={editable && onCircleInteraction3}
-                                onChildMouseMove={editable && onCircleInteraction}
-                                onChildClick={editable && endDrag}
-                                onClick={editable && ((evt) => onAdd(evt.lat, evt.lng))}
+                                onChildMouseDown={editable ? onCircleInteraction : () => null}
+                                onChildMouseUp={editable ? onCircleInteraction3 : () => null}
+                                onChildMouseMove={editable ? onCircleInteraction : () => null}
+                                onChildClick={editable ? endDrag : () => null}
+                                onClick={editable ? ((evt) => onAdd(evt.lat, evt.lng)) : () => null}
                 >
                     {googleMap && !lock && handlePolyline(googleMap)}
                     {getRoutes()}

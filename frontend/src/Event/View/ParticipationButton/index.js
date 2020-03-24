@@ -2,7 +2,7 @@ import React, {useContext} from "react";
 import {DEFAULT_EVENT_USER, EVENT_SERVICE_URL} from "../../../utils/constants";
 import {Context} from "../../../Context";
 import Button from "reactstrap/es/Button";
-import {SimpleUser} from "../../../types";
+import {EventUser} from "../../../types";
 import PropTypes from "prop-types";
 
 const ParticipationButton = ({eventId, users, setRefresh}) => {
@@ -33,8 +33,8 @@ const ParticipationButton = ({eventId, users, setRefresh}) => {
 
 ParticipationButton.propTypes = {
     eventId: PropTypes.string.isRequired,
-    users: PropTypes.arrayOf(SimpleUser),
-    setRefresh: PropTypes.string.isRequired
+    users: PropTypes.arrayOf(EventUser),
+    setRefresh: PropTypes.func.isRequired
 };
 
 export default ParticipationButton;

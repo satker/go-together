@@ -1,17 +1,13 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from "prop-types";
 import {Card} from "reactstrap";
 import DeleteButton from "../DeleteButton/DeleteButton";
 import {getSrcForImg} from "../../utils";
-import ItemEvent from "./ItemEvent";
-import {Context} from "../../../Context";
+import ItemEvent from "./Items/ItemEvent";
+import ItemSimpleUser from "./Items/ItemSimpleUser";
 
-const GroupItems = ({
-                        onDelete, items, editable, isEvents, onClick,
-                        isPhotos, onChange, countRowItems
-                    }) => {
+const GroupItems = ({onDelete, items, onClick, isEvents, isPhotos, isUsers}) => {
     const [parsedCards, setParsedCards] = useState([]);
-    const [state] = useContext(Context);
 
     useEffect(() => {
         if (items) {
@@ -23,27 +19,28 @@ const GroupItems = ({
             } else if (isEvents) {
                 key = 'events_';
                 parseItems = mapEvents(items, onClick, onDelete, key)
+            } else if (isUsers) {
+                key = 'users_';
+                parseItems = mapUsers(items, onClick, onDelete, key);
             }
             setParsedCards(parseItems);
         }
-    }, [items, setParsedCards, isPhotos, state.countRowItems,
-        editable, onDelete, onChange, isEvents, onClick, countRowItems]);
+    }, [items, setParsedCards, isPhotos, onDelete, isEvents, onClick, isUsers]);
 
     return parsedCards && <div className='container-cards'>
-        {parsedCards.map(item => <div className='container-cards-item margin-left-item'>
+        {parsedCards.map((item, key) => <div key={key} className='container-cards-item margin-left-item'>
             {item}
         </div>)}
     </div>
 };
 
 GroupItems.propTypes = {
-    items: PropTypes.array.isRequired,
-    editable: PropTypes.bool,
+    items: PropTypes.array,
     isPhotos: PropTypes.bool,
     isEvents: PropTypes.bool,
+    isUsers: PropTypes.bool,
     onClick: PropTypes.func,
-    onDelete: PropTypes.func,
-    countRowItems: PropTypes.number
+    onDelete: PropTypes.func
 };
 
 export default GroupItems;
@@ -63,4 +60,13 @@ const mapEvents = (events, onClick, onDelete, key) =>
             key={key + event.id}
             event={event}
             onClickChooseEvent={onClick}
+        />);
+
+const mapUsers = (users, onClick, onDelete, key) =>
+    users.map(user =>
+        <ItemSimpleUser
+            onDelete={onDelete}
+            key={key + user.id}
+            user={user}
+            onClick={onClick}
         />);

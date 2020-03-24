@@ -12,7 +12,7 @@ const Profile = ({user}) => {
         <CardBody>
             <CardTitle><h6>{user.firstName + ' ' + user.lastName}</h6></CardTitle>
             <CardSubtitle>
-                <h7>{user.location.name + ' ' + user.location.country.name}</h7>
+                <h6>{user.location.name + ' ' + user.location.country.name}</h6>
             </CardSubtitle>
             <CardLink href={"#"}>{user.mail}</CardLink>
             <CardText>My interests: {user.interests.map(interest => interest.name).join(', ')}</CardText>
