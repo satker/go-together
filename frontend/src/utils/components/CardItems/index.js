@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import {Card} from "reactstrap";
 import DeleteButton from "../DeleteButton/DeleteButton";
 import {getSrcForImg} from "../../utils";
-import ItemEvent from "./Items/ItemEvent";
+import ItemEvent from "./Items/Event";
 import ItemSimpleUser from "./Items/ItemSimpleUser";
 
 const GroupItems = ({onDelete, items, onClick, isEvents, isPhotos, isUsers}) => {
@@ -24,6 +24,8 @@ const GroupItems = ({onDelete, items, onClick, isEvents, isPhotos, isUsers}) => 
                 parseItems = mapUsers(items, onClick, onDelete, key);
             }
             setParsedCards(parseItems);
+        } else {
+            setParsedCards([]);
         }
     }, [items, setParsedCards, isPhotos, onDelete, isEvents, onClick, isUsers]);
 

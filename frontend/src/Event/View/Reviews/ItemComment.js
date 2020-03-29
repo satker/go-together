@@ -23,7 +23,7 @@ const ItemComment = ({review}) =>
                 {review.date}
             </div>
             <div className='flex overflow-x-custom'>
-                <Input type="textarea"
+                <Input type="textarea" readOnly
                        name="text"
                        id="description"
                        value={review.message}/>

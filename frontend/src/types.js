@@ -109,10 +109,13 @@ export const Event = PropTypes.exact({
 });
 
 export const Review = PropTypes.exact({
+    id: PropTypes.string,
     rating: PropTypes.number,
-    dateCreation: PropTypes.string,
+    date: PropTypes.string,
     message: PropTypes.string,
-    user: User
+    author: SimpleUser,
+    messageType: PropTypes.string,
+    recipientId: PropTypes.string
 });
 
 export const SearchObject = PropTypes.exact({

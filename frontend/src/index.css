@@ -55,6 +55,7 @@ body {
 }
 
 .container-cards-item {
+    width: 350px;
     display: flex;
     flex-direction: row;
 }
@@ -109,6 +110,11 @@ body {
 .fixed-width-main-image-card {
     width: 300px;
     height: 250px;
+}
+
+.card-text {
+    word-break: break-word;
+
 }
 
 .login-input {

@@ -6,6 +6,8 @@ import org.go.together.interfaces.Mapper;
 import org.go.together.model.Message;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+
 @Component
 public class MessageMapper implements Mapper<MessageDto, Message> {
     private final UserClient userClient;
@@ -22,7 +24,7 @@ public class MessageMapper implements Mapper<MessageDto, Message> {
         messageDto.setMessageType(entity.getMessageType());
         messageDto.setRating(entity.getRating());
         messageDto.setRecipientId(entity.getRecipientId());
-        messageDto.setAuthor(userClient.findById(entity.getAuthorId()));
+        messageDto.setAuthor(userClient.findSimpleUserDtosByUserIds(Collections.singleton(entity.getAuthorId())).iterator().next());
         messageDto.setMessage(entity.getMessage());
         return messageDto;
     }

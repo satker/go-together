@@ -12,7 +12,7 @@ public class MessageDto implements Dto {
     private String message;
     private double rating;
     private Date date;
-    private UserDto author;
+    private SimpleUserDto author;
     private MessageType messageType;
     private UUID recipientId;
 }

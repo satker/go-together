@@ -19,13 +19,12 @@ const ElementTabs = (props) => {
     useEffect(() => {
         if (elements && elements.length !== 0) {
             const groupElements = mapValues(groupBy(elements, elementsFieldTab),
-                element => element.map(car => omit(car, elementsFieldTab)));
+                element => element.map(el => omit(el, elementsFieldTab)));
             setTabElements(groupElements);
         } else {
             setTabElements([]);
         }
     }, [setTabElements, elements, elementsFieldTab]);
-    console.log(tabElements)
 
     return <div className='flex'>
         <Nav tabs>
@@ -36,7 +35,7 @@ const ElementTabs = (props) => {
         </Nav>
         <TabContent activeTab={activeTab}>
             {tabs.map((tab, key) => <TabPane tabId={tab} key={key}>
-                <GroupItems items={tabElements[tab]} {...props}/>
+                {tabElements[tab] ? <GroupItems items={tabElements[tab]} {...props}/> : 'Not found'}
             </TabPane>)}
         </TabContent>
     </div>

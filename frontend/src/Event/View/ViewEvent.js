@@ -6,10 +6,9 @@ import {Event} from "../../types";
 import FormReference from "../../utils/components/FormReference";
 import ObjectGeoLocation from "../../utils/components/ObjectGeoLocation";
 import Container from "@material-ui/core/Container";
-import EventLikes from "../../utils/components/Event/EventLikes";
 import Users from "./Users";
 import {EVENT_SERVICE_URL} from "../../utils/constants";
-import ParticipationButton from "./ParticipationButton";
+import MainInfo from "./MainInfo";
 
 const ViewEvent = ({event}) => {
     const [state] = useContext(Context);
@@ -31,32 +30,14 @@ const ViewEvent = ({event}) => {
 
         <div className='container-main-info'>
             <div className='container-main-info-item fixed-width-content '>
-                <div className='margin-right-item'>
-                    <h4>{event.name}</h4>
-                </div>
-                <div className='margin-right-item'>
-                    {state.userId && <EventLikes eventId={event.id}/>}
-                </div>
-                <div className='margin-right-item'>
-                    {state.userId && state.userId !== event.author.id &&
-                    <ParticipationButton users={users}
-                                         setRefresh={setRefresh}
-                                         eventId={event.id}/>}
-                </div>
-                <div className='margin-right-item' dangerouslySetInnerHTML={{__html: event.description}}/>
-                <div className='margin-right-item'>
-                    <h5>Event paid things:</h5><br/>
-                    {event.paidThings.map((p, key) => {
-                        return (<p key={key}>• {p.cashCategory} - {p.paidThing.name}</p>
-                        )
-                    })}
-                </div>
+                <MainInfo event={event}
+                          setRefresh={setRefresh}
+                          users={users}/>
             </div>
             <div className='container-main-info-item center-items fixed-width-profile'>
                 <Profile user={event.author}/>
             </div>
         </div>
-        Max count of users: {event.peopleCount}
         <Users setUsers={setUsers}
                eventId={event.id}
                users={users}

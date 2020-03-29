@@ -27,7 +27,6 @@ const Users = ({users, statuses, setUsers, eventId}) => {
         }, 'DELETE', removedUser);
     };
 
-    console.log(users)
     return <ElementTabs elements={users}
                         onClick={approveUser}
                         onDelete={removeUserFromEvent}
