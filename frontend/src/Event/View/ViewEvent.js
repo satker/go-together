@@ -42,8 +42,6 @@ const ViewEvent = ({event}) => {
                eventId={event.id}
                users={users}
                statuses={statuses}/>
-        <b>Route: </b> {event.route.map(location => location.location.name + ", " +
-        location.location.country.name).join(" -> ")}
         <ObjectGeoLocation
             editable={false}
             setCurrentCenter={() => null}

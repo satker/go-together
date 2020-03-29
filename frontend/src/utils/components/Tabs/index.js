@@ -17,6 +17,12 @@ const ElementTabs = (props) => {
     };
 
     useEffect(() => {
+        if (!activeTab && tabs.length !== 0) {
+            setActiveTab(tabs[0])
+        }
+    }, [activeTab, setActiveTab, tabs]);
+
+    useEffect(() => {
         if (elements && elements.length !== 0) {
             const groupElements = mapValues(groupBy(elements, elementsFieldTab),
                 element => element.map(el => omit(el, elementsFieldTab)));
@@ -26,7 +32,7 @@ const ElementTabs = (props) => {
         }
     }, [setTabElements, elements, elementsFieldTab]);
 
-    return <div className='flex'>
+    return <div className='flex element-tabs'>
         <Nav tabs>
             {tabs.map((tab, key) => <NavTab name={tab}
                                             key={key}
