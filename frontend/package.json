@@ -30,7 +30,8 @@
     "react-stars": "^2.2.5",
     "react-switcher": "^1.0.2",
     "reactstrap": "^8.0.0",
-    "moment": "^2.24.0"
+    "moment": "^2.24.0",
+    "react-ace": "^8.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

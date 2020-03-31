@@ -2,7 +2,8 @@ import React, {useContext, useEffect, useState} from 'react';
 import PropTypes from "prop-types";
 import {Context} from "../../../../Context";
 import {USER_SERVICE_URL} from "../../../constants";
-import Button from "reactstrap/es/Button";
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 
 const EventLikes = ({eventId}) => {
     const [userLikes, setUserLikes] = useState([]);
@@ -24,7 +25,8 @@ const EventLikes = ({eventId}) => {
     }, [eventId, state]);
 
     return <div>
-        <Button onClick={saveLike}>{newLike ? 'Not like' : 'Like'}</Button>
+        {newLike ? <FavoriteBorderIcon color='error' onClick={saveLike}/> :
+            <FavoriteIcon color='error' onClick={saveLike}/>}
         {userLikes.length} likes this
     </div>;
 };

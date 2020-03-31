@@ -25,6 +25,12 @@ public class MessageService extends CrudService<MessageDto, Message> {
         this.messageMapper = messageMapper;
     }
 
+    public Set<MessageDto> getReceiverMessages(UUID recipientId, UUID authorId, MessageType messageType) {
+        return messageRepository.findReviewsByRecipientId(recipientId, authorId, messageType).stream()
+                .map(messageMapper::entityToDto)
+                .collect(Collectors.toSet());
+    }
+
     public Set<MessageDto> getReceiverMessages(UUID recipientId, MessageType messageType) {
         return messageRepository.findReviewsByRecipientId(recipientId, messageType).stream()
                 .map(messageMapper::entityToDto)

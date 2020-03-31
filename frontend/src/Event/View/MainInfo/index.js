@@ -2,6 +2,8 @@ import React, {useContext} from "react";
 import EventLikes from "../../../utils/components/Event/EventLikes";
 import ParticipationButton from "../ParticipationButton";
 import {Context} from "../../../Context";
+import * as PropTypes from "prop-types";
+import {Event, EventUser} from "../../../types";
 
 const MainInfo = ({event, users, setRefresh}) => {
     const [state] = useContext(Context);
@@ -11,7 +13,7 @@ const MainInfo = ({event, users, setRefresh}) => {
             <h4>{event.name}</h4>
         </div>
         <div className='margin-right-item'>
-            {state.userId && <EventLikes eventId={event.id}/>}
+            {state.userId && state.userId !== event.author.id && <EventLikes eventId={event.id}/>}
         </div>
         <div className='margin-right-item'>
             {state.userId && state.userId !== event.author.id &&
@@ -33,11 +35,15 @@ const MainInfo = ({event, users, setRefresh}) => {
             })}
         </div>
         <div className='margin-right-item'>
-            Max count of users: {event.peopleCount}
+            Trip dates: {event.startDate.format('LLL')} -> {event.endDate.format('LLL')}
         </div>
     </>
 };
 
-MainInfo.propTypes = {};
+MainInfo.propTypes = {
+    event: Event.isRequired,
+    users: PropTypes.arrayOf(EventUser),
+    setRefresh: PropTypes.func.isRequired
+};
 
 export default MainInfo;

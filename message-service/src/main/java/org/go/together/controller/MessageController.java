@@ -42,8 +42,8 @@ public class MessageController implements MessageClient {
     }
 
     @Override
-    public Set<MessageDto> getEventMessages(UUID eventId) {
-        return messageService.getReceiverMessages(eventId, TO_EVENT);
+    public Set<MessageDto> getEventMessages(UUID eventId, UUID userId) {
+        return messageService.getReceiverMessages(eventId, userId, TO_EVENT);
     }
 
     @Override

@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from "prop-types";
 import {Card} from "reactstrap";
-import DeleteButton from "../DeleteButton/DeleteButton";
+import Delete from "../Icon/Delete";
 import {getSrcForImg} from "../../utils";
 import ItemEvent from "./Items/Event";
-import ItemSimpleUser from "./Items/ItemSimpleUser";
+import SimpleUser from "./Items/SimpleUser";
 
-const GroupItems = ({onDelete, items, onClick, isEvents, isPhotos, isUsers}) => {
+const GroupItems = ({onDelete, items, onClick, onAction, isEvents, isPhotos, isUsers}) => {
     const [parsedCards, setParsedCards] = useState([]);
 
     useEffect(() => {
@@ -21,7 +21,7 @@ const GroupItems = ({onDelete, items, onClick, isEvents, isPhotos, isUsers}) => 
                 parseItems = mapEvents(items, onClick, onDelete, key)
             } else if (isUsers) {
                 key = 'users_';
-                parseItems = mapUsers(items, onClick, onDelete, key);
+                parseItems = mapUsers(items, onClick, onDelete, onAction, key);
             }
             setParsedCards(parseItems);
         } else {
@@ -50,7 +50,7 @@ export default GroupItems;
 const mapPhotos = (photos, onDelete, key) => photos.map((photo) =>
     <div className='flex'>
         <Card key={key + photo.id}>
-            <DeleteButton onDelete={() => onDelete(photo.id)}/>
+            <Delete onDelete={() => onDelete(photo.id)}/>
             <img className='fixed-width-min' src={getSrcForImg(photo)} alt=''/>
         </Card>
     </div>);
@@ -64,10 +64,11 @@ const mapEvents = (events, onClick, onDelete, key) =>
             onClickChooseEvent={onClick}
         />);
 
-const mapUsers = (users, onClick, onDelete, key) =>
+const mapUsers = (users, onClick, onDelete, onAction, key) =>
     users.map(user =>
-        <ItemSimpleUser
+        <SimpleUser
             onDelete={onDelete}
+            onAction={onAction}
             key={key + user.id}
             user={user}
             onClick={onClick}

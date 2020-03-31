@@ -1,19 +1,19 @@
 import React, {useContext} from 'react';
 import {Card, CardBody, CardLink, CardText, CardTitle} from "reactstrap";
-import Gallery from "../../../Galery";
+import Gallery from "../../Galery";
 import PropTypes from "prop-types";
-import {getSrcForImg} from "../../../../utils";
-import {Event} from "../../../../../types";
-import FormReference from "../../../FormReference";
-import DeleteButton from "../../../DeleteButton/DeleteButton";
-import {PHOTO_OBJECT} from "../../../../constants";
-import EventLikes from "../../../Event/EventLikes";
-import {Context} from "../../../../../Context";
+import {getSrcForImg} from "../../../utils";
+import {Event} from "../../../../types";
+import FormReference from "../../FormReference";
+import DeleteIcon from "../../Icon/Delete";
+import {PHOTO_OBJECT} from "../../../constants";
+import EventLikes from "../../Event/EventLikes";
+import {Context} from "../../../../Context";
 
 const ItemEvent = ({event, onClickChooseEvent, onDelete}) => {
     const [state] = useContext(Context);
     return <Card body style={{align: 'center'}}>
-        <DeleteButton onDelete={() => onDelete(event.id)}/>
+        <DeleteIcon onDelete={() => onDelete(event.id)}/>
         <img className='fixed-width-main-image-card'
              src={getSrcForImg(event.eventPhotoDto.photos[0] || {...PHOTO_OBJECT})} alt=""/>
         <CardBody>

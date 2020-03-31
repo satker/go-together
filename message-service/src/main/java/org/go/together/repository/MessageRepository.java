@@ -28,6 +28,22 @@ public class MessageRepository extends CustomRepository<Message> {
     }
 
     @Transactional
+    public Collection<Message> findReviewsByRecipientId(UUID recipientId, UUID authorId, MessageType messageType) {
+        return createQuery()
+                .where(createWhere()
+                        .condition("messageType", SqlOperator.EQUAL, messageType)
+                        .and()
+                        .group(createGroup().condition("recipientId", SqlOperator.EQUAL, recipientId)
+                                .and()
+                                .condition("authorId", SqlOperator.EQUAL, authorId))
+                        .or()
+                        .group(createGroup().condition("recipientId", SqlOperator.EQUAL, authorId)
+                                .and()
+                                .condition("authorId", SqlOperator.EQUAL, recipientId))
+                ).fetchAll();
+    }
+
+    @Transactional
     public Collection<Message> findMessagesBetweenUsers(UUID myId, UUID otherUser) {
         CustomSqlBuilder<Message>.WhereBuilder whereMyIdPresented = createWhere().condition("authorId", SqlOperator.EQUAL, myId)
                 .or()

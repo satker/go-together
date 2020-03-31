@@ -22,8 +22,9 @@ public interface MessageClient {
     @GetMapping("users/{userId}/reviews")
     Set<MessageDto> getUserReviews(@PathVariable("userId") UUID userId);
 
-    @GetMapping("events/{eventId}/messages")
-    Set<MessageDto> getEventMessages(@PathVariable("eventId") UUID eventId);
+    @GetMapping("events/{eventId}/messages/{userId}")
+    Set<MessageDto> getEventMessages(@PathVariable("eventId") UUID eventId,
+                                     @PathVariable("userId") UUID userId);
 
     @GetMapping("users/{userId}/messages/{otherUserId}")
     Set<MessageDto> getChatBetweenUsers(@PathVariable("userId") UUID myId,

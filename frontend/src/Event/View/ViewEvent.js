@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
 import Profile from "./Profile";
-import Reviews from "./Reviews";
 import {Context} from "../../Context";
 import {Event} from "../../types";
 import FormReference from "../../utils/components/FormReference";
@@ -38,17 +37,17 @@ const ViewEvent = ({event}) => {
                 <Profile user={event.author}/>
             </div>
         </div>
-        <Users setUsers={setUsers}
-               eventId={event.id}
-               users={users}
-               statuses={statuses}/>
         <ObjectGeoLocation
             editable={false}
             setCurrentCenter={() => null}
             routes={event.route}
             height={400}
         />
-        <Reviews eventId={event.id}/>
+        <Users setUsers={setUsers}
+               eventUserId={event.author.id}
+               eventId={event.id}
+               users={users}
+               statuses={statuses}/>
     </Container>;
 };
 

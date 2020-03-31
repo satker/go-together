@@ -104,14 +104,14 @@ export const Event = PropTypes.exact({
     eventPhotoDto: EventPhoto,
     paidThings: PropTypes.arrayOf(CashPaidThing),
     route: PropTypes.arrayOf(Route),
-    startDate: PropTypes.string,
-    endDate: PropTypes.string
+    startDate: PropTypes.object,
+    endDate: PropTypes.object
 });
 
 export const Review = PropTypes.exact({
     id: PropTypes.string,
     rating: PropTypes.number,
-    date: PropTypes.string,
+    date: PropTypes.object,
     message: PropTypes.string,
     author: SimpleUser,
     messageType: PropTypes.string,

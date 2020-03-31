@@ -45,7 +45,11 @@ public abstract class CustomRepository<E extends IdentifiedEntity> {
     }
 
     public CustomSqlBuilder<E>.WhereBuilder createWhere() {
-        return newQuery.new WhereBuilder(getEntityClass());
+        return newQuery.new WhereBuilder(getEntityClass(), false);
+    }
+
+    public CustomSqlBuilder<E>.WhereBuilder createGroup() {
+        return newQuery.new WhereBuilder(getEntityClass(), true);
     }
 
     private Class<E> getEntityClass() {
