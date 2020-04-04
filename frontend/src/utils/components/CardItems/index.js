@@ -4,7 +4,7 @@ import {Card} from "reactstrap";
 import Delete from "../Icon/Delete";
 import {getSrcForImg} from "../../utils";
 import ItemEvent from "./Items/Event";
-import SimpleUser from "./Items/SimpleUser";
+import SimpleUserStatus from "./Items/SimpleUserStatus";
 
 const GroupItems = ({onDelete, items, onClick, onAction, isEvents, isPhotos, isUsers}) => {
     const [parsedCards, setParsedCards] = useState([]);
@@ -66,10 +66,10 @@ const mapEvents = (events, onClick, onDelete, key) =>
 
 const mapUsers = (users, onClick, onDelete, onAction, key) =>
     users.map(user =>
-        <SimpleUser
+        <SimpleUserStatus
             onDelete={onDelete}
             onAction={onAction}
             key={key + user.id}
-            user={user}
+            userEvent={user}
             onClick={onClick}
         />);

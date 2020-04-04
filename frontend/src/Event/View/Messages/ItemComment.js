@@ -5,9 +5,9 @@ const ItemComment = ({review, style, timestampStyle}) => {
     const date = review.date.format('LLL');
 
     return <div className={style}>
-        <p className='message-content'>
+        <div className='message-content'>
             {review.message}
-        </p>
+        </div>
         <div className={timestampStyle}>
             {date}
         </div>

@@ -17,9 +17,9 @@ const Users = ({users, statuses, setUsers, eventId, eventUserId}) => {
         }
     }, [setUserMessageId, eventUserId, state]);
 
-    const approveUser = (userId) => {
+    const updateUserStatus = (status) => (userId) => {
         const approvedUser = [...users].filter(user => user.user.id === userId).map(user => {
-            user.userStatus = 'APPROVED';
+            user.userStatus = status;
             return user;
         })[0];
 
@@ -28,24 +28,17 @@ const Users = ({users, statuses, setUsers, eventId, eventUserId}) => {
         }, 'POST', approvedUser);
     };
 
-    const removeUserFromEvent = (userId) => {
-        const removedUser = [...users].filter(user => user.user.id === userId)[0];
-
-        state.fetchWithToken(EVENT_SERVICE_URL + '/events/users', () => {
-            state.fetchWithToken(EVENT_SERVICE_URL + '/events/' + eventId + '/users', setUsers);
-        }, 'DELETE', removedUser);
-    };
-
     return <div className='flex margin-top-10'>
         {state.userId === eventUserId && <ElementTabs elements={users}
-                                                      onClick={approveUser}
-                                                      onDelete={removeUserFromEvent}
+                                                      onClick={updateUserStatus('APPROVED')}
+                                                      onDelete={updateUserStatus('REJECTED')}
                                                       onAction={setUserMessageId}
                                                       isUsers={true}
                                                       elementsFieldTab={"userStatus"}
                                                       tabs={statuses}/>}
         <Messages eventId={eventId}
-                  userId={userMessageId}
+                  userMessageId={userMessageId}
+                  setUserMessageId={setUserMessageId}
                   eventUserId={eventUserId}/>
     </div>;
 };

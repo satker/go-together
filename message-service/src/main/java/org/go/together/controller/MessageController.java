@@ -8,7 +8,6 @@ import org.go.together.service.MessageService;
 import org.go.together.service.NotificationService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -52,8 +51,8 @@ public class MessageController implements MessageClient {
     }
 
     @Override
-    public Map<UUID, List<MessageDto>> getAllChats(UUID myId) {
-        return messageService.getAllChatsByUserId(myId);
+    public Map<UUID, MessageDto> getAllChatsByEvent(UUID eventId) {
+        return messageService.getAllChatsByEvent(eventId);
     }
 
     @Override

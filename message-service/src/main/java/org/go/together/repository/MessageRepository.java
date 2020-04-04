@@ -28,6 +28,17 @@ public class MessageRepository extends CustomRepository<Message> {
     }
 
     @Transactional
+    public Collection<Message> findReviewsByEventId(UUID recipientId, MessageType messageType) {
+        return createQuery()
+                .where(createWhere()
+                        .group(createGroup().condition("recipientId", SqlOperator.EQUAL, recipientId)
+                                .or()
+                                .condition("authorId", SqlOperator.EQUAL, recipientId))
+                        .and()
+                        .condition("messageType", SqlOperator.EQUAL, messageType)).fetchAll();
+    }
+
+    @Transactional
     public Collection<Message> findReviewsByRecipientId(UUID recipientId, UUID authorId, MessageType messageType) {
         return createQuery()
                 .where(createWhere()

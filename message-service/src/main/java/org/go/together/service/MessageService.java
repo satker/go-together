@@ -43,11 +43,23 @@ public class MessageService extends CrudService<MessageDto, Message> {
                 .collect(Collectors.toSet());
     }
 
-    public Map<UUID, List<MessageDto>> getAllChatsByUserId(UUID myId) {
-        return messageRepository.findLastMessagesForUserId(myId).values().stream()
-                .map(messageMapper::entitiesToDtos)
-                .flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(MessageDto::getRecipientId));
+    public Map<UUID, MessageDto> getAllChatsByEvent(UUID eventId) {
+        Map<UUID, List<Message>> groupAuthorEventId = messageRepository.findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
+                .collect(Collectors.groupingBy(Message::getAuthorId)).get(eventId).stream()
+                .collect(Collectors.groupingBy(Message::getRecipientId));
+        Map<UUID, List<Message>> groupRecipientId = messageRepository.findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
+                .collect(Collectors.groupingBy(Message::getRecipientId)).get(eventId).stream()
+                .collect(Collectors.groupingBy(Message::getAuthorId));
+
+        groupRecipientId.forEach((key, value) -> groupAuthorEventId.merge(key, value, (messages1, messages2) -> {
+            messages1.addAll(messages2);
+            return messages1;
+        }));
+
+        return groupAuthorEventId.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        element -> messageMapper.entityToDto(element.getValue().stream()
+                                .max(Comparator.comparing(Message::getDate)).orElse(new Message()))));
     }
 
     protected void updateEntityForCreate(Message entity, MessageDto dto) {

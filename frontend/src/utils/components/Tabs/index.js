@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Nav, TabContent, TabPane} from "reactstrap";
 import NavTab from "./NavTab";
 import PropTypes from "prop-types";
-import {groupBy, mapValues, omit} from 'lodash';
+import {groupBy, mapValues} from 'lodash';
 import GroupItems from "../CardItems";
 
 const ElementTabs = (props) => {
@@ -24,8 +24,7 @@ const ElementTabs = (props) => {
 
     useEffect(() => {
         if (elements && elements.length !== 0) {
-            const groupElements = mapValues(groupBy(elements, elementsFieldTab),
-                element => element.map(el => omit(el, elementsFieldTab)));
+            const groupElements = mapValues(groupBy(elements, elementsFieldTab));
             setTabElements(groupElements);
         } else {
             setTabElements([]);

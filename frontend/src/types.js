@@ -113,7 +113,7 @@ export const Review = PropTypes.exact({
     rating: PropTypes.number,
     date: PropTypes.object,
     message: PropTypes.string,
-    author: SimpleUser,
+    authorId: PropTypes.string,
     messageType: PropTypes.string,
     recipientId: PropTypes.string
 });
