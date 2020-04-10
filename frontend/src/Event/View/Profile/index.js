@@ -5,21 +5,23 @@ import {getSrcForImg} from "../../../utils/utils";
 import {User} from "../../../types";
 
 const Profile = ({user}) => {
-    return <Card body style={{align: 'center'}}>
-        {user.userPhotos ?
-            <CardImg top width="50%" height="255" src={getSrcForImg(user.userPhotos[0])}
-                     alt="Card image cap"/> : null}
-        <CardBody>
-            <CardTitle><h6>{user.firstName + ' ' + user.lastName}</h6></CardTitle>
-            <CardSubtitle>
-                <h6>{user.location.name + ' ' + user.location.country.name}</h6>
-            </CardSubtitle>
-            <CardLink href={"#"}>{user.mail}</CardLink>
-            <CardText>My interests: {user.interests.map(interest => interest.name).join(', ')}</CardText>
-            <CardText>Languages: {user.languages.map(lang => lang.name).join(', ')}</CardText>
-            <CardText>About owner: {user.description}</CardText>
-        </CardBody>
-    </Card>;
+    return <div className='container-main-info-item center-items' style={{width: '400px'}}>
+        <Card body style={{align: 'center'}}>
+            {user.userPhotos ?
+                <CardImg top width="50%" height="255" src={getSrcForImg(user.userPhotos[0])}
+                         alt="Card image cap"/> : null}
+            <CardBody>
+                <CardTitle><h6>{user.firstName + ' ' + user.lastName}</h6></CardTitle>
+                <CardSubtitle>
+                    <h6>{user.location.name + ' ' + user.location.country.name}</h6>
+                </CardSubtitle>
+                <CardLink href={"#"}>{user.mail}</CardLink>
+                <CardText>My interests: {user.interests.map(interest => interest.name).join(', ')}</CardText>
+                <CardText>Languages: {user.languages.map(lang => lang.name).join(', ')}</CardText>
+                <CardText>About owner: {user.description}</CardText>
+            </CardBody>
+        </Card>
+    </div>;
 };
 
 Profile.props = {

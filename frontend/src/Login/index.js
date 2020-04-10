@@ -8,6 +8,7 @@ import {Button} from "reactstrap";
 import Input from "reactstrap/es/Input";
 import Label from "reactstrap/es/Label";
 import * as PropTypes from "prop-types";
+import './style.css'
 
 const FormLogin = ({formId}) => {
     const [login, setLogin] = useState('');

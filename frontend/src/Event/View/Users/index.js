@@ -28,7 +28,7 @@ const Users = ({users, statuses, setUsers, eventId, eventUserId}) => {
         }, 'POST', approvedUser);
     };
 
-    return <div className='flex margin-top-10'>
+    return <div className='flex margin-top-20'>
         {state.userId === eventUserId && <ElementTabs elements={users}
                                                       onClick={updateUserStatus('APPROVED')}
                                                       onDelete={updateUserStatus('REJECTED')}

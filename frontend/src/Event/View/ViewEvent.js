@@ -27,15 +27,11 @@ const ViewEvent = ({event}) => {
         {state.userId === event.author.id &&
         <FormReference formRef={'/events/' + event.id + '/edit'} description='Edit event'/>}
 
-        <div className='container-main-info'>
-            <div className='container-main-info-item fixed-width-content '>
-                <MainInfo event={event}
-                          setRefresh={setRefresh}
-                          users={users}/>
-            </div>
-            <div className='container-main-info-item center-items fixed-width-profile'>
-                <Profile user={event.author}/>
-            </div>
+        <div className='container-main-info margin-bottom-20'>
+            <MainInfo event={event}
+                      setRefresh={setRefresh}
+                      users={users}/>
+            <Profile user={event.author}/>
         </div>
         <ObjectGeoLocation
             editable={false}

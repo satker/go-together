@@ -4,6 +4,7 @@ import NavTab from "./NavTab";
 import PropTypes from "prop-types";
 import {groupBy, mapValues} from 'lodash';
 import GroupItems from "../CardItems";
+import './style.css'
 
 const ElementTabs = (props) => {
     const {tabs, elements, elementsFieldTab} = props;
@@ -31,7 +32,7 @@ const ElementTabs = (props) => {
         }
     }, [setTabElements, elements, elementsFieldTab]);
 
-    return <div className='flex element-tabs'>
+    return <div className='flex element-tabs custom-border' style={{height: '300px'}}>
         <Nav tabs>
             {tabs.map((tab, key) => <NavTab name={tab}
                                             key={key}

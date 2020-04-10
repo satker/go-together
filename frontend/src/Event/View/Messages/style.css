@@ -19,7 +19,6 @@
     display: flex;
     flex-direction: column;
     width: 70%;
-    border: 1px solid #dee2e6;
     border-left-style: none;
 }
 
@@ -27,8 +26,11 @@
 .message-item {
     flex-direction: row;
     display: flex;
-    border: 1px solid #dee2e6;
     border-bottom-style: none;
+}
+
+.message-item:first-child {
+    border-top-style: none;
 }
 
 .message-item:last-child {

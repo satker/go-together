@@ -15,7 +15,7 @@ const InputComment = ({refresh, eventId, userMessageId, eventUserId, readOnly, s
     const send = () => {
         const authorId = state.userId === eventUserId ? eventId : state.userId;
         const recipientId = userMessageId === eventUserId ? eventId : userMessageId;
-        setMessage(null);
+        setMessage('');
         const body = {
             message,
             authorId,

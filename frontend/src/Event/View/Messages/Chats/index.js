@@ -14,16 +14,15 @@ const UserChats = ({eventUserId, eventId, userMessageId, refreshChats, setRefres
     const getChats = useCallback(() => {
         state.fetchWithToken(MESSAGE_SERVICE_URL + '/events/' + eventId + '/messages/', messages => {
             let notFoundUserIds = [];
-            const userIds = keys(messages);
+            const userIds = keys(messages) || [];
             const cachedUserIds = messageUsers.map(user => user.id);
             if (cachedUserIds.length === 0) {
                 notFoundUserIds = userIds;
             } else {
-                cachedUserIds.forEach(userId => {
-                    if (!userIds.find(userId)) {
+                cachedUserIds.filter(userId => !userIds.filter(id => id === userId)[0])
+                    .forEach(userId => {
                         notFoundUserIds.push(userId);
-                    }
-                });
+                    });
             }
 
             if (notFoundUserIds.length !== 0) {
@@ -54,6 +53,7 @@ const UserChats = ({eventUserId, eventId, userMessageId, refreshChats, setRefres
             const message = creatorMessages[key];
             const user = messageUsers.filter(user => user.id === key)[0];
             return <MessageItem user={user}
+                                key={key}
                                 message={message}
                                 userMessageId={userMessageId}
                                 setUserMessageId={setUserMessageId}/>

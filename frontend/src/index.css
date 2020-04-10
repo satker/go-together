@@ -16,7 +16,6 @@ body {
     flex-direction: row;
     flex-wrap: wrap;
     align-content: center;
-    margin-bottom: 20px;
 }
 
 .container-main-info-item {
@@ -25,65 +24,8 @@ body {
     align-content: flex-start;
 }
 
-.container-review {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-}
-
-.container-review-item {
-    display: flex;
-    flex-direction: row;
-    align-content: flex-start;
-}
-
-.fixed-width-content {
-    width: 600px;
-}
-
-.fixed-width-content-paid-things {
-    width: 300px;
-}
-
-.fixed-width-profile {
-    width: 400px;
-}
-
-.container-cards {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
-.container-cards-item {
-    width: 350px;
-    display: flex;
-    flex-direction: row;
-}
-
-.fixed-width-card {
-    width: 400px;
-}
-
-.fixed-width-sub-card {
-    width: 150px;
-}
-
-.fixed-width-min {
-    width: 100px;
-    height: 70px;
-}
-
 .center-items {
     align-items: center;
-}
-
-.overflow-y-custom {
-    overflow-y: hidden;
-}
-
-.overflow-x-custom {
-    overflow-x: hidden;
 }
 
 .select-box-custom {
@@ -98,29 +40,9 @@ body {
     margin-left: 20px;
 }
 
-.margin-left-item {
-    margin-left: 20px;
-    margin-top: 10px;
-}
-
 .margin-right-item {
     margin-right: 10px;
     margin-top: 10px;
-}
-
-.fixed-width-main-image-card {
-    width: 300px;
-    height: 250px;
-}
-
-.card-text {
-    word-break: break-word;
-
-}
-
-.login-input {
-    width: 150px;
-    height: 20px;
 }
 
 .simple_user_img {
@@ -128,41 +50,14 @@ body {
     height: 60px;
 }
 
-.element-tabs {
-    min-height: 100px;
+.margin-top-20 {
+    margin-top: 20px;
+}
+
+.margin-bottom-20 {
     margin-bottom: 20px;
 }
 
-.approve-icon {
-    color: #2dd22d;
-}
-
-.approve-icon:hover {
-    color: #068f09;
-}
-
-.close-icon {
-    color: red;
-}
-
-.close-icon:hover {
-    color: #a20000;
-}
-
-.chat-icon {
-    color: deepskyblue;
-}
-
-.chat-icon:hover {
-    color: blue;
-}
-
-.simple-user-item {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-}
-
-.margin-top-10 {
-    margin-top: 20px;
+.custom-border {
+    border: 1px solid #dee2e6;
 }

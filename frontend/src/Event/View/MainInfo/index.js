@@ -8,7 +8,7 @@ import {Event, EventUser} from "../../../types";
 const MainInfo = ({event, users, setRefresh}) => {
     const [state] = useContext(Context);
 
-    return <>
+    return <div className='container-main-info-item' style={{width: '600px'}}>
         <div className='margin-right-item'>
             <h4>{event.name}</h4>
         </div>
@@ -37,7 +37,7 @@ const MainInfo = ({event, users, setRefresh}) => {
         <div className='margin-right-item'>
             Trip dates: {event.startDate.format('LLL')} -> {event.endDate.format('LLL')}
         </div>
-    </>
+    </div>
 };
 
 MainInfo.propTypes = {

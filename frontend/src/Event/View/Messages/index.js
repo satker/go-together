@@ -50,7 +50,7 @@ const Messages = ({eventId, userMessageId, eventUserId, setUserMessageId}) => {
         }
     }, [lock, setTimer, setLock, timer, getMessages]);
 
-    return <div style={{display: 'flex', flexDirection: 'row'}}>
+    return <div className='custom-border' style={{display: 'flex', flexDirection: 'row'}}>
         <UserChats eventUserId={eventUserId}
                    userMessageId={userMessageId}
                    setUserMessageId={setUserMessageId}

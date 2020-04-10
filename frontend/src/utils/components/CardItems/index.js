@@ -5,6 +5,7 @@ import Delete from "../Icon/Delete";
 import {getSrcForImg} from "../../utils";
 import ItemEvent from "./Items/Event";
 import SimpleUserStatus from "./Items/SimpleUserStatus";
+import './style.css'
 
 const GroupItems = ({onDelete, items, onClick, onAction, isEvents, isPhotos, isUsers}) => {
     const [parsedCards, setParsedCards] = useState([]);
@@ -27,7 +28,7 @@ const GroupItems = ({onDelete, items, onClick, onAction, isEvents, isPhotos, isU
         } else {
             setParsedCards([]);
         }
-    }, [items, setParsedCards, isPhotos, onDelete, isEvents, onClick, isUsers]);
+    }, [items, setParsedCards, isPhotos, onDelete, isEvents, onClick, isUsers, onAction]);
 
     return parsedCards && <div className='container-cards'>
         {parsedCards.map((item, key) => <div key={key} className='container-cards-item margin-left-item'>
@@ -51,7 +52,7 @@ const mapPhotos = (photos, onDelete, key) => photos.map((photo) =>
     <div className='flex'>
         <Card key={key + photo.id}>
             <Delete onDelete={() => onDelete(photo.id)}/>
-            <img className='fixed-width-min' src={getSrcForImg(photo)} alt=''/>
+            <img style={{width: '100px', height: '70px'}} src={getSrcForImg(photo)} alt=''/>
         </Card>
     </div>);
 
