@@ -6,7 +6,6 @@ import org.go.together.dto.NotificationDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -22,15 +21,16 @@ public interface MessageClient {
     @GetMapping("users/{userId}/reviews")
     Set<MessageDto> getUserReviews(@PathVariable("userId") UUID userId);
 
-    @GetMapping("events/{eventId}/messages")
-    Set<MessageDto> getEventMessages(@PathVariable("eventId") UUID eventId);
+    @GetMapping("events/{eventId}/messages/{userId}")
+    Set<MessageDto> getEventMessages(@PathVariable("eventId") UUID eventId,
+                                     @PathVariable("userId") UUID userId);
 
     @GetMapping("users/{userId}/messages/{otherUserId}")
     Set<MessageDto> getChatBetweenUsers(@PathVariable("userId") UUID myId,
                                         @PathVariable("otherUserId") UUID otherUser);
 
-    @GetMapping("users/{userId}/messages/")
-    Map<UUID, List<MessageDto>> getAllChats(@PathVariable("userId") UUID myId);
+    @GetMapping("events/{eventId}/messages/")
+    Map<UUID, MessageDto> getAllChatsByEvent(@PathVariable("eventId") UUID eventId);
 
     @PutMapping("users/{userId}/messages/{otherUserId}")
     Set<MessageDto> sentMessageToAnotherUser(@PathVariable("userId") UUID myId,

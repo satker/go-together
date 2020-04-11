@@ -1,10 +1,7 @@
 package org.go.together.controller;
 
 import org.go.together.client.UserClient;
-import org.go.together.dto.IdDto;
-import org.go.together.dto.InterestDto;
-import org.go.together.dto.LanguageDto;
-import org.go.together.dto.UserDto;
+import org.go.together.dto.*;
 import org.go.together.service.InterestService;
 import org.go.together.service.LanguageService;
 import org.go.together.service.UserService;
@@ -75,6 +72,11 @@ class UserController implements UserClient {
     }
 
     @Override
+    public Collection<SimpleUserDto> findSimpleUserDtosByUserIds(Set<UUID> userIds) {
+        return userService.findSimpleUserDtosByUserIds(userIds);
+    }
+
+    @Override
     public UserDto findById(UUID id) {
         return userService.read(id);
     }
@@ -87,5 +89,25 @@ class UserController implements UserClient {
     @Override
     public boolean checkIfUserPresentsById(UUID id) {
         return userService.checkIfUserPresentsById(id);
+    }
+
+    @Override
+    public boolean saveLikedEventsByUserId(UUID userId, UUID eventId) {
+        return userService.saveLikedEventByUserId(userId, eventId);
+    }
+
+    @Override
+    public Set<UUID> getLikedEventsByUserId(UUID userId) {
+        return userService.getLikedEventsByUserId(userId);
+    }
+
+    @Override
+    public Set<UUID> deleteLikedEventsByUserId(UUID userId, Set<UUID> eventIds) {
+        return userService.deleteLikedEventsByUserId(userId, eventIds);
+    }
+
+    @Override
+    public Set<SimpleUserDto> getUsersLoginLikedEventId(UUID eventId) {
+        return userService.getUsersLoginLikedEventId(eventId);
     }
 }

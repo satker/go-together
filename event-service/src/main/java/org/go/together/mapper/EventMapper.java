@@ -5,14 +5,11 @@ import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventDto;
 import org.go.together.dto.EventLocationDto;
-import org.go.together.dto.UserDto;
 import org.go.together.interfaces.Mapper;
 import org.go.together.model.Event;
 import org.go.together.model.EventPaidThing;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,15 +19,18 @@ public class EventMapper implements Mapper<EventDto, Event> {
     private final LocationClient locationClient;
     private final EventPaidThingMapper eventPaidThingMapper;
     private final ContentClient contentClient;
+    private final EventUserMapper eventUserMapper;
 
     public EventMapper(UserClient userClient,
                        LocationClient locationClient,
                        EventPaidThingMapper eventPaidThingMapper,
-                       ContentClient contentClient) {
+                       ContentClient contentClient,
+                       EventUserMapper eventUserMapper) {
         this.userClient = userClient;
         this.locationClient = locationClient;
         this.eventPaidThingMapper = eventPaidThingMapper;
         this.contentClient = contentClient;
+        this.eventUserMapper = eventUserMapper;
     }
 
     @Override
@@ -40,14 +40,10 @@ public class EventMapper implements Mapper<EventDto, Event> {
         eventDto.setAuthor(userClient.findById(entity.getAuthorId()));
         eventDto.setDescription(entity.getDescription());
         eventDto.setHousingType(entity.getHousingType());
-        eventDto.setPeopleLike(entity.getPeopleLike());
         eventDto.setPaidThings(eventPaidThingMapper.entitiesToDtos(entity.getPaidThings()));
         eventDto.setPeopleCount(entity.getPeopleCount());
         eventDto.setRoute(entity.getRoutes().stream()
                 .map(locationClient::getRouteById)
-                .collect(Collectors.toSet()));
-        eventDto.setUsers(entity.getUsers().stream()
-                .map(userClient::findById)
                 .collect(Collectors.toSet()));
         eventDto.setEventPhotoDto(contentClient.getEventPhotosById(entity.getEventPhotoId()));
         eventDto.setName(entity.getName());
@@ -63,15 +59,10 @@ public class EventMapper implements Mapper<EventDto, Event> {
         event.setAuthorId(dto.getAuthor().getId());
         event.setDescription(dto.getDescription());
         event.setHousingType(dto.getHousingType());
-        event.setPeopleLike(dto.getPeopleLike());
         event.setPaidThings((Set<EventPaidThing>) eventPaidThingMapper.dtosToEntities(dto.getPaidThings()));
         event.setPeopleCount(dto.getPeopleCount());
         event.setRoutes(dto.getRoute().stream()
                 .map(EventLocationDto::getId)
-                .collect(Collectors.toSet()));
-        event.setUsers(Optional.ofNullable(dto.getUsers())
-                .orElse(Collections.emptySet()).stream()
-                .map(UserDto::getId)
                 .collect(Collectors.toSet()));
         event.setName(dto.getName());
         event.setStartDate(dto.getStartDate());

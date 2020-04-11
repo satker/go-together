@@ -1,17 +1,14 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from "prop-types";
 import {Card} from "reactstrap";
-import DeleteButton from "../DeleteButton/DeleteButton";
+import Delete from "../Icon/Delete";
 import {getSrcForImg} from "../../utils";
-import ItemEvent from "./ItemEvent";
-import {Context} from "../../../Context";
+import ItemEvent from "./Items/Event";
+import SimpleUserStatus from "./Items/SimpleUserStatus";
+import './style.css'
 
-const GroupItems = ({
-                        onDelete, items, editable, isEvents, onClick,
-                        isPhotos, onChange, countRowItems
-                    }) => {
+const GroupItems = ({onDelete, items, onClick, onAction, isEvents, isPhotos, isUsers}) => {
     const [parsedCards, setParsedCards] = useState([]);
-    const [state] = useContext(Context);
 
     useEffect(() => {
         if (items) {
@@ -23,27 +20,30 @@ const GroupItems = ({
             } else if (isEvents) {
                 key = 'events_';
                 parseItems = mapEvents(items, onClick, onDelete, key)
+            } else if (isUsers) {
+                key = 'users_';
+                parseItems = mapUsers(items, onClick, onDelete, onAction, key);
             }
             setParsedCards(parseItems);
+        } else {
+            setParsedCards([]);
         }
-    }, [items, setParsedCards, isPhotos, state.countRowItems,
-        editable, onDelete, onChange, isEvents, onClick, countRowItems]);
+    }, [items, setParsedCards, isPhotos, onDelete, isEvents, onClick, isUsers, onAction]);
 
     return parsedCards && <div className='container-cards'>
-        {parsedCards.map(item => <div className='container-cards-item margin-left-item'>
+        {parsedCards.map((item, key) => <div key={key} className='container-cards-item margin-left-item'>
             {item}
         </div>)}
     </div>
 };
 
 GroupItems.propTypes = {
-    items: PropTypes.array.isRequired,
-    editable: PropTypes.bool,
+    items: PropTypes.array,
     isPhotos: PropTypes.bool,
     isEvents: PropTypes.bool,
+    isUsers: PropTypes.bool,
     onClick: PropTypes.func,
-    onDelete: PropTypes.func,
-    countRowItems: PropTypes.number
+    onDelete: PropTypes.func
 };
 
 export default GroupItems;
@@ -51,8 +51,8 @@ export default GroupItems;
 const mapPhotos = (photos, onDelete, key) => photos.map((photo) =>
     <div className='flex'>
         <Card key={key + photo.id}>
-            <DeleteButton onDelete={() => onDelete(photo.id)}/>
-            <img className='fixed-width-min' src={getSrcForImg(photo)} alt=''/>
+            <Delete onDelete={() => onDelete(photo.id)}/>
+            <img style={{width: '100px', height: '70px'}} src={getSrcForImg(photo)} alt=''/>
         </Card>
     </div>);
 
@@ -63,4 +63,14 @@ const mapEvents = (events, onClick, onDelete, key) =>
             key={key + event.id}
             event={event}
             onClickChooseEvent={onClick}
+        />);
+
+const mapUsers = (users, onClick, onDelete, onAction, key) =>
+    users.map(user =>
+        <SimpleUserStatus
+            onDelete={onDelete}
+            onAction={onAction}
+            key={key + user.id}
+            userEvent={user}
+            onClick={onClick}
         />);

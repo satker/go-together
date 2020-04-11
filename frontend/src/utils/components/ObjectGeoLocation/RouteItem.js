@@ -1,8 +1,8 @@
 import React from 'react';
-import {Route} from '../../../types'
+import {CoordinateCenter, Route} from '../../../types'
 import {ListGroupItem} from 'reactstrap'
 import PropTypes from "prop-types";
-import DeleteButton from "../DeleteButton/DeleteButton";
+import Delete from "../Icon/Delete";
 
 const RouteItem = ({center, setCenter, route, onDelete}) => {
     return <div className='container-main-info'>
@@ -14,16 +14,16 @@ const RouteItem = ({center, setCenter, route, onDelete}) => {
             </ListGroupItem>
         </div>
         {onDelete && <div className='flex' style={{width: '5%'}}>
-            <DeleteButton onDelete={() => onDelete(route.routeNumber)}/>
+            <Delete onDelete={() => onDelete(route.routeNumber)}/>
         </div>}
     </div>;
 };
 
 RouteItem.propTypes = {
-    center: PropTypes.arrayOf(PropTypes.number),
+    center: PropTypes.oneOfType([CoordinateCenter, PropTypes.arrayOf(PropTypes.number)]),
     route: Route.isRequired,
     setCenter: PropTypes.func.isRequired,
-    onDelete: PropTypes.func
+    onDelete: PropTypes.oneOfType([PropTypes.func, PropTypes.bool])
 };
 
 export default RouteItem;

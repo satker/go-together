@@ -28,7 +28,14 @@ public class SystemUser implements IdentifiedEntity {
     private Role role;
 
     @ElementCollection
+    @CollectionTable(name = "user_photo", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "photo_id")
     private Collection<UUID> photoIds;
+
+    @ElementCollection
+    @CollectionTable(name = "user_event_like", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "event_like_id")
+    private Set<UUID> eventLikeIds;
 
     @ManyToMany
     @JoinTable(name = "system_user_interest",

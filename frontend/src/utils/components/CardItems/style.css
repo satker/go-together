@@ -2,3 +2,31 @@
     height: 250px;
     width: 150px;
 }
+
+.container-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.container-cards-item {
+    width: 350px;
+    display: flex;
+    flex-direction: row;
+}
+
+.margin-left-item {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.fixed-width-main-image-card {
+    width: 300px;
+    height: 250px;
+}
+
+.simple-user-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import SelectBox from "../../../utils/components/SelectBox";
 
 const PaidThingItem = ({cashCategories, paidThing, onChange}) => {
-    return <div className='container-main-info-item fixed-width-content-paid-things'>
+    return <div className='container-main-info-item' style={{width: '300px'}}>
         {paidThing.paidThing.name} => <SelectBox onChange={onChange}
                                                  labelText={'cashCategory'}
                                                  value={paidThing.cashCategory}

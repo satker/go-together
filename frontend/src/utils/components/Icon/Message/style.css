@@ -1,0 +1,7 @@
+.chat-icon {
+    color: deepskyblue;
+}
+
+.chat-icon:hover {
+    color: blue;
+}

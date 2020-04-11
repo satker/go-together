@@ -28,11 +28,38 @@ public class MessageRepository extends CustomRepository<Message> {
     }
 
     @Transactional
+    public Collection<Message> findReviewsByEventId(UUID recipientId, MessageType messageType) {
+        return createQuery()
+                .where(createWhere()
+                        .group(createGroup().condition("recipientId", SqlOperator.EQUAL, recipientId)
+                                .or()
+                                .condition("authorId", SqlOperator.EQUAL, recipientId))
+                        .and()
+                        .condition("messageType", SqlOperator.EQUAL, messageType)).fetchAll();
+    }
+
+    @Transactional
+    public Collection<Message> findReviewsByRecipientId(UUID recipientId, UUID authorId, MessageType messageType) {
+        return createQuery()
+                .where(createWhere()
+                        .condition("messageType", SqlOperator.EQUAL, messageType)
+                        .and()
+                        .group(createGroup().condition("recipientId", SqlOperator.EQUAL, recipientId)
+                                .and()
+                                .condition("authorId", SqlOperator.EQUAL, authorId))
+                        .or()
+                        .group(createGroup().condition("recipientId", SqlOperator.EQUAL, authorId)
+                                .and()
+                                .condition("authorId", SqlOperator.EQUAL, recipientId))
+                ).fetchAll();
+    }
+
+    @Transactional
     public Collection<Message> findMessagesBetweenUsers(UUID myId, UUID otherUser) {
-        CustomSqlBuilder.WhereBuilder whereMyIdPresented = createWhere().condition("authorId", SqlOperator.EQUAL, myId)
+        CustomSqlBuilder<Message>.WhereBuilder whereMyIdPresented = createWhere().condition("authorId", SqlOperator.EQUAL, myId)
                 .or()
                 .condition("recipientId", SqlOperator.EQUAL, myId);
-        CustomSqlBuilder.WhereBuilder whereUserIdPresented = createWhere().condition("authorId", SqlOperator.EQUAL, otherUser)
+        CustomSqlBuilder<Message>.WhereBuilder whereUserIdPresented = createWhere().condition("authorId", SqlOperator.EQUAL, otherUser)
                 .or()
                 .condition("recipientId", SqlOperator.EQUAL, otherUser);
         return createQuery()

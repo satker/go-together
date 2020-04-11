@@ -24,9 +24,7 @@ dependencies {
             "org.springframework.cloud:spring-cloud-starter-openfeign:${springCloudVersion}",
 
             "org.projectlombok:lombok:${lombokVersion}",
-            "org.mapstruct:mapstruct-processor:${mapstructVersion}",
             "com.google.guava:guava:${guavaVersion}",
-            "org.mapstruct:mapstruct:${mapstructVersion}",
             "com.google.code.gson:gson:${gsonVersion}"
 
     )

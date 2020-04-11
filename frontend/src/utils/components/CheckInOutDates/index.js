@@ -3,9 +3,10 @@ import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import {DateRangePicker, START_DATE} from "react-dates";
 
-const CheckInOutDates = ({startDate, endDate, setStartDate, setEndDate}) => {
+const CheckInOutDates = ({startDate, endDate, setStartDate, setEndDate, readOnly}) => {
     const [focusedInput, setFocusedInput] = useState(START_DATE);
     return <DateRangePicker
+        readOnly={readOnly}
         small={true}
         startDate={startDate} // momentPropTypes.momentObj or null,
         startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,

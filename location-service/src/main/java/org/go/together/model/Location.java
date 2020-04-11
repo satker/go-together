@@ -17,6 +17,6 @@ public class Location implements IdentifiedEntity {
     private String state;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "country_id", referencedColumnName = "id")
+    @JoinColumn(name = "country_id")
     private Country country;
 }

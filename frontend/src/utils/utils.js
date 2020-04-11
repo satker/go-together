@@ -2,7 +2,9 @@ import {get, set} from "lodash";
 import {PHOTO_OBJECT} from "./constants";
 
 export const getSrcForImg = (photoObj) => {
-    if (photoObj.photoUrl) {
+    if (!photoObj) {
+        return 'https://sisterhoodofstyle.com/wp-content/uploads/2018/02/no-image-1.jpg';
+    } else if (photoObj.photoUrl) {
         return photoObj.photoUrl
     } else if (photoObj.content && photoObj.content.type) {
         return photoObj.content.type + photoObj.content.photoContent;

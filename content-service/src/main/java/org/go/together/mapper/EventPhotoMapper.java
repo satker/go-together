@@ -18,7 +18,6 @@ public class EventPhotoMapper implements Mapper<EventPhotoDto, EventPhoto> {
         this.photoMapper = photoMapper;
     }
 
-
     @Override
     public EventPhotoDto entityToDto(EventPhoto entity) {
         EventPhotoDto eventPhotoDto = new EventPhotoDto();

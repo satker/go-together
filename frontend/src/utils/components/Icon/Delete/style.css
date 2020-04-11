@@ -1,0 +1,7 @@
+.close-icon {
+    color: red;
+}
+
+.close-icon:hover {
+    color: #a20000;
+}

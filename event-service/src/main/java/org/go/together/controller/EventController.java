@@ -4,6 +4,7 @@ import org.go.together.client.EventClient;
 import org.go.together.dto.*;
 import org.go.together.dto.filter.FormDto;
 import org.go.together.service.EventService;
+import org.go.together.service.EventUserService;
 import org.go.together.service.PaidThingService;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,11 +18,14 @@ import java.util.stream.Stream;
 public class EventController implements EventClient {
     private final EventService eventService;
     private final PaidThingService paidThingService;
+    private final EventUserService eventUserService;
 
     public EventController(EventService eventService,
-                           PaidThingService paidThingService) {
+                           PaidThingService paidThingService,
+                           EventUserService eventUserService) {
         this.eventService = eventService;
         this.paidThingService = paidThingService;
+        this.eventUserService = eventUserService;
     }
 
     @Override
@@ -71,5 +75,25 @@ public class EventController implements EventClient {
         return Stream.of(CashCategory.values())
                 .map(type -> new SimpleDto(type.name(), type.getDescription()))
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public EventUserStatus[] getUserStatuses() {
+        return EventUserStatus.values();
+    }
+
+    @Override
+    public Collection<EventUserDto> getEventUsersByEventId(UUID eventId) {
+        return eventUserService.getEventUsersByEventId(eventId);
+    }
+
+    @Override
+    public IdDto saveEventUserByEventId(EventUserDto eventUserDto) {
+        return eventUserService.create(eventUserDto);
+    }
+
+    @Override
+    public boolean deleteEventUserByEventId(EventUserDto eventUserDto) {
+        return eventUserService.deleteEventUserByEventId(eventUserDto);
     }
 }

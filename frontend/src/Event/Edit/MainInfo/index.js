@@ -18,7 +18,7 @@ const MainInfo = ({event, onChangeEvent}) => {
     }, [state]);
 
     return <div className='container-main-info'>
-        <div className='container-main-info-item fixed-width-content'>
+        <div className='container-main-info-item' style={{width: '600px'}}>
             <FormGroup>
                 <Label for="name">Event name:</Label>
                 <Input type="text"
@@ -55,7 +55,7 @@ const MainInfo = ({event, onChangeEvent}) => {
                                          setEndDate={endDate => onChangeEvent('endDate', endDate)}
         />
         </div>
-        <div className='container-main-info-item center-items fixed-width-content'>
+        <div className='container-main-info-item center-items' style={{width: '600px'}}>
             <GroupItems items={event.eventPhotoDto.photos}
                         isPhotos
                         onDelete={(id) => console.log('delete: ', id)}/>

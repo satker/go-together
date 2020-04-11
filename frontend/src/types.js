@@ -19,6 +19,7 @@ export const SimpleObject = PropTypes.exact({
 export const PhotoObject = PropTypes.exact({
     id: PropTypes.string,
     photoUrl: PropTypes.string,
+    photoCategory: PropTypes.string,
     content: PropTypes.exact({
         type: PropTypes.string,
         photoContent: PropTypes.string
@@ -46,13 +47,29 @@ export const User = PropTypes.exact({
     description: PropTypes.string,
     password: PropTypes.string,
     role: PropTypes.string,
-    userPhoto: PropTypes.arrayOf(PhotoObject),
+    userPhotos: PropTypes.arrayOf(PhotoObject),
     languages: PropTypes.arrayOf(Language),
     interests: PropTypes.arrayOf(Interest)
 });
 
+export const SimpleUser = PropTypes.exact({
+    id: PropTypes.string,
+    login: PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    userPhoto: PhotoObject,
+});
+
+export const EventUser = PropTypes.exact({
+    id: PropTypes.string,
+    user: SimpleUser,
+    userStatus: PropTypes.string,
+    eventId: PropTypes.string
+});
+
 export const EventPhoto = PropTypes.exact({
     id: PropTypes.string,
+    eventId: PropTypes.string,
     photos: PropTypes.arrayOf(PhotoObject)
 });
 
@@ -73,7 +90,8 @@ export const Route = PropTypes.exact({
     address: PropTypes.string,
     latitude: PropTypes.number,
     longitude: PropTypes.number,
-    location: Location
+    location: Location,
+    eventId: PropTypes.string
 });
 
 export const Event = PropTypes.exact({
@@ -85,16 +103,19 @@ export const Event = PropTypes.exact({
     description: PropTypes.string.isRequired,
     eventPhotoDto: EventPhoto,
     paidThings: PropTypes.arrayOf(CashPaidThing),
-    users: PropTypes.arrayOf(User),
-    peopleLike: PropTypes.number,
-    route: PropTypes.arrayOf(Route)
+    route: PropTypes.arrayOf(Route),
+    startDate: PropTypes.object,
+    endDate: PropTypes.object
 });
 
 export const Review = PropTypes.exact({
+    id: PropTypes.string,
     rating: PropTypes.number,
-    dateCreation: PropTypes.string,
+    date: PropTypes.object,
     message: PropTypes.string,
-    user: User
+    authorId: PropTypes.string,
+    messageType: PropTypes.string,
+    recipientId: PropTypes.string
 });
 
 export const SearchObject = PropTypes.exact({
@@ -109,4 +130,9 @@ export const SearchObject = PropTypes.exact({
         languages: PropTypes.array
     },
     page: PropTypes.number
+});
+
+export const CoordinateCenter = PropTypes.exact({
+    lat: PropTypes.number.isRequired,
+    lng: PropTypes.number.isRequired,
 });

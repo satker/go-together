@@ -24,64 +24,8 @@ body {
     align-content: flex-start;
 }
 
-.container-review {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-}
-
-.container-review-item {
-    display: flex;
-    flex-direction: row;
-    align-content: flex-start;
-}
-
-.fixed-width-content {
-    width: 600px;
-}
-
-.fixed-width-content-paid-things {
-    width: 300px;
-}
-
-.fixed-width-profile {
-    width: 400px;
-}
-
-.container-cards {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
-.container-cards-item {
-    display: flex;
-    flex-direction: row;
-}
-
-.fixed-width-card {
-    width: 400px;
-}
-
-.fixed-width-sub-card {
-    width: 150px;
-}
-
-.fixed-width-min {
-    width: 100px;
-    height: 70px;
-}
-
 .center-items {
     align-items: center;
-}
-
-.overflow-y-custom {
-    overflow-y: hidden;
-}
-
-.overflow-x-custom {
-    overflow-x: hidden;
 }
 
 .select-box-custom {
@@ -96,22 +40,24 @@ body {
     margin-left: 20px;
 }
 
-.margin-left-item {
-    margin-left: 20px;
-    margin-top: 10px;
-}
-
 .margin-right-item {
     margin-right: 10px;
     margin-top: 10px;
 }
 
-.fixed-width-main-image-card {
-    width: 300px;
-    height: 250px;
+.simple_user_img {
+    width: 60px;
+    height: 60px;
 }
 
-.login-input {
-    width: 150px;
-    height: 20px;
+.margin-top-20 {
+    margin-top: 20px;
+}
+
+.margin-bottom-20 {
+    margin-bottom: 20px;
+}
+
+.custom-border {
+    border: 1px solid #dee2e6;
 }

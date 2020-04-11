@@ -91,7 +91,6 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
     };
 
     const handleGoogleMapApi = (google) => {
-        console.log('loaded', google);
         if (routes.length !== 0) {
             // center map to route
             const bounds = new google.maps.LatLngBounds();
@@ -100,7 +99,6 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
             google.map.fitBounds(bounds);
         }
         if (google) {
-            console.log('loaded')
             setGoogleMap(google);
             handlePolyline(google);
         }
@@ -110,13 +108,12 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
         let newPolyline = polyline;
         const newRoutes = getSortedRoutes().map(route => ({lat: route.latitude, lng: route.longitude}));
         if (newPolyline) {
-            console.log(newPolyline)
             newPolyline.setMap(null);
             newPolyline.setPath(newRoutes);
             newPolyline.setMap(google.map);
         } else {
             newPolyline = new google.maps.Polyline({
-                path: newRoutes,
+                path: [],
                 geodesic: true,
                 strokeColor: '#33BD4E',
                 strokeOpacity: 1,
@@ -162,11 +159,11 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
                                 center={center}
                                 zoom={zoomValue}
                                 options={getMapOptions}
-                                onChildMouseDown={editable && onCircleInteraction}
-                                onChildMouseUp={editable && onCircleInteraction3}
-                                onChildMouseMove={editable && onCircleInteraction}
-                                onChildClick={editable && endDrag}
-                                onClick={editable && ((evt) => onAdd(evt.lat, evt.lng))}
+                                onChildMouseDown={editable ? onCircleInteraction : () => null}
+                                onChildMouseUp={editable ? onCircleInteraction3 : () => null}
+                                onChildMouseMove={editable ? onCircleInteraction : () => null}
+                                onChildClick={editable ? endDrag : () => null}
+                                onClick={editable ? ((evt) => onAdd(evt.lat, evt.lng)) : () => null}
                 >
                     {googleMap && !lock && handlePolyline(googleMap)}
                     {getRoutes()}

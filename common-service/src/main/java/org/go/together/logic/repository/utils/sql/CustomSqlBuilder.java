@@ -3,12 +3,12 @@ package org.go.together.logic.repository.utils.sql;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.interfaces.IdentifiedEntity;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,11 +18,43 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
     private final StringBuilder query;
     private final EntityManager entityManager;
     private final Class<E> clazz;
+    private final Map<String, String> joinTables;
 
     public CustomSqlBuilder(Class<E> clazz, EntityManager entityManager) {
-        query = new StringBuilder("FROM " + clazz.getSimpleName());
+        joinTables = new HashMap<>();
+        String entityLink = getEntityLink(clazz);
+        query = new StringBuilder("FROM " + clazz.getSimpleName() + " " + entityLink);
+        Arrays.stream(clazz.getDeclaredFields())
+                .filter(field1 -> field1.getAnnotation(ElementCollection.class) != null)
+                .forEach(field1 -> {
+                    String generatedTableName = getJoinTableName(field1, clazz);
+                    query.append(" left join ")
+                            .append(getEntityField(field1.getName(), clazz))
+                            .append(" ")
+                            .append(generatedTableName);
+                    joinTables.put(field1.getName(), generatedTableName);
+                });
         this.entityManager = entityManager;
         this.clazz = clazz;
+    }
+
+    private String getJoinTableName(Field field, Class<E> clazz) {
+        return getEntityLink(clazz) + "_" + field.getName();
+    }
+
+    private String getEntityLink(Class<E> clazz) {
+        char[] chars = clazz.getSimpleName().toCharArray();
+        StringBuilder entityLink = new StringBuilder();
+        for (char aChar : chars) {
+            if (Character.isUpperCase(aChar)) {
+                entityLink.append(aChar);
+            }
+        }
+        return entityLink.toString().toLowerCase();
+    }
+
+    private String getEntityField(String field, Class<E> clazz) {
+        return getEntityLink(clazz) + "." + field;
     }
 
     public CustomSqlBuilder<E> groupingByLastRow(String groupingField, String fieldDate, WhereBuilder whereBuilder) {
@@ -71,11 +103,13 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
         return query.getResultList();
     }
 
-    public static class WhereBuilder {
+    public class WhereBuilder {
         private StringBuilder whereQuery;
+        private Class<E> clazz;
 
-        public WhereBuilder() {
-            whereQuery = new StringBuilder(" WHERE ");
+        public WhereBuilder(Class<E> clazz, Boolean isGroup) {
+            this.clazz = clazz;
+            whereQuery = new StringBuilder(isGroup ? StringUtils.EMPTY : " WHERE ");
         }
 
         protected StringBuilder getWhereQuery() {
@@ -84,7 +118,12 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
 
         public WhereBuilder condition(String field, SqlOperator sqlOperator, Object value) {
             String parsedValue = parseToString(value);
-            whereQuery.append(sqlOperator.getBiFunction().apply(field, parsedValue));
+            String joinTableName = joinTables.get(field);
+            String fieldName = getEntityField(field, clazz);
+            if (StringUtils.isNotBlank(joinTableName)) {
+                fieldName = joinTableName;
+            }
+            whereQuery.append(sqlOperator.getBiFunction().apply(fieldName, parsedValue));
             return this;
         }
 

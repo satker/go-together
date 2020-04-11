@@ -11,7 +11,6 @@ import org.go.together.dto.validation.DateIntervalDto;
 import org.go.together.logic.Validator;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.Optional;
 
 @Component
@@ -37,9 +36,6 @@ public class EventValidator extends Validator<EventDto> {
                 .put("event name", dto.getName())
                 .put("event description", dto.getDescription())
                 .build();
-        super.NUMBER_CORRECT_NEGATIVE_CHECK = ImmutableMap.<String, Number>builder()
-                .put("event likes", dto.getPeopleLike())
-                .build();
         super.NUMBER_CORRECT_ZERO_OR_NEGATIVE_CHECK = ImmutableMap.<String, Number>builder()
                 .put("event people capacity", dto.getPeopleCount())
                 .build();
@@ -61,13 +57,6 @@ public class EventValidator extends Validator<EventDto> {
                     .append(dto.getAuthor().getId())
                     .append(". ");
         }
-
-        Optional.ofNullable(dto.getUsers())
-                .orElse(Collections.emptySet()).stream()
-                .map(UserDto::getId)
-                .filter(userDtoId -> !userClient.checkIfUserPresentsById(userDtoId))
-                .map(userDtoId -> "User has incorrect uuid: " + userDtoId + ". ")
-                .forEach(errors::append);
 
 
         dto.getPaidThings().stream()

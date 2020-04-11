@@ -14,26 +14,28 @@ import java.util.UUID;
 @Table(name = "event", schema = "public")
 public class Event implements IdentifiedEntity {
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
     private String name;
     private int peopleCount;
-    private int peopleLike;
     private UUID authorId;
     private HousingType housingType;
     private String description;
     private Date startDate;
     private Date endDate;
 
-    @ElementCollection
-    private Set<UUID> users;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "event_id")
+    private Set<EventUser> users;
 
     @ElementCollection
+    @CollectionTable(name = "event_route", joinColumns = @JoinColumn(name = "event_id"))
+    @Column(name = "route_id")
     private Set<UUID> routes;
+
     private UUID eventPhotoId;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "photo_id")
+    @JoinColumn(name = "event_id")
     private Set<EventPaidThing> paidThings;
 
 }
