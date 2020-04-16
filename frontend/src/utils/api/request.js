@@ -1,7 +1,8 @@
 import {CSRF_TOKEN, USER_ID, USER_SERVICE_URL} from "../constants";
 import {set as setCookie} from 'js-cookie'
 
-export const fetchAndSet = async (url, setResult, method = 'GET', data = {}, headers = {}) => {
+export const fetchAndSet = async (url, setResult, method = 'GET', data = {}, headers = {},
+                                  setToContext = () => null) => {
     let resp;
     if (method === 'GET') {
         resp = await fetch(url, {
@@ -18,6 +19,7 @@ export const fetchAndSet = async (url, setResult, method = 'GET', data = {}, hea
         const result = await resp.text();
         try {
             setResult(JSON.parse(result));
+            setToContext(JSON.parse(result))
         } catch (e) {
             console.log(e);
             setResult(null);
@@ -30,7 +32,7 @@ export const fetchAndSet = async (url, setResult, method = 'GET', data = {}, hea
     }
 };
 
-export const fetchAndSetToken = (token) => async (url, setResult, method = 'GET', data = {}) => {
+export const fetchAndSetToken = (token) => (setToContext, methodAction) => async (url, setResult, method = 'GET', data = {}) => {
     let headers = {
         'Accept': 'application/json',
         'content-type': 'application/json'
@@ -39,7 +41,7 @@ export const fetchAndSetToken = (token) => async (url, setResult, method = 'GET'
     if (token) {
         headers['Authorization'] = token;
     }
-    fetchAndSet(url, setResult, method, data, headers);
+    fetchAndSet(url, setResult, methodAction || method, data, headers, setToContext);
 };
 
 export const registerFetch = async (url, setScreen, data = {}, error, goToLogin) => {

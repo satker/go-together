@@ -1,11 +1,10 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import '../Form.css'
-import {Button, Col, FormFeedback, FormGroup, Input, Label} from "reactstrap";
+import {Button, Col, FormFeedback, Input, Label} from "reactstrap";
 import AutosuggestionLocation from "../utils/components/Autosuggestion";
 import {LOCATION_SERVICE_URL, USER_SERVICE_URL} from '../utils/constants'
 import {registerFetch} from "../utils/api/request";
-import {Context} from "../Context";
-import FormText from "reactstrap/es/FormText";
+import {connect} from "../Context";
 import {getSrcForImg} from "../utils/utils";
 import CardImg from "reactstrap/es/CardImg";
 import {navigate} from 'hookrouter';
@@ -25,17 +24,26 @@ import {
     EMPTY_LOGIN,
     EMPTY_MAIL,
     EMPTY_PASSWORD,
+    FORM_ID,
     GOOD_DESCRIPTION,
-    GOOD_PHOTO
+    GOOD_LOGIN,
+    GOOD_MAIL,
+    GOOD_PHOTO,
+    NOT_GOOD_LOGIN,
+    NOT_GOOD_MAIL
 } from "./constants";
 import CustomReference from "../utils/components/CustomReference";
 import MultipleSelectBox from "../utils/components/MultipleSelectBox";
+import Container from "../utils/components/Container/ContainerRow";
+import ItemContainer from "../utils/components/Container/ItemContainer";
+import {getAllInterests, getAllLanguages, getCheckMail, getCheckUserName} from "./actions";
 
 const URL = USER_SERVICE_URL + "/users";
-const URL_USERS_LANGUAGES = USER_SERVICE_URL + "/languages";
-const URL_USERS_INTERESTS = USER_SERVICE_URL + "/interests";
 
-const FormRegister = () => {
+const FormRegister = ({
+                          allLanguages, allInterests, getAllInterests, getAllLanguages, getCheckMail, checkMail,
+                          checkUserName, getCheckUserName
+                      }) => {
     const [checkedUserName, setCheckedUserName] = useState(EMPTY_LOGIN);
     const [isUserNameReadyForRegister, setIsUserNameReadyForRegister] = useState(false);
     const [checkedMail, setCheckedMail] = useState(EMPTY_MAIL);
@@ -62,16 +70,39 @@ const FormRegister = () => {
     const [userPhoto, setUserPhoto] = useState(null);
     const [password, setPassword] = useState(null);
     const [languages, setLanguages] = useState([]);
-    const [allLanguages, setAllLanguages] = useState([]);
     const [interests, setInterests] = useState([]);
-    const [allInterests, setAllInterests] = useState([]);
-
-    const [state] = useContext(Context);
 
     useEffect(() => {
-        state.fetchWithToken(URL_USERS_LANGUAGES, setAllLanguages);
-        state.fetchWithToken(URL_USERS_INTERESTS, setAllInterests);
-    }, [state]);
+        getAllInterests();
+    }, [getAllInterests]);
+
+    useEffect(() => {
+        getAllLanguages();
+    }, [getAllLanguages]);
+
+    useEffect(() => {
+        if (checkMail) {
+            if (checkMail === true) {
+                setCheckedMail(NOT_GOOD_MAIL);
+                setIsMailReadyForRegister(false);
+            } else {
+                setCheckedMail(GOOD_MAIL);
+                setIsMailReadyForRegister(true);
+            }
+        }
+    }, [checkMail, setCheckedMail, setIsMailReadyForRegister]);
+
+    useEffect(() => {
+        if (checkUserName) {
+            if (checkUserName === true) {
+                setCheckedUserName(NOT_GOOD_LOGIN);
+                setIsUserNameReadyForRegister(false);
+            } else {
+                setCheckedUserName(GOOD_LOGIN);
+                setIsUserNameReadyForRegister(true);
+            }
+        }
+    }, [checkUserName, setCheckedUserName, setIsUserNameReadyForRegister]);
 
     const handleChange = (set, evt) => set(evt.target.value);
 
@@ -95,31 +126,31 @@ const FormRegister = () => {
 
     const moveToMainPage = () => navigate('/');
 
-    return <>
-        <FormGroup>
+    return <Container>
+        <ItemContainer>
             <Label for="login">Login</Label>
             <Input invalid={!isUserNameReadyForRegister} valid={isUserNameReadyForRegister}
                    type="text"
                    name="login" id="login" placeholder="login"
                    onChange={(evt) => {
                        handleChange(setLogin, evt);
-                       handleUserName(evt, setCheckedUserName, setIsUserNameReadyForRegister, state.fetchWithToken);
+                       handleUserName(evt, setCheckedUserName, setIsUserNameReadyForRegister, getCheckUserName);
                    }
                    }/>
             <FormFeedback invalid>{checkedUserName}</FormFeedback>
-        </FormGroup>
-        <FormGroup>
+        </ItemContainer>
+        <ItemContainer>
             <Label for="email">Email</Label>
             <Input invalid={!isMailReadyForRegister} valid={isMailReadyForRegister}
                    type="text" name="email" id="email" placeholder="email@email.com"
                    onChange={(evt) => {
                        handleChange(setMail, evt);
-                       handleMail(evt, setCheckedMail, setIsMailReadyForRegister, state.fetchWithToken);
+                       handleMail(evt, setCheckedMail, setIsMailReadyForRegister, getCheckMail);
                    }
                    }/>
             <FormFeedback invalid>{checkedMail}</FormFeedback>
-        </FormGroup>
-        <FormGroup>
+        </ItemContainer>
+        <ItemContainer>
             <Label for="firstName">First name</Label>
             <Input invalid={!isFirstNameReadyForRegister} valid={isFirstNameReadyForRegister}
                    type="text" name="firstName" id="firstName" placeholder="John"
@@ -130,8 +161,8 @@ const FormRegister = () => {
                    }
                    }/>
             <FormFeedback invalid>{checkedFirstName}</FormFeedback>
-        </FormGroup>
-        <FormGroup>
+        </ItemContainer>
+        <ItemContainer>
             <Label for="lastName">Last name</Label>
             <Input invalid={!isLastNameReadyForRegister} valid={isLastNameReadyForRegister}
                    type="text" name="lastName" id="lastName" placeholder="Johnson"
@@ -142,8 +173,8 @@ const FormRegister = () => {
                    }
                    }/>
             <FormFeedback invalid>{checkedLastName}</FormFeedback>
-        </FormGroup>
-        <FormGroup>
+        </ItemContainer>
+        <ItemContainer>
             <Label for="location">Location</Label>
             <AutosuggestionLocation
                 formId='register_'
@@ -152,9 +183,8 @@ const FormRegister = () => {
                 url={LOCATION_SERVICE_URL + '/locations'}
                 urlParam={'name'}
             />
-        </FormGroup>
-        <br/>
-        <FormGroup row>
+        </ItemContainer>
+        <ItemContainer>
             <Label for="description" sm={2}>Description</Label>
             <Col sm={10}>
                 <Input type="textarea" name="text" id="description"
@@ -165,16 +195,19 @@ const FormRegister = () => {
                        }}/>
             </Col>
             <FormFeedback invalid>{checkedDescription}</FormFeedback>
-        </FormGroup>
-        <MultipleSelectBox label='Select languages'
-                           value={languages}
-                           optionsSimple={allLanguages}
-                           onChange={setLanguages}/>
-        <MultipleSelectBox label='Select interests'
-                           value={interests}
-                           optionsSimple={allInterests}
-                           onChange={setInterests}/>
-        <FormGroup>
+        </ItemContainer>
+        <ItemContainer><MultipleSelectBox label='Select languages'
+                                          value={languages}
+                                          optionsSimple={allLanguages}
+                                          onChange={setLanguages}/>
+        </ItemContainer>
+        <ItemContainer>
+            <MultipleSelectBox label='Select interests'
+                               value={interests}
+                               optionsSimple={allInterests}
+                               onChange={setInterests}/>
+        </ItemContainer>
+        <ItemContainer>
             {userPhoto && <CardImg width={"20%"} src={getSrcForImg(userPhoto)}/>}
             <ImageSelector photos={userPhoto}
                            setPhotos={photo => {
@@ -184,8 +217,8 @@ const FormRegister = () => {
                            multiple={false}
             />
             <FormFeedback invalid>{checkedPhoto}</FormFeedback>
-        </FormGroup>
-        <FormGroup>
+        </ItemContainer>
+        <ItemContainer>
             <Label for="password" hidden>Password</Label>
             <Input invalid={!isPasswordReadyForRegister} valid={isPasswordReadyForRegister}
                    type="password" name="password" id="password" placeholder="Password"
@@ -194,9 +227,9 @@ const FormRegister = () => {
                        handlePassword(evt, setCheckedPassword, setIsPasswordReadyForRegister);
                    }}/>
             <FormFeedback invalid>{checkedPassword}</FormFeedback>
-        </FormGroup>
+        </ItemContainer>
 
-        <FormGroup>
+        <ItemContainer>
             <Label for="confirmPassword" hidden>Confirm Password</Label>
             <Input invalid={!isConfirmPasswordReadyForRegister}
                    valid={isConfirmPasswordReadyForRegister}
@@ -207,10 +240,10 @@ const FormRegister = () => {
                    onChange={(evt) => handleConfirmPassword(evt, setCheckedConfirmPassword,
                        setIsConfirmPasswordReadyForRegister, password)}/>
             <FormFeedback invalid>{checkedConfirmPassword}</FormFeedback>
-        </FormGroup>
-        <FormText>
+        </ItemContainer>
+        <ItemContainer>
             <CustomReference action={moveToMainPage} description='Already registered?'/>
-        </FormText>
+        </ItemContainer>
         <Button className="btn btn-success"
                 onClick={handleSubmit}
                 disabled={!(isUserNameReadyForRegister &&
@@ -223,7 +256,16 @@ const FormRegister = () => {
                     isPhotoReadyForRegister
                 )}>Register</Button>
         <Button color="danger" onClick={moveToMainPage}>Close</Button>
-    </>;
+    </Container>;
 };
 
-export default FormRegister
+const mapStateToProps = (state) => ({
+    allLanguages: state[FORM_ID]?.languages || [],
+    allInterests: state[FORM_ID]?.interests || [],
+    checkMail: state[FORM_ID]?.checkMail,
+    checkUserName: state[FORM_ID]?.checkUserName
+});
+
+export default connect(mapStateToProps,
+    {getAllLanguages, getAllInterests, getCheckMail, getCheckUserName},
+    FORM_ID)(FormRegister);

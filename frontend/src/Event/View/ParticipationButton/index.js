@@ -1,30 +1,28 @@
-import React, {useContext} from "react";
-import {DEFAULT_EVENT_USER, EVENT_SERVICE_URL} from "../../../utils/constants";
-import {Context} from "../../../Context";
+import React from "react";
+import {DEFAULT_EVENT_USER} from "../../../utils/constants";
+import {connect} from "../../../Context";
 import Button from "reactstrap/es/Button";
 import {EventUser} from "../../../types";
 import PropTypes from "prop-types";
+import {FORM_ID} from "../constants";
+import {deleteMeFromList, postMeToList} from "./actions";
 
-const ParticipationButton = ({eventId, users, setRefresh}) => {
-    const [state] = useContext(Context);
-
+const ParticipationButton = ({eventId, users, setRefresh, userId, postMeToList, deleteMeFromList}) => {
     const addMeToWaitApproveList = () => {
         const meObject = {...DEFAULT_EVENT_USER};
-        meObject.user.id = state.userId;
+        meObject.user.id = userId;
         meObject.eventId = eventId;
-        state.fetchWithToken(EVENT_SERVICE_URL + '/events/users',
-            () => setRefresh(true), 'POST', meObject);
+        postMeToList(setRefresh, meObject);
     };
 
     const removeMeFromEvent = () => {
         const meObject = {...DEFAULT_EVENT_USER};
-        meObject.user.id = state.userId;
+        meObject.user.id = userId;
         meObject.eventId = eventId;
-        state.fetchWithToken(EVENT_SERVICE_URL + '/events/users',
-            () => setRefresh(true), 'DELETE', meObject);
+        deleteMeFromList(setRefresh, meObject);
     };
 
-    const ifIPartOfEvent = !!users.find(user => user.user.id === state.userId);
+    const ifIPartOfEvent = !!users.find(user => user.user.id === userId);
     const actionButton = ifIPartOfEvent ? removeMeFromEvent : addMeToWaitApproveList;
     const buttonTitle = ifIPartOfEvent ? "Remove me from event" : "Add me to event";
 
@@ -34,7 +32,14 @@ const ParticipationButton = ({eventId, users, setRefresh}) => {
 ParticipationButton.propTypes = {
     eventId: PropTypes.string.isRequired,
     users: PropTypes.arrayOf(EventUser),
-    setRefresh: PropTypes.func.isRequired
+    setRefresh: PropTypes.func.isRequired,
+    userId: PropTypes.string,
+    postMeToList: PropTypes.func.isRequired,
+    deleteMeFromList: PropTypes.func.isRequired
 };
 
-export default ParticipationButton;
+const mapStateToProps = state => ({
+    userId: state.userId
+});
+
+export default connect(mapStateToProps, {postMeToList, deleteMeFromList}, FORM_ID)(ParticipationButton);

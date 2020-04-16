@@ -1,17 +1,20 @@
 import React from "react";
 import {Card, CardBody, CardImg, CardSubtitle, CardText, CardTitle} from "reactstrap";
 import CardLink from "reactstrap/es/CardLink";
-import {getSrcForImg} from "../../../utils/utils";
-import {User} from "../../../types";
+import {getSrcForImg} from "../../../../utils/utils";
+import {User} from "../../../../types";
+import RightContainer from "../../../../utils/components/Container/RightContainer";
 
 const Profile = ({user}) => {
-    return <div className='container-main-info-item center-items' style={{width: '400px'}}>
+    return <RightContainer style={{width: '400px'}}>
         <Card body style={{align: 'center'}}>
             {user.userPhotos ?
                 <CardImg top width="50%" height="255" src={getSrcForImg(user.userPhotos[0])}
                          alt="Card image cap"/> : null}
             <CardBody>
-                <CardTitle><h6>{user.firstName + ' ' + user.lastName}</h6></CardTitle>
+                <CardTitle>
+                    <h6>{user.firstName + ' ' + user.lastName}</h6>
+                </CardTitle>
                 <CardSubtitle>
                     <h6>{user.location.name + ' ' + user.location.country.name}</h6>
                 </CardSubtitle>
@@ -21,7 +24,7 @@ const Profile = ({user}) => {
                 <CardText>About owner: {user.description}</CardText>
             </CardBody>
         </Card>
-    </div>;
+    </RightContainer>;
 };
 
 Profile.props = {

@@ -1,20 +1,19 @@
-import React, {useContext} from "react";
+import React from "react";
 import ItemComment from "./ItemComment";
-import {Context} from "../../../Context";
+import {connect} from "../../../Context";
 import {Review} from "../../../types";
 import PropTypes from "prop-types";
+import {FORM_ID} from "../constants";
 
-const MessagesContainer = ({reviews, eventUserId, eventId}) => {
-    const [state] = useContext(Context);
-
+const MessagesContainer = ({reviews, eventUserId, eventId, userId}) => {
     return reviews.length !== 0 ? reviews.map((review, key) =>
         <ItemComment key={key}
                      review={review}
                      style={review.authorId ===
-                     (state.userId === eventUserId ? eventId : state.userId)
+                     (userId === eventUserId ? eventId : userId)
                          ? 'message-orange' : 'message-blue'}
                      timestampStyle={review.authorId ===
-                     (state.userId === eventUserId ? eventId : state.userId)
+                     (userId === eventUserId ? eventId : userId)
                          ? 'message-timestamp-right' : 'message-timestamp-left'}/>
     ) : <div className='no-messages-text'>
         No messages presented
@@ -24,7 +23,12 @@ const MessagesContainer = ({reviews, eventUserId, eventId}) => {
 MessagesContainer.propTypes = {
     reviews: PropTypes.arrayOf(Review),
     eventUserId: PropTypes.string.isRequired,
-    eventId: PropTypes.string.isRequired
+    eventId: PropTypes.string.isRequired,
+    userId: PropTypes.string.isRequired
 };
 
-export default MessagesContainer;
+const mapStateToProps = state => ({
+    userId: state.userId
+});
+
+export default connect(mapStateToProps, {}, FORM_ID)(MessagesContainer);

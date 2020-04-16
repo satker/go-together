@@ -1,19 +1,15 @@
-import React, {useContext, useState} from "react";
+import React, {useState} from "react";
 import {Input} from "reactstrap";
-import {Context} from "../../../Context";
-import {MESSAGE_SERVICE_URL} from "../../../utils/constants";
+import {connect} from "../../../Context";
 import PropTypes from "prop-types";
 import SendIcon from '@material-ui/icons/Send';
+import {FORM_ID} from "../constants";
+import {putReview} from "./actions";
 
-const URL_EVENT_REVIEWS = MESSAGE_SERVICE_URL + "/events/_id_/messages";
-
-const InputComment = ({refresh, eventId, userMessageId, eventUserId, readOnly, setRefreshChats}) => {
+const InputComment = ({refresh, eventId, userMessageId, eventUserId, readOnly, setRefreshChats, userId, putReview}) => {
     const [message, setMessage] = useState('');
-
-    const [state] = useContext(Context);
-
     const send = () => {
-        const authorId = state.userId === eventUserId ? eventId : state.userId;
+        const authorId = userId === eventUserId ? eventId : userId;
         const recipientId = userMessageId === eventUserId ? eventId : userMessageId;
         setMessage('');
         const body = {
@@ -21,10 +17,7 @@ const InputComment = ({refresh, eventId, userMessageId, eventUserId, readOnly, s
             authorId,
             recipientId
         };
-        state.fetchWithToken(URL_EVENT_REVIEWS.replace("_id_", eventId), () => {
-            setRefreshChats(true);
-            refresh()
-        }, 'PUT', body);
+        putReview(eventId, body, setRefreshChats, refresh);
     };
 
     return <div className='container-input'>
@@ -44,7 +37,12 @@ InputComment.propTypes = {
     eventId: PropTypes.string.isRequired,
     eventUserId: PropTypes.string,
     userId: PropTypes.string,
-    refresh: PropTypes.func.isRequired
+    refresh: PropTypes.func.isRequired,
+    putReview: PropTypes.func.isRequired
 };
 
-export default InputComment;
+const mapStateToProps = state => ({
+    userId: state.userId
+});
+
+export default connect(mapStateToProps, {putReview}, FORM_ID)(InputComment);

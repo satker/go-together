@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from "reactstrap";
 import PropTypes from "prop-types";
 import {Range} from 'rc-slider';
@@ -10,12 +10,16 @@ import CheckInOutDates from '../utils/components/CheckInOutDates'
 import CounterItem from "../utils/components/CounterItem";
 import AdvancedSearch from "./AdvancedSearch";
 import {FORM_DTO, LOCATION_SERVICE_URL, SEARCH_OBJECT_DEFAULT} from '../utils/constants'
-import {Context} from "../Context";
+import {connect} from "../Context";
 import {isEqual} from "lodash";
 import {SearchObject} from "../types";
+import {FORM_ID} from "./constants";
+import {setArrivalDate, setDepartureDate, setPage} from "./actions";
 
-const SearchForm = ({setEvents, searchObject, onChangeSearchObject, filterObject, setFilterObject, onClearSearchObject}) => {
-    const [state, setState] = useContext(Context);
+const SearchForm = ({
+                        setEvents, searchObject, onChangeSearchObject, filterObject, setFilterObject, onClearSearchObject,
+                        setPage, setArrivalDate, setDepartureDate
+                    }) => {
     const [dropdownPriceOpen, setDropdownPriceOpen] = useState(false);
     const [dropdownCapacityOpen, setDropdownCapacityOpen] = useState(false);
 
@@ -121,10 +125,10 @@ const SearchForm = ({setEvents, searchObject, onChangeSearchObject, filterObject
                 [searchObject.arrivalDate, searchObject.departureDate]);*/
 
             newFilterObject.page.page = 0;
-            setState('page', 0);
+            setPage(0);
             setFilterObject(newFilterObject);
         }
-    }, [focus, state, searchObject, setFilterObject, setEvents, setState]);
+    }, [focus, searchObject, setFilterObject, setEvents, setPage]);
 
     const onAfterChange = (value) => {
         onChangeSearchObject('minCostNight', value[0]);
@@ -134,9 +138,9 @@ const SearchForm = ({setEvents, searchObject, onChangeSearchObject, filterObject
     const clearFilters = () => {
         onClearSearchObject();
         setFilterObject({...FORM_DTO("event.id")});
-        setState(['arrivalDate', 'departureDate'],
-            [null, null]);
-        setState('page', 0);
+        setArrivalDate(null);
+        setDepartureDate(null);
+        setPage(0);
     };
 
     return <div className='container-search-events'>
@@ -218,7 +222,12 @@ SearchForm.propTypes = {
     onChangeSearchObject: PropTypes.func.isRequired,
     onClearSearchObject: PropTypes.func.isRequired,
     setEvents: PropTypes.func.isRequired,
-    setFilterObject: PropTypes.object
+    setFilterObject: PropTypes.object,
+    setPage: PropTypes.func.isRequired,
+    setArrivalDate: PropTypes.func.isRequired,
+    setDepartureDate: PropTypes.func.isRequired
 };
 
-export default SearchForm;
+export default connect(() => null,
+    {setPage, setArrivalDate, setDepartureDate},
+    FORM_ID)(SearchForm);

@@ -1,46 +1,40 @@
-import React, {useContext, useEffect, useState} from "react";
-import Profile from "./Profile";
-import {Context} from "../../Context";
+import React, {useEffect, useState} from "react";
+import {connect} from "../../Context";
 import {Event} from "../../types";
 import FormReference from "../../utils/components/FormReference";
 import ObjectGeoLocation from "../../utils/components/ObjectGeoLocation";
-import Container from "@material-ui/core/Container";
 import Users from "./Users";
-import {EVENT_SERVICE_URL} from "../../utils/constants";
 import MainInfo from "./MainInfo";
+import Container from "../../utils/components/Container/ContainerRow";
+import {FORM_ID} from "./constants";
+import {getStatuses, getUsers} from "./actions";
+import PropTypes from 'prop-types';
 
-const ViewEvent = ({event}) => {
-    const [state] = useContext(Context);
+const ViewEvent = ({event, statuses, users, getUsers, getStatuses, userId}) => {
     const [refresh, setRefresh] = useState(true);
-    const [users, setUsers] = useState([]);
-    const [statuses, setStatuses] = useState([]);
 
     useEffect(() => {
         if (refresh) {
-            state.fetchWithToken(EVENT_SERVICE_URL + '/events/' + event.id + '/users/statuses', setStatuses);
-            state.fetchWithToken(EVENT_SERVICE_URL + '/events/' + event.id + '/users', setUsers);
+            getStatuses(event.id);
+            getUsers(event.id);
             setRefresh(!refresh);
         }
-    }, [state, setUsers, setStatuses, event, refresh, setRefresh]);
+    }, [getStatuses, getUsers, event, refresh, setRefresh]);
 
     return <Container>
-        {state.userId === event.author.id &&
+        {userId === event.author.id &&
         <FormReference formRef={'/events/' + event.id + '/edit'} description='Edit event'/>}
 
-        <div className='container-main-info margin-bottom-20'>
-            <MainInfo event={event}
-                      setRefresh={setRefresh}
-                      users={users}/>
-            <Profile user={event.author}/>
-        </div>
+        <MainInfo event={event}
+                  setRefresh={setRefresh}
+                  users={users}/>
         <ObjectGeoLocation
             editable={false}
             setCurrentCenter={() => null}
             routes={event.route}
             height={400}
         />
-        <Users setUsers={setUsers}
-               eventUserId={event.author.id}
+        <Users eventUserId={event.author.id}
                eventId={event.id}
                users={users}
                statuses={statuses}/>
@@ -48,7 +42,18 @@ const ViewEvent = ({event}) => {
 };
 
 ViewEvent.propTypes = {
-    event: Event.isRequired
+    event: Event.isRequired,
+    statuses: PropTypes.array.isRequired,
+    users: PropTypes.array.isRequired,
+    getUsers: PropTypes.func.isRequired,
+    getStatuses: PropTypes.func.isRequired,
+    userId: PropTypes.string.isRequired
 };
 
-export default ViewEvent;
+const mapStateToProps = state => ({
+    statuses: state[FORM_ID]?.statuses || [],
+    users: state[FORM_ID]?.users || [],
+    userId: state.userId
+});
+
+export default connect(mapStateToProps, {getUsers, getStatuses}, FORM_ID)(ViewEvent);

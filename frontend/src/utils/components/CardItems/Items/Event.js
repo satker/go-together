@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {Card, CardBody, CardLink, CardText, CardTitle} from "reactstrap";
 import Gallery from "../../Galery";
 import PropTypes from "prop-types";
@@ -8,10 +8,10 @@ import FormReference from "../../FormReference";
 import DeleteIcon from "../../Icon/Delete";
 import {PHOTO_OBJECT} from "../../../constants";
 import EventLikes from "../../Event/EventLikes";
-import {Context} from "../../../../Context";
+import {connect} from "../../../../Context";
+import {FORM_ID} from "./constants";
 
-const ItemEvent = ({event, onClickChooseEvent, onDelete}) => {
-    const [state] = useContext(Context);
+const ItemEvent = ({event, onClickChooseEvent, onDelete, userId}) => {
     return <Card body style={{align: 'center'}}>
         <DeleteIcon onDelete={() => onDelete(event.id)}/>
         <img className='fixed-width-main-image-card'
@@ -27,7 +27,7 @@ const ItemEvent = ({event, onClickChooseEvent, onDelete}) => {
             <CardText>Going to travel through {event.route.map(location => location.location.name + ", " +
                 location.location.country.name).join(" -> ")}</CardText>
             <CardText>With {event.peopleCount} friends</CardText>
-            <CardText>{state.userId && <EventLikes eventId={event.id}/>}</CardText>
+            <CardText>{userId && <EventLikes eventId={event.id}/>}</CardText>
             <CardText>Live by {event.housingType}</CardText>
             <FormReference formRef={'/events/' + event.id}
                            action={() => onClickChooseEvent(event)}
@@ -44,7 +44,12 @@ const ItemEvent = ({event, onClickChooseEvent, onDelete}) => {
 ItemEvent.propTypes = {
     event: Event.isRequired,
     onClickChooseEvent: PropTypes.func.isRequired,
-    onDelete: PropTypes.func
+    onDelete: PropTypes.func,
+    userId: PropTypes.string
 };
 
-export default ItemEvent;
+const mapStateToProps = (state) => ({
+    userId: state.userId
+});
+
+export default connect(mapStateToProps, {}, FORM_ID)(ItemEvent);

@@ -3,20 +3,23 @@ import {CoordinateCenter, Route} from '../../../types'
 import {ListGroupItem} from 'reactstrap'
 import PropTypes from "prop-types";
 import Delete from "../Icon/Delete";
+import ContainerColumn from "../Container/ContainerColumn";
+import LeftContainer from "../Container/LeftContainer";
+import RightContainer from "../Container/RightContainer";
 
 const RouteItem = ({center, setCenter, route, onDelete}) => {
-    return <div className='container-main-info'>
-        <div className='flex' style={{width: onDelete ? '95%' : '100%'}}>
+    return <ContainerColumn>
+        <LeftContainer style={{width: onDelete ? '95%' : '100%'}}>
             <ListGroupItem active={center.lat === route.latitude && center.lng === route.longitude}
                            action
                            onClick={() => setCenter([route.latitude, route.longitude])}>
                 {route.routeNumber}. {route.location.name}, {route.location.country.name}
             </ListGroupItem>
-        </div>
-        {onDelete && <div className='flex' style={{width: '5%'}}>
+        </LeftContainer>
+        {onDelete && <RightContainer style={{width: '5%'}}>
             <Delete onDelete={() => onDelete(route.routeNumber)}/>
-        </div>}
-    </div>;
+        </RightContainer>}
+    </ContainerColumn>;
 };
 
 RouteItem.propTypes = {

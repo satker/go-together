@@ -1,28 +1,39 @@
-import React, {useContext, useEffect, useState} from "react";
-import {Context} from "../../Context";
-import {EVENTS_URL} from '../../utils/constants'
+import React, {useEffect, useState} from "react";
+import {connect} from "../../Context";
 import ViewEvent from "./ViewEvent";
 import PropTypes from 'prop-types';
 import moment from "moment";
+import {FORM_ID} from "./constants";
+import {getEvent} from "./actions";
+import {Event} from "../../types";
 
-const GetAndViewEvent = ({id}) => {
-    const [event, setEvent] = useState(null);
-
-    const [state] = useContext(Context);
+const GetAndViewEvent = ({id, getEvent, event}) => {
+    const [currentEvent, setCurrentEvent] = useState(null);
 
     useEffect(() => {
-        state.fetchWithToken(EVENTS_URL + "/" + id, event => {
-            event.startDate = moment(event.startDate);
-            event.endDate = moment(event.endDate);
-            setEvent(event);
-        })
-    }, [id, setEvent, state]);
+        getEvent(id);
+    }, [getEvent, id]);
 
-    return event && <ViewEvent event={event}/>;
+    useEffect(() => {
+        if (event) {
+            const result = {...event};
+            result.startDate = moment(event.startDate);
+            result.endDate = moment(event.endDate);
+            setCurrentEvent(result)
+        }
+    }, [setCurrentEvent, event]);
+
+    return currentEvent && <ViewEvent event={currentEvent}/>;
 };
 
 GetAndViewEvent.propTypes = {
-    id: PropTypes.string.isRequired
+    id: PropTypes.string.isRequired,
+    getEvent: PropTypes.func.isRequired,
+    event: Event
 };
 
-export default GetAndViewEvent;
+const mapStateToProps = state => ({
+    event: state[FORM_ID]?.event,
+});
+
+export default connect(mapStateToProps, {getEvent}, FORM_ID)(GetAndViewEvent);

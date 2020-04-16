@@ -9,6 +9,9 @@ import {getAddress, getCity, getCountry, getState} from "./utils";
 import RouteItem from "./RouteItem";
 import {ListGroup} from "reactstrap";
 import AddressFields from "./AddressFields";
+import ContainerColumn from "../Container/ContainerColumn";
+import LeftContainer from "../Container/LeftContainer";
+import RightContainer from "../Container/RightContainer";
 
 export const GOOGLE_API_KEY = "AIzaSyBSjnMkN8ckymUWZO5v0q-cZW9WppoFsyM";
 const getMapOptions = () => {
@@ -147,10 +150,10 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
         }
     };
 
-    return <div>
+    return <>
         {editable && googleMap && <AddressFields google={googleMap} setCenter={setCenter}/>}
-        <div className='container-main-info'>
-            <div className='container-main-info-item' style={{width: '70%', height: 400}}>
+        <ContainerColumn>
+            <LeftContainer style={{width: '70%', height: 400}}>
                 <GoogleMapReact bootstrapURLKeys={{key: GOOGLE_API_KEY}}
                                 yesIWantToUseGoogleMapApiInternals
                                 onGoogleApiLoaded={handleGoogleMapApi}
@@ -168,8 +171,8 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
                     {googleMap && !lock && handlePolyline(googleMap)}
                     {getRoutes()}
                 </GoogleMapReact>
-        </div>
-            <div className='container-main-info-item' style={{width: '30%'}}><ListGroup>
+            </LeftContainer>
+            <RightContainer isBordered={true} style={{width: '30%'}}><ListGroup>
                 {getSortedRoutes().map(route => <RouteItem key={route.routeNumber}
                                                            onDelete={editable && ((routeNumber) => {
                                                                onDelete(routeNumber);
@@ -179,9 +182,9 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
                                                            center={center}
                                                            setCenter={setCenter}/>)}
             </ListGroup>
-            </div>
-        </div>
-    </div>;
+            </RightContainer>
+        </ContainerColumn>
+    </>;
 };
 
 ObjectGeoLocation.props = {

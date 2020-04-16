@@ -1,44 +1,44 @@
-import React, {useCallback, useContext, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import PropTypes from 'prop-types';
-import {MESSAGE_SERVICE_URL} from '../../../utils/constants'
-import {Context} from "../../../Context";
+import {connect} from "../../../Context";
 import InputComment from "./InputComment";
 import './style.css'
 import moment from "moment";
 import MessagesContainer from "./MesagesContainer";
 import UserChats from "./Chats";
+import ContainerColumn from "../../../utils/components/Container/ContainerColumn";
+import {FORM_ID} from "../constants";
+import {getReviewsByEvent} from "./actions";
+import {Review} from "../../../types";
 
-export const URL_EVENT_REVIEWS = MESSAGE_SERVICE_URL + "/events/_id_/messages/_author_id_";
-
-const Messages = ({eventId, userMessageId, eventUserId, setUserMessageId}) => {
-    const [reviewsByEvent, setReviewsByEvent] = useState([]);
+const Messages = ({eventId, userMessageId, eventUserId, setUserMessageId, userId, getReviewsByEvent, reviewsByEvent}) => {
     const [lock, setLock] = useState(false);
+    const [parsedReviewsByEvent, setParsedReviewsByEvent] = useState([]);
     const [timer, setTimer] = useState(null);
     const [refreshChats, setRefreshChats] = useState(false);
-    const [state] = useContext(Context);
 
     const getMessages = useCallback(() => {
-        const authorId = state.userId === eventUserId ? userMessageId : state.userId;
-        state.fetchWithToken(URL_EVENT_REVIEWS.replace("_id_", eventId)
-                .replace('_author_id_', authorId),
-            reviews => {
-                const updateReviews = reviews.map(review => {
-                    review.date = moment(review.date);
-                    return review;
-                }).sort((review1, review2) => review1.date.diff(review2.date, 'seconds'));
-                setReviewsByEvent(updateReviews);
-            });
-    }, [eventUserId, eventId, state, userMessageId]);
+        const authorId = userId === eventUserId ? userMessageId : userId;
+        getReviewsByEvent(eventId, authorId);
+    }, [eventUserId, eventId, userId, userMessageId, getReviewsByEvent]);
 
     useEffect(() => {
-        const authorId = state.userId === eventUserId ? userMessageId : state.userId;
+        const updateReviews = reviewsByEvent.map(review => {
+            review.date = moment(review.date);
+            return review;
+        }).sort((review1, review2) => review1.date.diff(review2.date, 'seconds'));
+        setParsedReviewsByEvent(updateReviews);
+    }, [reviewsByEvent]);
+
+    useEffect(() => {
+        const authorId = userId === eventUserId ? userMessageId : userId;
         if (userMessageId && authorId) {
             getMessages();
             setLock(true)
         } else {
-            setReviewsByEvent([])
+            setParsedReviewsByEvent([])
         }
-    }, [getMessages, setReviewsByEvent, state, userMessageId, eventUserId]);
+    }, [getMessages, setParsedReviewsByEvent, userId, userMessageId, eventUserId]);
 
     useEffect(() => {
         if (lock && !timer) {
@@ -50,21 +50,21 @@ const Messages = ({eventId, userMessageId, eventUserId, setUserMessageId}) => {
         }
     }, [lock, setTimer, setLock, timer, getMessages]);
 
-    return <div className='custom-border' style={{display: 'flex', flexDirection: 'row'}}>
-        <UserChats eventUserId={eventUserId}
-                   userMessageId={userMessageId}
-                   setUserMessageId={setUserMessageId}
-                   eventId={eventId}
-                   refreshChats={refreshChats}
-                   setRefreshChats={setRefreshChats}/>
+    return <ContainerColumn isBordered>
+        {eventUserId === userId && <UserChats eventUserId={eventUserId}
+                                              userMessageId={userMessageId}
+                                              setUserMessageId={setUserMessageId}
+                                              eventId={eventId}
+                                              refreshChats={refreshChats}
+                                              setRefreshChats={setRefreshChats}/>}
         <div className='container-input-messages'>
             <div className='container-messages'>
                 <MessagesContainer eventId={eventId}
                                    eventUserId={eventUserId}
-                                   reviews={reviewsByEvent}/>
+                                   reviews={parsedReviewsByEvent}/>
             </div>
-            <InputComment readOnly={reviewsByEvent.length === 0}
-                          setReviewsByEvent={setReviewsByEvent}
+            <InputComment readOnly={parsedReviewsByEvent.length === 0}
+                          setReviewsByEvent={setParsedReviewsByEvent}
                           userMessageId={userMessageId}
                           eventId={eventId}
                           eventUserId={eventUserId}
@@ -72,14 +72,22 @@ const Messages = ({eventId, userMessageId, eventUserId, setUserMessageId}) => {
                           setRefreshChats={setRefreshChats}
             />
         </div>
-    </div>
+    </ContainerColumn>
 };
 
 Messages.props = {
+    userMessageId: PropTypes.string,
     eventUserId: PropTypes.string,
     eventId: PropTypes.string.isRequired,
     userId: PropTypes.string,
-    setUserMessageId: PropTypes.func.isRequired
+    setUserMessageId: PropTypes.func.isRequired,
+    getReviewsByEvent: PropTypes.func.isRequired,
+    reviewsByEvent: PropTypes.arrayOf(Review)
 };
 
-export default Messages;
+const mapStateToProps = state => ({
+    userId: state.userId,
+    reviewsByEvent: state[FORM_ID]?.reviewsByEvent || []
+});
+
+export default connect(mapStateToProps, {getReviewsByEvent}, FORM_ID)(Messages);

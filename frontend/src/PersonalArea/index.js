@@ -1,16 +1,17 @@
-import React, {useContext, useEffect, useState} from "react";
-import {Button, Container, Form, Input, Table} from "reactstrap";
+import React, {useEffect, useState} from "react";
+import {Button, Input} from "reactstrap";
 import '../Form.css'
-import {Context} from "../Context";
-import {USER_SERVICE_URL} from '../utils/constants'
+import Container from "../utils/components/Container/ContainerRow";
+import ItemContainer from "../utils/components/Container/ItemContainer";
+import {getCheckMail, getUserInfo, putUpdatedUser} from "./actions";
+import {connect} from "../Context";
+import {FORM_ID} from "./constants";
 
-const URL_USER = USER_SERVICE_URL + "/users/_id_";
 const PATTERN_TO_CHECK_MAIL = '(?:[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\\])';
 const PATTERN_TO_CHECK_NAME = '^[A-Za-z]*$';
 
 
-const PersonalArea = () => {
-    const [state] = useContext(Context);
+const PersonalArea = ({userInfo, getUserInfo, updatedUser, putUpdatedUser, checkMail, getCheckMail}) => {
     const [isEdited, setIsEdited] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -21,15 +22,36 @@ const PersonalArea = () => {
     const [isLastNameReadyForRegister, setIsLastNameReadyForRegister] = useState(true);
 
     useEffect(() => {
-        state.fetchWithToken(URL_USER.replace('_id_', state.userId), resp => {
-            setFirstName(resp.firstName);
-            setLastName(resp.lastName);
-            setMail(resp.mail);
-            setLogin(resp.login);
-        })
-    }, [setFirstName, setLastName, setMail, state]);
+        getUserInfo();
+    }, [getUserInfo]);
 
-    const onSubmit = async (evt) => {
+    useEffect(() => {
+        if (userInfo) {
+            setFirstName(userInfo.firstName);
+            setLastName(userInfo.lastName);
+            setMail(userInfo.mail);
+            setLogin(userInfo.login);
+        }
+    }, [setFirstName, setLastName, setMail, setLogin, userInfo]);
+
+    useEffect(() => {
+        if (updatedUser) {
+            setFirstName(updatedUser.firstName);
+            setLastName(updatedUser.lastName);
+            setMail(updatedUser.mail);
+            setLogin(updatedUser.login);
+        }
+    }, [setFirstName, setLastName, setMail, setLogin, updatedUser]);
+
+    useEffect(() => {
+        if (checkMail) {
+            if (checkMail !== true) {
+                setIsMailReadyForRegister(true);
+            }
+        }
+    }, [setIsMailReadyForRegister, checkMail]);
+
+    const onSubmit = () => {
         let error = 'Check your new';
         if (!isMailReadyForRegister) {
             error = error + ' mail ';
@@ -46,23 +68,12 @@ const PersonalArea = () => {
         }
 
         let body = {
-            login: login
+            login,
+            firstName,
+            lastName,
+            mail
         };
-        for (let key of ["firstName", "lastName", "mail"]) {
-            if ([key] === '') {
-                body[key] = state.user[key];
-            } else {
-                if (key === 'firstName') body[key] = firstName;
-                if (key === 'lastName') body[key] = lastName;
-                if (key === 'mail') body[key] = mail;
-            }
-        }
-
-        state.fetchWithToken(URL_USER.replace('_id_', state.userId), resp => {
-            setMail(resp.mail);
-            setFirstName(resp.firstName);
-            setLastName(resp.lastName)
-        }, 'PUT', body);
+        putUpdatedUser(body);
     };
 
     const onChange = (set) => (evt) => {
@@ -80,12 +91,8 @@ const PersonalArea = () => {
             setIsMailReadyForRegister(false);
             return;
         }
-        const URLtoCheck = USER_SERVICE_URL + '/mail/check/_mail_';
-        state.fetchWithToken(URLtoCheck.replace("_mail_", value), resp => {
-            if (resp !== true) {
-                setIsMailReadyForRegister(true);
-            }
-        });
+
+        getCheckMail(value);
     };
 
     const handleName = (evt) => {
@@ -112,76 +119,65 @@ const PersonalArea = () => {
 
     return (
         <Container>
-            <b><h3>Welcome, {firstName}</h3></b>
-            <Table>
-                <tbody>
-                <tr>
-                    <th scope="row">Login</th>
-                    <td>{login}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Mail</th>
-                    <td>{mail}</td>
-                </tr>
-                <tr>
-                    <th scope="row">First name</th>
-                    <td>{firstName}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Last name</th>
-                    <td>{lastName}</td>
-                </tr>
-                </tbody>
-            </Table>
+            <ItemContainer>
+                <h3>Welcome, {firstName}</h3>
+            </ItemContainer>
+            <ItemContainer>Login: {login}</ItemContainer>
+            <ItemContainer>Mail: {mail}</ItemContainer>
+            <ItemContainer>First name: {firstName}</ItemContainer>
+            <ItemContainer>Last name: {lastName}</ItemContainer>
+            <ItemContainer>Login: {login}</ItemContainer>
             <br/>
             <br/>
             <Button className="btn-danger" onClick={() => setIsEdited(true)}>Edit profile</Button>
-            {isEdited ?
-                <Form className="wide-form" onSubmit={onSubmit}>
-                    <p><b>Edit your profile</b></p>
-                    <Table>
-                        <tbody>
-                        <tr>
-                            <td>First name</td>
-                            <td><input
-                                className={!isFirstNameReadyForRegister ? "error" : "good"}
-                                type="text" name="firstName" placeholder={firstName}
-                                onChange={(evt) => {
-                                    onChange(setFirstName)(evt);
-                                    handleName(evt);
-                                }}/></td>
-                        </tr>
-                        <tr>
-                            <td>Last name</td>
-                            <td><input
-                                className={!isLastNameReadyForRegister ? "error" : "good"}
-                                type="text" name="lastName" placeholder={lastName}
-                                onChange={(evt) => {
-                                    onChange(setLastName)(evt);
-                                    handleName(evt);
-                                }}/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Mail address</td>
-                            <td><input
-                                className={!isMailReadyForRegister ? "error" : "good"}
-                                type="text" name="mail" placeholder={mail}
-                                onChange={(evt) => {
-                                    onChange(setMail)(evt);
-                                    handleMail(evt);
-                                }}/></td>
-                        </tr>
-                        </tbody>
-                    </Table>
-                    <Input className="btn btn-success form-control" disabled={!(isMailReadyForRegister &&
-                        isFirstNameReadyForRegister &&
-                        isLastNameReadyForRegister)} type="submit" value="Save changes"/>
-                </Form>
-                : null
+            {isEdited &&
+            <Container>
+                <ItemContainer>Edit your profile</ItemContainer>
+                <ItemContainer>
+                    First name: <input
+                    className={!isFirstNameReadyForRegister ? "error" : "good"}
+                    type="text" name="firstName" placeholder={firstName}
+                    onChange={(evt) => {
+                        onChange(setFirstName)(evt);
+                        handleName(evt);
+                    }}/>
+                </ItemContainer>
+                <ItemContainer>
+                    Last name: <input
+                    className={!isLastNameReadyForRegister ? "error" : "good"}
+                    type="text" name="lastName" placeholder={lastName}
+                    onChange={(evt) => {
+                        onChange(setLastName)(evt);
+                        handleName(evt);
+                    }}/>
+                </ItemContainer>
+                <ItemContainer>
+                    Mail address: <input
+                    className={!isMailReadyForRegister ? "error" : "good"}
+                    type="text" name="mail" placeholder={mail}
+                    onChange={(evt) => {
+                        onChange(setMail)(evt);
+                        handleMail(evt);
+                    }}/>
+                </ItemContainer>
+                <ItemContainer>
+                    <Input className="btn btn-success form-control"
+                           disabled={!(isMailReadyForRegister &&
+                               isFirstNameReadyForRegister &&
+                               isLastNameReadyForRegister)}
+                           type="submit" onClick={onSubmit}
+                           value="Save changes"/>
+                </ItemContainer>
+            </Container>
             }
         </Container>
     );
 };
 
-export default PersonalArea;
+const mapStateToProps = (state) => ({
+    userInfo: state[FORM_ID]?.userInfo,
+    updatedUser: state[FORM_ID]?.updatedUser,
+    checkMail: state[FORM_ID].checkMail
+});
+
+export default connect(mapStateToProps, {getUserInfo, putUpdatedUser, getCheckMail}, FORM_ID)(PersonalArea);

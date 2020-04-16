@@ -8,16 +8,12 @@ import {
     GOOD_DESCRIPTION,
     GOOD_FIRST_NAME,
     GOOD_LAST_NAME,
-    GOOD_LOGIN,
-    GOOD_MAIL,
     GOOD_PASSWORD,
     GOOD_PHOTO,
     NOT_GOOD_CONFIRM_PASSWORD,
     NOT_GOOD_DESCRIPTION,
     NOT_GOOD_FIRST_NAME,
     NOT_GOOD_LAST_NAME,
-    NOT_GOOD_LOGIN,
-    NOT_GOOD_MAIL,
     NOT_GOOD_PASSWORD,
     NOT_GOOD_PHOTO_FILE_EXT,
     NOT_GOOD_PHOTO_URL,
@@ -27,31 +23,19 @@ import {
     PATTERN_TO_CHECK_URL
 } from "./constants";
 
-import {USER_SERVICE_URL} from "../utils/constants";
 
-export const handleUserName = (evt, setCheckedUserName, setIsUserNameReadyForRegister, fetchWithToken) => {
+export const handleUserName = (evt, setCheckedUserName, setIsUserNameReadyForRegister, getCheckUserName) => {
     let value = evt.target.value;
     if (value === '') {
         setCheckedUserName(EMPTY_LOGIN);
         setIsUserNameReadyForRegister(false);
         return;
     }
-    const URLtoCheck = USER_SERVICE_URL + '/users/check/login/' + value;
 
-    const responseHandler = response => {
-        if (response === true) {
-            setCheckedUserName(NOT_GOOD_LOGIN);
-            setIsUserNameReadyForRegister(false);
-        } else {
-            setCheckedUserName(GOOD_LOGIN);
-            setIsUserNameReadyForRegister(true);
-        }
-    };
-
-    fetchWithToken(URLtoCheck, responseHandler)
+    getCheckUserName(value)
 };
 
-export const handleMail = (evt, setCheckedMail, setIsMailReadyForRegister, fetchWithToken) => {
+export const handleMail = (evt, setCheckedMail, setIsMailReadyForRegister, getCheckMail) => {
     let value = evt.target.value;
     if (value === '') {
         setCheckedMail(EMPTY_MAIL);
@@ -64,19 +48,8 @@ export const handleMail = (evt, setCheckedMail, setIsMailReadyForRegister, fetch
         setIsMailReadyForRegister(false);
         return;
     }
-    const URLtoCheck = USER_SERVICE_URL + '/users/check/mail/' + value;
 
-    const responseHandler = response => {
-        if (response === true) {
-            setCheckedMail(NOT_GOOD_MAIL);
-            setIsMailReadyForRegister(false);
-        } else {
-            setCheckedMail(GOOD_MAIL);
-            setIsMailReadyForRegister(true);
-        }
-    };
-
-    fetchWithToken(URLtoCheck, responseHandler)
+    getCheckMail(value);
 };
 
 export const handleName = (evt, setCheckedFirstName, setIsFirstNameReadyForRegister, setCheckedLastName,

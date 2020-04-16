@@ -1,33 +1,35 @@
-import React, {useContext, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import MainInfo from "./MainInfo";
 import Button from "reactstrap/es/Button";
-import {Context} from "../../Context";
-import {EVENT_SERVICE_URL} from "../../utils/constants";
+import {connect} from "../../Context";
 import {Event} from "../../types";
 import {onChange} from "../../utils/utils";
 import {navigate} from 'hookrouter';
-import Container from "@material-ui/core/Container";
 import PaidThings from "./PaidThings";
 import Route from "./Route";
+import Container from "../../utils/components/Container/ContainerRow";
+import * as PropTypes from "prop-types";
+import {postUpdatedEvent, putNewEvent} from "./actions";
+import {FORM_ID} from "./constants";
 
-const ViewEvent = ({event}) => {
+const ViewEvent = ({event, userId, postUpdatedEvent, putNewEvent, updatedEvent, newEvent}) => {
     const [createEvent, setCreateEvent] = useState(event);
 
-    const [state] = useContext(Context);
     const saveEvent = () => {
         let saveObj = {...createEvent};
         saveObj.id = createEvent.id;
         saveObj.author = {
-            id: state.userId
+            id: userId
         };
-        if (createEvent.id) {
-            state.fetchWithToken(EVENT_SERVICE_URL + '/events', (response) =>
-                response.id && navigate('/events/' + response.id), 'POST', saveObj);
-        } else {
-            state.fetchWithToken(EVENT_SERVICE_URL + '/events', (response) =>
-                response && navigate('/events/' + response.id), 'PUT', saveObj);
-        }
+        createEvent.id ? postUpdatedEvent(saveObj) : putNewEvent(saveObj);
     };
+
+    useEffect(() => {
+        const id = (updatedEvent && updatedEvent.id) || (newEvent && newEvent.id);
+        if (id) {
+            navigate('/events/' + id)
+        }
+    }, [updatedEvent, newEvent]);
 
     return <Container>
         <MainInfo event={createEvent}
@@ -41,7 +43,18 @@ const ViewEvent = ({event}) => {
 };
 
 ViewEvent.propTypes = {
-    event: Event.isRequired
+    event: Event.isRequired,
+    userId: PropTypes.string,
+    postUpdatedEvent: PropTypes.func.isRequired,
+    putNewEvent: PropTypes.func.isRequired,
+    updatedEvent: PropTypes.object,
+    newEvent: PropTypes.object
 };
 
-export default ViewEvent;
+const mapStateToProps = (state) => ({
+    userId: state.userId,
+    updatedEvent: state[FORM_ID].updatedEvent,
+    newEvent: state[FORM_ID].newEvent
+});
+
+export default connect(mapStateToProps, {postUpdatedEvent, putNewEvent}, FORM_ID)(ViewEvent);

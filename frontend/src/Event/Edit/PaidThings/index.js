@@ -1,30 +1,31 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {Event} from "../../../types";
 import PropTypes from "prop-types";
 import PaidThingItem from "./PaidThingItem";
-import {DEFAULT_PAID_THING, EVENTS_URL} from "../../../utils/constants";
-import {Context} from "../../../Context";
+import {DEFAULT_PAID_THING} from "../../../utils/constants";
+import {connect} from "../../../Context";
+import {FORM_ID} from "../constants";
+import {getCashCategories, getPayedThings} from "./actions";
 
-const PaidThings = ({event, onChangeEvent}) => {
-    const [payedThings, setPayedThings] = useState([...event.paidThings]);
-    const [cashCategories, setCashCategories] = useState([]);
-    const [state] = useContext(Context);
+const PaidThings = ({
+                        event, onChangeEvent, cashCategories, payedThings,
+                        getCashCategories, getPayedThings
+                    }) => {
+    useEffect(() => {
+        getCashCategories();
+    }, [getCashCategories]);
 
     useEffect(() => {
-        state.fetchWithToken(EVENTS_URL + '/cashCategories', setCashCategories);
-        if (payedThings.length === 0) {
-            state.fetchWithToken(EVENTS_URL + '/payedThings', result => {
-                const newPaidThings = [];
-                for (const paidThing of result) {
-                    const newElement = {...DEFAULT_PAID_THING};
-                    newElement.paidThing = paidThing;
-                    newPaidThings.push(newElement);
-                }
-                setPayedThings(newPaidThings);
-                onChangeEvent('paidThings', newPaidThings);
-            })
+        if (payedThings.length !== 0) {
+            const newPaidThings = [];
+            for (const paidThing of payedThings) {
+                const newElement = {...DEFAULT_PAID_THING};
+                newElement.paidThing = paidThing;
+                newPaidThings.push(newElement);
+            }
+            onChangeEvent('paidThings', newPaidThings);
         }
-    }, [state]);
+    }, [payedThings]);
 
     const onChangePaidThing = (arrayIndex) => (value) => {
         let oldArray = [...event.paidThings];
@@ -36,7 +37,7 @@ const PaidThings = ({event, onChangeEvent}) => {
         <div className='flex'>
             Choose paid thing:
         </div>
-        {payedThings.map((paidThing, index) =>
+        {event.paidThings.map((paidThing, index) =>
             <PaidThingItem
                 cashCategories={cashCategories}
                 paidThing={paidThing}
@@ -46,7 +47,16 @@ const PaidThings = ({event, onChangeEvent}) => {
 
 PaidThings.propTypes = {
     event: Event.isRequired,
-    onChangeEvent: PropTypes.func.isRequired
+    onChangeEvent: PropTypes.func.isRequired,
+    getCashCategories: PropTypes.func.isRequired,
+    getPayedThings: PropTypes.func.isRequired,
+    cashCategories: PropTypes.array.isRequired,
+    payedThings: PropTypes.array.isRequired
 };
 
-export default PaidThings;
+const mapStateToProps = (state) => ({
+    cashCategories: state[FORM_ID]?.cashCategories || [],
+    payedThings: state[FORM_ID]?.payedThings
+});
+
+export default connect(mapStateToProps, {getCashCategories, getPayedThings}, FORM_ID)(PaidThings);

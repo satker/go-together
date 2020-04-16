@@ -1,24 +1,25 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {FormGroup, Input, Label} from "reactstrap";
-import {Context} from "../../../Context";
-import {EVENT_SERVICE_URL} from "../../../utils/constants";
+import {connect} from "../../../Context";
 import ImageSelector from "../../../utils/components/ImageSelector";
 import {Event} from "../../../types";
 import SelectBox from "../../../utils/components/SelectBox";
 import PropTypes from "prop-types";
 import GroupItems from "../../../utils/components/CardItems";
 import CheckInOutDates from "../../../utils/components/CheckInOutDates";
+import ContainerColumn from "../../../utils/components/Container/ContainerColumn";
+import LeftContainer from "../../../utils/components/Container/LeftContainer";
+import RightContainer from "../../../utils/components/Container/RightContainer";
+import {FORM_ID} from "../constants";
+import {getHousingTypes} from "./actions";
 
-const MainInfo = ({event, onChangeEvent}) => {
-    const [housingTypes, setHousingTypes] = useState([]);
-    const [state] = useContext(Context);
-
+const MainInfo = ({event, onChangeEvent, housingTypes, getHousingTypes}) => {
     useEffect(() => {
-        state.fetchWithToken(EVENT_SERVICE_URL + '/events/housingTypes', setHousingTypes);
-    }, [state]);
+        getHousingTypes();
+    }, [getHousingTypes]);
 
-    return <div className='container-main-info'>
-        <div className='container-main-info-item' style={{width: '600px'}}>
+    return <ContainerColumn>
+        <LeftContainer style={{width: '600px'}}>
             <FormGroup>
                 <Label for="name">Event name:</Label>
                 <Input type="text"
@@ -54,8 +55,8 @@ const MainInfo = ({event, onChangeEvent}) => {
                                          setStartDate={startDate => onChangeEvent('startDate', startDate)}
                                          setEndDate={endDate => onChangeEvent('endDate', endDate)}
         />
-        </div>
-        <div className='container-main-info-item center-items' style={{width: '600px'}}>
+        </LeftContainer>
+        <RightContainer style={{width: '600px'}}>
             <GroupItems items={event.eventPhotoDto.photos}
                         isPhotos
                         onDelete={(id) => console.log('delete: ', id)}/>
@@ -64,13 +65,19 @@ const MainInfo = ({event, onChangeEvent}) => {
                 setPhotos={(photos) => onChangeEvent('eventPhotoDto.photos', photos)}
                 multiple={true}
             />
-        </div>
-    </div>;
+        </RightContainer>
+    </ContainerColumn>;
 };
 
 MainInfo.propTypes = {
     event: Event.isRequired,
-    onChangeEvent: PropTypes.func.isRequired
+    onChangeEvent: PropTypes.func.isRequired,
+    housingTypes: PropTypes.array.isRequired,
+    getHousingTypes: PropTypes.func.isRequired
 };
 
-export default MainInfo;
+const mapStateToProps = (state) => ({
+    housingTypes: state[FORM_ID].housingTypes || []
+});
+
+export default connect(mapStateToProps, {getHousingTypes}, FORM_ID)();

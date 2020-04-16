@@ -1,33 +1,36 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from "prop-types";
-import {Context} from "../../../../Context";
-import {USER_SERVICE_URL} from "../../../constants";
+import {connect} from "../../../../Context";
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import {FORM_ID} from "./constants";
+import {getLikes, putNewLike} from "./actions";
 
-const EventLikes = ({eventId}) => {
-    const [userLikes, setUserLikes] = useState([]);
-    const [newLike, setNewLike] = useState(null);
-    const [state] = useContext(Context);
+const EventLikes = ({eventId, putNewLike, newLike, getLikes, likes, userId}) => {
+    const [flag, setFlag] = useState(false);
+
+    useEffect(() => {
+        if (newLike && flag) {
+            getLikes(eventId);
+            setFlag(false)
+        }
+    }, [newLike, getLikes, eventId, flag, setFlag]);
 
     const saveLike = () => {
-        state.fetchWithToken(USER_SERVICE_URL + '/users/' + state.userId + '/events/' + eventId, result => {
-            setNewLike(result);
-            state.fetchWithToken(USER_SERVICE_URL + '/events/' + eventId + '/likes', setUserLikes);
-        }, 'PUT', {});
+        putNewLike(eventId);
+        setFlag(true);
     };
 
     useEffect(() => {
-        state.fetchWithToken(USER_SERVICE_URL + '/events/' + eventId + '/likes', (result) => {
-            setUserLikes(result);
-            setNewLike(!!result.map(likedUser => likedUser.id).filter(userId => userId === state.userId)[0])
-        });
-    }, [eventId, state]);
+        getLikes(eventId);
+    }, [getLikes, eventId]);
+
+    const likeType = !!likes.map(likedUser => likedUser.id).filter(userIdNew => userIdNew === userId)[0];
 
     return <div>
-        {newLike ? <FavoriteBorderIcon color='error' onClick={saveLike}/> :
+        {likeType ? <FavoriteBorderIcon color='error' onClick={saveLike}/> :
             <FavoriteIcon color='error' onClick={saveLike}/>}
-        {userLikes.length} likes this
+        {likes.length} likes this
     </div>;
 };
 
@@ -35,4 +38,10 @@ EventLikes.propTypes = {
     eventId: PropTypes.string.isRequired,
 };
 
-export default EventLikes;
+const mapStateToProps = (state) => ({
+    newLike: state[FORM_ID]?.newLike,
+    likes: state[FORM_ID]?.likes,
+    userId: state.userId
+});
+
+export default connect(mapStateToProps, {putNewLike, getLikes}, FORM_ID)(EventLikes);

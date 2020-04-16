@@ -1,21 +1,28 @@
-import React, {useCallback, useContext, useEffect, useState} from "react";
-import {Context} from "../../../../Context";
-import {MESSAGE_SERVICE_URL, USER_SERVICE_URL} from "../../../../utils/constants";
+import React, {useCallback, useEffect, useState} from "react";
+import {connect} from "../../../../Context";
 import PropTypes from "prop-types";
 import {keys} from 'lodash'
 import MessageItem from "./MessageItem";
+import {FORM_ID} from "../../constants";
+import {getMessages, postUsersInfo} from "./actions";
 
-const UserChats = ({eventUserId, eventId, userMessageId, refreshChats, setRefreshChats, setUserMessageId}) => {
-    const [creatorMessages, setCreatorMessages] = useState([]);
-    const [messageUsers, setMessageUsers] = useState([]);
+const UserChats = ({
+                       eventUserId, eventId, userMessageId, refreshChats, setRefreshChats, setUserMessageId, userId,
+                       getMessages, messages, postUsersInfo, usersInfo
+                   }) => {
     const [timer, setTimer] = useState(null);
-    const [state] = useContext(Context);
 
     const getChats = useCallback(() => {
-        state.fetchWithToken(MESSAGE_SERVICE_URL + '/events/' + eventId + '/messages/', messages => {
+        getMessages(eventId);
+        setRefreshChats(false);
+    }, [eventId, setRefreshChats, getMessages]);
+
+
+    useEffect(() => {
+        if (messages.length !== 0) {
             let notFoundUserIds = [];
             const userIds = keys(messages) || [];
-            const cachedUserIds = messageUsers.map(user => user.id);
+            const cachedUserIds = usersInfo.map(user => user.id);
             if (cachedUserIds.length === 0) {
                 notFoundUserIds = userIds;
             } else {
@@ -26,32 +33,27 @@ const UserChats = ({eventUserId, eventId, userMessageId, refreshChats, setRefres
             }
 
             if (notFoundUserIds.length !== 0) {
-                state.fetchWithToken(USER_SERVICE_URL + '/users/simple', users => {
-                    setMessageUsers([...messageUsers, ...users])
-                }, 'POST', notFoundUserIds);
+                postUsersInfo(notFoundUserIds);
             }
-
-            setCreatorMessages(messages);
-        });
-        setRefreshChats(false);
-    }, [messageUsers, eventId, setRefreshChats, state]);
+        }
+    }, [usersInfo, messages, postUsersInfo]);
 
     useEffect(() => {
-        if (state.userId === eventUserId && !timer) {
+        if (userId === eventUserId && !timer) {
             setTimer(setInterval(getChats, 2000));
         }
-    }, [state, eventUserId, timer, setTimer, getChats]);
+    }, [userId, eventUserId, timer, setTimer, getChats]);
 
     useEffect(() => {
-        if (state.userId === eventUserId && refreshChats) {
+        if (userId === eventUserId && refreshChats) {
             getChats();
         }
-    }, [eventUserId, refreshChats, getChats, state]);
+    }, [eventUserId, refreshChats, getChats, userId]);
 
     return <div className='container-chats' style={{width: '30%'}}>
-        {messageUsers.length === keys(creatorMessages).length && keys(creatorMessages).map(key => {
-            const message = creatorMessages[key];
-            const user = messageUsers.filter(user => user.id === key)[0];
+        {usersInfo.length === keys(messages).length && keys(messages).map(key => {
+            const message = messages[key];
+            const user = usersInfo.filter(user => user.id === key)[0];
             return <MessageItem user={user}
                                 key={key}
                                 message={message}
@@ -62,7 +64,21 @@ const UserChats = ({eventUserId, eventId, userMessageId, refreshChats, setRefres
 };
 
 UserChats.propTypes = {
-    eventUserId: PropTypes.string.isRequired
+    eventUserId: PropTypes.string.isRequired,
+    userId: PropTypes.string,
+    getMessages: PropTypes.func.isRequired,
+    postUsersInfo: PropTypes.func.isRequired,
+    messages: PropTypes.array,
+    usersInfo: PropTypes.array
 };
 
-export default UserChats;
+const mapStateToProps = state => {
+    console.log('mapStateToProps', state[FORM_ID]);
+    return ({
+        userId: state.userId,
+        messages: state[FORM_ID]?.messages || [],
+        usersInfo: state[FORM_ID]?.usersInfo || []
+    });
+};
+
+export default connect(mapStateToProps, {getMessages, postUsersInfo}, FORM_ID)(UserChats);

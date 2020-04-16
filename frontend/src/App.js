@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './App.css';
 
 import {useRedirect, useRoutes} from 'hookrouter';
@@ -7,8 +7,7 @@ import Event from "./Event";
 import PersonalArea from "./PersonalArea";
 import NavBar from "./NavBar";
 import FormRegister from "./Register";
-import {Context, context} from "./Context";
-import {onChange} from "./utils/utils";
+import {Provider} from "./Context";
 
 const routers = {
     '/events': () => <Events/>,
@@ -22,12 +21,11 @@ const routers = {
 const App = () => {
     const route = useRoutes(routers);
     useRedirect('/', '/events');
-    const [state, setState] = useState({...context});
-
-    return <Context.Provider value={[state, onChange(state, setState)]}>
+    console.log('rerender main');
+    return <Provider>
         <NavBar/>
         <div className="Content">{route}</div>
-    </Context.Provider>;
+    </Provider>;
 };
 
 export default App;

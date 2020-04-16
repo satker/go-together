@@ -1,20 +1,19 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from "reactstrap";
 import CounterItem from "../utils/components/CounterItem";
-import {EVENT_SERVICE_URL, USER_SERVICE_URL} from '../utils/constants'
-import {Context} from "../Context";
+import {connect} from "../Context";
 import * as PropTypes from "prop-types";
 import {SearchObject} from "../types";
 import MultipleSelectBox from "../utils/components/MultipleSelectBox";
+import {FORM_ID} from "./constants";
+import {getApartmentTypes, getLanguages, getParameters} from "./actions";
 
-const AdvancedSearch = ({focus, setFocus, searchObject, onChangeSearchObject}) => {
-    const [state] = useContext(Context);
-
+const AdvancedSearch = ({
+                            focus, setFocus, searchObject, onChangeSearchObject,
+                            getParameters, getLanguages, getApartmentTypes,
+                            parameters, languages, apartmentTypes
+                        }) => {
     const [dropdownAdvancedSearchOpen, setDropdownAdvancedSearchOpen] = useState(false);
-
-    const [apartmentTypes, setApartmentTypes] = useState([]);
-    const [parameters, setParameters] = useState([]);
-    const [languages, setLanguages] = useState([]);
 
     const [rooms, setRooms] = useState(searchObject.advancedSearch.rooms);
     const [chooseParameters, setChooseParameters] = useState([]);
@@ -32,11 +31,11 @@ const AdvancedSearch = ({focus, setFocus, searchObject, onChangeSearchObject}) =
 
     useEffect(() => {
         if (dropdownAdvancedSearchOpen) {
-            state.fetchWithToken(EVENT_SERVICE_URL + '/parameters', setParameters);
-            state.fetchWithToken(USER_SERVICE_URL + '/languages', setLanguages);
-            state.fetchWithToken(EVENT_SERVICE_URL + '/types', setApartmentTypes);
+            getParameters();
+            getLanguages();
+            getApartmentTypes();
         }
-    }, [dropdownAdvancedSearchOpen, state]);
+    }, [dropdownAdvancedSearchOpen, getLanguages, getApartmentTypes, getParameters]);
 
     const onAction = () => {
         const advancedSearch = {
@@ -46,8 +45,8 @@ const AdvancedSearch = ({focus, setFocus, searchObject, onChangeSearchObject}) =
             languages: chooseLanguages.map(param => ({id: param.value, name: param.label}))
         };
         setChooseParameters([]);
-        setApartmentTypes([]);
-        setLanguages([]);
+        setChooseApartmentTypes([]);
+        setChooseLanguages([]);
         onChangeSearchObject('advancedSearch', advancedSearch)
     };
 
@@ -98,7 +97,21 @@ AdvancedSearch.propTypes = {
     focus: PropTypes.bool.isRequired,
     setFocus: PropTypes.func.isRequired,
     onChangeSearchObject: PropTypes.func.isRequired,
-    searchObject: SearchObject.isRequired
+    searchObject: SearchObject.isRequired,
+    getParameters: PropTypes.func.isRequired,
+    getLanguages: PropTypes.func.isRequired,
+    getApartmentTypes: PropTypes.func.isRequired,
+    parameters: PropTypes.array,
+    apartmentTypes: PropTypes.array,
+    languages: PropTypes.array
 };
 
-export default AdvancedSearch;
+const mapStateToProps = state => ({
+    parameters: state[FORM_ID]?.parameters || [],
+    apartmentTypes: state[FORM_ID]?.apartmentTypes || [],
+    languages: state[FORM_ID]?.languages || []
+});
+
+export default connect(mapStateToProps,
+    {getParameters, getLanguages, getApartmentTypes},
+    FORM_ID)(AdvancedSearch);

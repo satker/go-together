@@ -21,7 +21,7 @@ export const createFileReaderToParsePhoto = (photo) => new Promise((resolve) => 
 
 export const createPhotoObj = (isUrl, data) => {
 
-    const newPhotoObj = {...PHOTO_OBJECT}
+    const newPhotoObj = {...PHOTO_OBJECT};
 
     if (isUrl) {
         newPhotoObj.photoUrl = data;
@@ -57,3 +57,5 @@ export const onChange = (state, setState) => (path, value) => {
         }
     }
 };
+
+export const capitalizeFirstLetter = (str) => str.charAt(0).toLowerCase() + str.slice(1);

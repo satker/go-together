@@ -1,23 +1,21 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import '../Form.css'
-import {Context} from "../Context";
-import {LOGIN_URL} from '../utils/constants'
-import {loginFetch} from "../utils/api/request";
+import {connect} from "../Context";
 import MenuItem from "@material-ui/core/MenuItem";
 import {Button} from "reactstrap";
 import Input from "reactstrap/es/Input";
 import Label from "reactstrap/es/Label";
 import * as PropTypes from "prop-types";
 import './style.css'
+import {FORM_ID} from "./constants";
+import {postLogin} from "./actions";
 
-const FormLogin = ({formId}) => {
+const FormLogin = ({formId, postLogin}) => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
-    const [state, setState] = useContext(Context);
 
     const handleSubmit = () => {
-        loginFetch(LOGIN_URL, {username: login, password: password}, state,
-            setState);
+        postLogin(login, password);
     };
 
     const handleChange = (set) => (evt) => {
@@ -60,7 +58,8 @@ const FormLogin = ({formId}) => {
 };
 
 FormLogin.propTypes = {
-    formId: PropTypes.string.isRequired
+    formId: PropTypes.string.isRequired,
+    postLogin: PropTypes.func.isRequired
 };
 
-export default FormLogin;
+export default connect(() => null, {postLogin}, FORM_ID)(FormLogin);

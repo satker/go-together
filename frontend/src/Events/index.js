@@ -1,55 +1,51 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import SearchForm from "./SearchForm";
-import {Context} from "../Context";
 import {Container} from "reactstrap";
 import ReactPaginate from 'react-paginate';
-import {EVENTS_URL, FORM_DTO, SEARCH_OBJECT_DEFAULT} from '../utils/constants'
+import {FORM_DTO, SEARCH_OBJECT_DEFAULT} from '../utils/constants'
 import './styles.css'
 import {get, isEqual, set} from "lodash";
 import GroupItems from "../utils/components/CardItems";
+import {connect} from "../Context";
+import {deleteEvent, postFindEvents, setEventId} from "./actions";
+import {FORM_ID} from "./constants";
 
-const EVENT_PAGE_FIND_URL = EVENTS_URL + '/find';
-
-const Events = () => {
+const Events = ({pageSize, postFindEvents, setEventId, deleteEvent, findEvents}) => {
     const [events, setEvents] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [searchObject, setSearchObject] = useState({...SEARCH_OBJECT_DEFAULT});
     const [filterObject, setFilterObject] = useState({...FORM_DTO("apartment.id")});
 
-    const [state, setState] = useContext(Context);
+    useEffect(() => {
+        filterObject.page.size = pageSize;
+    }, [filterObject, pageSize]);
 
     useEffect(() => {
-        filterObject.page.size = state.pageSize;
-        state.fetchWithToken(EVENT_PAGE_FIND_URL, response => {
+        if (findEvents) {
             const newEvents = {
-                events: response.result,
-                page: state.page
-
-            };
-            setEvents(newEvents);
-            setPageCount(response.page.totalSize / response.page.size);
-        }, 'POST', filterObject);
-    }, [state, filterObject]);
-
-    const onClickChooseEvent = (event) => setState('eventId', event.id);
-
-    const onClickNextPage = page => {
-        filterObject.page.size = state.pageSize;
-        filterObject.page.page = page.selected;
-        state.fetchWithToken(EVENT_PAGE_FIND_URL, response => {
-            const newEvents = {
-                events: response.result,
+                events: findEvents.result,
                 page: filterObject.page.page
 
             };
+
             setEvents(newEvents);
-            setPageCount(response.page.totalSize / response.page.size);
-        }, 'POST', filterObject);
+            setPageCount(newEvents.page.totalSize / newEvents.page.size)
+        }
+    }, [setEvents, findEvents, filterObject]);
+
+    useEffect(() => {
+        postFindEvents(filterObject);
+    }, [postFindEvents, filterObject]);
+
+    const onClickChooseEvent = (event) => setEventId(event.id);
+
+    const onClickNextPage = page => {
+        filterObject.page.page = page.selected;
+        postFindEvents(filterObject);
     };
 
     const onDelete = (id) => {
-        state.fetchWithToken(EVENTS_URL + '/delete/' + id, () =>
-            setEvents(events.events.filter(apartment => apartment.id !== id)), 'DELETE')
+        deleteEvent(id, setEvents, events);
     };
 
     const onChangeSearchObject = (field, value) => {
@@ -103,4 +99,12 @@ const Events = () => {
     </>;
 };
 
-export default Events;
+const mapStateToProps = state => ({
+    pageSize: state.pageSize,
+    findEvents: state[FORM_ID]?.findEvents,
+});
+
+export default connect(mapStateToProps,
+    {postFindEvents, setEventId, deleteEvent},
+    FORM_ID)
+(Events);
