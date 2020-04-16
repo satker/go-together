@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {fade, makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -11,15 +11,16 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import AddCircle from '@material-ui/icons/AddCircle';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import {Context} from "./Context";
-import FormReference from "./utils/components/FormReference";
-import {fetchAndSetToken} from "./utils/api/request";
-import FormLogin from "./Login";
+import {connect} from "../Context";
+import FormReference from "../utils/components/FormReference";
+import {fetchAndSetToken} from "../utils/api/request";
+import FormLogin from "../Login";
 import {navigate} from 'hookrouter';
-import {CSRF_TOKEN, EVENT_SERVICE_URL, USER_ID} from "./utils/constants";
-import AutosuggestionLocation from "./utils/components/Autosuggestion";
+import {CSRF_TOKEN, EVENT_SERVICE_URL, USER_ID} from "../utils/constants";
+import AutosuggestionLocation from "../utils/components/Autosuggestion";
 import {set as setCookie} from "js-cookie";
-
+import {FORM_ID} from "./constants";
+import {setUserIdAndFetchWithToken} from "./actions";
 
 const useStyles = makeStyles(theme => ({
     grow: {
@@ -83,7 +84,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const NavBar = () => {
+const NavBar = ({userId, titleName, setUserIdAndFetchWithToken}) => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -91,12 +92,10 @@ const NavBar = () => {
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-    const [state, setState] = useContext(Context);
-
     const logout = () => {
         setCookie(CSRF_TOKEN, null);
         setCookie(USER_ID, null);
-        setState(['userId', 'fetchWithToken'], [null, fetchAndSetToken(null)]);
+        setUserIdAndFetchWithToken(['userId', 'fetchWithToken'], [null, fetchAndSetToken(null)]);
     };
 
     const goToEventPage = (event) => navigate('/events/' + event.id);
@@ -178,7 +177,7 @@ const NavBar = () => {
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
         >
-            {state.userId ? [
+            {userId ? [
                 <MenuItem button={true}
                           key={mobileMenuId + '_create'}
                           component={mobileMenuId}
@@ -226,7 +225,7 @@ const NavBar = () => {
             <AppBar position="sticky">
                 <Toolbar>
                     <Typography className={classes.title} variant="h6" noWrap>
-                        {state.titleName}
+                        {titleName}
                     </Typography>
                     <div className={classes.search}>
                         <AutosuggestionLocation formId='menu_'
@@ -238,10 +237,10 @@ const NavBar = () => {
                     </div>
                     <div className={classes.grow}/>
                     <div className={classes.sectionDesktop}>
-                        {state.userId ? [<IconButton onClick={() => navigate('/create', true)}
-                                                     key={menuId + '_create'}
-                                                     aria-label="show 4 new mails"
-                                                     color="inherit">
+                        {userId ? [<IconButton onClick={() => navigate('/create', true)}
+                                               key={menuId + '_create'}
+                                               aria-label="show 4 new mails"
+                                               color="inherit">
                                 <Badge color="secondary">
                                     <AddCircle/>
                                 </Badge>
@@ -287,4 +286,9 @@ const NavBar = () => {
     );
 };
 
-export default NavBar;
+const mapStateToProps = (state) => ({
+    userId: state.userId,
+    titleName: state.titleName
+});
+
+export default connect(mapStateToProps, {setUserIdAndFetchWithToken}, FORM_ID)(NavBar);
