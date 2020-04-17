@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {DEFAULT_EVENT_USER} from "../../../utils/constants";
 import {connect} from "../../../../App/Context";
 import Button from "reactstrap/es/Button";
@@ -7,20 +7,34 @@ import PropTypes from "prop-types";
 import {FORM_ID} from "../constants";
 import {deleteMeFromList, postMeToList} from "./actions";
 
-const ParticipationButton = ({eventId, users, setRefresh, userId, postMeToList, deleteMeFromList}) => {
+const ParticipationButton = ({
+                                 eventId, users, setRefresh, userId, postMeToList, deleteMeFromList, meToList,
+                                 meFromList
+                             }) => {
+    const [flag, setFlag] = useState(false);
+
     const addMeToWaitApproveList = () => {
         const meObject = {...DEFAULT_EVENT_USER};
         meObject.user.id = userId;
         meObject.eventId = eventId;
-        postMeToList(setRefresh, meObject);
+        postMeToList(meObject);
+        setFlag(true);
     };
 
     const removeMeFromEvent = () => {
         const meObject = {...DEFAULT_EVENT_USER};
         meObject.user.id = userId;
         meObject.eventId = eventId;
-        deleteMeFromList(setRefresh, meObject);
+        deleteMeFromList(meObject);
+        setFlag(true);
     };
+
+    useEffect(() => {
+        if (flag && (meFromList || meToList)) {
+            setRefresh(true);
+            setFlag(false);
+        }
+    }, [flag, meFromList, meToList, setFlag, setRefresh]);
 
     const ifIPartOfEvent = !!users.find(user => user.user.id === userId);
     const actionButton = ifIPartOfEvent ? removeMeFromEvent : addMeToWaitApproveList;
@@ -39,7 +53,9 @@ ParticipationButton.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    userId: state.userId
+    userId: state.userId,
+    meToList: state[FORM_ID]?.meToList,
+    meFromList: state[FORM_ID]?.meFromList
 });
 
 export default connect(mapStateToProps, {postMeToList, deleteMeFromList}, FORM_ID)(ParticipationButton);

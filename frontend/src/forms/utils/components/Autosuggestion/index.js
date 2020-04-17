@@ -22,21 +22,25 @@ const IntegrationAutosuggest = ({formId, setResult, placeholder, url, urlParam, 
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState('');
     const [loading, setLoading] = useState(false);
+    const [chooseItem, setChooseItem] = useState(null);
 
     useEffect(() => {
-        const chooseItem = options.filter(option => option.name === value)[0];
+        setChooseItem(options.filter(option => option.name === value)[0]);
+        setLoading(false);
+    }, [options, value]);
+
+    useEffect(() => {
         if (chooseItem) {
             setResult(chooseItem);
         }
-    }, [options, value, setResult]);
+    }, [chooseItem, options, value, setResult]);
 
     useEffect(() => {
-        const chooseItem = options.filter(option => option.name === value)[0];
         if (!chooseItem) {
             setLoading(true);
-            getOptions(url, urlParam, value, setLoading);
+            getOptions(url, urlParam, value);
         }
-    }, [getOptions, value, url, urlParam]);
+    }, [chooseItem, getOptions, value, url, urlParam]);
 
     return (
         <StyledAutocomplete

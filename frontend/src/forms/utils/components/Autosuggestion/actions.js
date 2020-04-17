@@ -1,5 +1,3 @@
-export const getOptions = () => (url, urlParam, value, setLoading) => (fetch) => {
-    fetch(url + '?' + urlParam + '=' + value, () => {
-        setLoading(false);
-    });
+export const getOptions = () => (url, urlParam, value) => (fetch) => {
+    fetch(url + '?' + urlParam + '=' + value);
 };

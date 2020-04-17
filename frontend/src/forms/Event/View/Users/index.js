@@ -6,9 +6,11 @@ import {connect} from "../../../../App/Context";
 import Messages from "../Messages";
 import {postUserStatus} from "./actions";
 import {FORM_ID} from "../constants";
+import {getUsers} from "../actions";
 
-const Users = ({users, statuses, eventId, eventUserId, userId, postUserStatus}) => {
+const Users = ({users, statuses, eventId, eventUserId, userId, postUserStatus, userStatus, getUsers}) => {
     const [userMessageId, setUserMessageId] = useState(null);
+    const [flag, setFlag] = useState(false);
 
     useEffect(() => {
         if (eventUserId !== userId) {
@@ -16,12 +18,20 @@ const Users = ({users, statuses, eventId, eventUserId, userId, postUserStatus}) 
         }
     }, [setUserMessageId, eventUserId, userId]);
 
+    useEffect(() => {
+        if (flag && userStatus) {
+            getUsers(eventId);
+            setFlag(false);
+        }
+    }, [getUsers, userStatus, flag, eventId]);
+
     const updateUserStatus = (status) => (userId) => {
         const approvedUser = [...users].filter(user => user.user.id === userId).map(user => {
             user.userStatus = status;
             return user;
         })[0];
-        postUserStatus(eventId, approvedUser);
+        postUserStatus(approvedUser);
+        setFlag(true);
     };
 
     return <>
@@ -45,11 +55,13 @@ Users.propTypes = {
     eventId: PropTypes.string.isRequired,
     eventUserId: PropTypes.string.isRequired,
     userId: PropTypes.string.isRequired,
-    postUserStatus: PropTypes.func.isRequired
+    postUserStatus: PropTypes.func.isRequired,
+    getUsers: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-    userId: state.userId
+    userId: state.userId,
+    userStatus: state[FORM_ID]?.userStatus
 });
 
-export default connect(mapStateToProps, {postUserStatus}, FORM_ID)(Users);
+export default connect(mapStateToProps, {postUserStatus, getUsers}, FORM_ID)(Users);

@@ -62,7 +62,6 @@ const wrapActions = (actions, state, setState, FORM_ID) => {
         if (!(actionsStore[FORM_ID] && actionsStore[FORM_ID][action])) {
             if (methodAction && path) {
                 const setToContext = (result) => {
-                    console.log(state, path);
                     setState(FORM_ID + '.' + path, result);
                 };
                 result[action] = actionFunction(state, setState, actions[action], setToContext, methodAction);

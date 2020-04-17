@@ -1,8 +1,7 @@
 import {CSRF_TOKEN, USER_ID, USER_SERVICE_URL} from "../../../forms/utils/constants";
 import {set as setCookie} from 'js-cookie'
 
-export const fetchAndSet = async (url, setResult, method = 'GET', data = {}, headers = {},
-                                  setToContext = () => null) => {
+export const fetchAndSet = async (url, setResult, method = 'GET', data = {}, headers = {}) => {
     let resp;
     if (method === 'GET') {
         resp = await fetch(url, {
@@ -19,7 +18,6 @@ export const fetchAndSet = async (url, setResult, method = 'GET', data = {}, hea
         const result = await resp.text();
         try {
             setResult(JSON.parse(result));
-            setToContext(JSON.parse(result))
         } catch (e) {
             console.log(e);
             setResult(null);
@@ -32,7 +30,7 @@ export const fetchAndSet = async (url, setResult, method = 'GET', data = {}, hea
     }
 };
 
-export const fetchAndSetToken = (token) => (setToContext, methodAction) => async (url, setResult, method = 'GET', data = {}) => {
+export const fetchAndSetToken = (token) => (setToContext, methodAction) => async (url, data = {}) => {
     let headers = {
         'Accept': 'application/json',
         'content-type': 'application/json'
@@ -41,24 +39,18 @@ export const fetchAndSetToken = (token) => (setToContext, methodAction) => async
     if (token) {
         headers['Authorization'] = token;
     }
-    fetchAndSet(url, setResult, methodAction || method, data, headers, setToContext);
+    fetchAndSet(url, setToContext, methodAction, data, headers);
 };
 
 export const registerFetch = async (url, setScreen, data = {}, error, goToLogin) => {
-    let resp = await fetch(url, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-    });
-
-    if (resp.status === 200 || resp.status === 201) {
+    let headers = {
+        'Accept': 'application/json',
+        'content-type': 'application/json'
+    };
+    fetchAndSet(url, () => {
         setScreen("login");
         goToLogin();
-    } else {
-        error();
-    }
+    }, 'PUT', data, headers);
 };
 
 export const loginFetch = async (url, data = {}, state, setState) => {
@@ -73,11 +65,12 @@ export const loginFetch = async (url, data = {}, state, setState) => {
                 null)
     }).catch(errorMessage => alert("Failed to login: " + errorMessage));
     if (token) {
-        fetchAndSetToken(token)(USER_SERVICE_URL + '/users?login=' + data.username, (resp) => {
+        const setResult = (resp) => {
             setCookie(CSRF_TOKEN, token);
             setCookie(USER_ID, resp.id);
             setState(['userId', 'fetchWithToken'], [resp.id, fetchAndSetToken(token)]);
-        });
+        };
+        fetchAndSetToken(token)(setResult, 'GET')(USER_SERVICE_URL + '/users?login=' + data.username);
     } else {
         alert("Failed to login")
     }

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Input} from "reactstrap";
 import {connect} from "../../../../App/Context";
 import PropTypes from "prop-types";
@@ -6,8 +6,18 @@ import SendIcon from '@material-ui/icons/Send';
 import {FORM_ID} from "../constants";
 import {putReview} from "./actions";
 
-const InputComment = ({refresh, eventId, userMessageId, eventUserId, readOnly, setRefreshChats, userId, putReview}) => {
+const InputComment = ({refresh, eventId, userMessageId, eventUserId, readOnly, setRefreshChats, userId, putReview, review}) => {
     const [message, setMessage] = useState('');
+    const [flag, setFlag] = useState(false);
+
+    useEffect(() => {
+        if (review && flag) {
+            setRefreshChats(true);
+            refresh();
+            setFlag(false);
+        }
+    }, [review, flag, setRefreshChats, refresh]);
+
     const send = () => {
         const authorId = userId === eventUserId ? eventId : userId;
         const recipientId = userMessageId === eventUserId ? eventId : userMessageId;
@@ -17,7 +27,8 @@ const InputComment = ({refresh, eventId, userMessageId, eventUserId, readOnly, s
             authorId,
             recipientId
         };
-        putReview(eventId, body, setRefreshChats, refresh);
+        putReview(eventId, body);
+        setFlag(true);
     };
 
     return <div className='container-input'>
@@ -42,7 +53,8 @@ InputComment.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    userId: state.userId
+    userId: state.userId,
+    review: state[FORM_ID]?.review
 });
 
 export default connect(mapStateToProps, {putReview}, FORM_ID)(InputComment);

@@ -7,10 +7,10 @@ import './styles.css'
 import {get, isEqual, set} from "lodash";
 import GroupItems from "../utils/components/CardItems";
 import {connect} from "../../App/Context";
-import {deleteEvent, postFindEvents, setEventId} from "./actions";
+import {postFindEvents, setEventId} from "./actions";
 import {FORM_ID} from "./constants";
 
-const Events = ({pageSize, postFindEvents, setEventId, deleteEvent, findEvents}) => {
+const Events = ({pageSize, postFindEvents, setEventId, findEvents}) => {
     const [events, setEvents] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [searchObject, setSearchObject] = useState({...SEARCH_OBJECT_DEFAULT});
@@ -44,9 +44,7 @@ const Events = ({pageSize, postFindEvents, setEventId, deleteEvent, findEvents})
         postFindEvents(filterObject);
     };
 
-    const onDelete = (id) => {
-        deleteEvent(id, setEvents, events);
-    };
+    const onDelete = () => null;
 
     const onChangeSearchObject = (field, value) => {
         const object = {...searchObject};
@@ -105,6 +103,6 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps,
-    {postFindEvents, setEventId, deleteEvent},
+    {postFindEvents, setEventId},
     FORM_ID)
 (Events);

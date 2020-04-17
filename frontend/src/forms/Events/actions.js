@@ -1,12 +1,19 @@
 import {EVENT_SERVICE_URL, EVENTS_URL, USER_SERVICE_URL} from "../utils/constants";
 
 export const postFindEvents = () => (filterObject) => (fetch) => {
-    fetch(EVENTS_URL + '/find', () => null, 'POST', filterObject);
+    fetch(EVENTS_URL + '/find', filterObject);
 };
 
-export const deleteEvent = () => (id, setEvents, events) => (fetch) => {
-    fetch(EVENTS_URL + '/delete/' + id, () =>
-        setEvents(events.events.filter(apartment => apartment.id !== id)), 'DELETE')
+export const getParameters = () => () => (fetch) => {
+    fetch(EVENT_SERVICE_URL + '/parameters')
+};
+
+export const getLanguages = () => () => (fetch) => {
+    fetch(USER_SERVICE_URL + '/languages')
+};
+
+export const getApartmentTypes = () => () => (fetch) => {
+    fetch(EVENT_SERVICE_URL + '/types')
 };
 
 export const setEventId = (state, setState) => (eventId) => () => {
@@ -23,16 +30,4 @@ export const setArrivalDate = (state, setState) => (arrivalDate) => () => {
 
 export const setDepartureDate = (state, setState) => (departureDate) => () => {
     setState('departureDate', departureDate);
-};
-
-export const getParameters = () => (setParameters) => (fetch) => {
-    fetch(EVENT_SERVICE_URL + '/parameters', setParameters)
-};
-
-export const getLanguages = () => (setLanguages) => (fetch) => {
-    fetch(USER_SERVICE_URL + '/languages', setLanguages)
-};
-
-export const getApartmentTypes = () => (setApartmentTypes) => (fetch) => {
-    fetch(EVENT_SERVICE_URL + '/types', setApartmentTypes)
 };
