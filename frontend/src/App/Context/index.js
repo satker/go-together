@@ -34,8 +34,6 @@ const actionsStore = {};
 export const initState = {};
 
 const wrapActions = (actions, state, setState, FORM_ID) => {
-    //const newState = initMapStateToProps(mapStateToProps, state, FORM_ID, setState);
-
     const result = {};
     for (const action in actions) {
         let methodAction;
@@ -115,9 +113,6 @@ const initMapStateToProps = (mapStateToProps, state, FORM_ID, setState) => {
             delete props[path];
         }
         initState[FORM_ID] = {...initState[FORM_ID], ...resultProps};
-    }
-    if (FORM_ID.startsWith('Autosuggestion')) {
-        console.log({...resultProps, ...props})
     }
     return {...resultProps, ...props};
 };

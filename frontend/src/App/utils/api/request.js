@@ -22,7 +22,6 @@ export const fetchAndSet = async (url, setResult, method = 'GET', data = {}, hea
         const result = await response.text();
         resp.response = JSON.parse(result);
         resp.inProcess = false;
-        console.log(resp);
         setResult(resp);
     } else {
         const result = await response.text();
@@ -42,7 +41,8 @@ export const fetchAndSetToken = (token) => (setToContext, methodAction, state, F
     if (token) {
         headers['Authorization'] = token;
     }
-    fetchAndSet(url, setToContext, methodAction, data, headers, state[FORM_ID]?.[path] || initState[FORM_ID][path]);
+    const defaultRespObject = state[FORM_ID]?.[path] || initState[FORM_ID][path];
+    fetchAndSet(url, setToContext, methodAction, data, headers, defaultRespObject);
 };
 
 export const registerFetch = async (url, setScreen, data = {}, error, goToLogin) => {

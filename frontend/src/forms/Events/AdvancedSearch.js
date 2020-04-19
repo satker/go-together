@@ -19,7 +19,6 @@ const AdvancedSearch = ({
     const [chooseParameters, setChooseParameters] = useState([]);
     const [chooseLanguages, setChooseLanguages] = useState([]);
     const [chooseApartmentTypes, setChooseApartmentTypes] = useState([]);
-    console.log(apartmentTypes);
 
     useEffect(() => {
         setChooseParameters(searchObject.advancedSearch.parameters
