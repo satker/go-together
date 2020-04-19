@@ -231,5 +231,5 @@ SearchForm.propTypes = {
     setDepartureDate: PropTypes.func.isRequired
 };
 
-export default connect(() => () => null,
+export default connect(null,
     {setPage, setArrivalDate, setDepartureDate})(SearchForm)(FORM_ID);

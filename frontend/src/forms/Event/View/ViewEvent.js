@@ -50,7 +50,7 @@ ViewEvent.propTypes = {
     userId: PropTypes.string.isRequired
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = (FORM_ID) => state => ({
     statuses: state[FORM_ID]?.statuses || [],
     users: state[FORM_ID]?.users || [],
     userId: state.userId

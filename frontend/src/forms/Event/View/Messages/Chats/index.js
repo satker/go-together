@@ -72,7 +72,7 @@ UserChats.propTypes = {
     usersInfo: PropTypes.array
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = (FORM_ID) => state => ({
     userId: state.userId,
     messages: state[FORM_ID]?.messages || [],
     usersInfo: state[FORM_ID]?.usersInfo || []

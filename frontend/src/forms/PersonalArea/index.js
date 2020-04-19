@@ -174,7 +174,7 @@ const PersonalArea = ({userInfo, getUserInfo, updatedUser, putUpdatedUser, check
     );
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = (FORM_ID) => (state) => ({
     userInfo: state[FORM_ID]?.userInfo,
     updatedUser: state[FORM_ID]?.updatedUser,
     checkMail: state[FORM_ID]?.checkMail

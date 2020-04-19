@@ -33,7 +33,7 @@ GetAndViewEvent.propTypes = {
     event: Event
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = (FORM_ID) => state => ({
     event: state[FORM_ID]?.event,
 });
 

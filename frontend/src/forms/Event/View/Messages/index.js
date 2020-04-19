@@ -85,7 +85,7 @@ Messages.props = {
     reviewsByEvent: PropTypes.arrayOf(Review)
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = (FORM_ID) => state => ({
     userId: state.userId,
     reviewsByEvent: state[FORM_ID]?.reviewsByEvent || []
 });

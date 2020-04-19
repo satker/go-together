@@ -52,4 +52,4 @@ const mapStateToProps = () => (state) => ({
     userId: state.userId
 });
 
-export default connect(mapStateToProps, {})(ItemEvent)(FORM_ID);
+export default connect(mapStateToProps, null)(ItemEvent)(FORM_ID);

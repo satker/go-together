@@ -76,7 +76,7 @@ MainInfo.propTypes = {
     getHousingTypes: PropTypes.func.isRequired
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = (FORM_ID) => (state) => ({
     housingTypes: state[FORM_ID].housingTypes
 });
 

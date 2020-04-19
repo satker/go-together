@@ -51,7 +51,7 @@ ViewEvent.propTypes = {
     newEvent: PropTypes.object
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = (FORM_ID) => (state) => ({
     userId: state.userId,
     updatedEvent: state[FORM_ID].updatedEvent,
     newEvent: state[FORM_ID].newEvent

@@ -52,7 +52,7 @@ ParticipationButton.propTypes = {
     deleteMeFromList: PropTypes.func.isRequired
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = (FORM_ID) => state => ({
     userId: state.userId,
     meToList: state[FORM_ID]?.meToList,
     meFromList: state[FORM_ID]?.meFromList

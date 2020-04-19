@@ -31,4 +31,4 @@ const mapStateToProps = () => state => ({
     userId: state.userId
 });
 
-export default connect(mapStateToProps, {})(MessagesContainer)(FORM_ID);
+export default connect(mapStateToProps, null)(MessagesContainer)(FORM_ID);

@@ -54,4 +54,4 @@ const mapStateToProps = () => state => ({
     userId: state.userId
 });
 
-export default connect(mapStateToProps, {})(CommonInfo)(FORM_ID);
+export default connect(mapStateToProps, null)(CommonInfo)(FORM_ID);

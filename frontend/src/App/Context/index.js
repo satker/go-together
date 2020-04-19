@@ -34,6 +34,9 @@ const actionsStore = {};
 export const initState = {};
 
 const wrapActions = (actions, state, setState, FORM_ID) => {
+    if (!actions) {
+        return {};
+    }
     const result = {};
     for (const action in actions) {
         let methodAction;
@@ -82,6 +85,9 @@ const wrapActions = (actions, state, setState, FORM_ID) => {
 };
 
 const initMapStateToProps = (mapStateToProps, state, FORM_ID, setState) => {
+    if (!mapStateToProps) {
+        return {};
+    }
     const props = mapStateToProps(FORM_ID)(state);
     const initPropsToSet = {};
     const resultProps = {};
@@ -117,16 +123,11 @@ const initMapStateToProps = (mapStateToProps, state, FORM_ID, setState) => {
     return {...resultProps, ...props};
 };
 
-export const connect = (mapStateToProps = () => null, actions = {}) => (Component) => (FORM_ID) => (props) => {
-    return (
-        <Context.Consumer>
-            {([state, setState]) => {
-                return (
-                    <Component {...props}
-                               {...initMapStateToProps(mapStateToProps, state, FORM_ID, setState)}
-                               {...wrapActions(actions, state, setState, FORM_ID)}
-                    />)
-            }}
-        </Context.Consumer>
-    );
-};
+export const connect = (mapStateToProps, actions) => (Component) => (FORM_ID) => (props) =>
+    <Context.Consumer>
+        {([state, setState]) =>
+            <Component {...props}
+                       {...initMapStateToProps(mapStateToProps, state, FORM_ID, setState)}
+                       {...wrapActions(actions, state, setState, FORM_ID)}
+            />}
+    </Context.Consumer>;

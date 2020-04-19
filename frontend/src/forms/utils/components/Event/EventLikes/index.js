@@ -38,7 +38,7 @@ EventLikes.propTypes = {
     eventId: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = (FORM_ID) => (state) => ({
     newLike: state[FORM_ID]?.newLike,
     likes: state[FORM_ID]?.likes || [],
     userId: state.userId

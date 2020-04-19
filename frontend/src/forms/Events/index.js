@@ -97,7 +97,7 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents}) => {
     </>;
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = (FORM_ID) => state => ({
     pageSize: state.pageSize,
     findEvents: state[FORM_ID]?.findEvents || [],
 });

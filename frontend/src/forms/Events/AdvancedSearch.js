@@ -106,7 +106,7 @@ AdvancedSearch.propTypes = {
     languages: PropTypes.array
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = (FORM_ID) => state => ({
     parameters: state[FORM_ID]?.parameters || [],
     apartmentTypes: state[FORM_ID]?.apartmentTypes || [],
     languages: state[FORM_ID]?.languages || []

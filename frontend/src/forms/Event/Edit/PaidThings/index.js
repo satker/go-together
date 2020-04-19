@@ -54,7 +54,7 @@ PaidThings.propTypes = {
     payedThings: PropTypes.array.isRequired
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = (FORM_ID) => (state) => ({
     cashCategories: state[FORM_ID]?.cashCategories,
     payedThings: state[FORM_ID]?.payedThings
 });

@@ -59,7 +59,7 @@ Users.propTypes = {
     getUsers: PropTypes.func.isRequired
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = (FORM_ID) => state => ({
     userId: state.userId,
     userStatus: state[FORM_ID]?.userStatus
 });
