@@ -11,27 +11,12 @@ import {postFindEvents, setEventId} from "./actions";
 import {FORM_ID} from "./constants";
 
 const Events = ({pageSize, postFindEvents, setEventId, findEvents}) => {
-    const [events, setEvents] = useState([]);
-    const [pageCount, setPageCount] = useState(0);
     const [searchObject, setSearchObject] = useState({...SEARCH_OBJECT_DEFAULT});
     const [filterObject, setFilterObject] = useState({...FORM_DTO("apartment.id")});
 
     useEffect(() => {
         filterObject.page.size = pageSize;
     }, [filterObject, pageSize]);
-
-    useEffect(() => {
-        if (findEvents.response.length !== 0) {
-            const newEvents = {
-                events: findEvents.response.result,
-                page: filterObject.page.page
-
-            };
-
-            setEvents(newEvents);
-            setPageCount(newEvents.page.totalSize / newEvents.page.size)
-        }
-    }, [setEvents, findEvents, filterObject]);
 
     useEffect(() => {
         postFindEvents(filterObject);
@@ -56,12 +41,13 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents}) => {
 
     const onClearSearchObject = () => setSearchObject({...SEARCH_OBJECT_DEFAULT});
 
+    const pageCount = findEvents.response.page ?
+        findEvents.response.page.totalSize / findEvents.response.page.size : 0;
+
     return <>
         <Container className='search-container'>
-            <SearchForm setEvents={setEvents}
-                        filterObject={filterObject}
+            <SearchForm filterObject={filterObject}
                         setFilterObject={setFilterObject}
-                        setPageCount={setPageCount}
                         searchObject={searchObject}
                         onChangeSearchObject={onChangeSearchObject}
                         onClearSearchObject={onClearSearchObject}
@@ -71,7 +57,7 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents}) => {
             <GroupItems
                 onDelete={onDelete}
                 onClick={onClickChooseEvent}
-                items={events.events}
+                items={findEvents.response.result}
                 isEvents
             />
         </Container>

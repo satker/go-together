@@ -19,7 +19,7 @@ import {setArrivalDate, setDepartureDate, setPage} from "./actions";
 const Autosuggestion = createAutosuggestion('AutosuggestionLocation');
 
 const SearchForm = ({
-                        setEvents, searchObject, onChangeSearchObject, filterObject,
+                        searchObject, onChangeSearchObject, filterObject,
                         setFilterObject, onClearSearchObject,
                         setPage, setArrivalDate, setDepartureDate
                     }) => {
@@ -131,7 +131,7 @@ const SearchForm = ({
             setPage(0);
             setFilterObject(newFilterObject);
         }
-    }, [focus, searchObject, setFilterObject, setEvents, setPage]);
+    }, [focus, searchObject, setFilterObject, setPage]);
 
     const onAfterChange = (value) => {
         onChangeSearchObject('minCostNight', value[0]);
@@ -224,7 +224,6 @@ SearchForm.propTypes = {
     searchObject: SearchObject.isRequired,
     onChangeSearchObject: PropTypes.func.isRequired,
     onClearSearchObject: PropTypes.func.isRequired,
-    setEvents: PropTypes.func.isRequired,
     setFilterObject: PropTypes.object,
     setPage: PropTypes.func.isRequired,
     setArrivalDate: PropTypes.func.isRequired,
