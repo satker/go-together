@@ -50,8 +50,8 @@ CommonInfo.propTypes = {
     userId: PropTypes.string
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = () => state => ({
     userId: state.userId
 });
 
-export default connect(mapStateToProps, {}, FORM_ID)(CommonInfo);
+export default connect(mapStateToProps, {})(CommonInfo)(FORM_ID);

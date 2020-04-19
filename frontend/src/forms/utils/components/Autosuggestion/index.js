@@ -5,7 +5,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {connect} from "../../../../App/Context";
 import {withStyles} from "@material-ui/core";
-import {FORM_ID} from "./constants";
 import {getOptions} from "./actions";
 
 const StyledAutocomplete = withStyles({
@@ -21,23 +20,26 @@ const StyledAutocomplete = withStyles({
 const IntegrationAutosuggest = ({formId, setResult, placeholder, url, urlParam, getOptions, options}) => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState('');
-    const [loading, setLoading] = useState(false);
     const [chooseItem, setChooseItem] = useState(null);
+    const [currentOptions, setCurrentOptions] = useState([]);
 
     useEffect(() => {
-        setChooseItem(options.filter(option => option.name === value)[0]);
-        setLoading(false);
-    }, [options, value]);
+        if (options) {
+            if (!options.inProcess) {
+                setChooseItem(options.response.filter(option => option.name === value)[0]);
+                setCurrentOptions(options.response);
+            }
+        }
+    }, [options, value, setCurrentOptions]);
 
     useEffect(() => {
         if (chooseItem) {
             setResult(chooseItem);
         }
-    }, [chooseItem, options, value, setResult]);
+    }, [chooseItem, value, setResult]);
 
     useEffect(() => {
         if (!chooseItem) {
-            setLoading(true);
             getOptions(url, urlParam, value);
         }
     }, [chooseItem, getOptions, value, url, urlParam]);
@@ -54,8 +56,8 @@ const IntegrationAutosuggest = ({formId, setResult, placeholder, url, urlParam, 
                 setOpen(false);
             }}
             getOptionLabel={option => option.name}
-            options={options}
-            loading={loading}
+            options={currentOptions}
+            loading={options.inProcess}
             onInputChange={(evt, value) => setValue(value)}
             renderInput={params => <TextField
                 {...params}
@@ -66,7 +68,7 @@ const IntegrationAutosuggest = ({formId, setResult, placeholder, url, urlParam, 
                     ...params.InputProps,
                     endAdornment: (
                         <>
-                            {loading ? <CircularProgress
+                            {options.inProcess ? <CircularProgress
                                 color="inherit"
                                 size={20}/> : null}
                             {params.InputProps.endAdornment}
@@ -90,9 +92,8 @@ IntegrationAutosuggest.propTypes = {
     options: PropTypes.array.isRequired
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (FORM_ID) => state => ({
     options: state[FORM_ID]?.options || []
 });
 
-
-export default connect(mapStateToProps, {getOptions}, FORM_ID)(IntegrationAutosuggest);
+export default connect(mapStateToProps, {getOptions})(IntegrationAutosuggest);

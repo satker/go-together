@@ -21,9 +21,9 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents}) => {
     }, [filterObject, pageSize]);
 
     useEffect(() => {
-        if (findEvents) {
+        if (findEvents.response.length !== 0) {
             const newEvents = {
-                events: findEvents.result,
+                events: findEvents.response.result,
                 page: filterObject.page.page
 
             };
@@ -97,12 +97,11 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents}) => {
     </>;
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = () => state => ({
     pageSize: state.pageSize,
-    findEvents: state[FORM_ID]?.findEvents,
+    findEvents: state[FORM_ID]?.findEvents || [],
 });
 
 export default connect(mapStateToProps,
-    {postFindEvents, setEventId},
-    FORM_ID)
-(Events);
+    {postFindEvents, setEventId})
+(Events)(FORM_ID);

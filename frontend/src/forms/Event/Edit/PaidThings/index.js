@@ -54,9 +54,9 @@ PaidThings.propTypes = {
     payedThings: PropTypes.array.isRequired
 };
 
-const mapStateToProps = (state) => ({
-    cashCategories: state[FORM_ID]?.cashCategories || [],
+const mapStateToProps = () => (state) => ({
+    cashCategories: state[FORM_ID]?.cashCategories,
     payedThings: state[FORM_ID]?.payedThings
 });
 
-export default connect(mapStateToProps, {getCashCategories, getPayedThings}, FORM_ID)(PaidThings);
+export default connect(mapStateToProps, {getCashCategories, getPayedThings})(PaidThings)(FORM_ID);

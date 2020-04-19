@@ -25,12 +25,12 @@ const EventLikes = ({eventId, putNewLike, newLike, getLikes, likes, userId}) => 
         getLikes(eventId);
     }, [getLikes, eventId]);
 
-    const likeType = !!likes.map(likedUser => likedUser.id).filter(userIdNew => userIdNew === userId)[0];
+    const likeType = !!likes.response.map(likedUser => likedUser.id).filter(userIdNew => userIdNew === userId)[0];
 
     return <div>
         {likeType ? <FavoriteBorderIcon color='error' onClick={saveLike}/> :
             <FavoriteIcon color='error' onClick={saveLike}/>}
-        {likes.length} likes this
+        {likes.response.length} likes this
     </div>;
 };
 
@@ -38,10 +38,10 @@ EventLikes.propTypes = {
     eventId: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = () => (state) => ({
     newLike: state[FORM_ID]?.newLike,
     likes: state[FORM_ID]?.likes || [],
     userId: state.userId
 });
 
-export default connect(mapStateToProps, {putNewLike, getLikes}, FORM_ID)(EventLikes);
+export default connect(mapStateToProps, {putNewLike, getLikes})(EventLikes)(FORM_ID);

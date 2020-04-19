@@ -72,13 +72,10 @@ UserChats.propTypes = {
     usersInfo: PropTypes.array
 };
 
-const mapStateToProps = state => {
-    console.log('mapStateToProps', state[FORM_ID]);
-    return ({
-        userId: state.userId,
-        messages: state[FORM_ID]?.messages || [],
-        usersInfo: state[FORM_ID]?.usersInfo || []
-    });
-};
+const mapStateToProps = () => state => ({
+    userId: state.userId,
+    messages: state[FORM_ID]?.messages || [],
+    usersInfo: state[FORM_ID]?.usersInfo || []
+});
 
-export default connect(mapStateToProps, {getMessages, postUsersInfo}, FORM_ID)(UserChats);
+export default connect(mapStateToProps, {getMessages, postUsersInfo})(UserChats)(FORM_ID);

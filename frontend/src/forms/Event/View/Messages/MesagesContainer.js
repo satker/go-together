@@ -27,8 +27,8 @@ MessagesContainer.propTypes = {
     userId: PropTypes.string.isRequired
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = () => state => ({
     userId: state.userId
 });
 
-export default connect(mapStateToProps, {}, FORM_ID)(MessagesContainer);
+export default connect(mapStateToProps, {})(MessagesContainer)(FORM_ID);

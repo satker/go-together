@@ -62,4 +62,4 @@ FormLogin.propTypes = {
     postLogin: PropTypes.func.isRequired
 };
 
-export default connect(() => null, {postLogin}, FORM_ID)(FormLogin);
+export default connect(() => () => null, {postLogin})(FormLogin)(FORM_ID);

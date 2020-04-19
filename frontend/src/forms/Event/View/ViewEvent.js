@@ -50,10 +50,10 @@ ViewEvent.propTypes = {
     userId: PropTypes.string.isRequired
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = () => state => ({
     statuses: state[FORM_ID]?.statuses || [],
     users: state[FORM_ID]?.users || [],
     userId: state.userId
 });
 
-export default connect(mapStateToProps, {getUsers, getStatuses}, FORM_ID)(ViewEvent);
+export default connect(mapStateToProps, {getUsers, getStatuses})(ViewEvent)(FORM_ID);

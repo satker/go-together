@@ -6,6 +6,7 @@ import moment from "moment";
 import {FORM_ID} from "./constants";
 import {getEvent} from "./actions";
 import {Event} from "../../utils/types";
+import {isEmpty} from "lodash";
 
 const GetAndViewEvent = ({id, getEvent, event}) => {
     const [currentEvent, setCurrentEvent] = useState(null);
@@ -15,10 +16,10 @@ const GetAndViewEvent = ({id, getEvent, event}) => {
     }, [getEvent, id]);
 
     useEffect(() => {
-        if (event) {
-            const result = {...event};
-            result.startDate = moment(event.startDate);
-            result.endDate = moment(event.endDate);
+        if (!isEmpty(event.response) && !event.inProcess) {
+            const result = {...event.response};
+            result.startDate = moment(result.startDate);
+            result.endDate = moment(result.endDate);
             setCurrentEvent(result)
         }
     }, [setCurrentEvent, event]);
@@ -32,8 +33,8 @@ GetAndViewEvent.propTypes = {
     event: Event
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = () => state => ({
     event: state[FORM_ID]?.event,
 });
 
-export default connect(mapStateToProps, {getEvent}, FORM_ID)(GetAndViewEvent);
+export default connect(mapStateToProps, {getEvent})(GetAndViewEvent)(FORM_ID);

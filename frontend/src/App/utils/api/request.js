@@ -1,36 +1,39 @@
 import {CSRF_TOKEN, USER_ID, USER_SERVICE_URL} from "../../../forms/utils/constants";
 import {set as setCookie} from 'js-cookie'
+import {initState} from "../../Context";
 
-export const fetchAndSet = async (url, setResult, method = 'GET', data = {}, headers = {}) => {
-    let resp;
+export const fetchAndSet = async (url, setResult, method = 'GET', data = {}, headers = {}, defaultRespObject) => {
+    let response;
+    let resp = {...defaultRespObject};
+    resp.inProcess = true;
+    setResult(resp);
     if (method === 'GET') {
-        resp = await fetch(url, {
+        response = await fetch(url, {
             method: method,
         });
     } else {
-        resp = await fetch(url, {
+        response = await fetch(url, {
             method: method,
             headers,
             body: JSON.stringify(data)
         });
     }
-    if (resp.status === 200) {
-        const result = await resp.text();
-        try {
-            setResult(JSON.parse(result));
-        } catch (e) {
-            console.log(e);
-            setResult(null);
-        }
+    if (response.status === 200) {
+        const result = await response.text();
+        resp.response = JSON.parse(result);
+        resp.inProcess = false;
+        console.log(resp);
+        setResult(resp);
     } else {
-        const result = await resp.text();
-        const errorMessage = JSON.parse(result).message;
-        alert(errorMessage);
-        setResult(null)
+        const result = await response.text();
+        resp.error = JSON.parse(result).message;
+        resp.inProcess = false;
+        alert(resp.error);
+        setResult(resp)
     }
 };
 
-export const fetchAndSetToken = (token) => (setToContext, methodAction) => async (url, data = {}) => {
+export const fetchAndSetToken = (token) => (setToContext, methodAction, state, FORM_ID, path) => async (url, data = {}) => {
     let headers = {
         'Accept': 'application/json',
         'content-type': 'application/json'
@@ -39,7 +42,7 @@ export const fetchAndSetToken = (token) => (setToContext, methodAction) => async
     if (token) {
         headers['Authorization'] = token;
     }
-    fetchAndSet(url, setToContext, methodAction, data, headers);
+    fetchAndSet(url, setToContext, methodAction, data, headers, state[FORM_ID]?.[path] || initState[FORM_ID][path]);
 };
 
 export const registerFetch = async (url, setScreen, data = {}, error, goToLogin) => {

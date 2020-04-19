@@ -51,10 +51,10 @@ ViewEvent.propTypes = {
     newEvent: PropTypes.object
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = () => (state) => ({
     userId: state.userId,
     updatedEvent: state[FORM_ID].updatedEvent,
     newEvent: state[FORM_ID].newEvent
 });
 
-export default connect(mapStateToProps, {postUpdatedEvent, putNewEvent}, FORM_ID)(ViewEvent);
+export default connect(mapStateToProps, {postUpdatedEvent, putNewEvent})(ViewEvent)(FORM_ID);

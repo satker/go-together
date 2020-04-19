@@ -23,7 +23,7 @@ const Messages = ({eventId, userMessageId, eventUserId, setUserMessageId, userId
     }, [eventUserId, eventId, userId, userMessageId, getReviewsByEvent]);
 
     useEffect(() => {
-        const updateReviews = reviewsByEvent.map(review => {
+        const updateReviews = reviewsByEvent.response.map(review => {
             review.date = moment(review.date);
             return review;
         }).sort((review1, review2) => review1.date.diff(review2.date, 'seconds'));
@@ -85,9 +85,9 @@ Messages.props = {
     reviewsByEvent: PropTypes.arrayOf(Review)
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = () => state => ({
     userId: state.userId,
     reviewsByEvent: state[FORM_ID]?.reviewsByEvent || []
 });
 
-export default connect(mapStateToProps, {getReviewsByEvent}, FORM_ID)(Messages);
+export default connect(mapStateToProps, {getReviewsByEvent})(Messages)(FORM_ID);

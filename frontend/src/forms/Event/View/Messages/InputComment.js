@@ -52,9 +52,9 @@ InputComment.propTypes = {
     putReview: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = () => state => ({
     userId: state.userId,
     review: state[FORM_ID]?.review
 });
 
-export default connect(mapStateToProps, {putReview}, FORM_ID)(InputComment);
+export default connect(mapStateToProps, {putReview})(InputComment)(FORM_ID);

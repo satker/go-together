@@ -34,8 +34,8 @@ CreateEvent.propTypes = {
     getEvent: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = () => (state) => ({
     event: state[FORM_ID].event
 });
 
-export default connect(mapStateToProps, {getEvent}, FORM_ID)(CreateEvent);
+export default connect(mapStateToProps, {getEvent})(CreateEvent)(FORM_ID);

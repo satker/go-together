@@ -17,7 +17,7 @@ import {fetchAndSetToken} from "../utils/api/request";
 import FormLogin from "../../forms/Login";
 import {navigate} from 'hookrouter';
 import {CSRF_TOKEN, EVENT_SERVICE_URL, USER_ID} from "../../forms/utils/constants";
-import AutosuggestionLocation from "../../forms/utils/components/Autosuggestion";
+import createAutosuggestion from "../../forms/utils/components/Autosuggestion";
 import {set as setCookie} from "js-cookie";
 import {FORM_ID} from "./constants";
 import {setUserIdAndFetchWithToken} from "./actions";
@@ -83,6 +83,8 @@ const useStyles = makeStyles(theme => ({
         },
     },
 }));
+
+const Autosuggestion = createAutosuggestion('AutosuggestionEvents');
 
 const NavBar = ({userId, titleName, setUserIdAndFetchWithToken}) => {
     const classes = useStyles();
@@ -228,11 +230,11 @@ const NavBar = ({userId, titleName, setUserIdAndFetchWithToken}) => {
                         {titleName}
                     </Typography>
                     <div className={classes.search}>
-                        <AutosuggestionLocation formId='menu_'
-                                                setResult={goToEventPage}
-                                                placeholder={'Search an event'}
-                                                url={EVENT_SERVICE_URL + '/events'}
-                                                urlParam={'name'}
+                        <Autosuggestion formId='menu_'
+                                        setResult={goToEventPage}
+                                        placeholder={'Search an event'}
+                                        url={EVENT_SERVICE_URL + '/events'}
+                                        urlParam={'name'}
                         />
                     </div>
                     <div className={classes.grow}/>
@@ -286,9 +288,9 @@ const NavBar = ({userId, titleName, setUserIdAndFetchWithToken}) => {
     );
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = () => (state) => ({
     userId: state.userId,
     titleName: state.titleName
 });
 
-export default connect(mapStateToProps, {setUserIdAndFetchWithToken}, FORM_ID)(NavBar);
+export default connect(mapStateToProps, {setUserIdAndFetchWithToken})(NavBar)(FORM_ID);

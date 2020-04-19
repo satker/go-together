@@ -76,8 +76,8 @@ MainInfo.propTypes = {
     getHousingTypes: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (state) => ({
-    housingTypes: state[FORM_ID].housingTypes || []
+const mapStateToProps = () => (state) => ({
+    housingTypes: state[FORM_ID].housingTypes
 });
 
-export default connect(mapStateToProps, {getHousingTypes}, FORM_ID)();
+export default connect(mapStateToProps, {getHousingTypes})(MainInfo)(FORM_ID);

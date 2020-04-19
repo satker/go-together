@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import {Range} from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'react-dates/initialize';
-import AutosuggestionLocation from "../utils/components/Autosuggestion";
+import createAutosuggestion from "../utils/components/Autosuggestion";
 import 'react-dates/lib/css/_datepicker.css';
 import CheckInOutDates from '../utils/components/CheckInOutDates'
 import CounterItem from "../utils/components/CounterItem";
@@ -16,8 +16,11 @@ import {SearchObject} from "../utils/types";
 import {FORM_ID} from "./constants";
 import {setArrivalDate, setDepartureDate, setPage} from "./actions";
 
+const Autosuggestion = createAutosuggestion('AutosuggestionLocation');
+
 const SearchForm = ({
-                        setEvents, searchObject, onChangeSearchObject, filterObject, setFilterObject, onClearSearchObject,
+                        setEvents, searchObject, onChangeSearchObject, filterObject,
+                        setFilterObject, onClearSearchObject,
                         setPage, setArrivalDate, setDepartureDate
                     }) => {
     const [dropdownPriceOpen, setDropdownPriceOpen] = useState(false);
@@ -145,11 +148,11 @@ const SearchForm = ({
 
     return <div className='container-search-events'>
         <div className='flex'>
-            <AutosuggestionLocation formId='search_form_'
-                                    setResult={(location) => onChangeSearchObject('location', location)}
-                                    placeholder={'Search a location (CITY,COUNTRY)'}
-                                    url={LOCATION_SERVICE_URL + '/locations'}
-                                    urlParam={'name'}/>
+            <Autosuggestion formId='search_form_'
+                            setResult={(location) => onChangeSearchObject('location', location)}
+                            placeholder={'Search a location (CITY,COUNTRY)'}
+                            url={LOCATION_SERVICE_URL + '/locations'}
+                            urlParam={'name'}/>
         </div>
         <div className='flex margin-left-custom'>
             <CheckInOutDates startDate={searchObject.arrivalDate}
@@ -228,6 +231,5 @@ SearchForm.propTypes = {
     setDepartureDate: PropTypes.func.isRequired
 };
 
-export default connect(() => null,
-    {setPage, setArrivalDate, setDepartureDate},
-    FORM_ID)(SearchForm);
+export default connect(() => () => null,
+    {setPage, setArrivalDate, setDepartureDate})(SearchForm)(FORM_ID);

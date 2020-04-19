@@ -19,6 +19,7 @@ const AdvancedSearch = ({
     const [chooseParameters, setChooseParameters] = useState([]);
     const [chooseLanguages, setChooseLanguages] = useState([]);
     const [chooseApartmentTypes, setChooseApartmentTypes] = useState([]);
+    console.log(apartmentTypes);
 
     useEffect(() => {
         setChooseParameters(searchObject.advancedSearch.parameters
@@ -67,21 +68,21 @@ const AdvancedSearch = ({
             <DropdownItem toggle={false}>
                 <MultipleSelectBox label='Apartment types:'
                                    onChange={evt => setChooseApartmentTypes(evt)}
-                                   optionsSimple={apartmentTypes}
+                                   optionsSimple={apartmentTypes.response}
                                    value={chooseApartmentTypes}/>
             </DropdownItem>
             <DropdownItem divider/>
             <DropdownItem>
                 <MultipleSelectBox label='Owner language:'
                                    value={chooseLanguages}
-                                   optionsSimple={languages}
+                                   optionsSimple={languages.response}
                                    onChange={evt => setChooseLanguages(evt)}/>
             </DropdownItem>
             <DropdownItem divider/>
             <DropdownItem>
                 <MultipleSelectBox label='Parameters:'
                                    value={chooseParameters}
-                                   optionsSimple={parameters}
+                                   optionsSimple={parameters.response}
                                    onChange={evt => setChooseParameters(evt)}/>
             </DropdownItem>
             <Button onClick={() => {
@@ -106,12 +107,10 @@ AdvancedSearch.propTypes = {
     languages: PropTypes.array
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = () => state => ({
     parameters: state[FORM_ID]?.parameters || [],
     apartmentTypes: state[FORM_ID]?.apartmentTypes || [],
     languages: state[FORM_ID]?.languages || []
 });
 
-export default connect(mapStateToProps,
-    {getParameters, getLanguages, getApartmentTypes},
-    FORM_ID)(AdvancedSearch);
+export default connect(mapStateToProps, {getParameters, getLanguages, getApartmentTypes})(AdvancedSearch)(FORM_ID);
