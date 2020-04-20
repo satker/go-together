@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import SearchForm from "./SearchForm";
-import {Container} from "reactstrap";
 import ReactPaginate from 'react-paginate';
 import {FORM_DTO, SEARCH_OBJECT_DEFAULT} from '../utils/constants'
 import './styles.css'
@@ -9,6 +8,8 @@ import GroupItems from "../utils/components/CardItems";
 import {connect} from "../../App/Context";
 import {postFindEvents, setEventId} from "./actions";
 import {FORM_ID} from "./constants";
+import Container from "../utils/components/Container/ContainerRow";
+import LoadableContent from "../utils/components/LoadableContent";
 
 const Events = ({pageSize, postFindEvents, setEventId, findEvents}) => {
     const [searchObject, setSearchObject] = useState({...SEARCH_OBJECT_DEFAULT});
@@ -44,7 +45,7 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents}) => {
     const pageCount = findEvents.response.page ?
         findEvents.response.page.totalSize / findEvents.response.page.size : 0;
 
-    return <>
+    return <Container formId={FORM_ID}>
         <Container className='search-container'>
             <SearchForm filterObject={filterObject}
                         setFilterObject={setFilterObject}
@@ -54,12 +55,14 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents}) => {
             />
         </Container>
         <Container className='events-container'>
-            <GroupItems
-                onDelete={onDelete}
-                onClick={onClickChooseEvent}
-                items={findEvents.response.result}
-                isEvents
-            />
+            <LoadableContent loadableData={findEvents}>
+                <GroupItems
+                    onDelete={onDelete}
+                    onClick={onClickChooseEvent}
+                    items={findEvents.response.result}
+                    isEvents
+                />
+            </LoadableContent>
         </Container>
         <br/>
         {pageCount <= 1 || <Container sm="12" md={{size: 6, offset: 3}}>
@@ -80,7 +83,7 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents}) => {
             </div>
         </Container>
         }
-    </>;
+    </Container>;
 };
 
 const mapStateToProps = (FORM_ID) => state => ({

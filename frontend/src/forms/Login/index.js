@@ -9,6 +9,7 @@ import * as PropTypes from "prop-types";
 import './style.css'
 import {FORM_ID} from "./constants";
 import {postLogin} from "./actions";
+import Container from "../utils/components/Container/ContainerRow";
 
 const FormLogin = ({formId, postLogin}) => {
     const [login, setLogin] = useState('');
@@ -22,7 +23,7 @@ const FormLogin = ({formId, postLogin}) => {
         set(evt.target.value);
     };
 
-    return <>
+    return <Container formId={FORM_ID}>
         <MenuItem button={false}
                   component={formId + 'login'}>
             <Label>Login</Label>
@@ -54,7 +55,7 @@ const FormLogin = ({formId, postLogin}) => {
             <Button className="btn btn-success"
                     onClick={handleSubmit}>Login</Button>
         </MenuItem>
-    </>;
+    </Container>;
 };
 
 FormLogin.propTypes = {

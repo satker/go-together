@@ -16,6 +16,12 @@ export const SimpleObject = PropTypes.exact({
     name: PropTypes.string
 });
 
+export const ResponseData = PropTypes.exact({
+    inProcess: PropTypes.bool.isRequired,
+    response: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool])
+});
+
 export const PhotoObject = PropTypes.exact({
     id: PropTypes.string,
     photoUrl: PropTypes.string,
@@ -104,8 +110,8 @@ export const Event = PropTypes.exact({
     eventPhotoDto: EventPhoto,
     paidThings: PropTypes.arrayOf(CashPaidThing),
     route: PropTypes.arrayOf(Route),
-    startDate: PropTypes.object,
-    endDate: PropTypes.object
+    startDate: PropTypes.string,
+    endDate: PropTypes.string
 });
 
 export const Review = PropTypes.exact({

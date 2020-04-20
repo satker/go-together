@@ -28,7 +28,6 @@ export const fetchAndSet = async (url,
         const result = await response.text();
         resp.response = JSON.parse(result);
         resp.inProcess = false;
-        console.log(url, resp);
         setResult(resp);
     } else {
         const result = await response.text();

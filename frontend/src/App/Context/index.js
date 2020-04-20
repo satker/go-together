@@ -7,9 +7,9 @@ import {createEmptyResponse} from "../utils/utils";
 import {isEmpty, keys, values} from "lodash";
 
 export const context = {
-    userId: getCookie(USER_ID),
+    userId: getCookie(USER_ID) === 'null' ? null : getCookie(USER_ID),
     eventId: null,
-    titleName: 'Events',
+    formId: null,
     fetchWithToken: fetchAndSetToken(getCookie(CSRF_TOKEN)),
     arrivalDate: null,
     departureDate: null,
@@ -68,8 +68,9 @@ const wrapActions = (actions, state, setState, FORM_ID) => {
         if (!(actionsStore[FORM_ID] && actionsStore[FORM_ID][action])) {
             if (methodAction && path) {
                 const setToContext = (result) => {
-                    initState[FORM_ID][path] = result;
-                    setState(FORM_ID + '.' + path, result);
+                    const updatedObject = {...result};
+                    initState[FORM_ID][path] = updatedObject;
+                    setState(FORM_ID + '.' + path, updatedObject);
                 };
                 result[action] =
                     actionFunction(state, setState, actions[action], setToContext, methodAction, FORM_ID, path);
@@ -95,7 +96,7 @@ const initMapStateToProps = (mapStateToProps, state, FORM_ID, setState) => {
     for (const prop in props) {
         if (initState[FORM_ID]?.[prop]) {
             if (!props[prop]?.response) {
-                props[prop] = initState[FORM_ID][prop];
+                initPropsToSet[FORM_ID + '.' + prop] = initState[FORM_ID][prop];
             }
         } else if (props[prop] && !initState[FORM_ID]?.[prop]) {
             if (props[prop] instanceof Object || props[prop] instanceof Array) {

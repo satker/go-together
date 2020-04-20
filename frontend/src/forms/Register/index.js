@@ -124,7 +124,7 @@ const FormRegister = ({
 
     const moveToMainPage = () => navigate('/');
 
-    return <Container>
+    return <Container formId={FORM_ID}>
         <ItemContainer>
             <Label for="login">Login</Label>
             <Input invalid={!isUserNameReadyForRegister} valid={isUserNameReadyForRegister}

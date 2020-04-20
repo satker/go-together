@@ -1,31 +1,22 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {connect} from "../../../App/Context";
 import {DEFAULT_CREATE_EVENT} from "../../utils/constants";
 import * as PropTypes from "prop-types";
-import ViewEvent from "./ViewEvent";
-import moment from 'moment';
+import EditForm from "./EditForm";
 import {FORM_ID} from "./constants";
 import {getEvent} from "./actions";
+import LoadableContent from "../../utils/components/LoadableContent";
 
 const CreateEvent = ({id, event, getEvent}) => {
-    const [currentEvent, setCurrentEvent] = useState(null);
-
     useEffect(() => {
         if (id) {
             getEvent(id);
         }
     }, [id, getEvent]);
 
-    useEffect(() => {
-        if (event) {
-            const newEvent = {...event};
-            newEvent.startDate = moment(newEvent.startDate);
-            newEvent.endDate = moment(newEvent.endDate);
-            setCurrentEvent(newEvent);
-        }
-    }, [setCurrentEvent, event]);
-
-    return ((id && currentEvent) || !id) && <ViewEvent event={id ? currentEvent : {...DEFAULT_CREATE_EVENT}}/>
+    return id ? <LoadableContent loadableData={event}>
+        <EditForm event={event.response}/>
+    </LoadableContent> : <EditForm event={{...DEFAULT_CREATE_EVENT}}/>
 };
 
 CreateEvent.propTypes = {
@@ -35,7 +26,7 @@ CreateEvent.propTypes = {
 };
 
 const mapStateToProps = (FORM_ID) => (state) => ({
-    event: state[FORM_ID].event
+    event: state[FORM_ID]?.event
 });
 
 export default connect(mapStateToProps, {getEvent})(CreateEvent)(FORM_ID);

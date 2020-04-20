@@ -3,10 +3,12 @@ import EventLikes from "../../../../utils/components/Event/EventLikes";
 import ParticipationButton from "../../ParticipationButton";
 import {connect} from "../../../../../App/Context";
 import * as PropTypes from "prop-types";
-import {Event, EventUser} from "../../../../utils/types";
+import {Event, ResponseData} from "../../../../utils/types";
 import LeftContainer from "../../../../utils/components/Container/LeftContainer";
 import ItemContainer from "../../../../utils/components/Container/ItemContainer";
 import {FORM_ID} from "../../constants";
+import moment from "moment";
+import LoadableContent from "../../../../utils/components/LoadableContent";
 
 const CommonInfo = ({event, users, setRefresh, userId}) => {
     return <LeftContainer style={{width: '600px'}}>
@@ -18,9 +20,12 @@ const CommonInfo = ({event, users, setRefresh, userId}) => {
         </ItemContainer>
         <ItemContainer>
             {userId && userId !== event.author.id &&
-            <ParticipationButton users={users}
-                                 setRefresh={setRefresh}
-                                 eventId={event.id}/>}
+            <LoadableContent loadableData={users}>
+                <ParticipationButton users={users.response}
+                                     setRefresh={setRefresh}
+                                     eventId={event.id}/>
+            </LoadableContent>
+            }
         </ItemContainer>
         <ItemContainer>
             <h5>About</h5>
@@ -38,14 +43,14 @@ const CommonInfo = ({event, users, setRefresh, userId}) => {
             })}
         </ItemContainer>
         <ItemContainer>
-            Trip dates: {event.startDate.format('LLL')} -> {event.endDate.format('LLL')}
+            Trip dates: {moment(event.startDate).format('LLL')} -> {moment(event.endDate).format('LLL')}
         </ItemContainer>
     </LeftContainer>
 };
 
 CommonInfo.propTypes = {
     event: Event.isRequired,
-    users: PropTypes.arrayOf(EventUser),
+    users: ResponseData.isRequired,
     setRefresh: PropTypes.func.isRequired,
     userId: PropTypes.string
 };

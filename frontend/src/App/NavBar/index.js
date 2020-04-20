@@ -86,7 +86,7 @@ const useStyles = makeStyles(theme => ({
 
 const Autosuggestion = createAutosuggestion('AutosuggestionEvents');
 
-const NavBar = ({userId, titleName, setUserIdAndFetchWithToken}) => {
+const NavBar = ({userId, setUserIdAndFetchWithToken}) => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -97,7 +97,7 @@ const NavBar = ({userId, titleName, setUserIdAndFetchWithToken}) => {
     const logout = () => {
         setCookie(CSRF_TOKEN, null);
         setCookie(USER_ID, null);
-        setUserIdAndFetchWithToken(['userId', 'fetchWithToken'], [null, fetchAndSetToken(null)]);
+        setUserIdAndFetchWithToken(['userId', 'fetchWithToken'], ['', fetchAndSetToken(null)]);
     };
 
     const goToEventPage = (event) => navigate('/events/' + event.id);
@@ -179,7 +179,7 @@ const NavBar = ({userId, titleName, setUserIdAndFetchWithToken}) => {
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
         >
-            {userId ? [
+            {userId !== null ? [
                 <MenuItem button={true}
                           key={mobileMenuId + '_create'}
                           component={mobileMenuId}
@@ -227,7 +227,7 @@ const NavBar = ({userId, titleName, setUserIdAndFetchWithToken}) => {
             <AppBar position="sticky">
                 <Toolbar>
                     <Typography className={classes.title} variant="h6" noWrap>
-                        {titleName}
+                        Events
                     </Typography>
                     <div className={classes.search}>
                         <Autosuggestion formId='menu_'
@@ -289,8 +289,7 @@ const NavBar = ({userId, titleName, setUserIdAndFetchWithToken}) => {
 };
 
 const mapStateToProps = () => (state) => ({
-    userId: state.userId,
-    titleName: state.titleName
+    userId: state.userId
 });
 
 export default connect(mapStateToProps, {setUserIdAndFetchWithToken})(NavBar)(FORM_ID);

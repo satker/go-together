@@ -5,6 +5,7 @@ import {keys} from 'lodash'
 import MessageItem from "./MessageItem";
 import {FORM_ID} from "../../constants";
 import {getMessages, postUsersInfo} from "./actions";
+import {ResponseData} from "../../../../utils/types";
 
 const UserChats = ({
                        eventUserId, eventId, userMessageId, refreshChats, setRefreshChats, setUserMessageId, userId,
@@ -19,10 +20,12 @@ const UserChats = ({
 
 
     useEffect(() => {
-        if (messages.length !== 0) {
+        if (!messages.inProcess &&
+            !usersInfo.inProcess &&
+            messages.response.length !== 0) {
             let notFoundUserIds = [];
-            const userIds = keys(messages) || [];
-            const cachedUserIds = usersInfo.map(user => user.id);
+            const userIds = keys(messages.response) || [];
+            const cachedUserIds = usersInfo.response.map(user => user.id);
             if (cachedUserIds.length === 0) {
                 notFoundUserIds = userIds;
             } else {
@@ -51,9 +54,10 @@ const UserChats = ({
     }, [eventUserId, refreshChats, getChats, userId]);
 
     return <div className='container-chats' style={{width: '30%'}}>
-        {usersInfo.length === keys(messages).length && keys(messages).map(key => {
-            const message = messages[key];
-            const user = usersInfo.filter(user => user.id === key)[0];
+        {usersInfo.response.length === keys(messages.response).length &&
+        keys(messages.response).map(key => {
+            const message = messages.response[key];
+            const user = usersInfo.response.filter(user => user.id === key)[0];
             return <MessageItem user={user}
                                 key={key}
                                 message={message}
@@ -68,8 +72,8 @@ UserChats.propTypes = {
     userId: PropTypes.string,
     getMessages: PropTypes.func.isRequired,
     postUsersInfo: PropTypes.func.isRequired,
-    messages: PropTypes.array,
-    usersInfo: PropTypes.array
+    messages: ResponseData.isRequired,
+    usersInfo: ResponseData.isRequired
 };
 
 const mapStateToProps = (FORM_ID) => state => ({

@@ -16,16 +16,21 @@ const PaidThings = ({
     }, [getCashCategories]);
 
     useEffect(() => {
-        if (payedThings.length !== 0) {
+        getPayedThings();
+    }, [getPayedThings]);
+
+    useEffect(() => {
+        if (event.paidThings.length === 0 &&
+            !payedThings.inProcess && payedThings.response.length !== 0) {
             const newPaidThings = [];
-            for (const paidThing of payedThings) {
+            for (const paidThing of payedThings.response) {
                 const newElement = {...DEFAULT_PAID_THING};
                 newElement.paidThing = paidThing;
                 newPaidThings.push(newElement);
             }
             onChangeEvent('paidThings', newPaidThings);
         }
-    }, [payedThings]);
+    }, [event, payedThings, onChangeEvent]);
 
     const onChangePaidThing = (arrayIndex) => (value) => {
         let oldArray = [...event.paidThings];
@@ -39,7 +44,7 @@ const PaidThings = ({
         </div>
         {event.paidThings.map((paidThing, index) =>
             <PaidThingItem
-                cashCategories={cashCategories}
+                cashCategories={cashCategories.response}
                 paidThing={paidThing}
                 onChange={onChangePaidThing(index)}/>)}
     </div>;
@@ -55,8 +60,8 @@ PaidThings.propTypes = {
 };
 
 const mapStateToProps = (FORM_ID) => (state) => ({
-    cashCategories: state[FORM_ID]?.cashCategories,
-    payedThings: state[FORM_ID]?.payedThings
+    cashCategories: state[FORM_ID]?.cashCategories || [],
+    payedThings: state[FORM_ID]?.payedThings || []
 });
 
 export default connect(mapStateToProps, {getCashCategories, getPayedThings})(PaidThings)(FORM_ID);

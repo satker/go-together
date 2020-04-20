@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {connect} from "../../../App/Context";
-import {Event} from "../../utils/types";
+import {Event, ResponseData} from "../../utils/types";
 import FormReference from "../../utils/components/FormReference";
 import ObjectGeoLocation from "../../utils/components/ObjectGeoLocation";
 import Users from "./Users";
@@ -10,7 +10,7 @@ import {FORM_ID} from "./constants";
 import {getStatuses, getUsers} from "./actions";
 import PropTypes from 'prop-types';
 
-const ViewEvent = ({event, statuses, users, getUsers, getStatuses, userId}) => {
+const ViewForm = ({event, statuses, users, getUsers, getStatuses, userId}) => {
     const [refresh, setRefresh] = useState(true);
 
     useEffect(() => {
@@ -21,7 +21,7 @@ const ViewEvent = ({event, statuses, users, getUsers, getStatuses, userId}) => {
         }
     }, [getStatuses, getUsers, event, refresh, setRefresh]);
 
-    return <Container>
+    return <Container formId={FORM_ID}>
         {userId === event.author.id &&
         <FormReference formRef={'/events/' + event.id + '/edit'} description='Edit event'/>}
 
@@ -41,10 +41,10 @@ const ViewEvent = ({event, statuses, users, getUsers, getStatuses, userId}) => {
     </Container>;
 };
 
-ViewEvent.propTypes = {
+ViewForm.propTypes = {
     event: Event.isRequired,
-    statuses: PropTypes.array.isRequired,
-    users: PropTypes.array.isRequired,
+    statuses: ResponseData.isRequired,
+    users: ResponseData.isRequired,
     getUsers: PropTypes.func.isRequired,
     getStatuses: PropTypes.func.isRequired,
     userId: PropTypes.string.isRequired
@@ -56,4 +56,4 @@ const mapStateToProps = (FORM_ID) => state => ({
     userId: state.userId
 });
 
-export default connect(mapStateToProps, {getUsers, getStatuses})(ViewEvent)(FORM_ID);
+export default connect(mapStateToProps, {getUsers, getStatuses})(ViewForm)(FORM_ID);

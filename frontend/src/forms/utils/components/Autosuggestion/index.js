@@ -6,6 +6,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import {connect} from "../../../../App/Context";
 import {withStyles} from "@material-ui/core";
 import {getOptions} from "./actions";
+import {ResponseData} from "../../types";
 
 const StyledAutocomplete = withStyles({
     inputRoot: {
@@ -89,7 +90,7 @@ IntegrationAutosuggest.propTypes = {
     urlParam: PropTypes.string.isRequired,
     formId: PropTypes.string.isRequired,
     getOptions: PropTypes.func.isRequired,
-    options: PropTypes.array.isRequired
+    options: ResponseData.isRequired
 };
 
 const mapStateToProps = (FORM_ID) => state => ({

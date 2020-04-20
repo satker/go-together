@@ -49,7 +49,7 @@ const ElementTabs = (props) => {
 
 ElementTabs.propTypes = {
     tabs: PropTypes.array.isRequired,
-    elements: PropTypes.arrayOf(PropTypes.object).isRequired,
+    elements: PropTypes.array.isRequired,
     elementsFieldTab: PropTypes.string.isRequired
 };
 

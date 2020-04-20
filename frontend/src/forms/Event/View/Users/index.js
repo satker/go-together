@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import ElementTabs from "../../../utils/components/Tabs";
 import PropTypes from "prop-types";
-import {EventUser} from "../../../utils/types";
+import {ResponseData} from "../../../utils/types";
 import {connect} from "../../../../App/Context";
 import Messages from "../Messages";
 import {postUserStatus} from "./actions";
 import {FORM_ID} from "../constants";
 import {getUsers} from "../actions";
+import LoadableContent from "../../../utils/components/LoadableContent";
 
 const Users = ({users, statuses, eventId, eventUserId, userId, postUserStatus, userStatus, getUsers}) => {
     const [userMessageId, setUserMessageId] = useState(null);
@@ -26,7 +27,7 @@ const Users = ({users, statuses, eventId, eventUserId, userId, postUserStatus, u
     }, [getUsers, userStatus, flag, eventId]);
 
     const updateUserStatus = (status) => (userId) => {
-        const approvedUser = [...users].filter(user => user.user.id === userId).map(user => {
+        const approvedUser = [...users.response].filter(user => user.user.id === userId).map(user => {
             user.userStatus = status;
             return user;
         })[0];
@@ -35,13 +36,17 @@ const Users = ({users, statuses, eventId, eventUserId, userId, postUserStatus, u
     };
 
     return <>
-        {userId === eventUserId && <ElementTabs elements={users}
-                                                onClick={updateUserStatus('APPROVED')}
-                                                onDelete={updateUserStatus('REJECTED')}
-                                                onAction={setUserMessageId}
-                                                isUsers={true}
-                                                elementsFieldTab={"userStatus"}
-                                                tabs={statuses}/>}
+        <LoadableContent loadableData={statuses}>
+            <LoadableContent loadableData={users}>
+                {userId === eventUserId && <ElementTabs elements={users.response}
+                                                        onClick={updateUserStatus('APPROVED')}
+                                                        onDelete={updateUserStatus('REJECTED')}
+                                                        onAction={setUserMessageId}
+                                                        isUsers={true}
+                                                        elementsFieldTab={"userStatus"}
+                                                        tabs={statuses.response}/>}
+            </LoadableContent>
+        </LoadableContent>
         <Messages eventId={eventId}
                   userMessageId={userMessageId}
                   setUserMessageId={setUserMessageId}
@@ -50,8 +55,8 @@ const Users = ({users, statuses, eventId, eventUserId, userId, postUserStatus, u
 };
 
 Users.propTypes = {
-    users: PropTypes.arrayOf(EventUser),
-    statuses: PropTypes.arrayOf(PropTypes.string),
+    users: ResponseData.isRequired,
+    statuses: ResponseData.isRequired,
     eventId: PropTypes.string.isRequired,
     eventUserId: PropTypes.string.isRequired,
     userId: PropTypes.string.isRequired,

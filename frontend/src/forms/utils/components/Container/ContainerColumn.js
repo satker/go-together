@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import './style.css';
 
 const ContainerColumn = ({children, isBordered, style}) => {
@@ -6,6 +7,10 @@ const ContainerColumn = ({children, isBordered, style}) => {
     return <div className={styleClass} style={style}>{children}</div>
 };
 
-ContainerColumn.propTypes = {};
+ContainerColumn.propTypes = {
+    children: PropTypes.node,
+    isBordered: PropTypes.bool,
+    style: PropTypes.string
+};
 
 export default ContainerColumn;
