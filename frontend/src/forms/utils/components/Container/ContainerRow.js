@@ -3,6 +3,7 @@ import './style.css';
 import PropTypes from "prop-types";
 import {setFormId} from "./actions";
 import {connect} from "../../../../App/Context";
+import {FORM_ID} from './constants'
 
 const Container = ({children, formId, setFormId}) => {
     useEffect(() => {
@@ -20,4 +21,4 @@ Container.propTypes = {
     setFormId: PropTypes.func.isRequired
 };
 
-export default connect(null, {setFormId})(Container)('');
+export default connect(null, {setFormId})(Container)(FORM_ID);

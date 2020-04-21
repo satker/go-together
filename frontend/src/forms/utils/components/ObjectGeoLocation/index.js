@@ -44,9 +44,11 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
                 const URL_FROM_LAN_LNG_TO_LOCATION_CUSTOM = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${route.latitude},
                 ${route.longitude}&key=${GOOGLE_API_KEY}&language=en`;
                 fetchAndSet(URL_FROM_LAN_LNG_TO_LOCATION_CUSTOM, (result) => {
-                    setLock(false);
-                    onChange(route.routeNumber, ['location.name', 'location.country.name', 'location.state', 'address'],
-                        [getCity(result), getCountry(result), getState(result), getAddress(result)]);
+                    if (!result.inProcess) {
+                        setLock(false);
+                        onChange(route.routeNumber, ['location.name', 'location.country.name', 'location.state', 'address'],
+                            [getCity(result.response), getCountry(result.response), getState(result.response), getAddress(result.response)]);
+                    }
                 })
             })
     }, [routes, onChange]);
