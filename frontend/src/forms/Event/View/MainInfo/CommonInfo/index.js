@@ -1,5 +1,5 @@
-import React from "react";
-import EventLikes from "../../../../utils/components/Event/EventLikes";
+import React, {useEffect} from "react";
+import createEventLikes from "../../../../utils/components/Event/EventLikes";
 import ParticipationButton from "../../ParticipationButton";
 import {connect} from "../../../../../App/Context";
 import * as PropTypes from "prop-types";
@@ -9,14 +9,21 @@ import ItemContainer from "../../../../utils/components/Container/ItemContainer"
 import {FORM_ID} from "../../constants";
 import moment from "moment";
 import LoadableContent from "../../../../utils/components/LoadableContent";
+import {postLikes} from "../../../../utils/components/Event/EventLikes/actions";
 
-const CommonInfo = ({event, users, setRefresh, userId}) => {
+const EventLikes = createEventLikes(FORM_ID);
+
+const CommonInfo = ({event, users, setRefresh, userId, postLikes}) => {
+    useEffect(() => {
+        postLikes([event.id]);
+    }, [event, postLikes]);
+
     return <LeftContainer style={{width: '600px'}}>
         <ItemContainer>
             <h4>{event.name}</h4>
         </ItemContainer>
         <ItemContainer>
-            {userId && userId !== event.author.id && <EventLikes eventId={event.id}/>}
+            {userId && userId !== event.author.id && <EventLikes eventId={event.id} eventIds={[event.id]}/>}
         </ItemContainer>
         <ItemContainer>
             {userId && userId !== event.author.id &&
@@ -59,4 +66,4 @@ const mapStateToProps = () => state => ({
     userId: state.userId
 });
 
-export default connect(mapStateToProps, null)(CommonInfo)(FORM_ID);
+export default connect(mapStateToProps, {postLikes})(CommonInfo)(FORM_ID);

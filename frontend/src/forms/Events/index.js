@@ -10,14 +10,23 @@ import {postFindEvents, setEventId} from "./actions";
 import {FORM_ID} from "./constants";
 import Container from "../utils/components/Container/ContainerRow";
 import LoadableContent from "../utils/components/LoadableContent";
+import {postLikes} from "../utils/components/Event/EventLikes/actions";
 
-const Events = ({pageSize, postFindEvents, setEventId, findEvents}) => {
+const Events = ({pageSize, postFindEvents, setEventId, findEvents, postLikes}) => {
     const [searchObject, setSearchObject] = useState({...SEARCH_OBJECT_DEFAULT});
     const [filterObject, setFilterObject] = useState({...FORM_DTO("apartment.id")});
 
     useEffect(() => {
         filterObject.page.size = pageSize;
     }, [filterObject, pageSize]);
+
+    useEffect(() => {
+        console.log(findEvents.response.result);
+        if (findEvents.response.result && findEvents.response.result?.length) {
+            const eventIds = findEvents.response.result.map(event => event.id);
+            postLikes(eventIds);
+        }
+    }, [findEvents, postLikes]);
 
     useEffect(() => {
         postFindEvents(filterObject);
@@ -92,5 +101,5 @@ const mapStateToProps = (FORM_ID) => state => ({
 });
 
 export default connect(mapStateToProps,
-    {postFindEvents, setEventId})
+    {postFindEvents, setEventId, postLikes})
 (Events)(FORM_ID);

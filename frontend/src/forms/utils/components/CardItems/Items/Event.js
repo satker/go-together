@@ -7,11 +7,13 @@ import {Event} from "../../../types";
 import FormReference from "../../FormReference";
 import DeleteIcon from "../../Icon/Delete";
 import {PHOTO_OBJECT} from "../../../constants";
-import EventLikes from "../../Event/EventLikes";
+import createEventLikes from "../../Event/EventLikes";
 import {connect} from "../../../../../App/Context";
-import {FORM_ID} from "./constants";
+import {FORM_ID} from "../../../../Events/constants";
 
-const ItemEvent = ({event, onClickChooseEvent, onDelete, userId}) => {
+const EventLikes = createEventLikes(FORM_ID);
+
+const ItemEvent = ({event, onClickChooseEvent, onDelete, userId, eventIds}) => {
     return <Card body style={{align: 'center'}}>
         <DeleteIcon onDelete={() => onDelete(event.id)}/>
         <img className='fixed-width-main-image-card'
@@ -27,7 +29,9 @@ const ItemEvent = ({event, onClickChooseEvent, onDelete, userId}) => {
             <CardText>Going to travel through {event.route.map(location => location.location.name + ", " +
                 location.location.country.name).join(" -> ")}</CardText>
             <CardText>With {event.peopleCount} friends</CardText>
-            <CardText>{userId && <EventLikes eventId={event.id}/>}</CardText>
+            <CardText>{userId && userId !== event.author.id &&
+            <EventLikes eventId={event.id} eventIds={eventIds}/>}
+            </CardText>
             <CardText>Live by {event.housingType}</CardText>
             <FormReference formRef={'/events/' + event.id}
                            action={() => onClickChooseEvent(event)}
@@ -45,7 +49,8 @@ ItemEvent.propTypes = {
     event: Event.isRequired,
     onClickChooseEvent: PropTypes.func.isRequired,
     onDelete: PropTypes.func,
-    userId: PropTypes.string
+    userId: PropTypes.string,
+    eventIds: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
 const mapStateToProps = () => (state) => ({

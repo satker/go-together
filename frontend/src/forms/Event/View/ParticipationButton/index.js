@@ -36,7 +36,7 @@ const ParticipationButton = ({
         }
     }, [flag, meFromList, meToList, setFlag, setRefresh]);
 
-    const ifIPartOfEvent = !!users.response.find(user => user.user.id === userId);
+    const ifIPartOfEvent = !!users.find(user => user.user.id === userId);
     const actionButton = ifIPartOfEvent ? removeMeFromEvent : addMeToWaitApproveList;
     const buttonTitle = ifIPartOfEvent ? "Remove me from event" : "Add me to event";
 

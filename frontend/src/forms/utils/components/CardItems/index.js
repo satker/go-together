@@ -59,6 +59,7 @@ const mapPhotos = (photos, onDelete, key) => photos.map((photo) =>
 const mapEvents = (events, onClick, onDelete, key) =>
     events.map(event =>
         <ItemEvent
+            eventIds={events.map(event => event.id)}
             onDelete={onDelete}
             key={key + event.id}
             event={event}

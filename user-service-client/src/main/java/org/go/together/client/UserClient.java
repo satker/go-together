@@ -4,10 +4,7 @@ import org.go.together.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @FeignClient(name = "user-service", url = "http://localhost:8085")
 public interface UserClient {
@@ -61,6 +58,6 @@ public interface UserClient {
     Set<UUID> deleteLikedEventsByUserId(@PathVariable("userId") UUID userId,
                                         @RequestBody Set<UUID> eventIds);
 
-    @GetMapping("/events/{eventId}/likes")
-    Set<SimpleUserDto> getUsersLoginLikedEventId(@PathVariable("eventId") UUID eventId);
+    @PostMapping("/events/likes")
+    Map<UUID, Collection<SimpleUserDto>> getUsersLikedEventIds(@RequestBody Set<UUID> eventIds);
 }

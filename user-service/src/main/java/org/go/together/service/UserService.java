@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -139,10 +140,9 @@ public class UserService extends CrudService<UserDto, SystemUser> {
         return Collections.emptySet();
     }
 
-    public Set<SimpleUserDto> getUsersLoginLikedEventId(UUID eventId) {
-        return userRepository.findUsersLoginLikedEventId(eventId).stream()
-                .map(simpleUserMapper::entityToDto)
-                .collect(Collectors.toSet());
+    public Map<UUID, Collection<SimpleUserDto>> getUsersLikedEventIds(Set<UUID> eventIds) {
+        return eventIds.stream().collect(Collectors.toMap(Function.identity(),
+                eventId -> simpleUserMapper.entitiesToDtos(userRepository.findUsersLoginLikedEventId(eventId))));
     }
 
     public boolean saveLikedEventByUserId(UUID userId, UUID eventId) {
