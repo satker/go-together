@@ -86,13 +86,10 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents}) => {
     </Container>;
 };
 
-const mapStateToProps = (FORM_ID) => state => {
-    console.log(state);
-    return ({
-        pageSize: state.pageSize,
-        findEvents: state[FORM_ID]?.findEvents || [],
-    });
-};
+const mapStateToProps = (FORM_ID) => state => ({
+    pageSize: state.pageSize,
+    findEvents: state[FORM_ID]?.findEvents || [],
+});
 
 export default connect(mapStateToProps,
     {postFindEvents, setEventId})

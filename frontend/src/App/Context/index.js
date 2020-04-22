@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {fetchAndSetToken} from "../utils/api/request";
 import {CSRF_TOKEN, USER_ID,} from "../../forms/utils/constants";
 import {get as getCookie} from 'js-cookie'
-import {capitalizeFirstLetter, getUpdatedState} from "../../forms/utils/utils";
+import {capitalizeFirstLetter, onChange} from "../../forms/utils/utils";
 import {createEmptyResponse} from "../utils/utils";
-import {isEmpty, keys, merge, values} from "lodash";
+import {isEmpty, keys, values} from "lodash";
 
 export const context = {
-    userId: getCookie(USER_ID) || null,
+    userId: getCookie(USER_ID) === 'null' ? null : getCookie(USER_ID),
     eventId: null,
     formId: null,
     fetchWithToken: fetchAndSetToken(getCookie(CSRF_TOKEN)),
@@ -20,28 +20,19 @@ export const context = {
 export const Context = React.createContext({});
 
 const updatedState = {state: {}};
+const actionsStore = {};
+export const initState = {};
 
 export const Provider = ({children}) => {
     const [state, setState] = useState({...context});
-    const [flag, setFlag] = useState(false);
 
-    useEffect(() => {
-        if (flag) {
-            setState(updatedState.state);
+    const change = (path, value) => {
+        if (isEmpty(updatedState.state)) {
             updatedState.state = {...state};
-            setFlag(false)
         }
-    }, [flag, state]);
-
-    const update = (path, value) => {
-        const states = isEmpty(updatedState.state) ? state : updatedState.state;
-        const newState = getUpdatedState(states)(path, value);
-        updatedState.state = merge(states, newState);
-    };
-
-    const change = async (path, value) => {
-        await update(path, value);
-        setFlag(true)
+        const changeUpdatedState = (newState) => updatedState.state = newState;
+        onChange(updatedState.state, changeUpdatedState)(path, value);
+        setState(updatedState.state)
     };
 
     return <Context.Provider value={[state, change]}>
@@ -51,9 +42,6 @@ export const Provider = ({children}) => {
 
 export const actionFunction = (state, setState, action, setToContext, methodAction, FORM_ID, path) => (...args) =>
     action(state, setState)(...args)(state.fetchWithToken(setToContext, methodAction, state, FORM_ID, path));
-
-const actionsStore = {};
-export const initState = {};
 
 const wrapActions = (actions, state, setState, FORM_ID) => {
     if (!actions) {
@@ -108,19 +96,15 @@ const wrapActions = (actions, state, setState, FORM_ID) => {
     return {...result};
 };
 
-const initMapStateToProps = (mapStateToProps, state, FORM_ID, setState) => {
+const initMapStateToProps = (mapStateToProps, FORM_ID, setState) => {
     if (!mapStateToProps) {
         return {};
     }
-    const props = mapStateToProps(FORM_ID)(state);
+    const props = mapStateToProps(FORM_ID)(updatedState.state);
     const initPropsToSet = {};
     const resultProps = {};
     for (const prop in props) {
-        if (initState[FORM_ID]?.[prop]) {
-            if (!props[prop]?.response) {
-                props[prop] = initState[FORM_ID][prop];
-            }
-        } else if (props[prop] && !initState[FORM_ID]?.[prop]) {
+        if (props[prop] && !initState[FORM_ID]?.[prop]) {
             if (props[prop] instanceof Object || props[prop] instanceof Array) {
                 if (!props[prop] instanceof Array &&
                     props[prop].hasAttribute('inProcess') &&
@@ -151,7 +135,7 @@ export const connect = (mapStateToProps, actions) => (Component) => (FORM_ID) =>
     <Context.Consumer>
         {([state, setState]) =>
             <Component {...props}
-                       {...initMapStateToProps(mapStateToProps, state, FORM_ID, setState)}
+                       {...initMapStateToProps(mapStateToProps, FORM_ID, setState)}
                        {...wrapActions(actions, state, setState, FORM_ID)}
             />}
     </Context.Consumer>;

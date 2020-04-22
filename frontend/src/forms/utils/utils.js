@@ -35,11 +35,6 @@ export const createPhotoObj = (isUrl, data) => {
 };
 
 export const onChange = (state, setState) => (path, value) => {
-    const updatedState = getUpdatedState(state)(path, value);
-    setState(updatedState);
-};
-
-export const getUpdatedState = (state) => (path, value) => {
     if (path instanceof Array && value instanceof Array) {
         if (path.length === value.length) {
             const newState = {...state};
@@ -48,16 +43,15 @@ export const getUpdatedState = (state) => (path, value) => {
                     set(newState, path[i], value[i]);
                 }
             }
-            return newState;
+            setState(newState);
         }
     } else {
         if (get(state, path) !== value) {
             const newState = {...state};
             set(newState, path, value);
-            return newState;
+            setState(newState);
         }
     }
-    return state;
 };
 
 export const capitalizeFirstLetter = (str) => str.charAt(0).toLowerCase() + str.slice(1);
