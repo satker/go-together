@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {DEFAULT_EVENT_USER} from "../../../utils/constants";
 import {connect} from "../../../../App/Context";
-import Button from "reactstrap/es/Button";
 import {EventUser} from "../../../utils/types";
 import PropTypes from "prop-types";
 import {FORM_ID} from "../constants";
 import {deleteMeFromList, postMeToList} from "./actions";
+import Button from "@material-ui/core/Button";
 
 const ParticipationButton = ({
                                  eventId, users, setRefresh, userId, postMeToList,

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
-import {Button} from "reactstrap";
 import {css, StyleSheet} from 'aphrodite/no-important';
 import Lightbox from 'react-images';
+import Button from "@material-ui/core/Button";
 
 const Gallery = ({
                      images, heading, subheading, preventScroll,

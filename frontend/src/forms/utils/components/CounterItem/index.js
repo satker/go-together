@@ -1,6 +1,6 @@
 import React from 'react';
-import {Button} from "reactstrap";
 import PropTypes from 'prop-types';
+import Button from "@material-ui/core/Button";
 
 const CounterItem = ({value, setValue, disabled}) => {
     const onChange = value => {

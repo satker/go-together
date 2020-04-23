@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {Button, FormGroup, Input} from "reactstrap";
 import {Switch} from "@material-ui/core";
 import {createFileReaderToParsePhoto, createPhotoObj} from "../../utils";
 import {PhotoObject} from "../../types";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 
 const ImageSelector = ({photos, setPhotos, multiple}) => {
     const [isPhotoUrl, setIsPhotoUrl] = useState(false);
@@ -42,22 +43,23 @@ const ImageSelector = ({photos, setPhotos, multiple}) => {
     }, [currentLength, fileLength, photoFiles, setPhotoFiles, setPhotos, photos, multiple]);
 
     return <>
-        <FormGroup>
+        <>
             Way to add photo by {isPhotoUrl ? ' URL' : ' file'}<Switch checked={isPhotoUrl}
                                                                        onChange={() => setIsPhotoUrl(!isPhotoUrl)}
                                                                        value='photo'
         />
             {isPhotoUrl ?
-                <Input type="text"
-                       name="photoUrl"
-                       id="photoUrl"
-                       placeholder="http://photo.com/photo.jpg"
-                       onChange={(evt) => setPhotosToPush(evt.target.value)}/>
-                : <Input type="file"
+                <TextField
+                    id="photoUrl"
+                    label="Photo url"
+                    variant="filled"
+                    onChange={(evt) => setPhotosToPush(evt.target.value)}
+                />
+                : <input type="file"
                          multiple={multiple}
                          name="file"
                          onChange={(evt) => setPhotosToPush(evt.target)}/>}
-        </FormGroup>
+        </>
         <Button outline color="success" disabled={!photosToPush} onClick={addPhoto}>Add photo</Button>
     </>;
 };

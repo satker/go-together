@@ -7,11 +7,12 @@ import {fetchAndSet} from "../../../../App/utils/api/request";
 import Marker from "./Marker";
 import {getAddress, getCity, getCountry, getState} from "./utils";
 import RouteItem from "./RouteItem";
-import {ListGroup} from "reactstrap";
 import AddressFields from "./AddressFields";
 import ContainerColumn from "../Container/ContainerColumn";
 import LeftContainer from "../Container/LeftContainer";
 import RightContainer from "../Container/RightContainer";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import List from "@material-ui/core/List";
 
 export const GOOGLE_API_KEY = "AIzaSyBSjnMkN8ckymUWZO5v0q-cZW9WppoFsyM";
 const getMapOptions = () => {
@@ -155,7 +156,7 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
     return <>
         {editable && googleMap && <AddressFields google={googleMap} setCenter={setCenter}/>}
         <ContainerColumn>
-            <LeftContainer style={{width: '70%', height: 400}}>
+            <LeftContainer style={{width: '69%', height: 400}}>
                 <GoogleMapReact bootstrapURLKeys={{key: GOOGLE_API_KEY}}
                                 yesIWantToUseGoogleMapApiInternals
                                 onGoogleApiLoaded={handleGoogleMapApi}
@@ -174,16 +175,17 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
                     {getRoutes()}
                 </GoogleMapReact>
             </LeftContainer>
-            <RightContainer isBordered={true} style={{width: '30%'}}><ListGroup>
-                {getSortedRoutes().map(route => <RouteItem key={route.routeNumber}
-                                                           onDelete={editable && ((routeNumber) => {
-                                                               onDelete(routeNumber);
-                                                               setLock(false);
-                                                           })}
-                                                           route={route}
-                                                           center={center}
-                                                           setCenter={setCenter}/>)}
-            </ListGroup>
+            <RightContainer isBordered={true} style={{width: '30%', marginLeft: 0}}>
+                <List subheader={<ListSubheader>Routes</ListSubheader>}>
+                    {getSortedRoutes().map(route => <RouteItem key={route.routeNumber}
+                                                               onDelete={editable && ((routeNumber) => {
+                                                                   onDelete(routeNumber);
+                                                                   setLock(false);
+                                                               })}
+                                                               route={route}
+                                                               center={center}
+                                                               setCenter={setCenter}/>)}
+                </List>
             </RightContainer>
         </ContainerColumn>
     </>;

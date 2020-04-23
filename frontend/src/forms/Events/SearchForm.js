@@ -1,20 +1,18 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from "reactstrap";
+import React, {useEffect} from 'react';
 import PropTypes from "prop-types";
-import {Range} from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'react-dates/initialize';
 import createAutosuggestion from "../utils/components/Autosuggestion";
 import 'react-dates/lib/css/_datepicker.css';
 import CheckInOutDates from '../utils/components/CheckInOutDates'
-import CounterItem from "../utils/components/CounterItem";
-import AdvancedSearch from "./AdvancedSearch";
 import {FORM_DTO, LOCATION_SERVICE_URL, SEARCH_OBJECT_DEFAULT} from '../utils/constants'
 import {connect} from "../../App/Context";
 import {isEqual} from "lodash";
 import {SearchObject} from "../utils/types";
 import {FORM_ID} from "./constants";
 import {setArrivalDate, setDepartureDate, setPage} from "./actions";
+import Slider from "@material-ui/core/Slider";
+import Button from "@material-ui/core/Button";
 
 const Autosuggestion = createAutosuggestion('AutosuggestionLocation');
 
@@ -23,15 +21,11 @@ const SearchForm = ({
                         setFilterObject, onClearSearchObject,
                         setPage, setArrivalDate, setDepartureDate
                     }) => {
-    const [dropdownPriceOpen, setDropdownPriceOpen] = useState(false);
-    const [dropdownCapacityOpen, setDropdownCapacityOpen] = useState(false);
-
-    const [focus, setFocus] = useState(false);
 
     useEffect(() => {
         const checkDates = (searchObject.arrivalDate && !searchObject.departureDate) ||
             (!searchObject.arrivalDate && searchObject.departureDate);
-        if (!focus && !isEqual(searchObject, SEARCH_OBJECT_DEFAULT) && !checkDates) {
+        if (!isEqual(searchObject, SEARCH_OBJECT_DEFAULT) && !checkDates) {
             const newFilterObject = {...filterObject};
             if (searchObject.advancedSearch.parameters && searchObject.advancedSearch.parameters.length !== 0) {
                 newFilterObject.filters["apartment.parameterIds"] = {
@@ -131,11 +125,10 @@ const SearchForm = ({
             setPage(0);
             setFilterObject(newFilterObject);
         }
-    }, [focus, searchObject, setFilterObject, setPage]);
+    }, [searchObject, setFilterObject, setPage]);
 
-    const onAfterChange = (value) => {
-        onChangeSearchObject('minCostNight', value[0]);
-        onChangeSearchObject('maxCostNight', value[1]);
+    const onAfterChange = (event, newValue) => {
+        onChangeSearchObject('maxCostNight', newValue);
     };
 
     const clearFilters = () => {
@@ -160,59 +153,12 @@ const SearchForm = ({
                              setStartDate={(startDate) => onChangeSearchObject('arrivalDate', startDate)}
                              setEndDate={(endDate) => onChangeSearchObject('departureDate', endDate)}/>
         </div>
-        <div className='flex margin-left-custom'>
-            <Dropdown size={'sm'}
-                      isOpen={dropdownPriceOpen} toggle={() => {
-                if (!focus) {
-                    setDropdownPriceOpen(!dropdownPriceOpen);
-                    setFocus(!focus);
-                }
-            }}>
-                <DropdownToggle caret>
-                    Price
-                </DropdownToggle>
-                <DropdownMenu right>
-                    <DropdownItem header>Choose price range:</DropdownItem>
-                    <DropdownItem><Range onChange={onAfterChange} max={300}
-                                         defaultValue={[searchObject.minCostNight, searchObject.maxCostNight]}/></DropdownItem>
-                    <DropdownItem
-                        disabled>{searchObject.minCostNight + '$ - ' + searchObject.maxCostNight + '$'}</DropdownItem>
-                    <Button onClick={() => {
-                        setDropdownPriceOpen(!dropdownPriceOpen);
-                        setFocus(!focus)
-                    }} color="primary">Ok</Button>
-                </DropdownMenu>
-            </Dropdown>
-        </div>
-        <div className='flex margin-left-custom'>
-            <Dropdown size={'sm'} isOpen={dropdownCapacityOpen} toggle={() => {
-                if (!focus) {
-                    setDropdownCapacityOpen(!dropdownCapacityOpen);
-                    setFocus(!focus);
-                }
-            }}>
-                <DropdownToggle caret>
-                    Guests
-                </DropdownToggle>
-                <DropdownMenu right>
-                    <DropdownItem header>Choose capacity:</DropdownItem>
-                    Adults: <CounterItem value={searchObject.adult}
-                                         setValue={value => onChangeSearchObject('adult', value)}/>
-                    Children: <CounterItem value={searchObject.children}
-                                           setValue={value => onChangeSearchObject('children', value)}/>
-                    <Button onClick={() => {
-                        setDropdownCapacityOpen(!dropdownCapacityOpen);
-                        setFocus(!focus)
-                    }} color="primary">Ok</Button>
-                </DropdownMenu>
-            </Dropdown>
-        </div>
-        <div className='flex margin-left-custom'>
-            <AdvancedSearch focus={focus}
-                            setFocus={setFocus}
-                            searchObject={searchObject}
-                            onChangeSearchObject={onChangeSearchObject}
-            />
+        <div className='flex margin-left-custom' style={{width: '100px'}}>
+            <Slider onChange={onAfterChange}
+                    max={300}
+                    step={1}
+                    value={searchObject.maxCostNight}
+                    valueLabelDisplay="on"/>
         </div>
         <div className='flex margin-left-custom'>
             <Button onClick={clearFilters} color="primary">Clear</Button>

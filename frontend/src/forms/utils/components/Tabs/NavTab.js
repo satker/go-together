@@ -1,22 +1,22 @@
 import React from "react";
-import {NavItem, NavLink} from "reactstrap";
-import classnames from "classnames";
 import PropTypes from "prop-types";
+import Tab from "@material-ui/core/Tab";
 
-const NavTab = ({name, activeTab, toggle}) => {
-    return <NavItem>
-        <NavLink
-            className={classnames({active: activeTab === name})}
-            onClick={() => toggle(name)}>
-            {name}
-        </NavLink>
-    </NavItem>
+const a11yProps = (index) => {
+    return {
+        id: `scrollable-auto-tab-${index}`,
+        'aria-controls': `scrollable-auto-tabpanel-${index}`,
+    };
+};
+
+const NavTab = ({name, index, onChange}) => {
+    return <Tab label={name} value={index} onChange={onChange} {...a11yProps(index)}/>
 };
 
 NavTab.propTypes = {
     name: PropTypes.string.isRequired,
-    activeTab: PropTypes.string,
-    toggle: PropTypes.func.isRequired
+    index: PropTypes.number,
+    onChange: PropTypes.func.isRequired
 };
 
 export default NavTab;

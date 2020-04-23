@@ -1,28 +1,28 @@
 import React from "react";
-import {Card, CardBody, CardImg, CardSubtitle, CardText, CardTitle} from "reactstrap";
-import CardLink from "reactstrap/es/CardLink";
 import {getSrcForImg} from "../../../../utils/utils";
 import {User} from "../../../../utils/types";
 import RightContainer from "../../../../utils/components/Container/RightContainer";
+import {Card, CardContent, CardMedia, Typography} from "@material-ui/core";
 
 const Profile = ({user}) => {
     return <RightContainer style={{width: '400px'}}>
-        <Card body style={{align: 'center'}}>
+        <Card style={{align: 'center'}}>
             {user.userPhotos ?
-                <CardImg top width="50%" height="255" src={getSrcForImg(user.userPhotos[0])}
-                         alt="Card image cap"/> : null}
-            <CardBody>
-                <CardTitle>
-                    <h6>{user.firstName + ' ' + user.lastName}</h6>
-                </CardTitle>
-                <CardSubtitle>
-                    <h6>{user.location.name + ' ' + user.location.country.name}</h6>
-                </CardSubtitle>
-                <CardLink href={"#"}>{user.mail}</CardLink>
-                <CardText>My interests: {user.interests.map(interest => interest.name).join(', ')}</CardText>
-                <CardText>Languages: {user.languages.map(lang => lang.name).join(', ')}</CardText>
-                <CardText>About owner: {user.description}</CardText>
-            </CardBody>
+                <CardMedia style={{height: '255px'}}
+                           component="img"
+                           image={getSrcForImg(user.userPhotos[0])}/> : null}
+            <CardContent>
+                <Typography component="h6" variant="h6">
+                    {user.firstName + ' ' + user.lastName}
+                </Typography>
+                <Typography component="h6" variant="h6">
+                    {user.location.name + ' ' + user.location.country.name}
+                </Typography>
+                <Typography href={"#"}>{user.mail}</Typography>
+                <Typography>My interests: {user.interests.map(interest => interest.name).join(', ')}</Typography>
+                <Typography>Languages: {user.languages.map(lang => lang.name).join(', ')}</Typography>
+                <Typography>About owner: {user.description}</Typography>
+            </CardContent>
         </Card>
     </RightContainer>;
 };

@@ -1,5 +1,4 @@
 import React from 'react';
-import {Card, CardBody, CardLink, CardText, CardTitle} from "reactstrap";
 import Gallery from "../../Galery";
 import PropTypes from "prop-types";
 import {getSrcForImg} from "../../../utils";
@@ -10,38 +9,46 @@ import {PHOTO_OBJECT} from "../../../constants";
 import createEventLikes from "../../Event/EventLikes";
 import {connect} from "../../../../../App/Context";
 import {FORM_ID} from "../../../../Events/constants";
+import {Card, CardActionArea, CardActions, CardContent, CardMedia, Typography} from "@material-ui/core";
 
 const EventLikes = createEventLikes(FORM_ID);
 
 const ItemEvent = ({event, onClickChooseEvent, onDelete, userId, eventIds}) => {
-    return <Card body style={{align: 'center'}}>
-        <DeleteIcon onDelete={() => onDelete(event.id)}/>
-        <img className='fixed-width-main-image-card'
-             src={getSrcForImg(event.eventPhotoDto.photos[0] || {...PHOTO_OBJECT})} alt=""/>
-        <CardBody>
-            <CardTitle>{event.name}</CardTitle>
-            <CardText>{event.description}</CardText>
-            <CardText>I {event.author.firstName}, {event.author.lastName}</CardText>
-            <CardText>From {event.author.location.name}, {event.author.location.country.name}</CardText>
-            <CardText>Languages: {event.author.languages.map(lang => lang.name).join(', ')}</CardText>
-            <CardText>My
-                interests: {event.author.interests.map(interest => interest.name).join(', ')}</CardText>
-            <CardText>Going to travel through {event.route.map(location => location.location.name + ", " +
-                location.location.country.name).join(" -> ")}</CardText>
-            <CardText>With {event.peopleCount} friends</CardText>
-            <CardText>{userId && userId !== event.author.id &&
-            <EventLikes eventId={event.id} eventIds={eventIds}/>}
-            </CardText>
-            <CardText>Live by {event.housingType}</CardText>
+    return <Card>
+        <CardActionArea>
+            <DeleteIcon onDelete={() => onDelete(event.id)}/>
+            <CardMedia
+                component="img"
+                height="250"
+                image={getSrcForImg(event.eventPhotoDto.photos[0] || {...PHOTO_OBJECT})}
+            />
+            <CardContent>
+                <Typography>{event.name}</Typography>
+                <Typography>{event.description}</Typography>
+                <Typography>I {event.author.firstName}, {event.author.lastName}</Typography>
+                <Typography>From {event.author.location.name}, {event.author.location.country.name}</Typography>
+                <Typography>Languages: {event.author.languages.map(lang => lang.name).join(', ')}</Typography>
+                <Typography>My
+                    interests: {event.author.interests.map(interest => interest.name).join(', ')}</Typography>
+                <Typography>Going to travel through {event.route.map(location => location.location.name + ", " +
+                    location.location.country.name).join(" -> ")}</Typography>
+                <Typography>With {event.peopleCount} friends</Typography>
+                <Typography>{userId && userId !== event.author.id &&
+                <EventLikes eventId={event.id} eventIds={eventIds}/>}
+                </Typography>
+                <Typography>Live by {event.housingType}</Typography>
+            </CardContent>
+        </CardActionArea>
+        <CardActions>
             <FormReference formRef={'/events/' + event.id}
                            action={() => onClickChooseEvent(event)}
                            description='Choose event'/>
             {event.eventPhotoDto.photos.length !== 0 &&
-            <CardLink><Gallery
+            <Gallery
                 images={event.eventPhotoDto.photos.map(photo => getSrcForImg(photo))}
                 showThumbnails={true}
-            /></CardLink>}
-        </CardBody>
+            />}
+        </CardActions>
     </Card>;
 };
 

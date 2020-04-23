@@ -1,24 +1,25 @@
 import React from 'react';
 import {CoordinateCenter, Route} from '../../types'
-import {ListGroupItem} from 'reactstrap'
 import PropTypes from "prop-types";
 import Delete from "../Icon/Delete";
 import ContainerColumn from "../Container/ContainerColumn";
-import LeftContainer from "../Container/LeftContainer";
-import RightContainer from "../Container/RightContainer";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 
 const RouteItem = ({center, setCenter, route, onDelete}) => {
     return <ContainerColumn>
-        <LeftContainer style={{width: onDelete ? '95%' : '100%'}}>
-            <ListGroupItem active={center.lat === route.latitude && center.lng === route.longitude}
-                           action
-                           onClick={() => setCenter([route.latitude, route.longitude])}>
-                {route.routeNumber}. {route.location.name}, {route.location.country.name}
-            </ListGroupItem>
-        </LeftContainer>
-        {onDelete && <RightContainer style={{width: '5%'}}>
-            <Delete onDelete={() => onDelete(route.routeNumber)}/>
-        </RightContainer>}
+        <ListItem selected={center.lat === route.latitude && center.lng === route.longitude}
+                  onClick={() => setCenter([route.latitude, route.longitude])}>
+            <ListItemIcon>
+                {route.routeNumber}
+            </ListItemIcon>
+            <ListItemText id={"switch-list-label-" + route.routeNumber}
+                          primary={route.location.name + ', ' + route.location.country.name}/>
+            {onDelete && <ListItemIcon>
+                <Delete onDelete={() => onDelete(route.routeNumber)}/>
+            </ListItemIcon>}
+        </ListItem>
     </ContainerColumn>;
 };
 

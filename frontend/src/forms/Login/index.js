@@ -2,14 +2,13 @@ import React, {useState} from 'react';
 import '../../Form.css'
 import {connect} from "../../App/Context";
 import MenuItem from "@material-ui/core/MenuItem";
-import {Button} from "reactstrap";
-import Input from "reactstrap/es/Input";
-import Label from "reactstrap/es/Label";
 import * as PropTypes from "prop-types";
 import './style.css'
 import {FORM_ID} from "./constants";
 import {postLogin} from "./actions";
 import Container from "../utils/components/Container/ContainerRow";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 
 const FormLogin = ({formId, postLogin}) => {
     const [login, setLogin] = useState('');
@@ -26,34 +25,29 @@ const FormLogin = ({formId, postLogin}) => {
     return <Container formId={FORM_ID}>
         <MenuItem button={false}
                   component={formId + 'login'}>
-            <Label>Login</Label>
+            <TextField
+                id="standard-multiline-flexible"
+                label="Login"
+                multiline
+                rowsMax={4}
+                value={login}
+                onChange={handleChange(setLogin)}
+            />
         </MenuItem>
         <MenuItem button={false}
                   component={formId + 'login'}>
-            <div className='login-input'>
-                <Input type="text"
-                       id={formId + "loginInput"}
-                       name="login"
-                       onChange={handleChange(setLogin)}/>
-            </div>
-        </MenuItem>
-        <MenuItem button={false}
-                  component={formId + 'login'}>
-            <Label>Password</Label>
-        </MenuItem>
-        <MenuItem button={false}
-                  component={formId + 'login'}>
-            <div className='login-input'>
-                <Input type="password"
-                       id={formId + "passwordInput"}
-                       name="password"
-                       onChange={handleChange(setPassword)}/>
-            </div>
+            <TextField
+                id="standard-multiline-flexible"
+                label="Password"
+                multiline
+                rowsMax={4}
+                value={password}
+                onChange={handleChange(setPassword)}
+            />
         </MenuItem>
         <MenuItem button={true}
                   component={formId + 'login'}>
-            <Button className="btn btn-success"
-                    onClick={handleSubmit}>Login</Button>
+            <Button onClick={handleSubmit}>Login</Button>
         </MenuItem>
     </Container>;
 };

@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {Button} from "reactstrap";
 import '../../Form.css'
 import Container from "../utils/components/Container/ContainerRow";
 import {onChange} from "../utils/utils";
@@ -10,6 +9,7 @@ import {FORM_ID} from "./constants";
 import EditForm from "./EditForm";
 import ViewForm from "./ViewForm";
 import LoadableContent from "../utils/components/LoadableContent";
+import Button from "@material-ui/core/Button";
 
 const PersonalArea = ({userInfo, getUserInfo, updatedUser, putUpdatedUser}) => {
     const [isEdited, setIsEdited] = useState(false);
@@ -62,8 +62,8 @@ const PersonalArea = ({userInfo, getUserInfo, updatedUser, putUpdatedUser}) => {
             <LoadableContent loadableData={userInfo}>
                 <ViewForm profile={profile}/>
             </LoadableContent>
-            <Button className="btn-danger" onClick={() => setIsEdited(true)}>Edit profile</Button>
-            {isEdited && <EditForm onChange={onChange()}
+            <Button color='red' onClick={() => setIsEdited(true)}>Edit profile</Button>
+            {isEdited && <EditForm onChange={onChange(profile, setProfile)}
                                    onSubmit={onSubmit}
                                    profile={profile}/>}
         </Container>

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from "prop-types";
-import {Card} from "reactstrap";
 import Delete from "../Icon/Delete";
 import {getSrcForImg} from "../../utils";
 import ItemEvent from "./Items/Event";
 import SimpleUserStatus from "./Items/SimpleUserStatus";
 import './style.css'
+import {Card, CardMedia} from "@material-ui/core";
 
 const GroupItems = ({onDelete, items, onClick, onAction, isEvents, isPhotos, isUsers}) => {
     const [parsedCards, setParsedCards] = useState([]);
@@ -49,12 +49,14 @@ GroupItems.propTypes = {
 export default GroupItems;
 
 const mapPhotos = (photos, onDelete, key) => photos.map((photo) =>
-    <div className='flex'>
-        <Card key={key + photo.id}>
-            <Delete onDelete={() => onDelete(photo.id)}/>
-            <img style={{width: '100px', height: '70px'}} src={getSrcForImg(photo)} alt=''/>
-        </Card>
-    </div>);
+    <Card className='flex'>
+        <Delete onDelete={() => onDelete(photo.id)}/>
+        <CardMedia key={key + photo.id}
+                   style={{width: '100px', height: '70px'}}
+                   component="img"
+                   image={getSrcForImg(photo)}>
+        </CardMedia>
+    </Card>);
 
 const mapEvents = (events, onClick, onDelete, key) =>
     events.map(event =>

@@ -9,6 +9,7 @@ body {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
+    margin-top: 20px;
 }
 
 .form-group {

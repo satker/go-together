@@ -1,10 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle} from "reactstrap";
-import CounterItem from "../utils/components/CounterItem";
 import {connect} from "../../App/Context";
 import * as PropTypes from "prop-types";
 import {SearchObject} from "../utils/types";
-import MultipleSelectBox from "../utils/components/MultipleSelectBox";
 import {FORM_ID} from "./constants";
 import {getApartmentTypes, getLanguages, getParameters} from "./actions";
 
@@ -51,7 +48,7 @@ const AdvancedSearch = ({
     };
 
 
-    return <Dropdown size={'sm'} isOpen={dropdownAdvancedSearchOpen} toggle={() => {
+    return null/*<Dropdown size={'sm'} isOpen={dropdownAdvancedSearchOpen} toggle={() => {
         if (!focus) {
             setDropdownAdvancedSearchOpen(!dropdownAdvancedSearchOpen);
             setFocus(!focus);
@@ -90,7 +87,7 @@ const AdvancedSearch = ({
                 setFocus(!focus)
             }} color="primary">Ok</Button>
         </DropdownMenu>
-    </Dropdown>
+    </Dropdown>*/
 };
 
 AdvancedSearch.propTypes = {

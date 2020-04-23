@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import MainInfo from "./MainInfo";
-import Button from "reactstrap/es/Button";
 import {connect} from "../../../App/Context";
 import {Event, ResponseData} from "../../utils/types";
 import {onChange} from "../../utils/utils";
@@ -12,6 +11,7 @@ import * as PropTypes from "prop-types";
 import {postUpdatedEvent, putNewEvent} from "./actions";
 import {FORM_ID} from "./constants";
 import moment from "moment";
+import Button from "@material-ui/core/Button";
 
 const EditForm = ({event, userId, postUpdatedEvent, putNewEvent, updatedEvent, newEvent}) => {
     const [createEvent, setCreateEvent] = useState({
