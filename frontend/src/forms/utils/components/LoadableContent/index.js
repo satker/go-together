@@ -6,7 +6,7 @@ import ErrorMessage from "./ErrorMessage";
 import {isEmpty} from "lodash";
 
 const LoadableContent = ({children, loadableData, loadingMessage}) => {
-    if (loadableData.inProcess || isEmpty(loadableData.response || loadableData.response.length === 0)) {
+    if (loadableData.inProcess || isEmpty(loadableData.response) || loadableData.response.length === 0) {
         return <Loading loadingMessage={loadingMessage}/>
     }
 

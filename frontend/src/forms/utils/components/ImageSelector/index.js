@@ -4,7 +4,7 @@ import {Switch} from "@material-ui/core";
 import {createFileReaderToParsePhoto, createPhotoObj} from "../../utils";
 import {PhotoObject} from "../../types";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+import LabeledInput from "../../LabeledInput";
 
 const ImageSelector = ({photos, setPhotos, multiple}) => {
     const [isPhotoUrl, setIsPhotoUrl] = useState(false);
@@ -49,11 +49,10 @@ const ImageSelector = ({photos, setPhotos, multiple}) => {
                                                                        value='photo'
         />
             {isPhotoUrl ?
-                <TextField
+                <LabeledInput
                     id="photoUrl"
                     label="Photo url"
-                    variant="filled"
-                    onChange={(evt) => setPhotosToPush(evt.target.value)}
+                    onChange={setPhotosToPush}
                 />
                 : <input type="file"
                          multiple={multiple}

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import SendIcon from '@material-ui/icons/Send';
 import {FORM_ID} from "../constants";
 import {putReview} from "./actions";
-import TextField from "@material-ui/core/TextField";
+import LabeledInput from "../../../utils/LabeledInput";
 
 const InputComment = ({refresh, eventId, userMessageId, eventUserId, readOnly, setRefreshChats, userId, putReview, review}) => {
     const [message, setMessage] = useState('');
@@ -32,7 +32,7 @@ const InputComment = ({refresh, eventId, userMessageId, eventUserId, readOnly, s
     };
 
     return <div className='container-input'>
-        <TextField
+        <LabeledInput
             id="standard-multiline-flexible"
             label="Enter message"
             multiline

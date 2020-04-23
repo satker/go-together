@@ -8,7 +8,7 @@ import {FORM_ID} from "./constants";
 import {postLogin} from "./actions";
 import Container from "../utils/components/Container/ContainerRow";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+import LabeledInput from "../utils/LabeledInput";
 
 const FormLogin = ({formId, postLogin}) => {
     const [login, setLogin] = useState('');
@@ -18,31 +18,24 @@ const FormLogin = ({formId, postLogin}) => {
         postLogin(login, password);
     };
 
-    const handleChange = (set) => (evt) => {
-        set(evt.target.value);
-    };
-
     return <Container formId={FORM_ID}>
         <MenuItem button={false}
                   component={formId + 'login'}>
-            <TextField
-                id="standard-multiline-flexible"
+            <LabeledInput
+                id="login"
                 label="Login"
-                multiline
-                rowsMax={4}
                 value={login}
-                onChange={handleChange(setLogin)}
+                onChange={setLogin}
             />
         </MenuItem>
         <MenuItem button={false}
                   component={formId + 'login'}>
-            <TextField
-                id="standard-multiline-flexible"
+            <LabeledInput
+                type='password'
+                id="password"
                 label="Password"
-                multiline
-                rowsMax={4}
                 value={password}
-                onChange={handleChange(setPassword)}
+                onChange={setPassword}
             />
         </MenuItem>
         <MenuItem button={true}

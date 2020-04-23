@@ -5,8 +5,8 @@ import {FORM_ID} from "./constants";
 import {getCheckMail} from "./actions";
 import {connect} from "../../App/Context";
 import PropTypes from "prop-types";
-import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import LabeledInput from "../utils/LabeledInput";
 
 const PATTERN_TO_CHECK_MAIL = '(?:[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\\])';
 const PATTERN_TO_CHECK_NAME = '^[A-Za-z]*$';
@@ -24,8 +24,7 @@ const EditForm = ({checkMail, getCheckMail, onChange, onSubmit, profile}) => {
         }
     }, [setIsMailReadyForRegister, checkMail]);
 
-    const handleMail = (evt) => {
-        let value = evt.target.value;
+    const handleMail = (value) => {
         if (value === '') {
             setIsMailReadyForRegister(true);
             return;
@@ -39,10 +38,9 @@ const EditForm = ({checkMail, getCheckMail, onChange, onSubmit, profile}) => {
         getCheckMail(value);
     };
 
-    const handleName = (evt) => {
-        let value = evt.target.value;
-        if (evt.target.value === '') {
-            if (evt.target.name === 'firstName') {
+    const handleName = (value, type) => {
+        if (value === '') {
+            if (type === 'firstName') {
                 setIsFirstNameReadyForRegister(true);
                 return;
             } else {
@@ -52,7 +50,7 @@ const EditForm = ({checkMail, getCheckMail, onChange, onSubmit, profile}) => {
         }
         let regexToCheckNonNumericValue = new RegExp(PATTERN_TO_CHECK_NAME);
         let isGood = regexToCheckNonNumericValue.test(value);
-        if (evt.target.name === 'firstName') {
+        if (type === 'firstName') {
             isGood ? setIsFirstNameReadyForRegister(true) :
                 setIsFirstNameReadyForRegister(false);
         } else {
@@ -64,35 +62,35 @@ const EditForm = ({checkMail, getCheckMail, onChange, onSubmit, profile}) => {
     return <Container>
         <ItemContainer>Edit your profile</ItemContainer>
         <ItemContainer>
-            <TextField
+            <LabeledInput
                 id="firstName"
                 label="First name"
                 value={profile.firstName}
-                onChange={(evt) => {
-                    onChange('firstName', evt);
-                    handleName(evt);
+                onChange={(value) => {
+                    onChange('firstName', value);
+                    handleName(value, 'firstName');
                 }}
             />
         </ItemContainer>
         <ItemContainer>
-            <TextField
+            <LabeledInput
                 id="lastName"
                 label="Last name"
                 value={profile.lastName}
-                onChange={(evt) => {
-                    onChange('lastName', evt);
-                    handleName(evt);
+                onChange={(value) => {
+                    onChange('lastName', value);
+                    handleName(value, 'lastName');
                 }}
             />
         </ItemContainer>
         <ItemContainer>
-            <TextField
+            <LabeledInput
                 id="mail"
                 label="Mail address"
                 value={profile.mail}
-                onChange={(evt) => {
-                    onChange('mail', evt);
-                    handleMail(evt);
+                onChange={(value) => {
+                    onChange('mail', value);
+                    handleMail(value);
                 }}
             />
         </ItemContainer>

@@ -35,10 +35,11 @@ import MultipleSelectBox from "../utils/components/MultipleSelectBox";
 import Container from "../utils/components/Container/ContainerRow";
 import ItemContainer from "../utils/components/Container/ItemContainer";
 import {getAllInterests, getAllLanguages, getCheckMail, getCheckUserName} from "./actions";
-import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import CardMedia from "@material-ui/core/CardMedia";
 import ErrorMessage from "../utils/components/LoadableContent/ErrorMessage";
+import LoadableContent from "../utils/components/LoadableContent";
+import LabeledInput from "../utils/LabeledInput";
 
 const URL = USER_SERVICE_URL + "/users";
 
@@ -105,8 +106,6 @@ const FormRegister = ({
         }
     }, [checkUserName, setCheckedUserName, setIsUserNameReadyForRegister]);
 
-    const handleChange = (set, evt) => set(evt.target.value);
-
     const handleSubmit = () => {
         let body = {};
         body.login = login;
@@ -129,104 +128,98 @@ const FormRegister = ({
 
     return <Container formId={FORM_ID}>
         <ItemContainer>
-            <TextField
-                error={!isUserNameReadyForRegister}
+            <LabeledInput
+                isError={!isUserNameReadyForRegister}
                 id="login"
                 label="Login"
-                helperText={checkedUserName}
-                variant="filled"
+                errorText={checkedUserName}
                 value={login}
-                onChange={(evt) => {
-                    handleChange(setLogin, evt);
-                    handleUserName(evt, setCheckedUserName, setIsUserNameReadyForRegister, getCheckUserName);
+                onChange={(value) => {
+                    setLogin(value);
+                    handleUserName(value, setCheckedUserName, setIsUserNameReadyForRegister, getCheckUserName);
                 }
                 }
             />
         </ItemContainer>
         <ItemContainer>
-            <TextField
-                error={!isMailReadyForRegister}
+            <LabeledInput
+                isError={!isMailReadyForRegister}
                 id="Email"
                 label="Email"
-                helperText={checkedMail}
-                variant="filled"
+                errorText={checkedMail}
                 value={mail}
-                onChange={(evt) => {
-                    handleChange(setMail, evt);
-                    handleMail(evt, setCheckedMail, setIsMailReadyForRegister, getCheckMail);
+                onChange={(value) => {
+                    setMail(value);
+                    handleMail(value, setCheckedMail, setIsMailReadyForRegister, getCheckMail);
                 }
                 }
             />
         </ItemContainer>
         <ItemContainer>
-            <TextField
-                error={!isFirstNameReadyForRegister}
+            <LabeledInput
+                isError={!isFirstNameReadyForRegister}
                 id="Email"
                 label="Email"
-                helperText={checkedFirstName}
-                variant="filled"
+                errorText={checkedFirstName}
                 value={firstName}
-                onChange={(evt) => {
-                    handleChange(setFirstName, evt);
-                    handleName(evt, setCheckedFirstName, setIsFirstNameReadyForRegister,
+                onChange={(value) => {
+                    setFirstName(value);
+                    handleName(value, 'firstName', setCheckedFirstName, setIsFirstNameReadyForRegister,
                         setCheckedLastName, setIsLastNameReadyForRegister);
                 }}
             />
         </ItemContainer>
         <ItemContainer>
-            <TextField
-                error={!isLastNameReadyForRegister}
+            <LabeledInput
+                isError={!isLastNameReadyForRegister}
                 id="lastName"
                 label="Last name"
-                helperText={checkedLastName}
-                variant="filled"
+                errorText={checkedLastName}
                 value={lastName}
-                onChange={(evt) => {
-                    handleChange(setLastName, evt);
-                    handleName(evt, setCheckedFirstName, setIsFirstNameReadyForRegister,
+                onChange={(value) => {
+                    setLastName(value);
+                    handleName(value, 'lastName', setCheckedFirstName, setIsFirstNameReadyForRegister,
                         setCheckedLastName, setIsLastNameReadyForRegister);
                 }}
             />
         </ItemContainer>
         <ItemContainer>
-            <TextField
-                id="Location"
-                label="Location"
-                variant="filled"
-            >
-                <Autosuggestion
-                    formId='register_'
-                    setResult={(value) => setLocation(value)}
-                    placeholder={'Search a location (CITY,COUNTRY)'}
-                    url={LOCATION_SERVICE_URL + '/locations'}
-                    urlParam={'name'}
-                />
-            </TextField>
+            <Autosuggestion
+                formId='register_'
+                setResult={(value) => setLocation(value)}
+                placeholder={'Search a location (CITY,COUNTRY)'}
+                url={LOCATION_SERVICE_URL + '/locations'}
+                urlParam={'name'}
+            />
         </ItemContainer>
         <ItemContainer>
-            <TextField
-                error={!isDescriptionReadyForRegister}
+            <LabeledInput
+                isError={!isDescriptionReadyForRegister}
                 id="description"
                 label="Description"
-                helperText={checkedDescription}
-                variant="filled"
+                errorText={checkedDescription}
                 value={description}
-                onChange={(evt) => {
-                    handleChange(setDescription, evt);
-                    handleDescription(evt, setCheckedDescription, setIsDescriptionReadyForRegister);
+                onChange={(value) => {
+                    setDescription(value);
+                    handleDescription(value, setCheckedDescription, setIsDescriptionReadyForRegister);
                 }}
             />
         </ItemContainer>
-        <ItemContainer><MultipleSelectBox label='Select languages'
-                                          value={languages}
-                                          optionsSimple={allLanguages.response}
-                                          onChange={setLanguages}/>
+        <ItemContainer>
+            <LoadableContent loadableData={allLanguages}>
+                <MultipleSelectBox label='Select languages'
+                                   value={languages}
+                                   optionsSimple={allLanguages.response}
+                                   onChange={setLanguages}/>
+            </LoadableContent>
         </ItemContainer>
         <ItemContainer>
-            <MultipleSelectBox label='Select interests'
-                               value={interests}
-                               optionsSimple={allInterests.response}
-                               onChange={setInterests}/>
+            <LoadableContent loadableData={allInterests}>
+                <MultipleSelectBox label='Select interests'
+                                   value={interests}
+                                   optionsSimple={allInterests.response}
+                                   onChange={setInterests}/>
+            </LoadableContent>
         </ItemContainer>
         <ItemContainer>
             {userPhoto && <CardMedia img={getSrcForImg(userPhoto)}/>}
@@ -240,34 +233,32 @@ const FormRegister = ({
             <ErrorMessage error={checkedPhoto}/>
         </ItemContainer>
         <ItemContainer>
-            <TextField
-                error={!isPasswordReadyForRegister}
-                id="description"
-                label="Description"
-                helperText={checkedPassword}
-                variant="filled"
+            <LabeledInput
+                isError={!isPasswordReadyForRegister}
+                id="password"
+                type='password'
+                label="Password"
+                errorText={checkedPassword}
                 value={password}
-                onChange={(evt) => {
-                    handleChange(setPassword, evt);
-                    handlePassword(evt, setCheckedPassword, setIsPasswordReadyForRegister);
+                onChange={(value) => {
+                    setPassword(value);
+                    handlePassword(value, setCheckedPassword, setIsPasswordReadyForRegister);
                 }}
             />
         </ItemContainer>
 
         <ItemContainer>
-            <TextField
-                error={!isConfirmPasswordReadyForRegister}
-                id="description"
-                label="Description"
-                helperText={checkedConfirmPassword}
-                variant="filled"
-                value={confirmPassword}
-                onChange={(evt) => {
-                    handleChange(setConfirmPassword, evt);
-                    handleConfirmPassword(evt, setCheckedConfirmPassword,
-                        setIsConfirmPasswordReadyForRegister, password);
-                }}
-            />
+            <LabeledInput id="confirmPassword"
+                          type='password'
+                          isError={!isConfirmPasswordReadyForRegister}
+                          label="Reenter password"
+                          errorText={checkedConfirmPassword}
+                          value={confirmPassword}
+                          onChange={(value) => {
+                              setConfirmPassword(value);
+                              handleConfirmPassword(value, setCheckedConfirmPassword,
+                                  setIsConfirmPasswordReadyForRegister, password);
+                          }}/>
         </ItemContainer>
         <ItemContainer>
             <CustomReference action={moveToMainPage} description='Already registered?'/>
@@ -288,8 +279,8 @@ const FormRegister = ({
 };
 
 const mapStateToProps = (FORM_ID) => (state) => ({
-    allLanguages: state[FORM_ID]?.languages || [],
-    allInterests: state[FORM_ID]?.interests || [],
+    allLanguages: state[FORM_ID]?.allLanguages || [],
+    allInterests: state[FORM_ID]?.allInterests || [],
     checkMail: state[FORM_ID]?.checkMail,
     checkUserName: state[FORM_ID]?.checkUserName
 });

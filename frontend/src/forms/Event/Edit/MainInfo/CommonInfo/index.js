@@ -6,7 +6,7 @@ import {getHousingTypes} from "../actions";
 import {connect} from "../../../../../App/Context";
 import {Event, ResponseData} from "../../../../utils/types";
 import PropTypes from "prop-types";
-import TextField from "@material-ui/core/TextField";
+import LabeledInput from "../../../../utils/LabeledInput";
 
 const CommonInfo = ({event, onChangeEvent, getHousingTypes, housingTypes}) => {
     useEffect(() => {
@@ -14,29 +14,30 @@ const CommonInfo = ({event, onChangeEvent, getHousingTypes, housingTypes}) => {
     }, [getHousingTypes]);
 
     return <>
-        <TextField
+        <LabeledInput
             id="name"
             label="Event name"
             value={event.name}
-            onChange={(evt) => onChangeEvent('name', evt.target.value)}
+            onChange={(value) => onChangeEvent('name', value)}
         />
         <SelectBox onChange={(value) => onChangeEvent('housingType', housingTypes.response
             .filter(type => type.id === value)[0].id)}
                    labelText='Housing type'
                    value={event.housingType}
                    items={housingTypes.response}/>
-        <TextField
+        <LabeledInput
             id="description"
             label="Description"
             value={event.description}
             defaultValue="Home, dear home..."
-            onChange={(evt) => onChangeEvent('description', evt.target.value)}
+            onChange={(value) => onChangeEvent('description', value)}
         />
-        <TextField
+        <LabeledInput
+            type='number'
             id="peopleCount"
             label="People count"
             value={event.peopleCount}
-            onChange={(evt) => onChangeEvent('peopleCount', evt.target.value)}
+            onChange={(value) => onChangeEvent('peopleCount', value)}
         />
         Trip dates: <CheckInOutDates startDate={event.startDate}
                                      endDate={event.endDate}

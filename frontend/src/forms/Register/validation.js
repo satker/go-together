@@ -24,8 +24,7 @@ import {
 } from "./constants";
 
 
-export const handleUserName = (evt, setCheckedUserName, setIsUserNameReadyForRegister, getCheckUserName) => {
-    let value = evt.target.value;
+export const handleUserName = (value, setCheckedUserName, setIsUserNameReadyForRegister, getCheckUserName) => {
     if (value === '') {
         setCheckedUserName(EMPTY_LOGIN);
         setIsUserNameReadyForRegister(false);
@@ -35,8 +34,7 @@ export const handleUserName = (evt, setCheckedUserName, setIsUserNameReadyForReg
     getCheckUserName(value)
 };
 
-export const handleMail = (evt, setCheckedMail, setIsMailReadyForRegister, getCheckMail) => {
-    let value = evt.target.value;
+export const handleMail = (value, setCheckedMail, setIsMailReadyForRegister, getCheckMail) => {
     if (value === '') {
         setCheckedMail(EMPTY_MAIL);
         setIsMailReadyForRegister(false);
@@ -52,14 +50,13 @@ export const handleMail = (evt, setCheckedMail, setIsMailReadyForRegister, getCh
     getCheckMail(value);
 };
 
-export const handleName = (evt, setCheckedFirstName, setIsFirstNameReadyForRegister, setCheckedLastName,
+export const handleName = (value, type, setCheckedFirstName, setIsFirstNameReadyForRegister, setCheckedLastName,
                            setIsLastNameReadyForRegister) => {
-    let value = evt.target.value;
     let regexToCheckNonNumericValue = new RegExp(PATTERN_TO_CHECK_NAME);
     let isGood = regexToCheckNonNumericValue.test(value);
-    if (evt.target.name === 'firstName') {
+    if (type === 'firstName') {
         if (isGood) {
-            if (evt.target.value === '') {
+            if (value === '') {
                 setCheckedFirstName(EMPTY_FIRST_NAME);
                 setIsFirstNameReadyForRegister(false);
             } else {
@@ -72,7 +69,7 @@ export const handleName = (evt, setCheckedFirstName, setIsFirstNameReadyForRegis
         }
     } else {
         if (isGood) {
-            if (evt.target.value === '') {
+            if (value === '') {
                 setCheckedLastName(EMPTY_LAST_NAME);
                 setIsLastNameReadyForRegister(false);
             } else {
@@ -86,8 +83,7 @@ export const handleName = (evt, setCheckedFirstName, setIsFirstNameReadyForRegis
     }
 };
 
-export const handlePassword = (evt, setCheckedPassword, setIsPasswordReadyForRegister) => {
-    let value = evt.target.value;
+export const handlePassword = (value, setCheckedPassword, setIsPasswordReadyForRegister) => {
     if (value === '') {
         setCheckedPassword(EMPTY_PASSWORD);
         setIsPasswordReadyForRegister(false);
@@ -101,8 +97,7 @@ export const handlePassword = (evt, setCheckedPassword, setIsPasswordReadyForReg
     }
 };
 
-export const handleConfirmPassword = (evt, setCheckedConfirmPassword, setIsConfirmPasswordReadyForRegister, password) => {
-    let value = evt.target.value;
+export const handleConfirmPassword = (value, setCheckedConfirmPassword, setIsConfirmPasswordReadyForRegister, password) => {
     if (value === '') {
         setCheckedConfirmPassword(EMPTY_PASSWORD);
         setIsConfirmPasswordReadyForRegister(false);
@@ -116,8 +111,7 @@ export const handleConfirmPassword = (evt, setCheckedConfirmPassword, setIsConfi
     }
 };
 
-export const handleDescription = (evt, setCheckedDescription, setIsDescriptionReadyForRegister) => {
-    let value = evt.target.value;
+export const handleDescription = (value, setCheckedDescription, setIsDescriptionReadyForRegister) => {
     if (value.length > 255) {
         setCheckedDescription(NOT_GOOD_DESCRIPTION);
         setIsDescriptionReadyForRegister(false);
