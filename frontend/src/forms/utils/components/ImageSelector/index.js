@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import {Switch} from "@material-ui/core";
 import {createFileReaderToParsePhoto, createPhotoObj} from "../../utils";
 import {PhotoObject} from "../../types";
-import Button from "@material-ui/core/Button";
 import LabeledInput from "../../LabeledInput";
+import CustomButton from "../CustomButton";
+import ItemContainer from "../Container/ItemContainer";
 
 const ImageSelector = ({photos, setPhotos, multiple}) => {
     const [isPhotoUrl, setIsPhotoUrl] = useState(false);
@@ -59,7 +60,9 @@ const ImageSelector = ({photos, setPhotos, multiple}) => {
                          name="file"
                          onChange={(evt) => setPhotosToPush(evt.target)}/>}
         </>
-        <Button outline color="success" disabled={!photosToPush} onClick={addPhoto}>Add photo</Button>
+        <ItemContainer>
+            <CustomButton text='Add photo' disabled={!photosToPush} onClick={addPhoto}/>
+        </ItemContainer>
     </>;
 };
 

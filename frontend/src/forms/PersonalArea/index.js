@@ -8,7 +8,7 @@ import {FORM_ID} from "./constants";
 import EditForm from "./EditForm";
 import ViewForm from "./ViewForm";
 import LoadableContent from "../utils/components/LoadableContent";
-import Button from "@material-ui/core/Button";
+import CustomButton from "../utils/components/CustomButton";
 
 const PersonalArea = ({userInfo, getUserInfo, updatedUser, putUpdatedUser}) => {
     const [isEdited, setIsEdited] = useState(false);
@@ -61,7 +61,10 @@ const PersonalArea = ({userInfo, getUserInfo, updatedUser, putUpdatedUser}) => {
             <LoadableContent loadableData={userInfo}>
                 <ViewForm profile={profile}/>
             </LoadableContent>
-            <Button color='red' onClick={() => setIsEdited(true)}>Edit profile</Button>
+            <ItemContainer>
+                <CustomButton text='Edit profile'
+                              onClick={() => setIsEdited(true)}/>
+            </ItemContainer>
             {isEdited && <EditForm onChange={onChange(profile, setProfile)}
                                    onSubmit={onSubmit}
                                    profile={profile}/>}

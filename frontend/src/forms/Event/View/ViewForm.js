@@ -47,7 +47,7 @@ ViewForm.propTypes = {
     users: ResponseData.isRequired,
     getUsers: PropTypes.func.isRequired,
     getStatuses: PropTypes.func.isRequired,
-    userId: PropTypes.string.isRequired
+    userId: PropTypes.string
 };
 
 const mapStateToProps = (FORM_ID) => state => ({

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 import {css, StyleSheet} from 'aphrodite/no-important';
 import Lightbox from 'react-images';
-import Button from "@material-ui/core/Button";
+import CustomButton from "./CustomButton";
 
 const Gallery = ({
                      images, heading, subheading, preventScroll,
@@ -75,7 +75,7 @@ const Gallery = ({
         <div className="section">
             {heading && <h2>{heading}</h2>}
             {subheading && <p>{subheading}</p>}
-            <Button size={"sm"} onClick={openLightboxByButton}>See photos</Button>
+            <CustomButton onClick={openLightboxByButton} text='See photos'/>
             {renderGallery()}
             <Lightbox
                 currentImage={currentImage}

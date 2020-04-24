@@ -10,6 +10,7 @@ import {ResponseData} from "../../types";
 
 const StyledAutocomplete = withStyles({
     inputRoot: {
+        backgroundColor: 'white'
         //flexWrap: 'inherit',
         //padding: '14px 6px'
     },

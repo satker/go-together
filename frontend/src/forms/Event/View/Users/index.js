@@ -59,7 +59,7 @@ Users.propTypes = {
     statuses: ResponseData.isRequired,
     eventId: PropTypes.string.isRequired,
     eventUserId: PropTypes.string.isRequired,
-    userId: PropTypes.string.isRequired,
+    userId: PropTypes.string,
     postUserStatus: PropTypes.func.isRequired,
     getUsers: PropTypes.func.isRequired
 };

@@ -33,7 +33,7 @@ const LabeledInput = ({value, onChange, isError, errorText, id, label, defaultVa
 };
 
 LabeledInput.propTypes = {
-    value: PropTypes.string,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     onChange: PropTypes.func.isRequired,
     isError: PropTypes.bool,
     errorText: PropTypes.string,

@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Event} from "../../../utils/types";
+import {Event, ResponseData} from "../../../utils/types";
 import PropTypes from "prop-types";
 import PaidThingItem from "./PaidThingItem";
 import {DEFAULT_PAID_THING} from "../../../utils/constants";
@@ -44,6 +44,7 @@ const PaidThings = ({
         </div>
         {event.paidThings.map((paidThing, index) =>
             <PaidThingItem
+                key={index}
                 cashCategories={cashCategories.response}
                 paidThing={paidThing}
                 onChange={onChangePaidThing(index)}/>)}
@@ -55,8 +56,8 @@ PaidThings.propTypes = {
     onChangeEvent: PropTypes.func.isRequired,
     getCashCategories: PropTypes.func.isRequired,
     getPayedThings: PropTypes.func.isRequired,
-    cashCategories: PropTypes.array.isRequired,
-    payedThings: PropTypes.array.isRequired
+    cashCategories: ResponseData.isRequired,
+    payedThings: ResponseData.isRequired
 };
 
 const mapStateToProps = (FORM_ID) => (state) => ({

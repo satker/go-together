@@ -11,7 +11,8 @@ import * as PropTypes from "prop-types";
 import {postUpdatedEvent, putNewEvent} from "./actions";
 import {FORM_ID} from "./constants";
 import moment from "moment";
-import Button from "@material-ui/core/Button";
+import CustomButton from "../../utils/components/CustomButton";
+import ItemContainer from "../../utils/components/Container/ItemContainer";
 
 const EditForm = ({event, userId, postUpdatedEvent, putNewEvent, updatedEvent, newEvent}) => {
     const [createEvent, setCreateEvent] = useState({
@@ -43,7 +44,11 @@ const EditForm = ({event, userId, postUpdatedEvent, putNewEvent, updatedEvent, n
                     onChangeEvent={onChange(createEvent, setCreateEvent)}/>
         <Route event={createEvent}
                onChangeEvent={onChange(createEvent, setCreateEvent)}/>
-        <Button className="btn btn-success" onClick={saveEvent}>Save</Button>
+        <ItemContainer>
+            <CustomButton color="primary"
+                          text='Save'
+                          onClick={saveEvent}/>
+        </ItemContainer>
     </Container>
 };
 

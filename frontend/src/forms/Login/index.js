@@ -5,11 +5,11 @@ import * as PropTypes from "prop-types";
 import './style.css'
 import {FORM_ID} from "./constants";
 import {postLogin} from "./actions";
-import Button from "@material-ui/core/Button";
 import LabeledInput from "../utils/LabeledInput";
 import ItemContainer from "../utils/components/Container/ItemContainer";
 import ContainerColumn from "../utils/components/Container/ContainerColumn";
 import {navigate} from "hookrouter";
+import CustomButton from "../utils/components/CustomButton";
 
 const FormLogin = ({formId, postLogin, handleMenuClose}) => {
     const [login, setLogin] = useState('');
@@ -46,16 +46,18 @@ const FormLogin = ({formId, postLogin, handleMenuClose}) => {
         <MenuItem button={true}
                   component={formId + 'login'}>
             <ItemContainer>
-                <Button onClick={handleSubmit}>Login</Button>
+                <CustomButton text='Login'
+                              onClick={handleSubmit}/>
             </ItemContainer>
         </MenuItem>
         <MenuItem button={false}
                   component={formId + 'login'}>
             <ItemContainer>
-                <Button onClick={() => {
-                    navigate('/register');
-                    handleMenuClose();
-                }}>Sign up</Button>
+                <CustomButton text='Sign up'
+                              onClick={() => {
+                                  navigate('/register');
+                                  handleMenuClose();
+                              }}/>
             </ItemContainer>
         </MenuItem
         >

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from "@material-ui/core/Button";
+import CustomButton from "../CustomButton";
 
 const CounterItem = ({value, setValue, disabled}) => {
     const onChange = value => {
@@ -10,9 +10,15 @@ const CounterItem = ({value, setValue, disabled}) => {
     };
 
     return <>
-        <Button disabled={disabled} color="primary" onClick={() => onChange(value - 1)} size="sm">-</Button>
+        <CustomButton text='-'
+                      disabled={disabled}
+                      color="primary"
+                      onClick={() => onChange(value - 1)}/>
         {' '}{value}{' '}
-        <Button disabled={disabled} color="primary" onClick={() => onChange(value + 1)} size="sm">+</Button>
+        <CustomButton text='+'
+                      disabled={disabled}
+                      color="primary"
+                      onClick={() => onChange(value + 1)}/>
     </>
 
 };

@@ -11,7 +11,7 @@ import {SearchObject} from "../utils/types";
 import {FORM_ID} from "./constants";
 import {setArrivalDate, setDepartureDate, setPage} from "./actions";
 import Slider from "@material-ui/core/Slider";
-import Button from "@material-ui/core/Button";
+import CustomButton from "../utils/components/CustomButton";
 
 const Autosuggestion = createAutosuggestion('AutosuggestionLocation');
 
@@ -160,7 +160,7 @@ const SearchForm = ({
                     valueLabelDisplay="on"/>
         </div>
         <div className='flex margin-left-custom'>
-            <Button onClick={clearFilters} color="primary">Clear</Button>
+            <CustomButton onClick={clearFilters} color="primary" text='Clear'/>
         </div>
     </div>
 };

@@ -19,7 +19,7 @@ const ContainerColumn = ({children, isBordered, style, formId, setFormId}) => {
 ContainerColumn.propTypes = {
     children: PropTypes.node,
     isBordered: PropTypes.bool,
-    style: PropTypes.string,
+    style: PropTypes.object,
     formId: PropTypes.string,
     setFormId: PropTypes.func.isRequired
 };

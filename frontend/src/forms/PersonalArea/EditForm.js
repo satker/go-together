@@ -5,8 +5,8 @@ import {FORM_ID} from "./constants";
 import {getCheckMail} from "./actions";
 import {connect} from "../../App/Context";
 import PropTypes from "prop-types";
-import Button from "@material-ui/core/Button";
 import LabeledInput from "../utils/LabeledInput";
+import CustomButton from "../utils/components/CustomButton";
 
 const PATTERN_TO_CHECK_MAIL = '(?:[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\\])';
 const PATTERN_TO_CHECK_NAME = '^[A-Za-z]*$';
@@ -95,12 +95,11 @@ const EditForm = ({checkMail, getCheckMail, onChange, onSubmit, profile}) => {
             />
         </ItemContainer>
         <ItemContainer>
-            <Button className="btn btn-success form-control"
-                    disabled={!(isMailReadyForRegister &&
-                        isFirstNameReadyForRegister &&
-                        isLastNameReadyForRegister)}
-                    type="submit" onClick={onSubmit}>
-                Save changes</Button>
+            <CustomButton color='primary'
+                          disabled={!(isMailReadyForRegister &&
+                              isFirstNameReadyForRegister &&
+                              isLastNameReadyForRegister)}
+                          onClick={onSubmit} text='Save changes'/>
         </ItemContainer>
     </Container>
 };

@@ -5,7 +5,7 @@ import {EventUser} from "../../../utils/types";
 import PropTypes from "prop-types";
 import {FORM_ID} from "../constants";
 import {deleteMeFromList, postMeToList} from "./actions";
-import Button from "@material-ui/core/Button";
+import CustomButton from "../../../utils/components/CustomButton";
 
 const ParticipationButton = ({
                                  eventId, users, setRefresh, userId, postMeToList,
@@ -40,7 +40,9 @@ const ParticipationButton = ({
     const actionButton = ifIPartOfEvent ? removeMeFromEvent : addMeToWaitApproveList;
     const buttonTitle = ifIPartOfEvent ? "Remove me from event" : "Add me to event";
 
-    return <Button className="btn btn-success" onClick={actionButton}>{buttonTitle}</Button>;
+    return <CustomButton color='primary'
+                         text={buttonTitle}
+                         onClick={actionButton}/>;
 };
 
 ParticipationButton.propTypes = {

@@ -22,9 +22,9 @@ const MessagesContainer = ({reviews, eventUserId, eventId, userId}) => {
 
 MessagesContainer.propTypes = {
     reviews: PropTypes.arrayOf(Review),
-    eventUserId: PropTypes.string.isRequired,
+    eventUserId: PropTypes.string,
     eventId: PropTypes.string.isRequired,
-    userId: PropTypes.string.isRequired
+    userId: PropTypes.string
 };
 
 const mapStateToProps = () => state => ({

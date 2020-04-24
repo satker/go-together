@@ -34,11 +34,11 @@ import MultipleSelectBox from "../utils/components/MultipleSelectBox";
 import Container from "../utils/components/Container/ContainerRow";
 import ItemContainer from "../utils/components/Container/ItemContainer";
 import {getAllInterests, getAllLanguages, getCheckMail, getCheckUserName} from "./actions";
-import Button from "@material-ui/core/Button";
 import CardMedia from "@material-ui/core/CardMedia";
 import ErrorMessage from "../utils/components/LoadableContent/ErrorMessage";
 import LoadableContent from "../utils/components/LoadableContent";
 import LabeledInput from "../utils/LabeledInput";
+import CustomButton from "../utils/components/CustomButton";
 
 const URL = USER_SERVICE_URL + "/users";
 
@@ -262,18 +262,23 @@ const FormRegister = ({
         <ItemContainer>
             <CustomReference action={moveToMainPage} description='Already registered?'/>
         </ItemContainer>
-        <Button className="btn btn-success"
-                onClick={handleSubmit}
-                disabled={!(isUserNameReadyForRegister &&
-                    isMailReadyForRegister
-                    && isFirstNameReadyForRegister &&
-                    isLastNameReadyForRegister &&
-                    isPasswordReadyForRegister &&
-                    isConfirmPasswordReadyForRegister &&
-                    isDescriptionReadyForRegister &&
-                    isPhotoReadyForRegister
-                )}>Register</Button>
-        <Button color="danger" onClick={moveToMainPage}>Close</Button>
+        <ItemContainer>
+            <CustomButton color="primary"
+                          onClick={handleSubmit}
+                          disabled={!(isUserNameReadyForRegister &&
+                              isMailReadyForRegister
+                              && isFirstNameReadyForRegister &&
+                              isLastNameReadyForRegister &&
+                              isPasswordReadyForRegister &&
+                              isConfirmPasswordReadyForRegister &&
+                              isDescriptionReadyForRegister &&
+                              isPhotoReadyForRegister
+                          )}
+                          text='Register'/>
+        </ItemContainer>
+        <ItemContainer>
+            <CustomButton color="secondary" onClick={moveToMainPage} text='Close'/>
+        </ItemContainer>
     </Container>;
 };
 

@@ -110,8 +110,8 @@ export const Event = PropTypes.exact({
     eventPhotoDto: EventPhoto,
     paidThings: PropTypes.arrayOf(CashPaidThing),
     route: PropTypes.arrayOf(Route),
-    startDate: PropTypes.string,
-    endDate: PropTypes.string
+    startDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    endDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
 });
 
 export const Review = PropTypes.exact({
