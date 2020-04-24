@@ -10,11 +10,11 @@ import {ResponseData} from "../../types";
 
 const StyledAutocomplete = withStyles({
     inputRoot: {
-        flexWrap: 'inherit',
-        padding: '14px 6px'
+        //flexWrap: 'inherit',
+        //padding: '14px 6px'
     },
     input: {
-        height: '28px'
+        //height: '28px'
     }
 })(Autocomplete);
 

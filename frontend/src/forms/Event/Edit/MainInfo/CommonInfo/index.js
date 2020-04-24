@@ -7,6 +7,7 @@ import {connect} from "../../../../../App/Context";
 import {Event, ResponseData} from "../../../../utils/types";
 import PropTypes from "prop-types";
 import LabeledInput from "../../../../utils/LabeledInput";
+import ItemContainer from "../../../../utils/components/Container/ItemContainer";
 
 const CommonInfo = ({event, onChangeEvent, getHousingTypes, housingTypes}) => {
     useEffect(() => {
@@ -14,36 +15,46 @@ const CommonInfo = ({event, onChangeEvent, getHousingTypes, housingTypes}) => {
     }, [getHousingTypes]);
 
     return <>
-        <LabeledInput
-            id="name"
-            label="Event name"
-            value={event.name}
-            onChange={(value) => onChangeEvent('name', value)}
+        <ItemContainer>
+            <LabeledInput
+                id="name"
+                label="Event name"
+                value={event.name}
+                onChange={(value) => onChangeEvent('name', value)}
+            />
+        </ItemContainer>
+        <ItemContainer>
+            <SelectBox onChange={(value) => onChangeEvent('housingType', housingTypes.response
+                .filter(type => type.id === value)[0].id)}
+                       labelText='Housing type'
+                       value={event.housingType}
+                       items={housingTypes.response}/>
+        </ItemContainer>
+        <ItemContainer>
+            <LabeledInput
+                id="description"
+                label="Description"
+                value={event.description}
+                defaultValue="Home, dear home..."
+                onChange={(value) => onChangeEvent('description', value)}
+            />
+        </ItemContainer>
+        <ItemContainer>
+            <LabeledInput
+                type='number'
+                id="peopleCount"
+                label="People count"
+                value={event.peopleCount}
+                onChange={(value) => onChangeEvent('peopleCount', value)}
+            />
+        </ItemContainer>
+        <ItemContainer>
+            Trip dates: <CheckInOutDates startDate={event.startDate}
+                                         endDate={event.endDate}
+                                         setStartDate={startDate => onChangeEvent('startDate', startDate)}
+                                         setEndDate={endDate => onChangeEvent('endDate', endDate)}
         />
-        <SelectBox onChange={(value) => onChangeEvent('housingType', housingTypes.response
-            .filter(type => type.id === value)[0].id)}
-                   labelText='Housing type'
-                   value={event.housingType}
-                   items={housingTypes.response}/>
-        <LabeledInput
-            id="description"
-            label="Description"
-            value={event.description}
-            defaultValue="Home, dear home..."
-            onChange={(value) => onChangeEvent('description', value)}
-        />
-        <LabeledInput
-            type='number'
-            id="peopleCount"
-            label="People count"
-            value={event.peopleCount}
-            onChange={(value) => onChangeEvent('peopleCount', value)}
-        />
-        Trip dates: <CheckInOutDates startDate={event.startDate}
-                                     endDate={event.endDate}
-                                     setStartDate={startDate => onChangeEvent('startDate', startDate)}
-                                     setEndDate={endDate => onChangeEvent('endDate', endDate)}
-    />
+        </ItemContainer>
     </>
 };
 

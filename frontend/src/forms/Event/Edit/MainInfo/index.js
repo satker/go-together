@@ -9,10 +9,10 @@ import Photos from "./Photos";
 
 const MainInfo = ({event, onChangeEvent}) => {
     return <ContainerColumn>
-        <LeftContainer style={{width: '600px'}}>
+        <LeftContainer style={{width: '60%'}}>
             <CommonInfo event={event} onChangeEvent={onChangeEvent}/>
         </LeftContainer>
-        <RightContainer style={{width: '600px'}}>
+        <RightContainer style={{width: '40%'}}>
             <Photos onChangeEvent={onChangeEvent} event={event}/>
         </RightContainer>
     </ContainerColumn>;

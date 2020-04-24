@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import '../../Form.css'
 import Container from "../utils/components/Container/ContainerRow";
 import {onChange} from "../utils/utils";
 import ItemContainer from "../utils/components/Container/ItemContainer";

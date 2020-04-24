@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import '../../Form.css'
 import createAutosuggestion from "../utils/components/Autosuggestion";
 import {LOCATION_SERVICE_URL, USER_SERVICE_URL} from '../utils/constants'
 import {registerFetch} from "../../App/utils/api/request";
@@ -158,8 +157,8 @@ const FormRegister = ({
         <ItemContainer>
             <LabeledInput
                 isError={!isFirstNameReadyForRegister}
-                id="Email"
-                label="Email"
+                id="firstName"
+                label="First name"
                 errorText={checkedFirstName}
                 value={firstName}
                 onChange={(value) => {

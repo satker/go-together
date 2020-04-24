@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import PropTypes from "prop-types";
-import 'rc-slider/assets/index.css';
 import 'react-dates/initialize';
 import createAutosuggestion from "../utils/components/Autosuggestion";
 import 'react-dates/lib/css/_datepicker.css';

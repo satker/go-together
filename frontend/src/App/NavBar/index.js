@@ -155,17 +155,7 @@ const NavBar = ({userId, setUserIdAndFetchWithToken}) => {
         </Menu>
     );
 
-    const loginArea = (formId) => [
-        <FormLogin formId={formId}/>,
-        <MenuItem button={false}
-                  component={menuId}
-                  onClick={() => {
-                      navigate('/register');
-                      handleMenuClose();
-                  }}>
-            Sign up
-        </MenuItem
-        >];
+    const loginArea = (formId) => <FormLogin formId={formId} handleMenuClose={handleMenuClose}/>;
 
     const mobileMenuId = 'primary-search-account-menu-mobile';
     const renderMobileMenu = [
