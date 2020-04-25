@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import {Switch} from "@material-ui/core";
 import {createFileReaderToParsePhoto, createPhotoObj} from "../../utils";
 import {PhotoObject} from "../../types";
-import LabeledInput from "../../LabeledInput";
+import LabeledInput from "../LabeledInput";
 import CustomButton from "../CustomButton";
 import ItemContainer from "../Container/ItemContainer";
+import ContainerRow from "../Container/ContainerRow";
 
 const ImageSelector = ({photos, setPhotos, multiple}) => {
     const [isPhotoUrl, setIsPhotoUrl] = useState(false);
@@ -43,12 +44,14 @@ const ImageSelector = ({photos, setPhotos, multiple}) => {
         }
     }, [currentLength, fileLength, photoFiles, setPhotoFiles, setPhotos, photos, multiple]);
 
-    return <>
-        <>
+    return <ContainerRow>
+        <ItemContainer>
             Way to add photo by {isPhotoUrl ? ' URL' : ' file'}<Switch checked={isPhotoUrl}
                                                                        onChange={() => setIsPhotoUrl(!isPhotoUrl)}
                                                                        value='photo'
         />
+        </ItemContainer>
+        <ItemContainer>
             {isPhotoUrl ?
                 <LabeledInput
                     id="photoUrl"
@@ -59,11 +62,11 @@ const ImageSelector = ({photos, setPhotos, multiple}) => {
                          multiple={multiple}
                          name="file"
                          onChange={(evt) => setPhotosToPush(evt.target)}/>}
-        </>
+        </ItemContainer>
         <ItemContainer>
             <CustomButton text='Add photo' disabled={!photosToPush} onClick={addPhoto}/>
         </ItemContainer>
-    </>;
+    </ContainerRow>;
 };
 
 ImageSelector.props = {

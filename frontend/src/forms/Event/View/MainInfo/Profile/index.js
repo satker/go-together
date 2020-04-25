@@ -5,8 +5,8 @@ import RightContainer from "../../../../utils/components/Container/RightContaine
 import {Card, CardContent, CardMedia, Typography} from "@material-ui/core";
 
 const Profile = ({user}) => {
-    return <RightContainer style={{width: '400px'}}>
-        <Card style={{align: 'center'}}>
+    return <RightContainer>
+        <Card style={{align: 'center', width: '350px'}}>
             {user.userPhotos ?
                 <CardMedia style={{height: '255px'}}
                            component="img"

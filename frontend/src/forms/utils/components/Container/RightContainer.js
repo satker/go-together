@@ -3,7 +3,7 @@ import './style.css';
 import PropTypes from "prop-types";
 
 const RightContainer = ({children, style, isBordered}) => {
-    const styleClass = 'container-main-info-item' + (isBordered ? ' custom-border' : '');
+    const styleClass = 'container-main-info-item container-right' + (isBordered ? ' custom-border' : '');
     return <div className={styleClass} style={style}>{children}</div>
 };
 
