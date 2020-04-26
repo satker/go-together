@@ -94,8 +94,8 @@ IntegrationAutosuggest.propTypes = {
     options: ResponseData.isRequired
 };
 
-const mapStateToProps = (FORM_ID) => state => ({
-    options: state[FORM_ID]?.options || []
+const mapStateToProps = () => state => ({
+    options: state.components.utils.autosuggestion.options
 });
 
 export default connect(mapStateToProps, {getOptions})(IntegrationAutosuggest);

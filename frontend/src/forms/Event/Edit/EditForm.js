@@ -61,10 +61,10 @@ EditForm.propTypes = {
     newEvent: ResponseData.isRequired
 };
 
-const mapStateToProps = (FORM_ID) => (state) => ({
+const mapStateToProps = () => (state) => ({
     userId: state.userId,
-    updatedEvent: state[FORM_ID]?.updatedEvent,
-    newEvent: state[FORM_ID]?.newEvent
+    updatedEvent: state.components.forms.event.eventEdit.updatedEvent,
+    newEvent: state.components.forms.event.eventEdit.newEvent
 });
 
 export default connect(mapStateToProps, {postUpdatedEvent, putNewEvent})(EditForm)(FORM_ID);

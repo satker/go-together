@@ -1,9 +1,10 @@
 import {EVENTS_URL} from "../../../utils/constants";
+import {paidThings} from "./reducers";
 
-export const getCashCategories = () => () => (fetch) => {
-    fetch(EVENTS_URL + '/cashCategories');
+export const getCashCategories = () => () => (dispatch) => {
+    dispatch(EVENTS_URL + '/cashCategories')(paidThings.cashCategories);
 };
 
-export const getPayedThings = () => () => (fetch) => {
-    fetch(EVENTS_URL + '/payedThings');
+export const getPayedThings = () => () => (dispatch) => {
+    dispatch(EVENTS_URL + '/payedThings')(paidThings.payedThings);
 };

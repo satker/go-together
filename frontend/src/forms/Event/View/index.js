@@ -23,8 +23,8 @@ GetAndViewEvent.propTypes = {
     event: ResponseData.isRequired
 };
 
-const mapStateToProps = (FORM_ID) => state => ({
-    event: state[FORM_ID]?.event,
+const mapStateToProps = () => state => ({
+    event: state.components.forms.event.eventView.event,
 });
 
 export default connect(mapStateToProps, {getEvent})(GetAndViewEvent)(FORM_ID);

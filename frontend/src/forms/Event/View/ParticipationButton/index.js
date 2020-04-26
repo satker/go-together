@@ -54,10 +54,10 @@ ParticipationButton.propTypes = {
     deleteMeFromList: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (FORM_ID) => state => ({
+const mapStateToProps = () => state => ({
     userId: state.userId,
-    meToList: state[FORM_ID]?.meToList,
-    meFromList: state[FORM_ID]?.meFromList
+    meToList: state.components.forms.event.eventView.participationButton.meToList,
+    meFromList: state.components.forms.event.eventView.participationButton.meFromList
 });
 
 export default connect(mapStateToProps, {postMeToList, deleteMeFromList})(ParticipationButton)(FORM_ID);

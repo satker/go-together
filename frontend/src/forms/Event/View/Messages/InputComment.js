@@ -58,7 +58,7 @@ InputComment.propTypes = {
 
 const mapStateToProps = (FORM_ID) => state => ({
     userId: state.userId,
-    review: state[FORM_ID]?.review
+    review: state.components.forms.event.eventView.messages.review
 });
 
 export default connect(mapStateToProps, {putReview})(InputComment)(FORM_ID);

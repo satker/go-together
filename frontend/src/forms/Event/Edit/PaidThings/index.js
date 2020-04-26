@@ -60,9 +60,9 @@ PaidThings.propTypes = {
     payedThings: ResponseData.isRequired
 };
 
-const mapStateToProps = (FORM_ID) => (state) => ({
-    cashCategories: state[FORM_ID]?.cashCategories || [],
-    payedThings: state[FORM_ID]?.payedThings || []
+const mapStateToProps = () => (state) => ({
+    cashCategories: state.components.forms.event.eventEdit.paidThings.cashCategories,
+    payedThings: state.components.forms.event.eventEdit.paidThings.payedThings
 });
 
 export default connect(mapStateToProps, {getCashCategories, getPayedThings})(PaidThings)(FORM_ID);

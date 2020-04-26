@@ -112,8 +112,8 @@ EditForm.propTypes = {
     profile: PropTypes.object
 };
 
-const mapStateToProps = (FORM_ID) => (state) => ({
-    checkMail: state[FORM_ID]?.checkMail
+const mapStateToProps = () => (state) => ({
+    checkMail: state.components.forms.personalArea.checkMail
 });
 
 export default connect(mapStateToProps, {getCheckMail})(EditForm)(FORM_ID);

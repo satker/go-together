@@ -282,11 +282,11 @@ const FormRegister = ({
     </Container>;
 };
 
-const mapStateToProps = (FORM_ID) => (state) => ({
-    allLanguages: state[FORM_ID]?.allLanguages || [],
-    allInterests: state[FORM_ID]?.allInterests || [],
-    checkMail: state[FORM_ID]?.checkMail,
-    checkUserName: state[FORM_ID]?.checkUserName
+const mapStateToProps = () => (state) => ({
+    allLanguages: state.components.forms.register.allLanguages,
+    allInterests: state.components.forms.register.allInterests,
+    checkMail: state.components.forms.register.checkMail,
+    checkUserName: state.components.forms.register.checkUserName
 });
 
 export default connect(mapStateToProps,

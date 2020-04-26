@@ -72,10 +72,9 @@ const PersonalArea = ({userInfo, getUserInfo, updatedUser, putUpdatedUser}) => {
     );
 };
 
-const mapStateToProps = (FORM_ID) => (state) => ({
-    userInfo: state[FORM_ID]?.userInfo,
-    updatedUser: state[FORM_ID]?.updatedUser,
-    checkMail: state[FORM_ID]?.checkMail
+const mapStateToProps = () => (state) => ({
+    userInfo: state.components.forms.personalArea.userInfo,
+    updatedUser: state.components.forms.personalArea.updatedUser,
 });
 
 export default connect(mapStateToProps, {getUserInfo, putUpdatedUser, getCheckMail})(PersonalArea)(FORM_ID);

@@ -103,10 +103,10 @@ AdvancedSearch.propTypes = {
     languages: PropTypes.array
 };
 
-const mapStateToProps = (FORM_ID) => state => ({
-    parameters: state[FORM_ID]?.parameters || [],
-    apartmentTypes: state[FORM_ID]?.apartmentTypes || [],
-    languages: state[FORM_ID]?.languages || []
+const mapStateToProps = () => state => ({
+    parameters: state.components.forms.events.parameters,
+    apartmentTypes: state.components.forms.events.apartmentTypes,
+    languages: state.components.forms.events.languages
 });
 
 export default connect(mapStateToProps, {getParameters, getLanguages, getApartmentTypes})(AdvancedSearch)(FORM_ID);

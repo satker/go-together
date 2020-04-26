@@ -64,9 +64,9 @@ Users.propTypes = {
     getUsers: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (FORM_ID) => state => ({
+const mapStateToProps = () => state => ({
     userId: state.userId,
-    userStatus: state[FORM_ID]?.userStatus
+    userStatus: state.components.forms.event.eventView.usersParticipation.userStatus
 });
 
 export default connect(mapStateToProps, {postUserStatus, getUsers})(Users)(FORM_ID);

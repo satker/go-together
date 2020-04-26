@@ -38,9 +38,9 @@ EventLikes.propTypes = {
 
 };
 
-const mapStateToProps = (FORM_ID) => (state) => ({
-    newLike: state[FORM_ID]?.newLike,
-    likes: state[FORM_ID]?.likes,
+const mapStateToProps = () => state => ({
+    newLike: state.components.utils.eventLikes.newLike,
+    likes: state.components.utils.eventLikes.likes,
     userId: state.userId
 });
 

@@ -65,8 +65,8 @@ CommonInfo.propTypes = {
     getHousingTypes: PropTypes.func.isRequired
 };
 
-const mapStateToProps = (FORM_ID) => (state) => ({
-    housingTypes: state[FORM_ID]?.housingTypes || []
+const mapStateToProps = () => (state) => ({
+    housingTypes: state.components.forms.event.eventEdit.mainInfo.commonInfo.housingTypes
 });
 
 export default connect(mapStateToProps, {getHousingTypes})(CommonInfo)(FORM_ID);

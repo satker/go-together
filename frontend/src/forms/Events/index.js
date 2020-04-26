@@ -95,9 +95,9 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents, postLikes}) =
     </Container>;
 };
 
-const mapStateToProps = (FORM_ID) => state => ({
+const mapStateToProps = () => state => ({
     pageSize: state.pageSize,
-    findEvents: state[FORM_ID]?.findEvents || [],
+    findEvents: state.components.forms.events.findEvents,
 });
 
 export default connect(mapStateToProps,

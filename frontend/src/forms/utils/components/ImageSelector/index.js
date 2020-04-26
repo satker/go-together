@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Switch} from "@material-ui/core";
 import {createFileReaderToParsePhoto, createPhotoObj} from "../../utils";
 import {PhotoObject} from "../../types";
-import LabeledInput from "../LabeledInput";
+import LabeledInput from "../../LabeledInput";
 import CustomButton from "../CustomButton";
 import ItemContainer from "../Container/ItemContainer";
 import ContainerRow from "../Container/ContainerRow";
