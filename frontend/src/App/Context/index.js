@@ -4,6 +4,7 @@ import {CSRF_TOKEN, USER_ID,} from "../../forms/utils/constants";
 import {get as getCookie} from 'js-cookie'
 import {onChange} from "../../forms/utils/utils";
 import {components} from "../../forms/reducers";
+import {DELETE, GET, POST, PUT} from "../utils/api/constants";
 
 export const context = {
     userId: getCookie(USER_ID) === 'null' ? null : getCookie(USER_ID),
@@ -39,14 +40,14 @@ const wrapActions = (actions, state, setState, FORM_ID) => {
     const result = {};
     for (const action in actions) {
         let methodAction;
-        if (action.startsWith('get')) {
-            methodAction = 'GET';
-        } else if (action.startsWith('post')) {
-            methodAction = 'POST';
-        } else if (action.startsWith('put')) {
-            methodAction = 'PUT';
-        } else if (action.startsWith('delete')) {
-            methodAction = 'DELETE';
+        if (action.startsWith(GET.toLowerCase())) {
+            methodAction = GET;
+        } else if (action.startsWith(POST.toLowerCase())) {
+            methodAction = POST;
+        } else if (action.startsWith(PUT.toLowerCase())) {
+            methodAction = PUT;
+        } else if (action.startsWith(DELETE.toLowerCase())) {
+            methodAction = DELETE;
         } else if (action.startsWith('set')) {
             if (!(actionsStore[FORM_ID] && actionsStore[FORM_ID][action])) {
                 result[action] = (...args) => actions[action](state, setState)(...args)();

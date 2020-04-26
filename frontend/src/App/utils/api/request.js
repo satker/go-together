@@ -2,10 +2,11 @@ import {CSRF_TOKEN, USER_ID, USER_SERVICE_URL} from "../../../forms/utils/consta
 import {set as setCookie} from 'js-cookie'
 import {components} from "../../../forms/reducers";
 import {createEmptyResponse, findPath} from "../utils";
+import {GET, POST, PUT} from "./constants";
 
 export const fetchAndSet = async (url,
                                   setResult,
-                                  method = 'GET',
+                                  method = GET,
                                   data = {},
                                   headers = {},
                                   defaultRespObject) => {
@@ -18,7 +19,7 @@ export const fetchAndSet = async (url,
     }
     defaultRespObject.inProcess = true;
     setResult(defaultRespObject, path);
-    if (method === 'GET') {
+    if (method === GET) {
         response = await fetch(url, {
             method: method,
         });
@@ -66,13 +67,13 @@ export const registerFetch = async (url, setScreen, data = {}, error, goToLogin)
     fetchAndSet(url, () => {
         setScreen("login");
         goToLogin();
-    }, 'PUT', data, headers);
+    }, PUT, data, headers);
 };
 
 export const loginFetch = async (url, data = {}, state, setState) => {
     let token = null;
     await fetch(url, {
-        method: "POST",
+        method: POST,
         body: JSON.stringify(data),
     }).then(response => {
         response.headers
@@ -89,7 +90,7 @@ export const loginFetch = async (url, data = {}, state, setState) => {
             }
         };
         fetchAndSetToken(token)
-        (setResult, 'GET', state, null, 'userId')
+        (setResult, GET, state, null, 'userId')
         (USER_SERVICE_URL + '/users?login=' + data.username)(null);
     } else {
         alert("Failed to login")
