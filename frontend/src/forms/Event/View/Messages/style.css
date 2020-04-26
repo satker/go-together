@@ -18,7 +18,6 @@
 .container-input-messages {
     display: flex;
     flex-direction: column;
-    width: 70%;
     border-left-style: none;
 }
 

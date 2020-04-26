@@ -57,7 +57,7 @@ const Messages = ({eventId, userMessageId, eventUserId, setUserMessageId, userId
                                               eventId={eventId}
                                               refreshChats={refreshChats}
                                               setRefreshChats={setRefreshChats}/>}
-        <div className='container-input-messages'>
+        <div className='container-input-messages' style={{width: eventUserId === userId ? '70%' : '100%'}}>
             <div className='container-messages'>
                 <MessagesContainer eventId={eventId}
                                    eventUserId={eventUserId}

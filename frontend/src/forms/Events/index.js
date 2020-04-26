@@ -6,7 +6,7 @@ import './styles.css'
 import {get, isEqual, set} from "lodash";
 import GroupItems from "../utils/components/CardItems";
 import {connect} from "../../App/Context";
-import {postFindEvents, setEventId} from "./actions";
+import {postFindEvents} from "./actions";
 import {FORM_ID} from "./constants";
 import Container from "../utils/components/Container/ContainerRow";
 import LoadableContent from "../utils/components/LoadableContent";
@@ -31,8 +31,6 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents, postLikes}) =
     useEffect(() => {
         postFindEvents(filterObject);
     }, [postFindEvents, filterObject]);
-
-    const onClickChooseEvent = (event) => setEventId(event.id);
 
     const onClickNextPage = page => {
         filterObject.page.page = page.selected;
@@ -67,7 +65,6 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents, postLikes}) =
             <LoadableContent loadableData={findEvents}>
                 <GroupItems
                     onDelete={onDelete}
-                    onClick={onClickChooseEvent}
                     items={findEvents.response.result}
                     isEvents
                 />
@@ -101,5 +98,5 @@ const mapStateToProps = () => state => ({
 });
 
 export default connect(mapStateToProps,
-    {postFindEvents, setEventId, postLikes})
+    {postFindEvents, postLikes})
 (Events)(FORM_ID);

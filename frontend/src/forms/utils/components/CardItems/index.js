@@ -19,7 +19,7 @@ const GroupItems = ({onDelete, items, onClick, onAction, isEvents, isPhotos, isU
                 parseItems = mapPhotos(items, onDelete, key)
             } else if (isEvents) {
                 key = 'events_';
-                parseItems = mapEvents(items, onClick, onDelete, key)
+                parseItems = mapEvents(items, onDelete, key)
             } else if (isUsers) {
                 key = 'users_';
                 parseItems = mapUsers(items, onClick, onDelete, onAction, key);
@@ -58,14 +58,13 @@ const mapPhotos = (photos, onDelete, key) => photos.map((photo) =>
         </CardMedia>
     </Card>);
 
-const mapEvents = (events, onClick, onDelete, key) =>
+const mapEvents = (events, onDelete, key) =>
     events.map(event =>
         <ItemEvent
             eventIds={events.map(event => event.id)}
             onDelete={onDelete}
             key={key + event.id}
             event={event}
-            onClickChooseEvent={onClick}
         />);
 
 const mapUsers = (users, onClick, onDelete, onAction, key) =>

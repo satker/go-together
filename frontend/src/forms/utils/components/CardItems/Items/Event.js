@@ -3,7 +3,6 @@ import Gallery from "../../Galery";
 import PropTypes from "prop-types";
 import {getSrcForImg} from "../../../utils";
 import {Event} from "../../../types";
-import FormReference from "../../FormReference";
 import DeleteIcon from "../../Icon/Delete";
 import {PHOTO_OBJECT} from "../../../constants";
 import createEventLikes from "../../Event/EventLikes";
@@ -13,9 +12,9 @@ import {Card, CardActionArea, CardActions, CardContent, CardMedia, Typography} f
 
 const EventLikes = createEventLikes(FORM_ID);
 
-const ItemEvent = ({event, onClickChooseEvent, onDelete, userId, eventIds}) => {
+const ItemEvent = ({event, onDelete, userId, eventIds}) => {
     return <Card>
-        <CardActionArea>
+        <CardActionArea href={'/events/' + event.id}>
             <DeleteIcon onDelete={() => onDelete(event.id)}/>
             <CardMedia
                 component="img"
@@ -33,16 +32,12 @@ const ItemEvent = ({event, onClickChooseEvent, onDelete, userId, eventIds}) => {
                 <Typography>Going to travel through {event.route.map(location => location.location.name + ", " +
                     location.location.country.name).join(" -> ")}</Typography>
                 <Typography>With {event.peopleCount} friends</Typography>
-                <Typography>{userId && userId !== event.author.id &&
-                <EventLikes eventId={event.id} eventIds={eventIds}/>}
-                </Typography>
                 <Typography>Live by {event.housingType}</Typography>
             </CardContent>
         </CardActionArea>
         <CardActions>
-            <FormReference formRef={'/events/' + event.id}
-                           action={() => onClickChooseEvent(event)}
-                           description='Choose event'/>
+            {userId && userId !== event.author.id &&
+            <EventLikes eventId={event.id} eventIds={eventIds}/>}
             {event.eventPhotoDto.photos.length !== 0 &&
             <Gallery
                 images={event.eventPhotoDto.photos.map(photo => getSrcForImg(photo))}
@@ -54,7 +49,6 @@ const ItemEvent = ({event, onClickChooseEvent, onDelete, userId, eventIds}) => {
 
 ItemEvent.propTypes = {
     event: Event.isRequired,
-    onClickChooseEvent: PropTypes.func.isRequired,
     onDelete: PropTypes.func,
     userId: PropTypes.string,
     eventIds: PropTypes.arrayOf(PropTypes.string).isRequired

@@ -17,10 +17,6 @@ export const getApartmentTypes = () => () => (dispatch) => {
     dispatch(EVENT_SERVICE_URL + '/types')(events.apartmentTypes)
 };
 
-export const setEventId = (state, setState) => (eventId) => () => {
-    setState('eventId', eventId);
-};
-
 export const setPage = (state, setState) => (page) => () => {
     setState('page', page);
 };

@@ -19,7 +19,7 @@ const FormLogin = ({formId, postLogin, handleMenuClose}) => {
         postLogin(login, password);
     };
 
-    return <ContainerColumn formId={FORM_ID}>
+    return <ContainerColumn>
         <MenuItem button={false}
                   component={formId + 'login'}>
             <ItemContainer>
