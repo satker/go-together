@@ -9,27 +9,7 @@ body {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-}
-
-.container-main-info {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-content: center;
-}
-
-.container-main-info-item {
-    display: flex;
-    flex-direction: column;
-    align-content: flex-start;
-}
-
-.center-items {
-    align-items: center;
-}
-
-.select-box-custom {
-    overflow-y: hidden;
+    margin-top: 20px;
 }
 
 .form-group {
@@ -40,22 +20,9 @@ body {
     margin-left: 20px;
 }
 
-.margin-right-item {
-    margin-right: 10px;
-    margin-top: 10px;
-}
-
 .simple_user_img {
     width: 60px;
     height: 60px;
-}
-
-.margin-top-20 {
-    margin-top: 20px;
-}
-
-.margin-bottom-20 {
-    margin-bottom: 20px;
 }
 
 .custom-border {

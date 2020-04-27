@@ -1,0 +1,67 @@
+import React, {useEffect} from 'react';
+import {Event, ResponseData} from "../../../utils/types";
+import PropTypes from "prop-types";
+import PaidThingItem from "./PaidThingItem";
+import {DEFAULT_PAID_THING} from "../../../utils/constants";
+import {connect} from "../../../../App/Context";
+import {getCashCategories, getPayedThings} from "./actions";
+
+const PaidThings = ({
+                        event, onChangeEvent, cashCategories, payedThings,
+                        getCashCategories, getPayedThings
+                    }) => {
+    useEffect(() => {
+        getCashCategories();
+    }, [getCashCategories]);
+
+    useEffect(() => {
+        getPayedThings();
+    }, [getPayedThings]);
+
+    useEffect(() => {
+        if (event.paidThings.length === 0 &&
+            !payedThings.inProcess && payedThings.response.length !== 0) {
+            const newPaidThings = [];
+            for (const paidThing of payedThings.response) {
+                const newElement = {...DEFAULT_PAID_THING};
+                newElement.paidThing = paidThing;
+                newPaidThings.push(newElement);
+            }
+            onChangeEvent('paidThings', newPaidThings);
+        }
+    }, [event, payedThings, onChangeEvent]);
+
+    const onChangePaidThing = (arrayIndex) => (value) => {
+        let oldArray = [...event.paidThings];
+        oldArray[arrayIndex].cashCategory = value;
+        onChangeEvent('paidThings', oldArray);
+    };
+
+    return <div className='flex-column'>
+        <div className='flex'>
+            Choose paid thing:
+        </div>
+        {event.paidThings.map((paidThing, index) =>
+            <PaidThingItem
+                key={index}
+                cashCategories={cashCategories.response}
+                paidThing={paidThing}
+                onChange={onChangePaidThing(index)}/>)}
+    </div>;
+};
+
+PaidThings.propTypes = {
+    event: Event.isRequired,
+    onChangeEvent: PropTypes.func.isRequired,
+    getCashCategories: PropTypes.func.isRequired,
+    getPayedThings: PropTypes.func.isRequired,
+    cashCategories: ResponseData.isRequired,
+    payedThings: ResponseData.isRequired
+};
+
+const mapStateToProps = () => (state) => ({
+    cashCategories: state.components.forms.event.eventEdit.paidThings.cashCategories,
+    payedThings: state.components.forms.event.eventEdit.paidThings.payedThings
+});
+
+export default connect(mapStateToProps, {getCashCategories, getPayedThings})(PaidThings);

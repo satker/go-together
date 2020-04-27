@@ -7,10 +7,7 @@ import org.go.together.service.LanguageService;
 import org.go.together.service.UserService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 class UserController implements UserClient {
@@ -107,7 +104,7 @@ class UserController implements UserClient {
     }
 
     @Override
-    public Set<SimpleUserDto> getUsersLoginLikedEventId(UUID eventId) {
-        return userService.getUsersLoginLikedEventId(eventId);
+    public Map<UUID, Collection<SimpleUserDto>> getUsersLikedEventIds(Set<UUID> eventIds) {
+        return userService.getUsersLikedEventIds(eventIds);
     }
 }
