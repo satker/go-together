@@ -17,9 +17,8 @@ import {fetchAndSetToken} from "../utils/api/request";
 import FormLogin from "../../forms/Login";
 import {navigate} from 'hookrouter';
 import {CSRF_TOKEN, EVENT_SERVICE_URL, USER_ID} from "../../forms/utils/constants";
-import createAutosuggestion from "../../forms/utils/components/Autosuggestion";
+import {AutosuggestionEvents} from "../../forms/utils/components/Autosuggestion";
 import {set as setCookie} from "js-cookie";
-import {FORM_ID} from "./constants";
 import {setUserIdAndFetchWithToken} from "./actions";
 
 const useStyles = makeStyles(theme => ({
@@ -83,8 +82,6 @@ const useStyles = makeStyles(theme => ({
         },
     },
 }));
-
-const Autosuggestion = createAutosuggestion('AutosuggestionEvents');
 
 const NavBar = ({userId, setUserIdAndFetchWithToken}) => {
     const classes = useStyles();
@@ -220,11 +217,11 @@ const NavBar = ({userId, setUserIdAndFetchWithToken}) => {
                         Events
                     </Typography>
                     <div className={classes.search}>
-                        <Autosuggestion formId='menu_'
-                                        setResult={goToEventPage}
-                                        placeholder={'Search an event'}
-                                        url={EVENT_SERVICE_URL + '/events'}
-                                        urlParam={'name'}
+                        <AutosuggestionEvents formId='menu_'
+                                              setResult={goToEventPage}
+                                              placeholder={'Search an event'}
+                                              url={EVENT_SERVICE_URL + '/events'}
+                                              urlParam={'name'}
                         />
                     </div>
                     <div className={classes.grow}/>
@@ -282,4 +279,4 @@ const mapStateToProps = () => (state) => ({
     userId: state.userId
 });
 
-export default connect(mapStateToProps, {setUserIdAndFetchWithToken})(NavBar)(FORM_ID);
+export default connect(mapStateToProps, {setUserIdAndFetchWithToken})(NavBar);

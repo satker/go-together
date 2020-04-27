@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import PaidThingItem from "./PaidThingItem";
 import {DEFAULT_PAID_THING} from "../../../utils/constants";
 import {connect} from "../../../../App/Context";
-import {FORM_ID} from "../constants";
 import {getCashCategories, getPayedThings} from "./actions";
 
 const PaidThings = ({
@@ -65,4 +64,4 @@ const mapStateToProps = () => (state) => ({
     payedThings: state.components.forms.event.eventEdit.paidThings.payedThings
 });
 
-export default connect(mapStateToProps, {getCashCategories, getPayedThings})(PaidThings)(FORM_ID);
+export default connect(mapStateToProps, {getCashCategories, getPayedThings})(PaidThings);

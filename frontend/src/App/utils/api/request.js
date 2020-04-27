@@ -17,6 +17,9 @@ export const fetchAndSet = async (url,
     } else {
         defaultRespObject = createEmptyResponse(false);
     }
+    /*if (!path) {
+        console.log(url, defaultRespObject, components)
+    }*/
     defaultRespObject.inProcess = true;
     setResult(defaultRespObject, path);
     if (method === GET) {

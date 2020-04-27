@@ -6,7 +6,6 @@ import ObjectGeoLocation from "../../utils/components/ObjectGeoLocation";
 import Users from "./Users";
 import MainInfo from "./MainInfo";
 import Container from "../../utils/components/Container/ContainerRow";
-import {FORM_ID} from "./constants";
 import {getStatuses, getUsers} from "./actions";
 import PropTypes from 'prop-types';
 
@@ -21,7 +20,7 @@ const ViewForm = ({event, statuses, users, getUsers, getStatuses, userId}) => {
         }
     }, [getStatuses, getUsers, event, refresh, setRefresh]);
 
-    return <Container formId={FORM_ID}>
+    return <Container>
         {userId === event.author.id &&
         <FormReference formRef={'/events/' + event.id + '/edit'} description='Edit event'/>}
 
@@ -56,4 +55,4 @@ const mapStateToProps = () => state => ({
     userId: state.userId
 });
 
-export default connect(mapStateToProps, {getUsers, getStatuses})(ViewForm)(FORM_ID);
+export default connect(mapStateToProps, {getUsers, getStatuses})(ViewForm);

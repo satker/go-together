@@ -1,7 +1,6 @@
 import React, {useEffect} from "react";
 import {connect} from "../../../App/Context";
 import PropTypes from 'prop-types';
-import {FORM_ID} from "./constants";
 import {getEvent} from "./actions";
 import {ResponseData} from "../../utils/types";
 import LoadableContent from "../../utils/components/LoadableContent";
@@ -27,4 +26,4 @@ const mapStateToProps = () => state => ({
     event: state.components.forms.event.eventView.event,
 });
 
-export default connect(mapStateToProps, {getEvent})(GetAndViewEvent)(FORM_ID);
+export default connect(mapStateToProps, {getEvent})(GetAndViewEvent);

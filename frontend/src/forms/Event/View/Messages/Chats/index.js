@@ -3,7 +3,6 @@ import {connect} from "../../../../../App/Context";
 import PropTypes from "prop-types";
 import {keys} from 'lodash'
 import MessageItem from "./MessageItem";
-import {FORM_ID} from "../../constants";
 import {getMessages, postUsersInfo} from "./actions";
 import {ResponseData} from "../../../../utils/types";
 
@@ -82,4 +81,4 @@ const mapStateToProps = () => state => ({
     usersInfo: state.components.forms.event.eventView.messages.usersInfo
 });
 
-export default connect(mapStateToProps, {getMessages, postUsersInfo})(UserChats)(FORM_ID);
+export default connect(mapStateToProps, {getMessages, postUsersInfo})(UserChats);

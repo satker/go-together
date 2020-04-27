@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {connect} from "../../../../App/Context";
 import PropTypes from "prop-types";
 import SendIcon from '@material-ui/icons/Send';
-import {FORM_ID} from "../constants";
 import {putReview} from "./actions";
 import LabeledInput from "../../../utils/LabeledInput";
 
@@ -61,4 +60,4 @@ const mapStateToProps = (FORM_ID) => state => ({
     review: state.components.forms.event.eventView.messages.review
 });
 
-export default connect(mapStateToProps, {putReview})(InputComment)(FORM_ID);
+export default connect(mapStateToProps, {putReview})(InputComment);

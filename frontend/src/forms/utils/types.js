@@ -86,7 +86,7 @@ export const PaidThing = PropTypes.exact({
 
 export const CashPaidThing = PropTypes.exact({
     id: PropTypes.string,
-    cashCategory: PropTypes.string.isRequired,
+    cashCategory: PropTypes.string,
     paidThing: PaidThing
 });
 

@@ -5,12 +5,9 @@ import {getSrcForImg} from "../../../utils";
 import {Event} from "../../../types";
 import DeleteIcon from "../../Icon/Delete";
 import {PHOTO_OBJECT} from "../../../constants";
-import createEventLikes from "../../Event/EventLikes";
+import EventLikes from "../../Event/EventLikes";
 import {connect} from "../../../../../App/Context";
-import {FORM_ID} from "../../../../Events/constants";
 import {Card, CardActionArea, CardActions, CardContent, CardMedia, Typography} from "@material-ui/core";
-
-const EventLikes = createEventLikes(FORM_ID);
 
 const ItemEvent = ({event, onDelete, userId, eventIds}) => {
     return <Card>
@@ -58,4 +55,4 @@ const mapStateToProps = () => (state) => ({
     userId: state.userId
 });
 
-export default connect(mapStateToProps, null)(ItemEvent)(FORM_ID);
+export default connect(mapStateToProps, null)(ItemEvent);

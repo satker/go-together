@@ -1,19 +1,16 @@
 import React, {useEffect} from 'react';
 import PropTypes from "prop-types";
 import 'react-dates/initialize';
-import createAutosuggestion from "../utils/components/Autosuggestion";
+import {AutosuggestionLocations} from "../utils/components/Autosuggestion";
 import 'react-dates/lib/css/_datepicker.css';
 import CheckInOutDates from '../utils/components/CheckInOutDates'
 import {FORM_DTO, LOCATION_SERVICE_URL, SEARCH_OBJECT_DEFAULT} from '../utils/constants'
 import {connect} from "../../App/Context";
 import {isEqual} from "lodash";
 import {SearchObject} from "../utils/types";
-import {FORM_ID} from "./constants";
 import {setArrivalDate, setDepartureDate, setPage} from "./actions";
 import Slider from "@material-ui/core/Slider";
 import CustomButton from "../utils/components/CustomButton";
-
-const Autosuggestion = createAutosuggestion('AutosuggestionLocation');
 
 const SearchForm = ({
                         searchObject, onChangeSearchObject, filterObject,
@@ -140,11 +137,11 @@ const SearchForm = ({
 
     return <div className='container-search-events'>
         <div className='flex'>
-            <Autosuggestion formId='search_form_'
-                            setResult={(location) => onChangeSearchObject('location', location)}
-                            placeholder={'Search a location (CITY,COUNTRY)'}
-                            url={LOCATION_SERVICE_URL + '/locations'}
-                            urlParam={'name'}/>
+            <AutosuggestionLocations formId='search_form_'
+                                     setResult={(location) => onChangeSearchObject('location', location)}
+                                     placeholder={'Search a location (CITY,COUNTRY)'}
+                                     url={LOCATION_SERVICE_URL + '/locations'}
+                                     urlParam={'name'}/>
         </div>
         <div className='flex margin-left-custom'>
             <CheckInOutDates startDate={searchObject.arrivalDate}
@@ -169,11 +166,11 @@ SearchForm.propTypes = {
     searchObject: SearchObject.isRequired,
     onChangeSearchObject: PropTypes.func.isRequired,
     onClearSearchObject: PropTypes.func.isRequired,
-    setFilterObject: PropTypes.object,
+    setFilterObject: PropTypes.func.isRequired,
     setPage: PropTypes.func.isRequired,
     setArrivalDate: PropTypes.func.isRequired,
     setDepartureDate: PropTypes.func.isRequired
 };
 
 export default connect(null,
-    {setPage, setArrivalDate, setDepartureDate})(SearchForm)(FORM_ID);
+    {setPage, setArrivalDate, setDepartureDate})(SearchForm);

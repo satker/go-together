@@ -79,11 +79,11 @@ const wrapActions = (actions, state, setState, FORM_ID) => {
     return {...result};
 };
 
-export const connect = (mapStateToProps, actions) => (Component) => (FORM_ID) => (props) =>
+export const connect = (mapStateToProps, actions) => (Component) => (props) =>
     <Context.Consumer>
         {([state, setState]) =>
             <Component {...props}
-                       {...(mapStateToProps ? mapStateToProps(FORM_ID)(state) : {})}
-                       {...wrapActions(actions, state, setState, FORM_ID)}
+                       {...(mapStateToProps ? mapStateToProps(state.formId)(state) : {})}
+                       {...wrapActions(actions, state, setState, state.formId)}
             />}
     </Context.Consumer>;

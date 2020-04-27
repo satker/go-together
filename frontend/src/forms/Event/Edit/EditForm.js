@@ -9,7 +9,6 @@ import Route from "./Route";
 import Container from "../../utils/components/Container/ContainerRow";
 import * as PropTypes from "prop-types";
 import {postUpdatedEvent, putNewEvent} from "./actions";
-import {FORM_ID} from "./constants";
 import moment from "moment";
 import CustomButton from "../../utils/components/CustomButton";
 import ItemContainer from "../../utils/components/Container/ItemContainer";
@@ -37,7 +36,7 @@ const EditForm = ({event, userId, postUpdatedEvent, putNewEvent, updatedEvent, n
         }
     }, [updatedEvent, newEvent]);
 
-    return <Container formId={FORM_ID}>
+    return <Container>
         <MainInfo event={createEvent}
                   onChangeEvent={onChange(createEvent, setCreateEvent)}/>
         <PaidThings event={createEvent}
@@ -67,4 +66,4 @@ const mapStateToProps = () => (state) => ({
     newEvent: state.components.forms.event.eventEdit.newEvent
 });
 
-export default connect(mapStateToProps, {postUpdatedEvent, putNewEvent})(EditForm)(FORM_ID);
+export default connect(mapStateToProps, {postUpdatedEvent, putNewEvent})(EditForm);

@@ -3,7 +3,6 @@ import {DEFAULT_EVENT_USER} from "../../../utils/constants";
 import {connect} from "../../../../App/Context";
 import {EventUser} from "../../../utils/types";
 import PropTypes from "prop-types";
-import {FORM_ID} from "../constants";
 import {deleteMeFromList, postMeToList} from "./actions";
 import CustomButton from "../../../utils/components/CustomButton";
 
@@ -60,4 +59,4 @@ const mapStateToProps = () => state => ({
     meFromList: state.components.forms.event.eventView.participationButton.meFromList
 });
 
-export default connect(mapStateToProps, {postMeToList, deleteMeFromList})(ParticipationButton)(FORM_ID);
+export default connect(mapStateToProps, {postMeToList, deleteMeFromList})(ParticipationButton);

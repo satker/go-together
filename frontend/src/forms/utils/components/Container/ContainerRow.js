@@ -1,24 +1,13 @@
-import React, {useEffect} from "react";
+import React from "react";
 import './style.css';
 import PropTypes from "prop-types";
-import {setFormId} from "./actions";
-import {connect} from "../../../../App/Context";
-import {FORM_ID} from './constants'
 
-const Container = ({children, formId, setFormId}) => {
-    useEffect(() => {
-        if (formId) {
-            setFormId(formId);
-        }
-    }, [formId, setFormId]);
-
+const Container = ({children}) => {
     return <div className='container-main-info-common margin-bottom-20'>{children}</div>
 };
 
 Container.propTypes = {
-    children: PropTypes.node,
-    formId: PropTypes.string,
-    setFormId: PropTypes.func.isRequired
+    children: PropTypes.node
 };
 
-export default connect(null, {setFormId})(Container)(FORM_ID);
+export default Container;

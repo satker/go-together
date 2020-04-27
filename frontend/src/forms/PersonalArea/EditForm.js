@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import ItemContainer from "../utils/components/Container/ItemContainer";
 import Container from "../utils/components/Container/ContainerRow";
-import {FORM_ID} from "./constants";
 import {getCheckMail} from "./actions";
 import {connect} from "../../App/Context";
 import PropTypes from "prop-types";
@@ -116,4 +115,4 @@ const mapStateToProps = () => (state) => ({
     checkMail: state.components.forms.personalArea.checkMail
 });
 
-export default connect(mapStateToProps, {getCheckMail})(EditForm)(FORM_ID);
+export default connect(mapStateToProps, {getCheckMail})(EditForm);

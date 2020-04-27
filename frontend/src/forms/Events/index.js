@@ -7,7 +7,6 @@ import {get, isEqual, set} from "lodash";
 import GroupItems from "../utils/components/CardItems";
 import {connect} from "../../App/Context";
 import {postFindEvents} from "./actions";
-import {FORM_ID} from "./constants";
 import Container from "../utils/components/Container/ContainerRow";
 import LoadableContent from "../utils/components/LoadableContent";
 import {postLikes} from "../utils/components/Event/EventLikes/actions";
@@ -21,7 +20,6 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents, postLikes}) =
     }, [filterObject, pageSize]);
 
     useEffect(() => {
-        console.log(findEvents.response.result);
         if (findEvents.response.result && findEvents.response.result?.length) {
             const eventIds = findEvents.response.result.map(event => event.id);
             postLikes(eventIds);
@@ -52,7 +50,7 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents, postLikes}) =
     const pageCount = findEvents.response.page ?
         findEvents.response.page.totalSize / findEvents.response.page.size : 0;
 
-    return <Container formId={FORM_ID}>
+    return <Container>
         <Container className='search-container'>
             <SearchForm filterObject={filterObject}
                         setFilterObject={setFilterObject}
@@ -99,4 +97,4 @@ const mapStateToProps = () => state => ({
 
 export default connect(mapStateToProps,
     {postFindEvents, postLikes})
-(Events)(FORM_ID);
+(Events);

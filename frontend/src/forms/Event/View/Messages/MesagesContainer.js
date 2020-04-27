@@ -3,7 +3,6 @@ import ItemComment from "./ItemComment";
 import {connect} from "../../../../App/Context";
 import {Review} from "../../../utils/types";
 import PropTypes from "prop-types";
-import {FORM_ID} from "../constants";
 
 const MessagesContainer = ({reviews, eventUserId, eventId, userId}) => {
     return reviews.length !== 0 ? reviews.map((review, key) =>
@@ -31,4 +30,4 @@ const mapStateToProps = () => state => ({
     userId: state.userId
 });
 
-export default connect(mapStateToProps, null)(MessagesContainer)(FORM_ID);
+export default connect(mapStateToProps, null)(MessagesContainer);

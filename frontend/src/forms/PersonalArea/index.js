@@ -4,7 +4,6 @@ import {onChange} from "../utils/utils";
 import ItemContainer from "../utils/components/Container/ItemContainer";
 import {getCheckMail, getUserInfo, putUpdatedUser} from "./actions";
 import {connect} from "../../App/Context";
-import {FORM_ID} from "./constants";
 import EditForm from "./EditForm";
 import ViewForm from "./ViewForm";
 import LoadableContent from "../utils/components/LoadableContent";
@@ -54,7 +53,7 @@ const PersonalArea = ({userInfo, getUserInfo, updatedUser, putUpdatedUser}) => {
     };
 
     return (
-        <Container formId={FORM_ID}>
+        <Container>
             <ItemContainer>
                 <h3>Welcome, {profile.firstName}</h3>
             </ItemContainer>
@@ -77,4 +76,4 @@ const mapStateToProps = () => (state) => ({
     updatedUser: state.components.forms.personalArea.updatedUser,
 });
 
-export default connect(mapStateToProps, {getUserInfo, putUpdatedUser, getCheckMail})(PersonalArea)(FORM_ID);
+export default connect(mapStateToProps, {getUserInfo, putUpdatedUser, getCheckMail})(PersonalArea);

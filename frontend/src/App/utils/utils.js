@@ -13,7 +13,7 @@ export const findPath = (findObj, path, components) => {
         if (components[component] === findObj) {
             return currentPath;
         }
-        if (!components[component]?.inProcess && components[component] instanceof Object) {
+        if (!components[component].hasOwnProperty('inProcess') && components[component] instanceof Object) {
             resultPath = findPath(findObj, currentPath, components[component])
         }
         if (resultPath) {

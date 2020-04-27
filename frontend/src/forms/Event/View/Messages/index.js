@@ -7,7 +7,6 @@ import moment from "moment";
 import MessagesContainer from "./MesagesContainer";
 import UserChats from "./Chats";
 import ContainerColumn from "../../../utils/components/Container/ContainerColumn";
-import {FORM_ID} from "../constants";
 import {getReviewsByEvent} from "./actions";
 import {Review} from "../../../utils/types";
 
@@ -90,4 +89,4 @@ const mapStateToProps = () => state => ({
     reviewsByEvent: state.components.forms.event.eventView.messages.reviewsByEvent
 });
 
-export default connect(mapStateToProps, {getReviewsByEvent})(Messages)(FORM_ID);
+export default connect(mapStateToProps, {getReviewsByEvent})(Messages);

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import createAutosuggestion from "../utils/components/Autosuggestion";
+import {AutosuggestionLocations} from "../utils/components/Autosuggestion";
 import {LOCATION_SERVICE_URL, USER_SERVICE_URL} from '../utils/constants'
 import {registerFetch} from "../../App/utils/api/request";
 import {connect} from "../../App/Context";
@@ -21,7 +21,6 @@ import {
     EMPTY_LOGIN,
     EMPTY_MAIL,
     EMPTY_PASSWORD,
-    FORM_ID,
     GOOD_DESCRIPTION,
     GOOD_LOGIN,
     GOOD_MAIL,
@@ -41,8 +40,6 @@ import LabeledInput from "../utils/LabeledInput";
 import CustomButton from "../utils/components/CustomButton";
 
 const URL = USER_SERVICE_URL + "/users";
-
-const Autosuggestion = createAutosuggestion('AutosuggestionLocation');
 
 const FormRegister = ({
                           allLanguages, allInterests, getAllInterests, getAllLanguages, getCheckMail, checkMail,
@@ -125,7 +122,7 @@ const FormRegister = ({
 
     const moveToMainPage = () => navigate('/');
 
-    return <Container formId={FORM_ID}>
+    return <Container>
         <ItemContainer>
             <LabeledInput
                 isError={!isUserNameReadyForRegister}
@@ -183,7 +180,7 @@ const FormRegister = ({
             />
         </ItemContainer>
         <ItemContainer>
-            <Autosuggestion
+            <AutosuggestionLocations
                 formId='register_'
                 setResult={(value) => setLocation(value)}
                 placeholder={'Search a location (CITY,COUNTRY)'}
@@ -290,4 +287,4 @@ const mapStateToProps = () => (state) => ({
 });
 
 export default connect(mapStateToProps,
-    {getAllLanguages, getAllInterests, getCheckMail, getCheckUserName})(FormRegister)(FORM_ID);
+    {getAllLanguages, getAllInterests, getCheckMail, getCheckUserName})(FormRegister);

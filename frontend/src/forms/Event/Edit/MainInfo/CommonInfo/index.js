@@ -1,7 +1,6 @@
 import SelectBox from "../../../../utils/components/SelectBox";
 import CheckInOutDates from "../../../../utils/components/CheckInOutDates";
 import React, {useEffect} from "react";
-import {FORM_ID} from "../../constants";
 import {getHousingTypes} from "../actions";
 import {connect} from "../../../../../App/Context";
 import {Event, ResponseData} from "../../../../utils/types";
@@ -69,4 +68,4 @@ const mapStateToProps = () => (state) => ({
     housingTypes: state.components.forms.event.eventEdit.mainInfo.commonInfo.housingTypes
 });
 
-export default connect(mapStateToProps, {getHousingTypes})(CommonInfo)(FORM_ID);
+export default connect(mapStateToProps, {getHousingTypes})(CommonInfo);

@@ -3,7 +3,6 @@ import {connect} from "../../../App/Context";
 import {DEFAULT_CREATE_EVENT} from "../../utils/constants";
 import * as PropTypes from "prop-types";
 import EditForm from "./EditForm";
-import {FORM_ID} from "./constants";
 import {getEvent} from "./actions";
 import LoadableContent from "../../utils/components/LoadableContent";
 
@@ -29,4 +28,4 @@ const mapStateToProps = () => (state) => ({
     event: state.components.forms.event.eventEdit.event
 });
 
-export default connect(mapStateToProps, {getEvent})(CreateEvent)(FORM_ID);
+export default connect(mapStateToProps, {getEvent})(CreateEvent);

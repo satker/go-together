@@ -5,7 +5,6 @@ import {ResponseData} from "../../../utils/types";
 import {connect} from "../../../../App/Context";
 import Messages from "../Messages";
 import {postUserStatus} from "./actions";
-import {FORM_ID} from "../constants";
 import {getUsers} from "../actions";
 import LoadableContent from "../../../utils/components/LoadableContent";
 
@@ -69,4 +68,4 @@ const mapStateToProps = () => state => ({
     userStatus: state.components.forms.event.eventView.usersParticipation.userStatus
 });
 
-export default connect(mapStateToProps, {postUserStatus, getUsers})(Users)(FORM_ID);
+export default connect(mapStateToProps, {postUserStatus, getUsers})(Users);

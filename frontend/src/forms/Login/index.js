@@ -3,7 +3,6 @@ import {connect} from "../../App/Context";
 import MenuItem from "@material-ui/core/MenuItem";
 import * as PropTypes from "prop-types";
 import './style.css'
-import {FORM_ID} from "./constants";
 import {postLogin} from "./actions";
 import LabeledInput from "../utils/LabeledInput";
 import ItemContainer from "../utils/components/Container/ItemContainer";
@@ -70,4 +69,4 @@ FormLogin.propTypes = {
     handleMenuClose: PropTypes.func.isRequired
 };
 
-export default connect(null, {postLogin})(FormLogin)(FORM_ID);
+export default connect(null, {postLogin})(FormLogin);

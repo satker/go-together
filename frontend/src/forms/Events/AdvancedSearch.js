@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {connect} from "../../App/Context";
 import * as PropTypes from "prop-types";
 import {SearchObject} from "../utils/types";
-import {FORM_ID} from "./constants";
 import {getApartmentTypes, getLanguages, getParameters} from "./actions";
 
 const AdvancedSearch = ({
@@ -109,4 +108,4 @@ const mapStateToProps = () => state => ({
     languages: state.components.forms.events.languages
 });
 
-export default connect(mapStateToProps, {getParameters, getLanguages, getApartmentTypes})(AdvancedSearch)(FORM_ID);
+export default connect(mapStateToProps, {getParameters, getLanguages, getApartmentTypes})(AdvancedSearch);
