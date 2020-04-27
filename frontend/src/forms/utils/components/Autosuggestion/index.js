@@ -101,8 +101,8 @@ const mapStateToProps = (autosuggestionOptions) => () => state => ({
 
 export const AutosuggestionEvents = connect(mapStateToProps('events'), {
     getOptions: getOptions(autosuggestion.options.events)
-})(IntegrationAutosuggest);
+}, 'AutosuggestionEvents')(IntegrationAutosuggest);
 
 export const AutosuggestionLocations = connect(mapStateToProps('locations'), {
     getOptions: getOptions(autosuggestion.options.locations)
-})(IntegrationAutosuggest);
+}, 'AutosuggestionLocations')(IntegrationAutosuggest);

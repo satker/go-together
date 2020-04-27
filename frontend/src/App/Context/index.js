@@ -33,10 +33,12 @@ export const Provider = ({children}) => {
 export const actionFunction = (state, setState, action, setToContext, methodAction) => (...args) =>
     action(state, setState)(...args)(state.fetchWithToken(setToContext, methodAction));
 
-const wrapActions = (actions, state, setState, FORM_ID) => {
+const wrapActions = (actions, state, setState, ACTIONS_ID) => {
     if (!actions) {
         return {};
     }
+    const FORM_ID = ACTIONS_ID || 'actions';
+
     const result = {};
     for (const action in actions) {
         let methodAction;
@@ -79,11 +81,11 @@ const wrapActions = (actions, state, setState, FORM_ID) => {
     return {...result};
 };
 
-export const connect = (mapStateToProps, actions) => (Component) => (props) =>
+export const connect = (mapStateToProps, actions, ACTIONS_ID) => (Component) => (props) =>
     <Context.Consumer>
         {([state, setState]) =>
             <Component {...props}
-                       {...(mapStateToProps ? mapStateToProps(state.formId)(state) : {})}
-                       {...wrapActions(actions, state, setState, state.formId)}
+                       {...(mapStateToProps ? mapStateToProps(ACTIONS_ID)(state) : {})}
+                       {...wrapActions(actions, state, setState, ACTIONS_ID)}
             />}
     </Context.Consumer>;
