@@ -214,7 +214,7 @@ const NavBar = ({userId, setUserIdAndFetchWithToken}) => {
             <AppBar position="sticky">
                 <Toolbar>
                     <Typography className={classes.title} variant="h6" noWrap>
-                        Events
+                        {userId}
                     </Typography>
                     <div className={classes.search}>
                         <AutosuggestionEvents formId='menu_'

@@ -42,15 +42,15 @@ const UserChats = ({
 
     useEffect(() => {
         if (userId === eventUserId && !timer) {
-            setTimer(setInterval(getChats, 2000));
+            //setTimer(setInterval(getChats, 2000));
         }
     }, [userId, eventUserId, timer, setTimer, getChats]);
 
     useEffect(() => {
-        if (userId === eventUserId && refreshChats) {
+        if (userId === eventUserId) {
             getChats();
         }
-    }, [eventUserId, refreshChats, getChats, userId]);
+    }, [eventUserId, getChats, userId]);
 
     return <div className='container-chats' style={{width: '30%'}}>
         {usersInfo.response.length === keys(messages.response).length &&

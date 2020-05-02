@@ -1,6 +1,7 @@
-export const GATEWAY_URL = 'http://localhost:8080';
+export const HOST = '192.168.1.49';
+export const GATEWAY_URL = 'http://' + HOST + ':8080';
 export const GATEWAY_SERVICES_URL = GATEWAY_URL + '/services';
-export const AUTH_URL = 'http://localhost:8088';
+export const AUTH_URL = 'http://' + HOST + ':8088';
 
 export const EVENT_SERVICE_URL = GATEWAY_SERVICES_URL + '/event-service';
 export const USER_SERVICE_URL = GATEWAY_SERVICES_URL + '/user-service';

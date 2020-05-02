@@ -9,6 +9,7 @@ import UserChats from "./Chats";
 import ContainerColumn from "../../../utils/components/Container/ContainerColumn";
 import {getReviewsByEvent} from "./actions";
 import {Review} from "../../../utils/types";
+import MessageRTC from "./MessageRTC";
 
 const Messages = ({eventId, userMessageId, eventUserId, setUserMessageId, userId, getReviewsByEvent, reviewsByEvent}) => {
     const [lock, setLock] = useState(false);
@@ -41,15 +42,20 @@ const Messages = ({eventId, userMessageId, eventUserId, setUserMessageId, userId
 
     useEffect(() => {
         if (lock && !timer) {
-            const timeout = setInterval(getMessages, 2000);
-            setTimer(timeout);
+            //const timeout = setInterval(getMessages, 2000);
+            //setTimer(timeout);
         } else if (!lock && timer) {
-            clearInterval(timer);
-            setTimer(null)
+            //clearInterval(timer);
+            //setTimer(null)
         }
     }, [lock, setTimer, setLock, timer, getMessages]);
 
     return <ContainerColumn isBordered>
+        <MessageRTC eventId={eventId}
+                    messages={parsedReviewsByEvent}
+                    setMessages={setParsedReviewsByEvent}
+                    eventUserId={eventUserId}
+                    userMessageId={userMessageId}/>
         {eventUserId === userId && <UserChats eventUserId={eventUserId}
                                               userMessageId={userMessageId}
                                               setUserMessageId={setUserMessageId}

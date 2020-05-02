@@ -2,7 +2,10 @@ import React from "react";
 import TextField from "@material-ui/core/TextField";
 import PropTypes from 'prop-types';
 
-const LabeledInput = ({value, onChange, isError, errorText, id, label, defaultValue, multiline, rowsMax, type}) => {
+const LabeledInput = ({
+                          value, onChange, isError, errorText, id, label,
+                          defaultValue, multiline, rowsMax, type
+                      }) => {
     const onChangeValue = (evt) => {
         onChange(evt.target.value)
     };
