@@ -19,19 +19,23 @@ import {
 
 const MessageRTC = ({userId, eventId, setMessages, messages, eventUserId, userMessageId, putReview}) => {
     const [message, setMessage] = useState('');
-    const [conn] = useState(new WebSocket('ws://' + HOST + ':8064/socket'));
+    const [conn, setConn] = useState(null);
     const [peerConnection, setPeerConnection] = useState(null);
     const [dataChannel, setDataChannel] = useState(null);
     const [candidates, setCandidates] = useState([]);
 
     useEffect(() => {
-        conn.onopen = () => {
-            initialize(conn, setPeerConnection, setDataChannel, eventId);
-        };
+        if (!conn) {
+            const newConn = new WebSocket('ws://' + HOST + ':8064/socket');
+            newConn.onopen = () => {
+                initialize(conn, setPeerConnection, setDataChannel, eventId);
+            };
+            setConn(newConn);
+        }
     }, [eventId, conn]);
 
     useEffect(() => {
-        if (peerConnection) {
+        if (peerConnection && conn) {
             setOnIceCandidatePeerConnection(peerConnection, conn, userId, eventUserId, userMessageId, eventId)
         }
     }, [peerConnection, conn, eventUserId, eventId, userMessageId, userId]);
@@ -61,7 +65,7 @@ const MessageRTC = ({userId, eventId, setMessages, messages, eventUserId, userMe
     }, [candidates, setCandidates, userId]);
 
     useEffect(() => {
-        if (peerConnection) {
+        if (peerConnection && conn) {
             setOnMessageConn(conn, peerConnection, onChangeCandidates, userId, eventUserId, userMessageId, eventId)
         }
     }, [userId, conn, peerConnection, onChangeCandidates, eventId, eventUserId, userMessageId]);
