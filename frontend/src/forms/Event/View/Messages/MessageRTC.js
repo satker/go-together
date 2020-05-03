@@ -16,8 +16,9 @@ import {
     setOnMessageConn,
     setOnMessageDataChanel
 } from "./utils";
+import SendIcon from "@material-ui/icons/Send";
 
-const MessageRTC = ({userId, eventId, setMessages, messages, eventUserId, userMessageId, putReview}) => {
+const MessageRTC = ({userId, eventId, setMessages, messages, eventUserId, userMessageId, putReview, readOnly}) => {
     const [message, setMessage] = useState('');
     const [conn, setConn] = useState(null);
     const [peerConnection, setPeerConnection] = useState(null);
@@ -85,7 +86,7 @@ const MessageRTC = ({userId, eventId, setMessages, messages, eventUserId, userMe
         });
     };
 
-    const sendMessage = (message, setMessage) => {
+    const sendMessage = () => {
         const authorId = userId === eventUserId ? eventId : userId;
         const recipientId = userMessageId === eventUserId ? eventId : userMessageId;
         const date = moment();
@@ -108,11 +109,20 @@ const MessageRTC = ({userId, eventId, setMessages, messages, eventUserId, userMe
         putReview(eventId, newMessage);
     };
 
-    return <>
+    return <div className='container-input'>
         <CustomButton onClick={createOffer} text={'createOffer'}/>
-        <LabeledInput onChange={setMessage} id='message' value={message}/>
-        <CustomButton onClick={() => sendMessage(message, setMessage)} text={'Send message'}/>
-    </>
+        <LabeledInput
+            id="message"
+            label="Enter message"
+            multiline
+            rowsMax={20}
+            readOnly={readOnly}
+            value={message}
+            onChange={setMessage}
+        />
+        <SendIcon className='send-message-icon'
+                  onClick={readOnly ? () => null : sendMessage}/>
+    </div>
 };
 
 MessageRTC.propTypes = {
@@ -122,7 +132,8 @@ MessageRTC.propTypes = {
     userId: PropTypes.string,
     eventUserId: PropTypes.string,
     userMessageId: PropTypes.string,
-    putReview: PropTypes.func.isRequired
+    putReview: PropTypes.func.isRequired,
+    readOnly: PropTypes.bool
 };
 
 const mapStateToProps = () => state => ({

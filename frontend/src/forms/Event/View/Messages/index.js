@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import PropTypes from 'prop-types';
 import {connect} from "../../../../App/Context";
-import InputComment from "./InputComment";
 import './style.css'
 import moment from "moment";
 import MessagesContainer from "./MesagesContainer";
@@ -51,11 +50,6 @@ const Messages = ({eventId, userMessageId, eventUserId, setUserMessageId, userId
     }, [lock, setTimer, setLock, timer, getMessages]);
 
     return <ContainerColumn isBordered>
-        <MessageRTC eventId={eventId}
-                    messages={parsedReviewsByEvent}
-                    setMessages={setParsedReviewsByEvent}
-                    eventUserId={eventUserId}
-                    userMessageId={userMessageId}/>
         {eventUserId === userId && <UserChats eventUserId={eventUserId}
                                               userMessageId={userMessageId}
                                               setUserMessageId={setUserMessageId}
@@ -68,14 +62,12 @@ const Messages = ({eventId, userMessageId, eventUserId, setUserMessageId, userId
                                    eventUserId={eventUserId}
                                    reviews={parsedReviewsByEvent}/>
             </div>
-            <InputComment readOnly={parsedReviewsByEvent.length === 0}
-                          setReviewsByEvent={setParsedReviewsByEvent}
-                          userMessageId={userMessageId}
-                          eventId={eventId}
-                          eventUserId={eventUserId}
-                          refresh={getMessages}
-                          setRefreshChats={setRefreshChats}
-            />
+            <MessageRTC eventId={eventId}
+                        messages={parsedReviewsByEvent}
+                        setMessages={setParsedReviewsByEvent}
+                        eventUserId={eventUserId}
+                        userMessageId={userMessageId}
+                        readOnly={parsedReviewsByEvent.length === 0}/>
         </div>
     </ContainerColumn>
 };
