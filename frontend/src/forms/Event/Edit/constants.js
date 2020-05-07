@@ -1,3 +1,3 @@
-import {FORM_ID as PARENT_FORM_ID} from "../constants";
-
-export const FORM_ID = PARENT_FORM_ID + 'Edit';
+export const EDIT_EVENT_EVENT = 'EDIT_EVENT_EVENT';
+export const EDIT_EVENT_UPDATED_EVENT = 'EDIT_EVENT_UPDATED_EVENT';
+export const EDIT_EVENT_NEW_EVENT = 'EDIT_EVENT_NEW_EVENT';

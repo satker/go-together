@@ -1,7 +1,7 @@
 import {EVENT_SERVICE_URL} from "../../../utils/constants";
-import {commonInfo} from "./CommonInfo/reducers";
+import {EDIT_MAIN_INFO_HOUSING_TYPES} from "./constants";
 
 export const getHousingTypes = () => () => (dispatch) => {
     dispatch(EVENT_SERVICE_URL + '/events/housingTypes')
-    (commonInfo.housingTypes);
+    (EDIT_MAIN_INFO_HOUSING_TYPES);
 };

@@ -1,20 +1,20 @@
 import {EVENT_SERVICE_URL, EVENTS_URL, USER_SERVICE_URL} from "../utils/constants";
-import {events} from "./reducers";
+import {EVENTS_APARTMENT_TYPES, EVENTS_FIND_EVENTS, EVENTS_LANGUAGES, EVENTS_PARAMETERS} from "./constants";
 
 export const postFindEvents = () => (filterObject) => (dispatch) => {
-    dispatch(EVENTS_URL + '/find', filterObject)(events.findEvents);
+    dispatch(EVENTS_URL + '/find', filterObject)(EVENTS_FIND_EVENTS);
 };
 
 export const getParameters = () => () => (dispatch) => {
-    dispatch(EVENT_SERVICE_URL + '/parameters')(events.parameters)
+    dispatch(EVENT_SERVICE_URL + '/parameters')(EVENTS_PARAMETERS)
 };
 
 export const getLanguages = () => () => (dispatch) => {
-    dispatch(USER_SERVICE_URL + '/languages')(events.languages)
+    dispatch(USER_SERVICE_URL + '/languages')(EVENTS_LANGUAGES)
 };
 
 export const getApartmentTypes = () => () => (dispatch) => {
-    dispatch(EVENT_SERVICE_URL + '/types')(events.apartmentTypes)
+    dispatch(EVENT_SERVICE_URL + '/types')(EVENTS_APARTMENT_TYPES)
 };
 
 export const setPage = (state, setState) => (page) => () => {

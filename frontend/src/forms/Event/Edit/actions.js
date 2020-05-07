@@ -1,14 +1,14 @@
 import {EVENT_SERVICE_URL} from "../../utils/constants";
-import {eventEdit} from "./reducer";
+import {EDIT_EVENT_EVENT, EDIT_EVENT_NEW_EVENT, EDIT_EVENT_UPDATED_EVENT} from "./constants";
 
 export const getEvent = () => (id) => (dispatch) => {
-    dispatch(EVENT_SERVICE_URL + '/events/' + id)(eventEdit.event);
+    dispatch(EVENT_SERVICE_URL + '/events/' + id)(EDIT_EVENT_EVENT);
 };
 
 export const postUpdatedEvent = () => (saveObj) => (dispatch) => {
-    dispatch(EVENT_SERVICE_URL + '/events', saveObj)(eventEdit.updatedEvent);
+    dispatch(EVENT_SERVICE_URL + '/events', saveObj)(EDIT_EVENT_UPDATED_EVENT);
 };
 
 export const putNewEvent = () => (saveObj) => (dispatch) => {
-    dispatch(EVENT_SERVICE_URL + '/events', saveObj)(eventEdit.newEvent);
+    dispatch(EVENT_SERVICE_URL + '/events', saveObj)(EDIT_EVENT_NEW_EVENT);
 };

@@ -1,17 +1,15 @@
 import moment from "moment";
 
-export const setOnIceCandidatePeerConnection = (peerConnection, conn, userId, eventUserId, userMessageId, eventId) => {
-    const userIdCurrent = userId === eventUserId ? eventId : userId;
-    const userMessageIdCurrent = userId === eventUserId ? userMessageId : eventId;
+export const setOnIceCandidatePeerConnection = (peerConnection, conn, userId, userRecipientId, eventId) => {
     // Setup ice handling
     peerConnection.onicecandidate = (event) => {
         if (event.candidate) {
             send({
                 event: "candidate",
                 data: event.candidate,
-                userId: userIdCurrent,
+                userId,
                 eventId,
-                userRecipientId: userMessageIdCurrent
+                userRecipientId
             }, conn);
         }
     };
@@ -37,20 +35,15 @@ export const setOnCloseDataChanel = (dataChannel) => {
     };
 };
 
-export const setOnMessageConn = (conn, peerConnection, onChangeCandidates, userId, eventUserId, userMessageId,
-                                 eventId) => {
-    const userIdCurrent = userId === eventUserId ? eventId : userId;
-    const userMessageIdCurrent = userId === eventUserId ? userMessageId : eventId;
+export const setOnMessageConn = (conn, peerConnection, userId, userRecipientId, eventId) => {
     conn.onmessage = (msg) => {
         const content = JSON.parse(msg.data);
-        if (content.userId) {
-            onChangeCandidates(content.userId)
-        }
         const data = content.data;
+        console.log('got message', content);
         switch (content.event) {
             // when somebody wants to call us
             case "offer":
-                handleOffer(data, conn, peerConnection, userMessageIdCurrent, eventId, userIdCurrent);
+                handleOffer(data, conn, peerConnection, userRecipientId, eventId, userId);
                 break;
             case "answer":
                 handleAnswer(data, peerConnection);

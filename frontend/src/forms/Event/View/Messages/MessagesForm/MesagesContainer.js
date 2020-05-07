@@ -1,7 +1,7 @@
 import React from "react";
 import ItemComment from "./ItemComment";
-import {connect} from "../../../../App/Context";
-import {Review} from "../../../utils/types";
+import {connect} from "../../../../../App/Context";
+import {Review} from "../../../../utils/types";
 import PropTypes from "prop-types";
 
 const MessagesContainer = ({reviews, eventUserId, eventId, userId}) => {

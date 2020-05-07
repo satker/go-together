@@ -1,14 +1,14 @@
 import {EVENT_SERVICE_URL, EVENTS_URL} from "../../utils/constants";
-import {eventView} from "./reducers";
+import {EVENT_VIEW_EVENT, EVENT_VIEW_STATUSES, EVENT_VIEW_USERS} from "./constants";
 
 export const getEvent = () => (id) => (dispatch) => {
-    dispatch(EVENTS_URL + "/" + id)(eventView.event);
+    dispatch(EVENTS_URL + "/" + id)(EVENT_VIEW_EVENT);
 };
 
 export const getStatuses = () => (id) => (dispatch) => {
-    dispatch(EVENT_SERVICE_URL + '/events/' + id + '/users/statuses')(eventView.statuses);
+    dispatch(EVENT_SERVICE_URL + '/events/' + id + '/users/statuses')(EVENT_VIEW_STATUSES);
 };
 
 export const getUsers = () => (eventId) => (dispatch) => {
-    dispatch(EVENT_SERVICE_URL + '/events/' + eventId + '/users')(eventView.users);
+    dispatch(EVENT_SERVICE_URL + '/events/' + eventId + '/users')(EVENT_VIEW_USERS);
 };

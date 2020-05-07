@@ -1,7 +1,7 @@
 import {CSRF_TOKEN, USER_ID, USER_SERVICE_URL} from "../../../forms/utils/constants";
 import {set as setCookie} from 'js-cookie'
 import {components} from "../../../forms/reducers";
-import {createEmptyResponse, findPath} from "../utils";
+import {findPath} from "../utils";
 import {GET, POST, PUT} from "./constants";
 
 export const fetchAndSet = async (url,
@@ -9,14 +9,10 @@ export const fetchAndSet = async (url,
                                   method = GET,
                                   data = {},
                                   headers = {},
-                                  defaultRespObject) => {
+                                  type) => {
     let response;
-    let path = null;
-    if (defaultRespObject) {
-        path = findPath(defaultRespObject, null, components);
-    } else {
-        defaultRespObject = createEmptyResponse(false);
-    }
+    let [path, defaultRespObject] = findPath(type, null, components);
+    console.log(path, defaultRespObject);
     defaultRespObject.inProcess = true;
     setResult(defaultRespObject, path);
     if (method === GET) {
