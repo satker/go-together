@@ -1,8 +1,9 @@
 import {EVENT_SERVICE_URL, EVENTS_URL, USER_SERVICE_URL} from "../utils/constants";
 import {EVENTS_APARTMENT_TYPES, EVENTS_FIND_EVENTS, EVENTS_LANGUAGES, EVENTS_PARAMETERS} from "./constants";
+import {POST} from "../../App/utils/api/constants";
 
 export const postFindEvents = () => (filterObject) => (dispatch) => {
-    dispatch(EVENTS_URL + '/find', filterObject)(EVENTS_FIND_EVENTS);
+    dispatch(EVENTS_URL + '/find', POST, filterObject)(EVENTS_FIND_EVENTS);
 };
 
 export const getParameters = () => () => (dispatch) => {

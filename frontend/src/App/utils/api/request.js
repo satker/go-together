@@ -11,8 +11,8 @@ export const fetchAndSet = async (url,
                                   headers = {},
                                   type) => {
     let response;
-    let [path, defaultRespObject] = findPath(type, null, components);
-    console.log(path, defaultRespObject);
+    let [path, presentedRespObject] = findPath(type, null, components);
+    const defaultRespObject = {...presentedRespObject};
     defaultRespObject.inProcess = true;
     setResult(defaultRespObject, path);
     if (method === GET) {
@@ -42,8 +42,8 @@ export const fetchAndSet = async (url,
 };
 
 export const fetchAndSetToken = (token) =>
-    (setToContext, methodAction) =>
-        (url, data = {}) => (defaultRespObject) => {
+    (setToContext) =>
+        (url, method = GET, data = {}) => (type) => {
             let headers = {
                 'Accept': 'application/json',
                 'content-type': 'application/json'
@@ -52,7 +52,7 @@ export const fetchAndSetToken = (token) =>
             if (token) {
                 headers['Authorization'] = token;
             }
-            fetchAndSet(url, setToContext, methodAction, data, headers, defaultRespObject);
+            fetchAndSet(url, setToContext, method, data, headers, type);
         };
 
 export const registerFetch = async (url, setScreen, data = {}, error, goToLogin) => {

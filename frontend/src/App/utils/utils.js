@@ -8,6 +8,9 @@ export const createEmptyResponse = (type, defaultResponse = {}, defaultProcess =
 });
 
 export const findPath = (findType, path, components) => {
+    if (!findType) {
+        return [null, createEmptyResponse()];
+    }
     for (const component of keys(components)) {
         let resultPath = null;
         let currentPath = (path ? path + '.' : '') + component;
