@@ -43,7 +43,7 @@ export const fetchAndSet = async (url,
 
 export const fetchAndSetToken = (token) =>
     (setToContext) =>
-        (url, method = GET, data = {}) => (type) => {
+        ({type, url, method = GET, data = {}}) => {
             let headers = {
                 'Accept': 'application/json',
                 'content-type': 'application/json'
@@ -87,7 +87,10 @@ export const loginFetch = async (url, data = {}, state, setState) => {
         };
         fetchAndSetToken(token)
         (setResult, GET, state, null, 'userId')
-        (USER_SERVICE_URL + '/users?login=' + data.username)(null);
+        ({
+            type: null,
+            url: USER_SERVICE_URL + '/users?login=' + data.username
+        });
     } else {
         alert("Failed to login")
     }

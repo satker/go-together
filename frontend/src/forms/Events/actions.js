@@ -3,19 +3,33 @@ import {EVENTS_APARTMENT_TYPES, EVENTS_FIND_EVENTS, EVENTS_LANGUAGES, EVENTS_PAR
 import {POST} from "../../App/utils/api/constants";
 
 export const postFindEvents = () => (filterObject) => (dispatch) => {
-    dispatch(EVENTS_URL + '/find', POST, filterObject)(EVENTS_FIND_EVENTS);
+    dispatch({
+        type: EVENTS_FIND_EVENTS,
+        url: EVENTS_URL + '/find',
+        method: POST,
+        data: filterObject
+    });
 };
 
 export const getParameters = () => () => (dispatch) => {
-    dispatch(EVENT_SERVICE_URL + '/parameters')(EVENTS_PARAMETERS)
+    dispatch({
+        type: EVENTS_PARAMETERS,
+        url: EVENT_SERVICE_URL + '/parameters'
+    });
 };
 
 export const getLanguages = () => () => (dispatch) => {
-    dispatch(USER_SERVICE_URL + '/languages')(EVENTS_LANGUAGES)
+    dispatch({
+        type: EVENTS_LANGUAGES,
+        url: USER_SERVICE_URL + '/languages'
+    });
 };
 
 export const getApartmentTypes = () => () => (dispatch) => {
-    dispatch(EVENT_SERVICE_URL + '/types')(EVENTS_APARTMENT_TYPES)
+    dispatch({
+        type: EVENTS_APARTMENT_TYPES,
+        url: EVENT_SERVICE_URL + '/types'
+    });
 };
 
 export const setPage = (state, setState) => (page) => () => {

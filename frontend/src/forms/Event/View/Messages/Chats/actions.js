@@ -3,9 +3,17 @@ import {MESSAGES_CHATS, MESSAGES_USERS_INFO} from "../constants";
 import {POST} from "../../../../../App/utils/api/constants";
 
 export const getChats = () => (eventId) => (dispatch) => {
-    dispatch(MESSAGE_SERVICE_URL + '/events/' + eventId + '/messages/')(MESSAGES_CHATS);
+    dispatch({
+        type: MESSAGES_CHATS,
+        url: MESSAGE_SERVICE_URL + '/events/' + eventId + '/messages/'
+    });
 };
 
 export const postUsersInfo = () => (notFoundUserIds) => (dispatch) => {
-    dispatch(USER_SERVICE_URL + '/users/simple', POST, notFoundUserIds)(MESSAGES_USERS_INFO);
+    dispatch({
+        type: MESSAGES_USERS_INFO,
+        url: USER_SERVICE_URL + '/users/simple',
+        method: POST,
+        data: notFoundUserIds
+    });
 };
