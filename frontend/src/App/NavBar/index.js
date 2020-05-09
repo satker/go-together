@@ -15,10 +15,11 @@ import {connect} from "../../App/Context";
 import FormReference from "../../forms/utils/components/FormReference";
 import FormLogin from "../../forms/Login";
 import {navigate} from 'hookrouter';
-import {CSRF_TOKEN, EVENT_SERVICE_URL, USER_ID} from "../../forms/utils/constants";
+import {EVENT_SERVICE_URL, USER_ID} from "../../forms/utils/constants";
 import {AutosuggestionEvents} from "../../forms/utils/components/Autosuggestion";
 import {set as setCookie} from "js-cookie";
-import {cleanFetchWithToken, cleanUserId} from "./actions";
+import {cleanToken, cleanUserId} from "./actions";
+import {CSRF_TOKEN} from "../Context/constants";
 
 const useStyles = makeStyles(theme => ({
     grow: {
@@ -82,7 +83,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const NavBar = ({userId, cleanUserId, cleanFetchWithToken}) => {
+const NavBar = ({userId, cleanUserId, cleanToken}) => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -93,8 +94,8 @@ const NavBar = ({userId, cleanUserId, cleanFetchWithToken}) => {
     const logout = () => {
         setCookie(CSRF_TOKEN, null);
         setCookie(USER_ID, null);
+        cleanToken();
         cleanUserId();
-        cleanFetchWithToken();
     };
 
     const goToEventPage = (event) => navigate('/events/' + event.id);
@@ -279,4 +280,4 @@ const mapStateToProps = () => (state) => ({
     userId: state.userId.value
 });
 
-export default connect(mapStateToProps, {cleanUserId, cleanFetchWithToken})(NavBar);
+export default connect(mapStateToProps, {cleanUserId, cleanToken})(NavBar);

@@ -10,7 +10,6 @@ export const MESSAGE_SERVICE_URL = GATEWAY_SERVICES_URL + '/message-service';
 export const LOCATION_SERVICE_URL = GATEWAY_SERVICES_URL + '/location-service';
 export const LOGIN_URL = AUTH_URL + "/auth/";
 
-export const CSRF_TOKEN = 'CSRF_TOKEN';
 export const USER_ID = 'USER_ID';
 
 export const EVENTS_URL = EVENT_SERVICE_URL + '/events';

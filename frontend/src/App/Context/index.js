@@ -1,17 +1,26 @@
 import React, {useState} from "react";
 import {fetchAndSetToken} from "../utils/api/request";
-import {CSRF_TOKEN, USER_ID,} from "../../forms/utils/constants";
+import {USER_ID} from "../../forms/utils/constants";
 import {get as getCookie} from 'js-cookie'
 import {onChange} from "../../forms/utils/utils";
 import {components} from "../../forms/reducers";
 import {createContextValue} from "../utils/utils";
-import {ARRIVAL_DATE, CONTEXT_USER_ID, DEPARTURE_DATE, EVENT_ID, FETCH, FORM_ID, PAGE, PAGE_SIZE} from "./constants";
+import {
+    ARRIVAL_DATE,
+    CONTEXT_USER_ID,
+    CSRF_TOKEN,
+    DEPARTURE_DATE,
+    EVENT_ID,
+    FORM_ID,
+    PAGE,
+    PAGE_SIZE
+} from "./constants";
 
 export const context = {
     userId: createContextValue(CONTEXT_USER_ID, getCookie(USER_ID) === 'null' ? null : getCookie(USER_ID)),
     eventId: createContextValue(EVENT_ID),
     formId: createContextValue(FORM_ID),
-    fetchWithToken: createContextValue(FETCH, fetchAndSetToken(getCookie(CSRF_TOKEN))),
+    csrfToken: createContextValue(CSRF_TOKEN, getCookie(CSRF_TOKEN) === 'null' ? null : getCookie(CSRF_TOKEN)),
     arrivalDate: createContextValue(ARRIVAL_DATE),
     departureDate: createContextValue(DEPARTURE_DATE),
     page: createContextValue(PAGE, 0),
@@ -25,11 +34,13 @@ const actionsStore = {};
 
 export const Provider = ({children}) => {
     const [state, setState] = useState({...context});
-
+    console.log(state.csrfToken, state.userId);
     return <Context.Provider value={[state, onChange(state, setState)]}>
         {children}
     </Context.Provider>;
 };
+
+const setToContext = setState => (pathData) => setState(pathData.path, {...pathData.data});
 
 const wrapActions = (actions, state, setState, ACTIONS_ID) => {
     if (!actions) {
@@ -40,11 +51,8 @@ const wrapActions = (actions, state, setState, ACTIONS_ID) => {
     const result = {};
     for (const action in actions) {
         if (!(actionsStore[FORM_ID] && actionsStore[FORM_ID][action])) {
-            const setToContext = (result, path) => {
-                setState(path, {...result});
-            };
             result[action] = (...args) =>
-                actions[action](...args)(state.fetchWithToken.value(setToContext), setState);
+                actions[action](...args)(fetchAndSetToken(state.csrfToken.value)(setToContext(setState)), state);
             actionsStore[FORM_ID] = {
                 ...actionsStore[FORM_ID],
                 [action]: result[action]

@@ -1,16 +1,15 @@
-import {CONTEXT_USER_ID, FETCH} from "../Context/constants";
-import {fetchAndSetToken} from "../utils/api/request";
+import {CONTEXT_USER_ID, CSRF_TOKEN} from "../Context/constants";
 
 export const cleanUserId = () => (dispatch) => {
     dispatch({
         type: CONTEXT_USER_ID,
-        value: ''
+        value: null
     })
 };
 
-export const cleanFetchWithToken = () => (dispatch) => {
+export const cleanToken = () => (dispatch) => {
     dispatch({
-        type: FETCH,
-        value: fetchAndSetToken(null)
+        type: CSRF_TOKEN,
+        value: null
     })
 };
