@@ -4,48 +4,55 @@ import {GET, POST} from "./constants";
 import {context} from "../../Context";
 import {CSRF_TOKEN} from "../../Context/constants";
 
-export const fetchAndSet = async (url,
-                                  setResult,
-                                  method = GET,
-                                  data = {},
-                                  headers = {},
-                                  type) => {
-    let response;
+const resolveStatus = (response) => {
+    if (response.status >= 200 && response.status < 300) {
+        return Promise.resolve(response)
+    } else {
+        return Promise.reject(new Error(response.statusText))
+    }
+};
+
+const resolveJson = (response) => {
+    return response.json()
+};
+
+export const fetchAndSet = (url,
+                            setResult,
+                            method = GET,
+                            data = {},
+                            headers = {},
+                            type) => {
     const pathData = findPath(type, null, context);
     pathData.data.inProcess = true;
     setResult(pathData);
-    if (method === GET) {
-        response = await fetch(url, {
-            method: method,
-        });
-    } else {
-        response = await fetch(url, {
-            method: method,
-            headers,
-            body: JSON.stringify(data)
-        });
-    }
-    if (response.status === 200) {
-        const result = await response.text();
-        pathData.data.response = JSON.parse(result);
+
+    const additionalParams = method === GET ? {} : {
+        headers,
+        body: JSON.stringify(data)
+    };
+
+    const requestParams = {
+        method: method,
+        ...additionalParams
+    };
+    fetch(url, requestParams)
+        .then(resolveStatus)
+        .then(resolveJson)
+        .then(response => {
+            pathData.data.response = response;
+            pathData.data.inProcess = false;
+            setResult(pathData);
+        }).catch(errorMessage => {
+        pathData.data.error = errorMessage;
         pathData.data.inProcess = false;
         setResult(pathData);
-    } else {
-        const result = await response.text();
-        const error = JSON.parse(result).message;
-        pathData.data.error = error;
-        pathData.data.inProcess = false;
-        setResult(pathData);
-        alert(error);
-    }
+        alert(errorMessage);
+    });
 };
 
 const setGlobalState = (type, value, setToContext) => {
     let pathData = findPath(type, null, context);
     pathData.data.value = value;
-    if (type === CSRF_TOKEN) {
-        console.log(pathData,)
-    }
     setToContext(pathData);
 };
 
@@ -66,8 +73,8 @@ export const fetchAndSetToken = (token) =>
             fetchAndSet(url, setToContext, method, data, headers, type);
         };
 
-export const loginFetch = async (url, data = {}, setCsrfToken, dispatch) => {
-    await fetch(url, {
+export const loginFetch = (url, data = {}, setCsrfToken, dispatch) => {
+    fetch(url, {
         method: POST,
         body: JSON.stringify(data),
     }).then(response => {
