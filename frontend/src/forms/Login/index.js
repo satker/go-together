@@ -3,7 +3,7 @@ import {connect} from "../../App/Context";
 import MenuItem from "@material-ui/core/MenuItem";
 import * as PropTypes from "prop-types";
 import './style.css'
-import {getLoginId, postLogin, setUserId} from "./actions";
+import {getLoginId, postLogin, setCsrfToken, setUserId} from "./actions";
 import LabeledInput from "../utils/LabeledInput";
 import ItemContainer from "../utils/components/Container/ItemContainer";
 import ContainerColumn from "../utils/components/Container/ContainerColumn";
@@ -11,19 +11,22 @@ import {navigate} from "hookrouter";
 import CustomButton from "../utils/components/CustomButton";
 import {set as setCookie} from "js-cookie";
 import {USER_ID} from "../utils/constants";
+import {CSRF_TOKEN} from "../../App/Context/constants";
 
-const FormLogin = ({formId, postLogin, handleMenuClose, loginId, getLoginId, setUserId, csrfToken}) => {
+const FormLogin = ({
+                       formId, postLogin, handleMenuClose, loginId, getLoginId,
+                       setUserId, csrfToken, setCsrfToken, loginToken
+                   }) => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
-    const [startLogin, setStartLogin] = useState(false);
 
     useEffect(() => {
-        console.log(startLogin, csrfToken);
-        if (startLogin && csrfToken) {
+        if (loginToken.token && !loginToken.inProcess && login && login !== "") {
+            setCookie(CSRF_TOKEN, loginToken.token);
+            setCsrfToken(loginToken.token);
             getLoginId(login);
-            setStartLogin(false)
         }
-    }, [csrfToken, getLoginId, login, startLogin]);
+    }, [loginToken, getLoginId, login, setCsrfToken]);
 
     useEffect(() => {
         if (loginId.response.id) {
@@ -34,7 +37,6 @@ const FormLogin = ({formId, postLogin, handleMenuClose, loginId, getLoginId, set
 
     const handleSubmit = () => {
         postLogin(login, password);
-        setStartLogin(true);
     };
 
     return <ContainerColumn>
@@ -90,7 +92,9 @@ FormLogin.propTypes = {
 
 const mapStateToProps = () => (state) => ({
     loginId: state.components.forms.login.loginId,
+    loginToken: state.components.forms.login.loginToken,
     csrfToken: state.csrfToken
 });
 
-export default connect(mapStateToProps, {postLogin, getLoginId, setUserId})(FormLogin);
+export default connect(mapStateToProps,
+    {postLogin, getLoginId, setUserId, setCsrfToken})(FormLogin);

@@ -1,10 +1,18 @@
-import {set as setCookie} from 'js-cookie'
 import {findPath} from "../utils";
-import {GET, POST} from "./constants";
+import {GET} from "./constants";
 import {context} from "../../Context";
-import {CSRF_TOKEN} from "../../Context/constants";
 
-const resolveStatus = (response) => {
+const resolveStatus = (pathData, isToken, setResult) => (response) => {
+    if (isToken) {
+        response.headers
+            .forEach(value => {
+                if (value.startsWith('Bearer ')) {
+                    pathData.data.token = value;
+                    pathData.data.inProcess = false;
+                    setResult(pathData);
+                }
+            });
+    }
     if (response.status >= 200 && response.status < 300) {
         return Promise.resolve(response)
     } else {
@@ -13,7 +21,7 @@ const resolveStatus = (response) => {
 };
 
 const resolveJson = (response) => {
-    return response.json()
+    return response.json();
 };
 
 export const fetchAndSet = (url,
@@ -21,7 +29,8 @@ export const fetchAndSet = (url,
                             method = GET,
                             data = {},
                             headers = {},
-                            type) => {
+                            type,
+                            isToken) => {
     const pathData = findPath(type, null, context);
     pathData.data.inProcess = true;
     setResult(pathData);
@@ -36,13 +45,16 @@ export const fetchAndSet = (url,
         ...additionalParams
     };
     fetch(url, requestParams)
-        .then(resolveStatus)
+        .then(resolveStatus(pathData, isToken, setResult))
         .then(resolveJson)
         .then(response => {
             pathData.data.response = response;
             pathData.data.inProcess = false;
             setResult(pathData);
         }).catch(errorMessage => {
+        if (errorMessage.name === 'SyntaxError') {
+            return;
+        }
         pathData.data.error = errorMessage;
         pathData.data.inProcess = false;
         setResult(pathData);
@@ -57,7 +69,7 @@ const setGlobalState = (type, value, setToContext) => {
 };
 
 export const fetchAndSetToken = (token) =>
-    (setToContext) => ({type, url, method = GET, data = {}, value}) => {
+    (setToContext) => ({type, url, method = GET, data = {}, value, isToken = false}) => {
         if (!url) {
             setGlobalState(type, value, setToContext);
             return;
@@ -70,20 +82,5 @@ export const fetchAndSetToken = (token) =>
         if (token) {
                 headers['Authorization'] = token;
             }
-            fetchAndSet(url, setToContext, method, data, headers, type);
+        fetchAndSet(url, setToContext, method, data, headers, type, isToken);
         };
-
-export const loginFetch = (url, data = {}, setCsrfToken, dispatch) => {
-    fetch(url, {
-        method: POST,
-        body: JSON.stringify(data),
-    }).then(response => {
-        response.headers
-            .forEach(value => {
-                if (value.startsWith('Bearer ')) {
-                    setCookie(CSRF_TOKEN, value);
-                    setCsrfToken(value)(dispatch);
-                }
-            })
-    }).catch(errorMessage => alert("Failed to login: " + errorMessage));
-};

@@ -34,7 +34,7 @@ const actionsStore = {};
 
 export const Provider = ({children}) => {
     const [state, setState] = useState({...context});
-    console.log(state.csrfToken, state.userId);
+
     return <Context.Provider value={[state, onChange(state, setState)]}>
         {children}
     </Context.Provider>;

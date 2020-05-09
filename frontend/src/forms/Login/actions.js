@@ -1,7 +1,7 @@
-import {loginFetch} from "../../App/utils/api/request";
 import {LOGIN_URL, USER_SERVICE_URL} from "../utils/constants";
 import {CONTEXT_USER_ID, CSRF_TOKEN} from "../../App/Context/constants";
-import {LOGIN_ID} from "./constants";
+import {LOGIN_HEADERS, LOGIN_ID} from "./constants";
+import {POST} from "../../App/utils/api/constants";
 
 export const setUserId = (userId) => (dispatch) => {
     dispatch({
@@ -18,7 +18,13 @@ export const setCsrfToken = (token) => (dispatch) => {
 };
 
 export const postLogin = (login, password) => (dispatch) => {
-    loginFetch(LOGIN_URL, {username: login, password: password}, setCsrfToken, dispatch)
+    dispatch({
+        type: LOGIN_HEADERS,
+        url: LOGIN_URL,
+        method: POST,
+        data: {username: login, password: password},
+        isToken: true
+    });
 };
 
 export const getLoginId = (login) => (dispatch) => {
