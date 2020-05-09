@@ -41,7 +41,7 @@ EventLikes.propTypes = {
 const mapStateToProps = () => state => ({
     newLike: state.components.utils.eventLikes.newLike,
     likes: state.components.utils.eventLikes.likes,
-    userId: state.userId
+    userId: state.userId.value
 });
 
 export default connect(mapStateToProps, {putNewLike, postLikes})(EventLikes);

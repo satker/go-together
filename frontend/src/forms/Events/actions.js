@@ -1,8 +1,9 @@
 import {EVENT_SERVICE_URL, EVENTS_URL, USER_SERVICE_URL} from "../utils/constants";
 import {EVENTS_APARTMENT_TYPES, EVENTS_FIND_EVENTS, EVENTS_LANGUAGES, EVENTS_PARAMETERS} from "./constants";
 import {POST} from "../../App/utils/api/constants";
+import {ARRIVAL_DATE, DEPARTURE_DATE, PAGE} from "../../App/Context/constants";
 
-export const postFindEvents = () => (filterObject) => (dispatch) => {
+export const postFindEvents = (filterObject) => (dispatch) => {
     dispatch({
         type: EVENTS_FIND_EVENTS,
         url: EVENTS_URL + '/find',
@@ -11,35 +12,44 @@ export const postFindEvents = () => (filterObject) => (dispatch) => {
     });
 };
 
-export const getParameters = () => () => (dispatch) => {
+export const getParameters = () => (dispatch) => {
     dispatch({
         type: EVENTS_PARAMETERS,
         url: EVENT_SERVICE_URL + '/parameters'
     });
 };
 
-export const getLanguages = () => () => (dispatch) => {
+export const getLanguages = () => (dispatch) => {
     dispatch({
         type: EVENTS_LANGUAGES,
         url: USER_SERVICE_URL + '/languages'
     });
 };
 
-export const getApartmentTypes = () => () => (dispatch) => {
+export const getApartmentTypes = () => (dispatch) => {
     dispatch({
         type: EVENTS_APARTMENT_TYPES,
         url: EVENT_SERVICE_URL + '/types'
     });
 };
 
-export const setPage = (state, setState) => (page) => () => {
-    setState('page', page);
+export const setPage = (page) => (dispatch) => {
+    dispatch({
+        type: PAGE,
+        value: page
+    });
 };
 
-export const setArrivalDate = (state, setState) => (arrivalDate) => () => {
-    setState('arrivalDate', arrivalDate);
+export const setArrivalDate = (arrivalDate) => (dispatch) => {
+    dispatch({
+        type: ARRIVAL_DATE,
+        value: arrivalDate
+    });
 };
 
-export const setDepartureDate = (state, setState) => (departureDate) => () => {
-    setState('departureDate', departureDate);
+export const setDepartureDate = (departureDate) => (dispatch) => {
+    dispatch({
+        type: DEPARTURE_DATE,
+        value: departureDate
+    });
 };

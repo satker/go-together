@@ -1,8 +1,8 @@
 import {CSRF_TOKEN, USER_ID, USER_SERVICE_URL} from "../../../forms/utils/constants";
 import {set as setCookie} from 'js-cookie'
-import {components} from "../../../forms/reducers";
 import {findPath} from "../utils";
-import {GET, POST, PUT} from "./constants";
+import {GET, POST} from "./constants";
+import {context} from "../../Context";
 
 export const fetchAndSet = async (url,
                                   setResult,
@@ -11,10 +11,13 @@ export const fetchAndSet = async (url,
                                   headers = {},
                                   type) => {
     let response;
-    let [path, presentedRespObject] = findPath(type, null, components);
-    const defaultRespObject = {...presentedRespObject};
-    defaultRespObject.inProcess = true;
-    setResult(defaultRespObject, path);
+    const pathData = findPath(type, null, context);
+    if (!pathData.path || !pathData.data) {
+        console.log(type, context);
+        return;
+    }
+    pathData.data.inProcess = true;
+    setResult(pathData.data, pathData.path);
     if (method === GET) {
         response = await fetch(url, {
             method: method,
@@ -28,22 +31,26 @@ export const fetchAndSet = async (url,
     }
     if (response.status === 200) {
         const result = await response.text();
-        defaultRespObject.response = JSON.parse(result);
-        defaultRespObject.inProcess = false;
-        setResult(defaultRespObject, path);
+        pathData.data.response = JSON.parse(result);
+        pathData.data.inProcess = false;
+        setResult(pathData.data, pathData.path);
     } else {
         const result = await response.text();
         const error = JSON.parse(result).message;
-        defaultRespObject.error = error;
-        defaultRespObject.inProcess = false;
-        setResult(defaultRespObject, path);
+        pathData.data.error = error;
+        pathData.data.inProcess = false;
+        setResult(pathData.data, pathData.path);
         alert(error);
     }
 };
 
 export const fetchAndSetToken = (token) =>
     (setToContext) =>
-        ({type, url, method = GET, data = {}}) => {
+        ({type, url, method = GET, data = {}, value}) => {
+            if (!url) {
+                let pathData = findPath(type, null, context);
+                setToContext(value, pathData.path);
+            }
             let headers = {
                 'Accept': 'application/json',
                 'content-type': 'application/json'
@@ -55,18 +62,7 @@ export const fetchAndSetToken = (token) =>
             fetchAndSet(url, setToContext, method, data, headers, type);
         };
 
-export const registerFetch = async (url, setScreen, data = {}, error, goToLogin) => {
-    let headers = {
-        'Accept': 'application/json',
-        'content-type': 'application/json'
-    };
-    fetchAndSet(url, () => {
-        setScreen("login");
-        goToLogin();
-    }, PUT, data, headers);
-};
-
-export const loginFetch = async (url, data = {}, state, setState) => {
+export const loginFetch = async (url, data = {}, state, setUserId, setFetch) => {
     let token = null;
     await fetch(url, {
         method: POST,
@@ -82,7 +78,8 @@ export const loginFetch = async (url, data = {}, state, setState) => {
             if (!resp.inProcess) {
                 setCookie(CSRF_TOKEN, token);
                 setCookie(USER_ID, resp.response.id);
-                setState(['userId', 'fetchWithToken'], [resp.response.id, fetchAndSetToken(token)]);
+                setUserId(resp.response.id);
+                setFetch(fetchAndSetToken(token));
             }
         };
         fetchAndSetToken(token)

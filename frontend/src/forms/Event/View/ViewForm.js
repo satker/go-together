@@ -52,7 +52,7 @@ ViewForm.propTypes = {
 const mapStateToProps = () => state => ({
     statuses: state.components.forms.event.eventView.statuses,
     users: state.components.forms.event.eventView.users,
-    userId: state.userId
+    userId: state.userId.value
 });
 
 export default connect(mapStateToProps, {getUsers, getStatuses})(ViewForm);

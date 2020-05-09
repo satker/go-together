@@ -13,13 +13,12 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import {connect} from "../../App/Context";
 import FormReference from "../../forms/utils/components/FormReference";
-import {fetchAndSetToken} from "../utils/api/request";
 import FormLogin from "../../forms/Login";
 import {navigate} from 'hookrouter';
 import {CSRF_TOKEN, EVENT_SERVICE_URL, USER_ID} from "../../forms/utils/constants";
 import {AutosuggestionEvents} from "../../forms/utils/components/Autosuggestion";
 import {set as setCookie} from "js-cookie";
-import {setUserIdAndFetchWithToken} from "./actions";
+import {cleanFetchWithToken, cleanUserId} from "./actions";
 
 const useStyles = makeStyles(theme => ({
     grow: {
@@ -83,7 +82,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const NavBar = ({userId, setUserIdAndFetchWithToken}) => {
+const NavBar = ({userId, cleanUserId, cleanFetchWithToken}) => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -94,7 +93,8 @@ const NavBar = ({userId, setUserIdAndFetchWithToken}) => {
     const logout = () => {
         setCookie(CSRF_TOKEN, null);
         setCookie(USER_ID, null);
-        setUserIdAndFetchWithToken(['userId', 'fetchWithToken'], ['', fetchAndSetToken(null)]);
+        cleanUserId();
+        cleanFetchWithToken();
     };
 
     const goToEventPage = (event) => navigate('/events/' + event.id);
@@ -276,7 +276,7 @@ const NavBar = ({userId, setUserIdAndFetchWithToken}) => {
 };
 
 const mapStateToProps = () => (state) => ({
-    userId: state.userId
+    userId: state.userId.value
 });
 
-export default connect(mapStateToProps, {setUserIdAndFetchWithToken})(NavBar);
+export default connect(mapStateToProps, {cleanUserId, cleanFetchWithToken})(NavBar);

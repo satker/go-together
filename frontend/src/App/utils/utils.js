@@ -7,21 +7,39 @@ export const createEmptyResponse = (type, defaultResponse = {}, defaultProcess =
     error: ''
 });
 
+export const createContextValue = (type, value = null) => ({
+    type,
+    value
+});
+
 export const findPath = (findType, path, components) => {
     if (!findType) {
-        return [null, createEmptyResponse()];
+        return {
+            path: null,
+            data: createEmptyResponse()
+        };
     }
     for (const component of keys(components)) {
-        let resultPath = null;
+        let resultPath = {
+            path: null,
+            data: null
+        };
         let currentPath = (path ? path + '.' : '') + component;
         if (components[component].type === findType) {
-            return [currentPath, components[component]];
+            return {
+                path: currentPath,
+                data: {...components[component]}
+            };
         }
-        if (!components[component].hasOwnProperty('inProcess') && components[component] instanceof Object) {
+        if (!components[component].hasOwnProperty('type') && components[component] instanceof Object) {
             resultPath = findPath(findType, currentPath, components[component])
         }
-        if (resultPath) {
+        if (resultPath.path && resultPath.data) {
             return resultPath;
         }
     }
+    return {
+        path: null,
+        data: null
+    };
 };

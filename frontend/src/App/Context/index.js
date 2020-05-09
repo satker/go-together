@@ -4,16 +4,18 @@ import {CSRF_TOKEN, USER_ID,} from "../../forms/utils/constants";
 import {get as getCookie} from 'js-cookie'
 import {onChange} from "../../forms/utils/utils";
 import {components} from "../../forms/reducers";
+import {createContextValue} from "../utils/utils";
+import {ARRIVAL_DATE, CONTEXT_USER_ID, DEPARTURE_DATE, EVENT_ID, FETCH, FORM_ID, PAGE, PAGE_SIZE} from "./constants";
 
 export const context = {
-    userId: getCookie(USER_ID) === 'null' ? null : getCookie(USER_ID),
-    eventId: null,
-    formId: null,
-    fetchWithToken: fetchAndSetToken(getCookie(CSRF_TOKEN)),
-    arrivalDate: null,
-    departureDate: null,
-    page: 0,
-    pageSize: 9,
+    userId: createContextValue(CONTEXT_USER_ID, getCookie(USER_ID) === 'null' ? null : getCookie(USER_ID)),
+    eventId: createContextValue(EVENT_ID),
+    formId: createContextValue(FORM_ID),
+    fetchWithToken: createContextValue(FETCH, fetchAndSetToken(getCookie(CSRF_TOKEN))),
+    arrivalDate: createContextValue(ARRIVAL_DATE),
+    departureDate: createContextValue(DEPARTURE_DATE),
+    page: createContextValue(PAGE, 0),
+    pageSize: createContextValue(PAGE_SIZE, 9),
     components: {...components}
 };
 
@@ -39,11 +41,10 @@ const wrapActions = (actions, state, setState, ACTIONS_ID) => {
     for (const action in actions) {
         if (!(actionsStore[FORM_ID] && actionsStore[FORM_ID][action])) {
             const setToContext = (result, path) => {
-                let statePath = 'components.' + path;
-                setState(statePath, {...result});
+                setState(path, {...result});
             };
             result[action] = (...args) =>
-                actions[action](state, setState)(...args)(state.fetchWithToken(setToContext));
+                actions[action](...args)(state.fetchWithToken.value(setToContext), setState);
             actionsStore[FORM_ID] = {
                 ...actionsStore[FORM_ID],
                 [action]: result[action]
