@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {fade, makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -92,11 +92,16 @@ const NavBar = ({userId, cleanUserId, cleanToken}) => {
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
     const logout = () => {
-        setCookie(CSRF_TOKEN, null);
         setCookie(USER_ID, null);
-        cleanToken();
         cleanUserId();
     };
+
+    useEffect(() => {
+        if (!userId) {
+            setCookie(CSRF_TOKEN, null);
+            cleanToken();
+        }
+    }, [userId, cleanToken]);
 
     const goToEventPage = (event) => navigate('/events/' + event.id);
 

@@ -7,8 +7,9 @@ import {Event, ResponseData} from "../../../../utils/types";
 import PropTypes from "prop-types";
 import LabeledInput from "../../../../utils/LabeledInput";
 import ItemContainer from "../../../../utils/components/Container/ItemContainer";
+import {updateEvent} from "../../actions";
 
-const CommonInfo = ({event, onChangeEvent, getHousingTypes, housingTypes}) => {
+const CommonInfo = ({event, updateEvent, getHousingTypes, housingTypes}) => {
     useEffect(() => {
         getHousingTypes();
     }, [getHousingTypes]);
@@ -19,11 +20,11 @@ const CommonInfo = ({event, onChangeEvent, getHousingTypes, housingTypes}) => {
                 id="name"
                 label="Event name"
                 value={event.name}
-                onChange={(value) => onChangeEvent('name', value)}
+                onChange={(value) => updateEvent('name', value)}
             />
         </ItemContainer>
         <ItemContainer>
-            <SelectBox onChange={(value) => onChangeEvent('housingType', housingTypes.response
+            <SelectBox onChange={(value) => updateEvent('housingType', housingTypes.response
                 .filter(type => type.id === value)[0].id)}
                        labelText='Housing type'
                        value={event.housingType}
@@ -35,7 +36,7 @@ const CommonInfo = ({event, onChangeEvent, getHousingTypes, housingTypes}) => {
                 label="Description"
                 value={event.description}
                 defaultValue="Home, dear home..."
-                onChange={(value) => onChangeEvent('description', value)}
+                onChange={(value) => updateEvent('description', value)}
             />
         </ItemContainer>
         <ItemContainer>
@@ -44,14 +45,14 @@ const CommonInfo = ({event, onChangeEvent, getHousingTypes, housingTypes}) => {
                 id="peopleCount"
                 label="People count"
                 value={event.peopleCount}
-                onChange={(value) => onChangeEvent('peopleCount', value)}
+                onChange={(value) => updateEvent('peopleCount', value)}
             />
         </ItemContainer>
         <ItemContainer>
             Trip dates: <CheckInOutDates startDate={event.startDate}
                                          endDate={event.endDate}
-                                         setStartDate={startDate => onChangeEvent('startDate', startDate)}
-                                         setEndDate={endDate => onChangeEvent('endDate', endDate)}
+                                         setStartDate={startDate => updateEvent('startDate', startDate)}
+                                         setEndDate={endDate => updateEvent('endDate', endDate)}
         />
         </ItemContainer>
     </>
@@ -59,13 +60,14 @@ const CommonInfo = ({event, onChangeEvent, getHousingTypes, housingTypes}) => {
 
 CommonInfo.propTypes = {
     event: Event.isRequired,
-    onChangeEvent: PropTypes.func.isRequired,
+    updateEvent: PropTypes.func.isRequired,
     housingTypes: ResponseData,
     getHousingTypes: PropTypes.func.isRequired
 };
 
 const mapStateToProps = () => (state) => ({
-    housingTypes: state.components.forms.event.eventEdit.mainInfo.commonInfo.housingTypes
+    housingTypes: state.components.forms.event.eventEdit.mainInfo.commonInfo.housingTypes,
+    event: state.components.forms.event.eventEdit.event.response
 });
 
-export default connect(mapStateToProps, {getHousingTypes})(CommonInfo);
+export default connect(mapStateToProps, {getHousingTypes, updateEvent})(CommonInfo);

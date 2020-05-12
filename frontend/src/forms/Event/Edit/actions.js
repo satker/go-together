@@ -1,6 +1,8 @@
 import {EVENT_SERVICE_URL} from "../../utils/constants";
 import {EDIT_EVENT_EVENT, EDIT_EVENT_NEW_EVENT, EDIT_EVENT_UPDATED_EVENT} from "./constants";
 import {POST, PUT} from "../../../App/utils/api/constants";
+import {onChange} from "../../utils/utils";
+import moment from "moment";
 
 export const getEvent = (id) => (dispatch) => {
     dispatch({
@@ -25,4 +27,21 @@ export const putNewEvent = (saveObj) => (dispatch) => {
         method: PUT,
         data: saveObj
     });
+};
+
+export const updateEvent = (path, value) => (dispatch, state) => {
+    let updatedEvent = state.components.forms.event.eventEdit.event.response;
+    if (!updatedEvent) {
+        updatedEvent = {...value};
+        updatedEvent.startDate = updatedEvent.startDate ? moment(updatedEvent.startDate) : null;
+        updatedEvent.endDate = updatedEvent.endDate ? moment(updatedEvent.endDate) : null
+    }
+    if (path) {
+        onChange(updatedEvent, result => updatedEvent = result)(path, value);
+    }
+
+    dispatch({
+        type: EDIT_EVENT_EVENT,
+        value: updatedEvent
+    })
 };

@@ -64,7 +64,11 @@ export const fetchAndSet = (url,
 
 const setGlobalState = (type, value, setToContext) => {
     let pathData = findPath(type, null, context);
-    pathData.data.value = value;
+    if (pathData.data.response) {
+        pathData.data.response = value;
+    } else {
+        pathData.data.value = value;
+    }
     setToContext(pathData);
 };
 
