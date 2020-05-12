@@ -6,7 +6,7 @@ import {ResponseData} from "../../utils/types";
 import LoadableContent from "../../utils/components/LoadableContent";
 import ViewForm from "./ViewForm";
 
-const GetAndViewEvent = ({id, getEvent, event}) => {
+const ViewEvent = ({id, getEvent, event}) => {
     useEffect(() => {
         getEvent(id);
     }, [getEvent, id]);
@@ -16,7 +16,7 @@ const GetAndViewEvent = ({id, getEvent, event}) => {
     </LoadableContent>;
 };
 
-GetAndViewEvent.propTypes = {
+ViewEvent.propTypes = {
     id: PropTypes.string.isRequired,
     getEvent: PropTypes.func.isRequired,
     event: ResponseData.isRequired
@@ -26,4 +26,4 @@ const mapStateToProps = () => state => ({
     event: state.components.forms.event.eventView.event,
 });
 
-export default connect(mapStateToProps, {getEvent})(GetAndViewEvent);
+export default connect(mapStateToProps, {getEvent})(ViewEvent);
