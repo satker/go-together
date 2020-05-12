@@ -16,7 +16,6 @@ const EditForm = ({
                       updatedEvent, newEvent
                   }) => {
 
-    console.log(event);
     const saveEvent = () => {
         let saveObj = {...event};
         saveObj.id = event.id;

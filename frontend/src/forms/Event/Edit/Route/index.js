@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 import ObjectGeoLocation from "../../../utils/components/ObjectGeoLocation";
 import PropTypes from "prop-types";
 import {onChange} from "../../../utils/utils";
@@ -9,7 +9,7 @@ import {connect} from "../../../../App/Context";
 const Route = ({eventRoute, updateEvent}) => {
     const [routeNumber, setRouteNumber] = useState(eventRoute.length || 1);
 
-    const onChangeLocation = useCallback((updatedRouteNumber, path, value) => {
+    const onChangeLocation = (updatedRouteNumber, path, value) => {
         const newArray = [...eventRoute].map(route => {
             if (route.routeNumber === updatedRouteNumber) {
                 onChange(route, newRoute => route = newRoute)(path, value);
@@ -18,7 +18,7 @@ const Route = ({eventRoute, updateEvent}) => {
             return route;
         });
         updateEvent('route', newArray);
-    }, [eventRoute, updateEvent]);
+    };
 
     const onDelete = (deletedRouteNumber) => {
         const newArray = [...eventRoute]
@@ -33,13 +33,12 @@ const Route = ({eventRoute, updateEvent}) => {
         setRouteNumber(routeNumber - 1);
     };
 
-    const addLocation = (lat, lng) => {
-        const newElement = {...DEFAULT_ROUTE};
-        newElement.latitude = lat;
-        newElement.longitude = lng;
-        newElement.routeNumber = routeNumber;
+    const addLocation = (paths, values) => {
+        let newElement = {...DEFAULT_ROUTE};
         newElement.location = {...DEFAULT_LOCATION};
         newElement.location.country = {...DEFAULT_COUNTRY};
+        newElement.routeNumber = routeNumber;
+        onChange(newElement, result => newElement = result)(paths, values);
         setRouteNumber(routeNumber + 1);
         updateEvent('route', [...eventRoute, newElement])
     };

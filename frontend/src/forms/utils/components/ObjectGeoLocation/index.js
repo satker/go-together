@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import GoogleMapReact from 'google-map-react';
 
 import "./style_place.css";
-import {fetchAndSet} from "../../../../App/utils/api/request";
 import Marker from "./Marker";
 import {getAddress, getCity, getCountry, getState} from "./utils";
 import RouteItem from "./RouteItem";
@@ -13,8 +12,8 @@ import LeftContainer from "../Container/LeftContainer";
 import RightContainer from "../Container/RightContainer";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import List from "@material-ui/core/List";
+import {GOOGLE_API_KEY, request} from "./GoogleMapsApiRequest";
 
-export const GOOGLE_API_KEY = "AIzaSyBSjnMkN8ckymUWZO5v0q-cZW9WppoFsyM";
 const getMapOptions = () => {
     return {
         disableDefaultUI: true,
@@ -33,26 +32,7 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
     const [currentLng, setCurrentLng] = useState(center[1]);
     const [googleMap, setGoogleMap] = useState(null);
     const [polyline, setPolyline] = useState(null);
-    const [lock, setLock] = useState(false);
 
-    const URL_FROM_LAN_LNG_TO_LOCATION = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${currentLat},${currentLng}
-    &key=${GOOGLE_API_KEY}&language=en`;
-
-
-    useEffect(() => {
-        routes.filter(route => !route.address)
-            .forEach(route => {
-                const URL_FROM_LAN_LNG_TO_LOCATION_CUSTOM = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${route.latitude},
-                ${route.longitude}&key=${GOOGLE_API_KEY}&language=en`;
-                fetchAndSet(URL_FROM_LAN_LNG_TO_LOCATION_CUSTOM, (result) => {
-                    if (!result.inProcess) {
-                        setLock(false);
-                        onChange(route.routeNumber, ['location.name', 'location.country.name', 'location.state', 'address'],
-                            [getCity(result.response), getCountry(result.response), getState(result.response), getAddress(result.response)]);
-                    }
-                })
-            })
-    }, [routes, onChange]);
     useEffect(() => {
         const getCurrentRoute = routes.filter(route => route.routeNumber === currentKey)[0];
         if (routes.length !== 0 &&
@@ -64,7 +44,7 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
             editable) {
             onChange(currentKey, ['latitude', 'longitude'], [currentLat, currentLng]);
         }
-    }, [routes, currentKey, editable, URL_FROM_LAN_LNG_TO_LOCATION, onChange, currentLat, currentLng]);
+    }, [routes, currentKey, editable, onChange, currentLat, currentLng]);
 
     const onCircleInteraction = (childKey, childProps, mouse) => {
         // function is just a stub to test callbacks
@@ -72,7 +52,6 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
         setCurrentKey(parseInt(childKey));
         setCurrentLat(mouse.lat);
         setCurrentLng(mouse.lng);
-        setLock(false)
     };
 
     const onCircleInteraction3 = (childKey, childProps, mouse) => {
@@ -85,12 +64,10 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
     const _onChange = ({center, zoom}) => {
         setCenter(center);
         setZoomValue(zoom);
-        setLock(false)
     };
 
     const endDrag = () => {
-        fetchAndSet(URL_FROM_LAN_LNG_TO_LOCATION, (result) => {
-            setLock(false);
+        request(currentLat, currentLng, (result) => {
             onChange(currentKey, ['location.name', 'location.country.name', 'location.state', 'address'],
                 [getCity(result), getCountry(result), getState(result), getAddress(result)]);
         });
@@ -128,7 +105,6 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
             newPolyline.setMap(google.map);
             setPolyline(newPolyline);
         }
-        setLock(true)
     };
 
     const getSortedRoutes = () => routes
@@ -153,6 +129,14 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
         }
     };
 
+    const onAddMarker = ({lat, lng}) => {
+        request(lat, lng, (result) => {
+            onAdd(['latitude', 'longitude', 'location.name',
+                    'location.country.name', 'location.state', 'address'],
+                [lat, lng, getCity(result), getCountry(result), getState(result), getAddress(result)]);
+        });
+    };
+
     return <>
         {editable && googleMap && <AddressFields google={googleMap} setCenter={setCenter}/>}
         <ContainerColumn>
@@ -169,9 +153,9 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
                                 onChildMouseUp={editable ? onCircleInteraction3 : () => null}
                                 onChildMouseMove={editable ? onCircleInteraction : () => null}
                                 onChildClick={editable ? endDrag : () => null}
-                                onClick={editable ? ((evt) => onAdd(evt.lat, evt.lng)) : () => null}
+                                onClick={editable ? onAddMarker : () => null}
                 >
-                    {googleMap && !lock && handlePolyline(googleMap)}
+                    {googleMap && handlePolyline(googleMap)}
                     {getRoutes()}
                 </GoogleMapReact>
             </LeftContainer>
@@ -180,7 +164,6 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
                     {getSortedRoutes().map(route => <RouteItem key={route.routeNumber}
                                                                onDelete={editable && ((routeNumber) => {
                                                                    onDelete(routeNumber);
-                                                                   setLock(false);
                                                                })}
                                                                route={route}
                                                                center={center}
