@@ -12,7 +12,7 @@ const CreateEvent = ({id, event, getEvent}) => {
         }
     }, [id, getEvent]);
 
-    return <LoadableContent loadableData={event}>
+    return <LoadableContent loadableData={event} additionalCheck={response => id && response.id !== id}>
         <EditForm/>
     </LoadableContent>
 };

@@ -5,8 +5,12 @@ import Loading from "./Loading";
 import ErrorMessage from "./ErrorMessage";
 import {isEmpty} from "lodash";
 
-const LoadableContent = ({children, loadableData, loadingMessage}) => {
-    if (loadableData.inProcess || isEmpty(loadableData.response) || loadableData.response.length === 0) {
+const LoadableContent = ({children, loadableData, loadingMessage, additionalCheck}) => {
+    if (loadableData.inProcess ||
+        isEmpty(loadableData.response) ||
+        loadableData.response.length === 0 ||
+        (additionalCheck ? additionalCheck(loadableData.response) : false)
+    ) {
         return <Loading loadingMessage={loadingMessage}/>
     }
 
@@ -20,7 +24,8 @@ const LoadableContent = ({children, loadableData, loadingMessage}) => {
 LoadableContent.propTypes = {
     children: PropTypes.node,
     loadableData: ResponseData.isRequired,
-    loadingMessage: PropTypes.string
+    loadingMessage: PropTypes.string,
+    additionalCheck: PropTypes.func
 };
 
 export default LoadableContent;
