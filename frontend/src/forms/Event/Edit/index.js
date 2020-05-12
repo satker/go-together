@@ -12,9 +12,9 @@ const CreateEvent = ({id, event, getEvent}) => {
         }
     }, [id, getEvent]);
 
-    return id ? <LoadableContent loadableData={event}>
+    return <LoadableContent loadableData={event}>
         <EditForm/>
-    </LoadableContent> : <EditForm/>
+    </LoadableContent>
 };
 
 CreateEvent.propTypes = {

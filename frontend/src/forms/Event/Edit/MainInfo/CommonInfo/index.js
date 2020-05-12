@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import LabeledInput from "../../../../utils/LabeledInput";
 import ItemContainer from "../../../../utils/components/Container/ItemContainer";
 import {updateEvent} from "../../actions";
+import moment from "moment";
 
 const CommonInfo = ({event, updateEvent, getHousingTypes, housingTypes}) => {
     useEffect(() => {
@@ -49,8 +50,8 @@ const CommonInfo = ({event, updateEvent, getHousingTypes, housingTypes}) => {
             />
         </ItemContainer>
         <ItemContainer>
-            Trip dates: <CheckInOutDates startDate={event.startDate}
-                                         endDate={event.endDate}
+            Trip dates: <CheckInOutDates startDate={event.startDate && moment(event.startDate)}
+                                         endDate={event.endDate && moment(event.endDate)}
                                          setStartDate={startDate => updateEvent('startDate', startDate)}
                                          setEndDate={endDate => updateEvent('endDate', endDate)}
         />
