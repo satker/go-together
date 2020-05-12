@@ -12,7 +12,7 @@ const GetAndViewEvent = ({id, getEvent, event}) => {
     }, [getEvent, id]);
 
     return <LoadableContent loadableData={event}>
-        <ViewForm event={event.response}/>
+        <ViewForm/>
     </LoadableContent>;
 };
 

@@ -6,15 +6,11 @@ import ContainerColumn from "../../../utils/components/Container/ContainerColumn
 import MessagesForm from "./MessagesForm";
 import {connect} from "../../../../App/Context";
 
-const Messages = ({eventId, userMessageId, eventUserId, setUserMessageId, userId}) => {
+const Messages = ({userMessageId, eventAuthorId, setUserMessageId, userId}) => {
     return <ContainerColumn isBordered>
-        {eventUserId === userId && <UserChats eventUserId={eventUserId}
-                                              userMessageId={userMessageId}
-                                              setUserMessageId={setUserMessageId}
-                                              eventId={eventId}/>}
-        <MessagesForm userMessageId={userMessageId}
-                      eventUserId={eventUserId}
-                      eventId={eventId}/>
+        {eventAuthorId === userId && <UserChats userMessageId={userMessageId}
+                                                setUserMessageId={setUserMessageId}/>}
+        <MessagesForm userMessageId={userMessageId}/>
     </ContainerColumn>
 };
 
@@ -28,6 +24,8 @@ Messages.props = {
 
 const mapStateToProps = () => state => ({
     userId: state.userId.value,
+    eventAuthorId: state.components.forms.event.eventView.event.response.author.id
+
 });
 
 export default connect(mapStateToProps, null)(Messages);

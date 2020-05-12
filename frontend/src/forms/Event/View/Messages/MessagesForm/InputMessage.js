@@ -65,7 +65,8 @@ InputMessage.propTypes = {
 };
 
 const mapStateToProps = () => state => ({
-    userId: state.userId.value
+    userId: state.userId.value,
+    eventId: state.components.forms.event.eventView.event.response.id
 });
 
 export default connect(mapStateToProps, {putNewMessage})(InputMessage);

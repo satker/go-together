@@ -7,14 +7,14 @@ import {getChats, postUsersInfo} from "./actions";
 import {ResponseData} from "../../../../utils/types";
 
 const UserChats = ({
-                       eventUserId, eventId, userMessageId, setUserMessageId, userId,
+                       event, userMessageId, setUserMessageId, userId,
                        getChats, messages, postUsersInfo, usersInfo
                    }) => {
     const [timer, setTimer] = useState(null);
 
     const getUserChats = useCallback(() => {
-        getChats(eventId);
-    }, [eventId, getChats]);
+        getChats(event.id);
+    }, [event, getChats]);
 
 
     useEffect(() => {
@@ -40,10 +40,10 @@ const UserChats = ({
     }, [usersInfo, messages, postUsersInfo]);
 
     useEffect(() => {
-        if (userId === eventUserId && !timer) {
+        if (userId === event.author.id && !timer) {
             //setTimer(setInterval(getChats, 2000));
         }
-    }, [userId, eventUserId, timer, setTimer, getUserChats]);
+    }, [userId, event, timer, setTimer, getUserChats]);
 
     useEffect(() => {
         getUserChats();
@@ -75,7 +75,8 @@ UserChats.propTypes = {
 const mapStateToProps = () => state => ({
     userId: state.userId.value,
     messages: state.components.forms.event.eventView.messages.chats,
-    usersInfo: state.components.forms.event.eventView.messages.usersInfo
+    usersInfo: state.components.forms.event.eventView.messages.usersInfo,
+    event: state.components.forms.event.eventView.event.response,
 });
 
 export default connect(mapStateToProps, {getChats, postUsersInfo})(UserChats);

@@ -3,32 +3,37 @@ import {getSrcForImg} from "../../../../utils/utils";
 import {User} from "../../../../utils/types";
 import RightContainer from "../../../../utils/components/Container/RightContainer";
 import {Card, CardContent, CardMedia, Typography} from "@material-ui/core";
+import {connect} from "../../../../../App/Context";
 
-const Profile = ({user}) => {
+const Profile = ({author}) => {
     return <RightContainer>
         <Card style={{align: 'center', width: '350px'}}>
-            {user.userPhotos ?
+            {author.userPhotos ?
                 <CardMedia style={{height: '255px'}}
                            component="img"
-                           image={getSrcForImg(user.userPhotos[0])}/> : null}
+                           image={getSrcForImg(author.userPhotos[0])}/> : null}
             <CardContent>
                 <Typography component="h6" variant="h6">
-                    {user.firstName + ' ' + user.lastName}
+                    {author.firstName + ' ' + author.lastName}
                 </Typography>
                 <Typography component="h6" variant="h6">
-                    {user.location.name + ' ' + user.location.country.name}
+                    {author.location.name + ' ' + author.location.country.name}
                 </Typography>
-                <Typography href={"#"}>{user.mail}</Typography>
-                <Typography>My interests: {user.interests.map(interest => interest.name).join(', ')}</Typography>
-                <Typography>Languages: {user.languages.map(lang => lang.name).join(', ')}</Typography>
-                <Typography>About owner: {user.description}</Typography>
+                <Typography href={"#"}>{author.mail}</Typography>
+                <Typography>My interests: {author.interests.map(interest => interest.name).join(', ')}</Typography>
+                <Typography>Languages: {author.languages.map(lang => lang.name).join(', ')}</Typography>
+                <Typography>About owner: {author.description}</Typography>
             </CardContent>
         </Card>
     </RightContainer>;
 };
 
 Profile.props = {
-    user: User.isRequired
+    author: User.isRequired
 };
 
-export default Profile;
+const mapStateToProps = () => (state) => ({
+    author: state.components.forms.event.eventView.event.response.author
+});
+
+export default connect(mapStateToProps, null)(Profile);

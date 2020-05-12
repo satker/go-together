@@ -15,8 +15,8 @@ import {
 import InputMessage from "./InputMessage";
 
 const WebRTCInputMessage = ({
-                                userId, eventId, setMessages, messages,
-                                eventUserId, userMessageId, readOnly
+                                userId, setMessages, messages,
+                                userMessageId, readOnly, event
                             }) => {
     const [conn, setConn] = useState(null);
     const [peerConnection, setPeerConnection] = useState(null);
@@ -25,28 +25,28 @@ const WebRTCInputMessage = ({
     const [sentUserRecipientId, setSentUserRecipientId] = useState(null);
 
     useEffect(() => {
-        setSentUserId(userId === eventUserId ? eventId : userId);
-    }, [userId, eventUserId, eventId]);
+        setSentUserId(userId === event.author.id ? event.id : userId);
+    }, [userId, event]);
 
     useEffect(() => {
-        setSentUserRecipientId(userId === eventUserId ? userMessageId : eventId);
-    }, [userId, eventUserId, userMessageId, eventId]);
+        setSentUserRecipientId(userId === event.author.id ? userMessageId : event.id);
+    }, [userId, event, userMessageId]);
 
     useEffect(() => {
         if (!conn) {
             const newConn = new WebSocket('ws://' + HOST + ':8064/socket');
             newConn.onopen = () => {
-                initialize(conn, setPeerConnection, setDataChannel, eventId);
+                initialize(conn, setPeerConnection, setDataChannel, event.id);
             };
             setConn(newConn);
         }
-    }, [eventId, conn]);
+    }, [event, conn]);
 
     useEffect(() => {
         if (peerConnection && conn) {
-            setOnIceCandidatePeerConnection(peerConnection, conn, sentUserId, sentUserRecipientId, eventId)
+            setOnIceCandidatePeerConnection(peerConnection, conn, sentUserId, sentUserRecipientId, event.id)
         }
-    }, [peerConnection, conn, eventId, sentUserId, sentUserRecipientId]);
+    }, [peerConnection, conn, event, sentUserId, sentUserRecipientId]);
 
     useEffect(() => {
         if (dataChannel) {
@@ -68,9 +68,9 @@ const WebRTCInputMessage = ({
 
     useEffect(() => {
         if (peerConnection && conn) {
-            setOnMessageConn(conn, peerConnection, sentUserId, sentUserRecipientId, eventId);
+            setOnMessageConn(conn, peerConnection, sentUserId, sentUserRecipientId, event.id);
         }
-    }, [conn, peerConnection, eventId, sentUserId, sentUserRecipientId]);
+    }, [conn, peerConnection, event, sentUserId, sentUserRecipientId]);
 
     const createOffer = useCallback(() => {
         console.log('create offer');
@@ -79,7 +79,7 @@ const WebRTCInputMessage = ({
             send({
                 event: "offer",
                 data: offer,
-                eventId,
+                eventId: event.id,
                 userId: sentUserId,
                 userRecipientId: sentUserRecipientId
             }, conn);
@@ -87,7 +87,7 @@ const WebRTCInputMessage = ({
         }, (error) => {
             alert("Error creating an offer" + error);
         });
-    }, [peerConnection, eventId, sentUserId, sentUserRecipientId, conn]);
+    }, [peerConnection, event, sentUserId, sentUserRecipientId, conn]);
 
     const sentRtcMessage = (newMessage) => {
         if (dataChannel.readyState === 'open') {
@@ -105,7 +105,6 @@ const WebRTCInputMessage = ({
                       setMessages={setMessages}
                       createOffer={createOffer}
                       sentRtcMessage={sentRtcMessage}
-                      eventId={eventId}
         />
 };
 
@@ -120,7 +119,8 @@ WebRTCInputMessage.propTypes = {
 };
 
 const mapStateToProps = () => state => ({
-    userId: state.userId.value
+    userId: state.userId.value,
+    event: state.components.forms.event.eventView.event.response
 });
 
 export default connect(mapStateToProps, null)(WebRTCInputMessage);

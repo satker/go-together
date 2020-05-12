@@ -5,13 +5,13 @@ import {connect} from "../../../../../App/Context";
 import {getMessagesByEvent} from "../actions";
 import moment from "moment";
 
-const MessagesForm = ({eventId, eventUserId, userMessageId, userId, messagesByEvent, getMessagesByEvent}) => {
+const MessagesForm = ({event, userMessageId, userId, messagesByEvent, getMessagesByEvent}) => {
     const [parsedReviewsByEvent, setParsedReviewsByEvent] = useState([]);
 
     const getMessages = useCallback(() => {
-        const authorId = userId === eventUserId ? userMessageId : userId;
-        getMessagesByEvent(eventId, authorId);
-    }, [eventUserId, eventId, userId, userMessageId, getMessagesByEvent]);
+        const authorId = userId === event.author.id ? userMessageId : userId;
+        getMessagesByEvent(event.id, authorId);
+    }, [event, userId, userMessageId, getMessagesByEvent]);
 
     useEffect(() => {
         const updateReviews = messagesByEvent.response.map(review => {
@@ -22,24 +22,20 @@ const MessagesForm = ({eventId, eventUserId, userMessageId, userId, messagesByEv
     }, [messagesByEvent]);
 
     useEffect(() => {
-        const authorId = userId === eventUserId ? userMessageId : userId;
+        const authorId = userId === event.author.id ? userMessageId : userId;
         if (userMessageId && authorId) {
             getMessages();
         } else {
             setParsedReviewsByEvent([])
         }
-    }, [getMessages, setParsedReviewsByEvent, userId, userMessageId, eventUserId]);
+    }, [getMessages, setParsedReviewsByEvent, userId, userMessageId, event]);
 
-    return <div className='container-input-messages' style={{width: eventUserId === userId ? '70%' : '100%'}}>
+    return <div className='container-input-messages' style={{width: event.author.id === userId ? '70%' : '100%'}}>
         <div className='container-messages'>
-            <MessagesContainer eventId={eventId}
-                               eventUserId={eventUserId}
-                               reviews={parsedReviewsByEvent}/>
+            <MessagesContainer reviews={parsedReviewsByEvent}/>
         </div>
-        {userMessageId && <WebRTCInputMessage eventId={eventId}
-                                              messages={parsedReviewsByEvent}
+        {userMessageId && <WebRTCInputMessage messages={parsedReviewsByEvent}
                                               setMessages={setParsedReviewsByEvent}
-                                              eventUserId={eventUserId}
                                               userMessageId={userMessageId}
                                               readOnly={parsedReviewsByEvent.length === 0}/>}
     </div>
@@ -49,7 +45,8 @@ MessagesForm.propTypes = {};
 
 const mapStateToProps = () => state => ({
     userId: state.userId.value,
-    messagesByEvent: state.components.forms.event.eventView.messages.messagesByEvent
+    messagesByEvent: state.components.forms.event.eventView.messages.messagesByEvent,
+    event: state.components.forms.event.eventView.event.response
 });
 
 export default connect(mapStateToProps, {getMessagesByEvent})(MessagesForm);
