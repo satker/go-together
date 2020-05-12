@@ -4,8 +4,10 @@ import ImageSelector from "../../../../utils/components/ImageSelector";
 import {Event} from "../../../../utils/types";
 import PropTypes from "prop-types";
 import ItemContainer from "../../../../utils/components/Container/ItemContainer";
+import {updateEvent} from "../../actions";
+import {connect} from "../../../../../App/Context";
 
-const Photos = ({event, onChangeEvent}) => {
+const Photos = ({event, updateEvent}) => {
     return <>
         <ItemContainer>
             <GroupItems items={event.eventPhotoDto.photos}
@@ -15,14 +17,18 @@ const Photos = ({event, onChangeEvent}) => {
         <ItemContainer>
             <ImageSelector
                 photos={event.eventPhotoDto.photos}
-                setPhotos={(photos) => onChangeEvent('eventPhotoDto.photos', photos)}
+                setPhotos={(photos) => updateEvent('eventPhotoDto.photos', photos)}
                 multiple={true}
             /></ItemContainer></>
 };
 
 Photos.propTypes = {
     event: Event.isRequired,
-    onChangeEvent: PropTypes.func.isRequired
+    updateEvent: PropTypes.func.isRequired
 };
 
-export default Photos;
+const mapStateToProps = () => (state) => ({
+    event: state.components.forms.event.eventEdit.event.response
+});
+
+export default connect(mapStateToProps, {updateEvent})(Photos);

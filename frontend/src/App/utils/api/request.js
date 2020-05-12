@@ -1,98 +1,90 @@
-import {CSRF_TOKEN, USER_ID, USER_SERVICE_URL} from "../../../forms/utils/constants";
-import {set as setCookie} from 'js-cookie'
-import {components} from "../../../forms/reducers";
-import {createEmptyResponse, findPath} from "../utils";
-import {GET, POST, PUT} from "./constants";
+import {findPath} from "../utils";
+import {GET} from "./constants";
+import {context} from "../../Context";
 
-export const fetchAndSet = async (url,
-                                  setResult,
-                                  method = GET,
-                                  data = {},
-                                  headers = {},
-                                  defaultRespObject) => {
-    let response;
-    let path = null;
-    if (defaultRespObject) {
-        path = findPath(defaultRespObject, null, components);
-    } else {
-        defaultRespObject = createEmptyResponse(false);
+const resolveStatus = (pathData, isToken, setResult) => (response) => {
+    if (isToken) {
+        response.headers
+            .forEach(value => {
+                if (value.startsWith('Bearer ')) {
+                    pathData.data.token = value;
+                    pathData.data.inProcess = false;
+                    setResult(pathData);
+                }
+            });
     }
-    defaultRespObject.inProcess = true;
-    setResult(defaultRespObject, path);
-    if (method === GET) {
-        response = await fetch(url, {
-            method: method,
-        });
+    if (response.status >= 200 && response.status < 300) {
+        return Promise.resolve(response)
     } else {
-        response = await fetch(url, {
-            method: method,
-            headers,
-            body: JSON.stringify(data)
-        });
+        return Promise.reject(new Error(response.statusText))
     }
-    if (response.status === 200) {
-        const result = await response.text();
-        defaultRespObject.response = JSON.parse(result);
-        defaultRespObject.inProcess = false;
-        setResult(defaultRespObject, path);
+};
+
+const resolveJson = (response) => {
+    return response.json();
+};
+
+export const fetchAndSet = (url,
+                            setResult,
+                            method = GET,
+                            data = {},
+                            headers = {},
+                            type,
+                            isToken) => {
+    const pathData = findPath(type, null, context);
+    pathData.data.inProcess = true;
+    setResult(pathData);
+
+    const additionalParams = method === GET ? {} : {
+        headers,
+        body: JSON.stringify(data)
+    };
+
+    const requestParams = {
+        method: method,
+        ...additionalParams
+    };
+    fetch(url, requestParams)
+        .then(resolveStatus(pathData, isToken, setResult))
+        .then(resolveJson)
+        .then(response => {
+            pathData.data.response = response;
+            pathData.data.inProcess = false;
+            setResult(pathData);
+        }).catch(errorMessage => {
+        if (errorMessage.name === 'SyntaxError') {
+            return;
+        }
+        pathData.data.error = errorMessage;
+        pathData.data.inProcess = false;
+        setResult(pathData);
+        alert(errorMessage);
+    });
+};
+
+const setGlobalState = (type, value, setToContext) => {
+    let pathData = findPath(type, null, context);
+    if (pathData.data.response) {
+        pathData.data.response = value;
     } else {
-        const result = await response.text();
-        const error = JSON.parse(result).message;
-        defaultRespObject.error = error;
-        defaultRespObject.inProcess = false;
-        setResult(defaultRespObject, path);
-        alert(error);
+        pathData.data.value = value;
     }
+    setToContext(pathData);
 };
 
 export const fetchAndSetToken = (token) =>
-    (setToContext, methodAction) =>
-        (url, data = {}) => (defaultRespObject) => {
-            let headers = {
-                'Accept': 'application/json',
-                'content-type': 'application/json'
-            };
+    (setToContext) => ({type, url, method = GET, data = {}, value, isToken = false}) => {
+        if (!url) {
+            setGlobalState(type, value, setToContext);
+            return;
+        }
+        let headers = {
+            'Accept': 'application/json',
+            'content-type': 'application/json'
+        };
 
-            if (token) {
+        if (token) {
                 headers['Authorization'] = token;
             }
-            fetchAndSet(url, setToContext, methodAction, data, headers, defaultRespObject);
+        fetchAndSet(url, setToContext, method, data, headers, type, isToken);
         };
-
-export const registerFetch = async (url, setScreen, data = {}, error, goToLogin) => {
-    let headers = {
-        'Accept': 'application/json',
-        'content-type': 'application/json'
-    };
-    fetchAndSet(url, () => {
-        setScreen("login");
-        goToLogin();
-    }, PUT, data, headers);
-};
-
-export const loginFetch = async (url, data = {}, state, setState) => {
-    let token = null;
-    await fetch(url, {
-        method: POST,
-        body: JSON.stringify(data),
-    }).then(response => {
-        response.headers
-            .forEach(value => value.startsWith('Bearer ') ?
-                token = value :
-                null)
-    }).catch(errorMessage => alert("Failed to login: " + errorMessage));
-    if (token) {
-        const setResult = (resp) => {
-            if (!resp.inProcess) {
-                setCookie(CSRF_TOKEN, token);
-                setCookie(USER_ID, resp.response.id);
-                setState(['userId', 'fetchWithToken'], [resp.response.id, fetchAndSetToken(token)]);
-            }
-        };
-        fetchAndSetToken(token)
-        (setResult, GET, state, null, 'userId')
-        (USER_SERVICE_URL + '/users?login=' + data.username)(null);
-    } else {
-        alert("Failed to login")
-    }
-};

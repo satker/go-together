@@ -1,0 +1,2 @@
+export const EVENT_LIKES_NEW_LIKE = 'EVENT_LIKES_NEW_LIKE';
+export const EVENT_LIKES = 'EVENT_LIKES';

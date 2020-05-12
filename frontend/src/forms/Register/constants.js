@@ -26,4 +26,8 @@ export const PATTERN_TO_CHECK_MAIL = '(?:[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z
 export const PATTERN_TO_CHECK_URL = "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
 export const PATTERN_TO_CHECK_NAME = '^[A-Za-z]*$';
 
-export const FORM_ID = 'Register';
+export const REGISTER_ALL_LANGUAGES = 'REGISTER_ALL_LANGUAGES';
+export const REGISTER_ALL_INTERESTS = 'REGISTER_ALL_INTERESTS';
+export const REGISTER_CHECK_MAIL = 'REGISTER_CHECK_MAIL';
+export const REGISTER_CHECK_USERNAME = 'REGISTER_CHECK_USERNAME';
+export const CREATED_USER = 'CREATED_USER';

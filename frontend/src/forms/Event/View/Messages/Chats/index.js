@@ -3,19 +3,18 @@ import {connect} from "../../../../../App/Context";
 import PropTypes from "prop-types";
 import {keys} from 'lodash'
 import MessageItem from "./MessageItem";
-import {getMessages, postUsersInfo} from "./actions";
+import {getChats, postUsersInfo} from "./actions";
 import {ResponseData} from "../../../../utils/types";
 
 const UserChats = ({
-                       eventUserId, eventId, userMessageId, refreshChats, setRefreshChats, setUserMessageId, userId,
-                       getMessages, messages, postUsersInfo, usersInfo
+                       event, userMessageId, setUserMessageId, userId,
+                       getChats, messages, postUsersInfo, usersInfo
                    }) => {
     const [timer, setTimer] = useState(null);
 
-    const getChats = useCallback(() => {
-        getMessages(eventId);
-        setRefreshChats(false);
-    }, [eventId, setRefreshChats, getMessages]);
+    const getUserChats = useCallback(() => {
+        getChats(event.id);
+    }, [event, getChats]);
 
 
     useEffect(() => {
@@ -41,16 +40,14 @@ const UserChats = ({
     }, [usersInfo, messages, postUsersInfo]);
 
     useEffect(() => {
-        if (userId === eventUserId && !timer) {
-            setTimer(setInterval(getChats, 2000));
+        if (userId === event.author.id && !timer) {
+            //setTimer(setInterval(getChats, 2000));
         }
-    }, [userId, eventUserId, timer, setTimer, getChats]);
+    }, [userId, event, timer, setTimer, getUserChats]);
 
     useEffect(() => {
-        if (userId === eventUserId && refreshChats) {
-            getChats();
-        }
-    }, [eventUserId, refreshChats, getChats, userId]);
+        getUserChats();
+    }, [getUserChats]);
 
     return <div className='container-chats' style={{width: '30%'}}>
         {usersInfo.response.length === keys(messages.response).length &&
@@ -69,16 +66,17 @@ const UserChats = ({
 UserChats.propTypes = {
     eventUserId: PropTypes.string.isRequired,
     userId: PropTypes.string,
-    getMessages: PropTypes.func.isRequired,
+    getChats: PropTypes.func.isRequired,
     postUsersInfo: PropTypes.func.isRequired,
     messages: ResponseData.isRequired,
     usersInfo: ResponseData.isRequired
 };
 
 const mapStateToProps = () => state => ({
-    userId: state.userId,
-    messages: state.components.forms.event.eventView.messages.messages,
-    usersInfo: state.components.forms.event.eventView.messages.usersInfo
+    userId: state.userId.value,
+    messages: state.components.forms.event.eventView.messages.chats,
+    usersInfo: state.components.forms.event.eventView.messages.usersInfo,
+    event: state.components.forms.event.eventView.event.response,
 });
 
-export default connect(mapStateToProps, {getMessages, postUsersInfo})(UserChats);
+export default connect(mapStateToProps, {getChats, postUsersInfo})(UserChats);

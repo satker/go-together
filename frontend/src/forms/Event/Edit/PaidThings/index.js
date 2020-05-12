@@ -5,9 +5,10 @@ import PaidThingItem from "./PaidThingItem";
 import {DEFAULT_PAID_THING} from "../../../utils/constants";
 import {connect} from "../../../../App/Context";
 import {getCashCategories, getPayedThings} from "./actions";
+import {updateEvent} from "../actions";
 
 const PaidThings = ({
-                        event, onChangeEvent, cashCategories, payedThings,
+                        event, updateEvent, cashCategories, payedThings,
                         getCashCategories, getPayedThings
                     }) => {
     useEffect(() => {
@@ -27,14 +28,14 @@ const PaidThings = ({
                 newElement.paidThing = paidThing;
                 newPaidThings.push(newElement);
             }
-            onChangeEvent('paidThings', newPaidThings);
+            updateEvent('paidThings', newPaidThings);
         }
-    }, [event, payedThings, onChangeEvent]);
+    }, [event, payedThings, updateEvent]);
 
     const onChangePaidThing = (arrayIndex) => (value) => {
         let oldArray = [...event.paidThings];
         oldArray[arrayIndex].cashCategory = value;
-        onChangeEvent('paidThings', oldArray);
+        updateEvent('paidThings', oldArray);
     };
 
     return <div className='flex-column'>
@@ -52,7 +53,7 @@ const PaidThings = ({
 
 PaidThings.propTypes = {
     event: Event.isRequired,
-    onChangeEvent: PropTypes.func.isRequired,
+    updateEvent: PropTypes.func.isRequired,
     getCashCategories: PropTypes.func.isRequired,
     getPayedThings: PropTypes.func.isRequired,
     cashCategories: ResponseData.isRequired,
@@ -61,7 +62,8 @@ PaidThings.propTypes = {
 
 const mapStateToProps = () => (state) => ({
     cashCategories: state.components.forms.event.eventEdit.paidThings.cashCategories,
-    payedThings: state.components.forms.event.eventEdit.paidThings.payedThings
+    payedThings: state.components.forms.event.eventEdit.paidThings.payedThings,
+    event: state.components.forms.event.eventEdit.event.response
 });
 
-export default connect(mapStateToProps, {getCashCategories, getPayedThings})(PaidThings);
+export default connect(mapStateToProps, {getCashCategories, getPayedThings, updateEvent})(PaidThings);

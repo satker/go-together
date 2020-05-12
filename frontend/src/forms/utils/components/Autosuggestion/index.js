@@ -7,7 +7,7 @@ import {connect} from "../../../../App/Context";
 import {withStyles} from "@material-ui/core";
 import {getOptions} from "./actions";
 import {ResponseData} from "../../types";
-import {autosuggestion} from './reducers';
+import {AUTOSUGGESTION_OPTIONS_EVENTS, AUTOSUGGESTION_OPTIONS_LOCATIONS} from "./constants";
 
 const StyledAutocomplete = withStyles({
     inputRoot: {
@@ -100,9 +100,9 @@ const mapStateToProps = (autosuggestionOptions) => () => state => ({
 });
 
 export const AutosuggestionEvents = connect(mapStateToProps('events'), {
-    getOptions: getOptions(autosuggestion.options.events)
+    getOptions: getOptions(AUTOSUGGESTION_OPTIONS_EVENTS)
 }, 'AutosuggestionEvents')(IntegrationAutosuggest);
 
 export const AutosuggestionLocations = connect(mapStateToProps('locations'), {
-    getOptions: getOptions(autosuggestion.options.locations)
+    getOptions: getOptions(AUTOSUGGESTION_OPTIONS_LOCATIONS)
 }, 'AutosuggestionLocations')(IntegrationAutosuggest);

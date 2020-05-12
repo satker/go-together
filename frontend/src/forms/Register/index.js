@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {AutosuggestionLocations} from "../utils/components/Autosuggestion";
-import {LOCATION_SERVICE_URL, USER_SERVICE_URL} from '../utils/constants'
-import {registerFetch} from "../../App/utils/api/request";
+import {LOCATION_SERVICE_URL} from '../utils/constants'
 import {connect} from "../../App/Context";
 import {getSrcForImg} from "../utils/utils";
 import {navigate} from 'hookrouter';
@@ -32,18 +31,16 @@ import CustomReference from "../utils/components/CustomReference";
 import MultipleSelectBox from "../utils/components/MultipleSelectBox";
 import Container from "../utils/components/Container/ContainerRow";
 import ItemContainer from "../utils/components/Container/ItemContainer";
-import {getAllInterests, getAllLanguages, getCheckMail, getCheckUserName} from "./actions";
+import {getAllInterests, getAllLanguages, getCheckMail, getCheckUserName, registerUser} from "./actions";
 import CardMedia from "@material-ui/core/CardMedia";
 import ErrorMessage from "../utils/components/LoadableContent/ErrorMessage";
 import LoadableContent from "../utils/components/LoadableContent";
 import LabeledInput from "../utils/LabeledInput";
 import CustomButton from "../utils/components/CustomButton";
 
-const URL = USER_SERVICE_URL + "/users";
-
 const FormRegister = ({
                           allLanguages, allInterests, getAllInterests, getAllLanguages, getCheckMail, checkMail,
-                          checkUserName, getCheckUserName
+                          checkUserName, getCheckUserName, registerUser, registeredUser
                       }) => {
     const [checkedUserName, setCheckedUserName] = useState(EMPTY_LOGIN);
     const [isUserNameReadyForRegister, setIsUserNameReadyForRegister] = useState(false);
@@ -114,11 +111,14 @@ const FormRegister = ({
         body.password = password;
         body.languages = languages.map(lang => ({id: lang.value, name: lang.label}));
         body.interests = interests.map(interest => ({id: interest.value, name: interest.label}));
-        registerFetch(URL, () => '', body,
-            () => alert("Failed to register. Check your data."),
-            moveToMainPage
-        );
+        registerUser(body);
     };
+
+    useEffect(() => {
+        if (registeredUser.id) {
+            moveToMainPage()
+        }
+    }, [registeredUser]);
 
     const moveToMainPage = () => navigate('/');
 
@@ -283,8 +283,9 @@ const mapStateToProps = () => (state) => ({
     allLanguages: state.components.forms.register.allLanguages,
     allInterests: state.components.forms.register.allInterests,
     checkMail: state.components.forms.register.checkMail,
-    checkUserName: state.components.forms.register.checkUserName
+    checkUserName: state.components.forms.register.checkUserName,
+    registeredUser: state.components.forms.register.registeredUser
 });
 
 export default connect(mapStateToProps,
-    {getAllLanguages, getAllInterests, getCheckMail, getCheckUserName})(FormRegister);
+    {getAllLanguages, getAllInterests, getCheckMail, getCheckUserName, registerUser})(FormRegister);

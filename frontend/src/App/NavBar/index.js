@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {fade, makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -13,13 +13,13 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import {connect} from "../../App/Context";
 import FormReference from "../../forms/utils/components/FormReference";
-import {fetchAndSetToken} from "../utils/api/request";
 import FormLogin from "../../forms/Login";
 import {navigate} from 'hookrouter';
-import {CSRF_TOKEN, EVENT_SERVICE_URL, USER_ID} from "../../forms/utils/constants";
+import {EVENT_SERVICE_URL, USER_ID} from "../../forms/utils/constants";
 import {AutosuggestionEvents} from "../../forms/utils/components/Autosuggestion";
 import {set as setCookie} from "js-cookie";
-import {setUserIdAndFetchWithToken} from "./actions";
+import {cleanToken, cleanUserId} from "./actions";
+import {CSRF_TOKEN} from "../Context/constants";
 
 const useStyles = makeStyles(theme => ({
     grow: {
@@ -83,7 +83,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const NavBar = ({userId, setUserIdAndFetchWithToken}) => {
+const NavBar = ({userId, cleanUserId, cleanToken}) => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -92,10 +92,16 @@ const NavBar = ({userId, setUserIdAndFetchWithToken}) => {
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
     const logout = () => {
-        setCookie(CSRF_TOKEN, null);
         setCookie(USER_ID, null);
-        setUserIdAndFetchWithToken(['userId', 'fetchWithToken'], ['', fetchAndSetToken(null)]);
+        cleanUserId();
     };
+
+    useEffect(() => {
+        if (!userId) {
+            setCookie(CSRF_TOKEN, null);
+            cleanToken();
+        }
+    }, [userId, cleanToken]);
 
     const goToEventPage = (event) => navigate('/events/' + event.id);
 
@@ -214,7 +220,7 @@ const NavBar = ({userId, setUserIdAndFetchWithToken}) => {
             <AppBar position="sticky">
                 <Toolbar>
                     <Typography className={classes.title} variant="h6" noWrap>
-                        Events
+                        {userId}
                     </Typography>
                     <div className={classes.search}>
                         <AutosuggestionEvents formId='menu_'
@@ -276,7 +282,7 @@ const NavBar = ({userId, setUserIdAndFetchWithToken}) => {
 };
 
 const mapStateToProps = () => (state) => ({
-    userId: state.userId
+    userId: state.userId.value
 });
 
-export default connect(mapStateToProps, {setUserIdAndFetchWithToken})(NavBar);
+export default connect(mapStateToProps, {cleanUserId, cleanToken})(NavBar);

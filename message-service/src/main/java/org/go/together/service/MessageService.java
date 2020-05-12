@@ -46,8 +46,10 @@ public class MessageService extends CrudService<MessageDto, Message> {
     public Map<UUID, MessageDto> getAllChatsByEvent(UUID eventId) {
         Map<UUID, List<Message>> groupAuthorEventId = messageRepository.findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
                 .collect(Collectors.groupingBy(Message::getAuthorId)).get(eventId).stream()
+                .filter(message -> message.getRecipientId() != null)
                 .collect(Collectors.groupingBy(Message::getRecipientId));
         Map<UUID, List<Message>> groupRecipientId = messageRepository.findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
+                .filter(message -> message.getRecipientId() != null)
                 .collect(Collectors.groupingBy(Message::getRecipientId)).get(eventId).stream()
                 .collect(Collectors.groupingBy(Message::getAuthorId));
 

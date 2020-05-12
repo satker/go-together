@@ -121,7 +121,7 @@ const SearchForm = ({
             setPage(0);
             setFilterObject(newFilterObject);
         }
-    }, [searchObject, setFilterObject, setPage]);
+    }, [filterObject, searchObject, setFilterObject, setPage]);
 
     const onAfterChange = (event, newValue) => {
         onChangeSearchObject('maxCostNight', newValue);

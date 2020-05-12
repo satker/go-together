@@ -7,7 +7,7 @@ import {deleteMeFromList, postMeToList} from "./actions";
 import CustomButton from "../../../utils/components/CustomButton";
 
 const ParticipationButton = ({
-                                 eventId, users, setRefresh, userId, postMeToList,
+                                 eventId, users, getUsers, userId, postMeToList,
                                  deleteMeFromList, meToList, meFromList
                              }) => {
     const [flag, setFlag] = useState(false);
@@ -30,10 +30,10 @@ const ParticipationButton = ({
 
     useEffect(() => {
         if (flag && !(meFromList.inProcess || meToList.inProcess)) {
-            setRefresh(true);
+            getUsers(eventId);
             setFlag(false);
         }
-    }, [flag, meFromList, meToList, setFlag, setRefresh]);
+    }, [flag, meFromList, meToList, setFlag, getUsers, eventId]);
 
     const ifIPartOfEvent = !!users.find(user => user.user.id === userId);
     const actionButton = ifIPartOfEvent ? removeMeFromEvent : addMeToWaitApproveList;
@@ -54,7 +54,7 @@ ParticipationButton.propTypes = {
 };
 
 const mapStateToProps = () => state => ({
-    userId: state.userId,
+    userId: state.userId.value,
     meToList: state.components.forms.event.eventView.participationButton.meToList,
     meFromList: state.components.forms.event.eventView.participationButton.meFromList
 });

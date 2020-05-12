@@ -1,8 +1,8 @@
 import {createEmptyResponse} from "../../../../App/utils/utils";
+import {MESSAGES_CHATS, MESSAGES_MESSAGES_BY_EVENT, MESSAGES_USERS_INFO} from "./constants";
 
 export const messages = {
-    review: createEmptyResponse(false),
-    reviewsByEvent: createEmptyResponse(false, []),
-    messages: createEmptyResponse(false, []),
-    usersInfo: createEmptyResponse(false, [])
+    messagesByEvent: createEmptyResponse(MESSAGES_MESSAGES_BY_EVENT, []),
+    chats: createEmptyResponse(MESSAGES_CHATS, []),
+    usersInfo: createEmptyResponse(MESSAGES_USERS_INFO, [])
 };

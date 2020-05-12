@@ -91,7 +91,7 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents, postLikes}) =
 };
 
 const mapStateToProps = () => state => ({
-    pageSize: state.pageSize,
+    pageSize: state.pageSize.value,
     findEvents: state.components.forms.events.findEvents,
 });
 

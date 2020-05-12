@@ -9,8 +9,9 @@ import ItemContainer from "../../../../utils/components/Container/ItemContainer"
 import moment from "moment";
 import LoadableContent from "../../../../utils/components/LoadableContent";
 import {postLikes} from "../../../../utils/components/Event/EventLikes/actions";
+import {getUsers} from "../../actions";
 
-const CommonInfo = ({event, users, setRefresh, userId, postLikes}) => {
+const CommonInfo = ({event, users, getUsers, userId, postLikes}) => {
     useEffect(() => {
         postLikes([event.id]);
     }, [event, postLikes]);
@@ -26,7 +27,7 @@ const CommonInfo = ({event, users, setRefresh, userId, postLikes}) => {
             {userId && userId !== event.author.id &&
             <LoadableContent loadableData={users}>
                 <ParticipationButton users={users.response}
-                                     setRefresh={setRefresh}
+                                     getUsers={getUsers}
                                      eventId={event.id}/>
             </LoadableContent>
             }
@@ -60,7 +61,9 @@ CommonInfo.propTypes = {
 };
 
 const mapStateToProps = () => state => ({
-    userId: state.userId
+    event: state.components.forms.event.eventView.event.response,
+    users: state.components.forms.event.eventView.users,
+    userId: state.userId.value
 });
 
-export default connect(mapStateToProps, {postLikes})(CommonInfo);
+export default connect(mapStateToProps, {postLikes, getUsers})(CommonInfo);

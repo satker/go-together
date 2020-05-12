@@ -5,25 +5,29 @@ import {ResponseData} from "../../../utils/types";
 import {connect} from "../../../../App/Context";
 import Messages from "../Messages";
 import {postUserStatus} from "./actions";
-import {getUsers} from "../actions";
+import {getStatuses, getUsers} from "../actions";
 import LoadableContent from "../../../utils/components/LoadableContent";
 
-const Users = ({users, statuses, eventId, eventUserId, userId, postUserStatus, userStatus, getUsers}) => {
+const Users = ({event, users, statuses, userId, postUserStatus, userStatus, getUsers, getStatuses}) => {
     const [userMessageId, setUserMessageId] = useState(null);
     const [flag, setFlag] = useState(false);
 
     useEffect(() => {
-        if (eventUserId !== userId) {
-            setUserMessageId(eventUserId);
+        getStatuses(event.id);
+    }, [getStatuses, event]);
+
+    useEffect(() => {
+        if (event.author.id !== userId) {
+            setUserMessageId(event.author.id);
         }
-    }, [setUserMessageId, eventUserId, userId]);
+    }, [setUserMessageId, event, userId]);
 
     useEffect(() => {
         if (flag && userStatus) {
-            getUsers(eventId);
+            getUsers(event.id);
             setFlag(false);
         }
-    }, [getUsers, userStatus, flag, eventId]);
+    }, [getUsers, userStatus, flag, event]);
 
     const updateUserStatus = (status) => (userId) => {
         const approvedUser = [...users.response].filter(user => user.user.id === userId).map(user => {
@@ -37,19 +41,17 @@ const Users = ({users, statuses, eventId, eventUserId, userId, postUserStatus, u
     return <>
         <LoadableContent loadableData={statuses}>
             <LoadableContent loadableData={users}>
-                {userId === eventUserId && <ElementTabs elements={users.response}
-                                                        onClick={updateUserStatus('APPROVED')}
-                                                        onDelete={updateUserStatus('REJECTED')}
-                                                        onAction={setUserMessageId}
-                                                        isUsers={true}
-                                                        elementsFieldTab={"userStatus"}
-                                                        tabs={statuses.response}/>}
+                {userId === event.author.id && <ElementTabs elements={users.response}
+                                                            onClick={updateUserStatus('APPROVED')}
+                                                            onDelete={updateUserStatus('REJECTED')}
+                                                            onAction={setUserMessageId}
+                                                            isUsers={true}
+                                                            elementsFieldTab={"userStatus"}
+                                                            tabs={statuses.response}/>}
             </LoadableContent>
         </LoadableContent>
-        <Messages eventId={eventId}
-                  userMessageId={userMessageId}
-                  setUserMessageId={setUserMessageId}
-                  eventUserId={eventUserId}/>
+        <Messages userMessageId={userMessageId}
+                  setUserMessageId={setUserMessageId}/>
     </>;
 };
 
@@ -60,12 +62,16 @@ Users.propTypes = {
     eventUserId: PropTypes.string.isRequired,
     userId: PropTypes.string,
     postUserStatus: PropTypes.func.isRequired,
-    getUsers: PropTypes.func.isRequired
+    getUsers: PropTypes.func.isRequired,
+    getStatuses: PropTypes.func.isRequired
 };
 
 const mapStateToProps = () => state => ({
-    userId: state.userId,
-    userStatus: state.components.forms.event.eventView.usersParticipation.userStatus
+    userId: state.userId.value,
+    userStatus: state.components.forms.event.eventView.usersParticipation.userStatus,
+    statuses: state.components.forms.event.eventView.statuses,
+    users: state.components.forms.event.eventView.users,
+    event: state.components.forms.event.eventView.event.response
 });
 
-export default connect(mapStateToProps, {postUserStatus, getUsers})(Users);
+export default connect(mapStateToProps, {postUserStatus, getUsers, getStatuses})(Users);

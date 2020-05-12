@@ -1,20 +1,30 @@
 import React, {useState} from "react";
 import {fetchAndSetToken} from "../utils/api/request";
-import {CSRF_TOKEN, USER_ID,} from "../../forms/utils/constants";
+import {USER_ID} from "../../forms/utils/constants";
 import {get as getCookie} from 'js-cookie'
 import {onChange} from "../../forms/utils/utils";
 import {components} from "../../forms/reducers";
-import {DELETE, GET, POST, PUT} from "../utils/api/constants";
+import {createContextValue} from "../utils/utils";
+import {
+    ARRIVAL_DATE,
+    CONTEXT_USER_ID,
+    CSRF_TOKEN,
+    DEPARTURE_DATE,
+    EVENT_ID,
+    FORM_ID,
+    PAGE,
+    PAGE_SIZE
+} from "./constants";
 
 export const context = {
-    userId: getCookie(USER_ID) === 'null' ? null : getCookie(USER_ID),
-    eventId: null,
-    formId: null,
-    fetchWithToken: fetchAndSetToken(getCookie(CSRF_TOKEN)),
-    arrivalDate: null,
-    departureDate: null,
-    page: 0,
-    pageSize: 9,
+    userId: createContextValue(CONTEXT_USER_ID, getCookie(USER_ID) === 'null' ? null : getCookie(USER_ID)),
+    eventId: createContextValue(EVENT_ID),
+    formId: createContextValue(FORM_ID),
+    csrfToken: createContextValue(CSRF_TOKEN, getCookie(CSRF_TOKEN) === 'null' ? null : getCookie(CSRF_TOKEN)),
+    arrivalDate: createContextValue(ARRIVAL_DATE),
+    departureDate: createContextValue(DEPARTURE_DATE),
+    page: createContextValue(PAGE, 0),
+    pageSize: createContextValue(PAGE_SIZE, 9),
     components: {...components}
 };
 
@@ -30,8 +40,7 @@ export const Provider = ({children}) => {
     </Context.Provider>;
 };
 
-export const actionFunction = (state, setState, action, setToContext, methodAction) => (...args) =>
-    action(state, setState)(...args)(state.fetchWithToken(setToContext, methodAction));
+const setToContext = setState => (pathData) => setState(pathData.path, {...pathData.data});
 
 const wrapActions = (actions, state, setState, ACTIONS_ID) => {
     if (!actions) {
@@ -41,39 +50,13 @@ const wrapActions = (actions, state, setState, ACTIONS_ID) => {
 
     const result = {};
     for (const action in actions) {
-        let methodAction;
-        if (action.startsWith(GET.toLowerCase())) {
-            methodAction = GET;
-        } else if (action.startsWith(POST.toLowerCase())) {
-            methodAction = POST;
-        } else if (action.startsWith(PUT.toLowerCase())) {
-            methodAction = PUT;
-        } else if (action.startsWith(DELETE.toLowerCase())) {
-            methodAction = DELETE;
-        } else if (action.startsWith('set')) {
-            if (!(actionsStore[FORM_ID] && actionsStore[FORM_ID][action])) {
-                result[action] = (...args) => actions[action](state, setState)(...args)();
-                actionsStore[FORM_ID] = {
-                    ...actionsStore[FORM_ID],
-                    [action]: result[action]
-                };
-            } else {
-                result[action] = actionsStore[FORM_ID][action];
-            }
-        }
         if (!(actionsStore[FORM_ID] && actionsStore[FORM_ID][action])) {
-            if (methodAction) {
-                const setToContext = (result, path) => {
-                    let statePath = 'components.' + path;
-                    setState(statePath, {...result});
-                };
-                result[action] =
-                    actionFunction(state, setState, actions[action], setToContext, methodAction);
-                actionsStore[FORM_ID] = {
-                    ...actionsStore[FORM_ID],
-                    [action]: result[action]
-                };
-            }
+            result[action] = (...args) =>
+                actions[action](...args)(fetchAndSetToken(state.csrfToken.value)(setToContext(setState)), state);
+            actionsStore[FORM_ID] = {
+                ...actionsStore[FORM_ID],
+                [action]: result[action]
+            };
         } else {
             result[action] = actionsStore[FORM_ID][action];
         }

@@ -1,6 +1,12 @@
 import {EVENT_SERVICE_URL} from "../../../utils/constants";
-import {usersParticipation} from "./reducers";
+import {USER_PARTICIPATION_USERS_STATUS} from "./constants";
+import {POST} from "../../../../App/utils/api/constants";
 
-export const postUserStatus = () => (approvedUser) => (dispatch) => {
-    dispatch(EVENT_SERVICE_URL + '/events/users', approvedUser)(usersParticipation.userStatus);
+export const postUserStatus = (approvedUser) => (dispatch) => {
+    dispatch({
+        type: USER_PARTICIPATION_USERS_STATUS,
+        url: EVENT_SERVICE_URL + '/events/users',
+        method: POST,
+        data: approvedUser
+    });
 };

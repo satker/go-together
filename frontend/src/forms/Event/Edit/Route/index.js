@@ -1,26 +1,27 @@
 import React, {useState} from 'react';
 import ObjectGeoLocation from "../../../utils/components/ObjectGeoLocation";
-import {Event} from "../../../utils/types";
 import PropTypes from "prop-types";
 import {onChange} from "../../../utils/utils";
 import {DEFAULT_COUNTRY, DEFAULT_LOCATION, DEFAULT_ROUTE} from "../../../utils/constants";
+import {updateEvent} from "../actions";
+import {connect} from "../../../../App/Context";
 
-const Route = ({event, onChangeEvent}) => {
-    const [routeNumber, setRouteNumber] = useState(event.route.length || 1);
+const Route = ({eventRoute, updateEvent}) => {
+    const [routeNumber, setRouteNumber] = useState(eventRoute.length || 1);
 
     const onChangeLocation = (updatedRouteNumber, path, value) => {
-        const newArray = [...event.route].map(route => {
+        const newArray = [...eventRoute].map(route => {
             if (route.routeNumber === updatedRouteNumber) {
                 onChange(route, newRoute => route = newRoute)(path, value);
                 return route;
             }
             return route;
         });
-        onChangeEvent('route', newArray);
+        updateEvent('route', newArray);
     };
 
     const onDelete = (deletedRouteNumber) => {
-        const newArray = [...event.route]
+        const newArray = [...eventRoute]
             .filter(route => route.routeNumber !== deletedRouteNumber)
             .map(route => {
                 if (route.routeNumber > deletedRouteNumber) {
@@ -28,19 +29,18 @@ const Route = ({event, onChangeEvent}) => {
                 }
                 return route;
             });
-        onChangeEvent('route', newArray);
+        updateEvent('route', newArray);
         setRouteNumber(routeNumber - 1);
     };
 
-    const addLocation = (lat, lng) => {
-        const newElement = {...DEFAULT_ROUTE};
-        newElement.latitude = lat;
-        newElement.longitude = lng;
-        newElement.routeNumber = routeNumber;
+    const addLocation = (paths, values) => {
+        let newElement = {...DEFAULT_ROUTE};
         newElement.location = {...DEFAULT_LOCATION};
         newElement.location.country = {...DEFAULT_COUNTRY};
+        newElement.routeNumber = routeNumber;
+        onChange(newElement, result => newElement = result)(paths, values);
         setRouteNumber(routeNumber + 1);
-        onChangeEvent('route', [...event.route, newElement])
+        updateEvent('route', [...eventRoute, newElement])
     };
 
     return <>
@@ -49,7 +49,7 @@ const Route = ({event, onChangeEvent}) => {
             onAdd={addLocation}
             onDelete={onDelete}
             editable={true}
-            routes={event.route}
+            routes={eventRoute}
             onChange={onChangeLocation}
             height={400}
         />
@@ -58,8 +58,12 @@ const Route = ({event, onChangeEvent}) => {
 };
 
 Route.propTypes = {
-    event: Event.isRequired,
-    onChangeEvent: PropTypes.func.isRequired
+    eventRoute: PropTypes.array,
+    updateEvent: PropTypes.func.isRequired
 };
 
-export default Route;
+const mapStateToProps = () => (state) => ({
+    eventRoute: state.components.forms.event.eventEdit.event.response.route
+});
+
+export default connect(mapStateToProps, {updateEvent})(Route);
