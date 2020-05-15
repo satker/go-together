@@ -220,7 +220,7 @@ const NavBar = ({userId, cleanUserId, cleanToken}) => {
             <AppBar position="sticky">
                 <Toolbar>
                     <Typography className={classes.title} variant="h6" noWrap>
-                        {userId}
+                        Events
                     </Typography>
                     <div className={classes.search}>
                         <AutosuggestionEvents formId='menu_'
