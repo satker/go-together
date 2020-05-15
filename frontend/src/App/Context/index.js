@@ -46,7 +46,7 @@ const wrapActions = (actions, state, setState, ACTIONS_ID) => {
     if (!actions) {
         return {};
     }
-    const FORM_ID = ACTIONS_ID || 'actions';
+    const FORM_ID = ACTIONS_ID || state.formId.value;
 
     const result = {};
     for (const action in actions) {
@@ -68,7 +68,7 @@ export const connect = (mapStateToProps, actions, ACTIONS_ID) => (Component) => 
     <Context.Consumer>
         {([state, setState]) =>
             <Component {...props}
-                       {...(mapStateToProps ? mapStateToProps(ACTIONS_ID)(state) : {})}
+                       {...(mapStateToProps ? mapStateToProps(ACTIONS_ID || state.formId.value)(state) : {})}
                        {...wrapActions(actions, state, setState, ACTIONS_ID)}
             />}
     </Context.Consumer>;
