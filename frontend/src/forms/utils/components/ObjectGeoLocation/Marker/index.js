@@ -1,6 +1,6 @@
 import React from 'react';
-import './Marker.css';
 import PropTypes from "prop-types";
+import './style.css';
 
 const Marker = ({color, name}) => {
     return (

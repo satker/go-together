@@ -4,30 +4,41 @@ import PropTypes from 'prop-types';
 
 const LabeledInput = ({
                           value, onChange, isError, errorText, id, label,
-                          defaultValue, multiline, rowsMax, type
+                          defaultValue, multiline, rowsMax, type, inputRef
                       }) => {
     const onChangeValue = (evt) => {
         onChange(evt.target.value)
     };
 
+    let textFieldProps;
+
+    if (inputRef) {
+        textFieldProps = {
+            inputRef: inputRef
+        }
+    } else {
+        textFieldProps = {
+            type,
+            multiline,
+            error: isError,
+            rowsMax,
+            helperText: errorText,
+            value,
+            defaultValue,
+            onChange: onChangeValue,
+        }
+    }
+
     return <TextField style={{background: 'white'}}
-                      type={type}
-                      multiline={multiline}
-                      error={isError}
-                      id={id}
-                      rowsMax={rowsMax}
                       label={label}
-                      helperText={errorText}
                       variant="outlined"
-                      value={value}
-                      defaultValue={defaultValue}
-        onChange={onChangeValue}
-    />
+                      id={id}
+                      {...textFieldProps}/>
 };
 
 LabeledInput.propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    onChange: PropTypes.func.isRequired,
+    onChange: PropTypes.func,
     isError: PropTypes.bool,
     errorText: PropTypes.string,
     id: PropTypes.string.isRequired,
@@ -39,7 +50,8 @@ LabeledInput.propTypes = {
 };
 
 LabeledInput.defaultProps = {
-    type: 'text'
+    type: 'text',
+    onChange: () => null
 };
 
 export default LabeledInput;

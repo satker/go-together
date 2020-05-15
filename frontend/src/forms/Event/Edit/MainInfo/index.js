@@ -7,10 +7,10 @@ import Photos from "./Photos";
 
 const MainInfo = () => {
     return <ContainerColumn>
-        <LeftContainer style={{width: '60%'}}>
+        <LeftContainer>
             <CommonInfo/>
         </LeftContainer>
-        <RightContainer style={{width: '40%'}}>
+        <RightContainer>
             <Photos/>
         </RightContainer>
     </ContainerColumn>;

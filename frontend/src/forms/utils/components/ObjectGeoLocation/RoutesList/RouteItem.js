@@ -1,8 +1,8 @@
 import React from 'react';
-import {CoordinateCenter, Route} from '../../types'
+import {CoordinateCenter, Route} from '../../../types'
 import PropTypes from "prop-types";
-import Delete from "../Icon/Delete";
-import ContainerColumn from "../Container/ContainerColumn";
+import Delete from "../../Icon/Delete";
+import ContainerColumn from "../../Container/ContainerColumn";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";

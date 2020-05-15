@@ -1,18 +1,16 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import PropTypes from "prop-types";
 import GoogleMapReact from 'google-map-react';
 
 import "./style_place.css";
 import Marker from "./Marker";
 import {getAddress, getCity, getCountry, getState} from "./utils";
-import RouteItem from "./RouteItem";
-import AddressFields from "./AddressFields";
+import AddressField from "./AddressField";
 import ContainerColumn from "../Container/ContainerColumn";
 import LeftContainer from "../Container/LeftContainer";
 import RightContainer from "../Container/RightContainer";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import List from "@material-ui/core/List";
 import {GOOGLE_API_KEY, request} from "./GoogleMapsApiRequest";
+import RoutesList from "./RoutesList";
 
 const getMapOptions = () => {
     return {
@@ -83,32 +81,33 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
         }
         if (google) {
             setGoogleMap(google);
-            handlePolyline(google);
         }
     };
 
-    const handlePolyline = (google) => {
-        let newPolyline = polyline;
-        const newRoutes = getSortedRoutes().map(route => ({lat: route.latitude, lng: route.longitude}));
-        if (newPolyline) {
-            newPolyline.setMap(null);
-            newPolyline.setPath(newRoutes);
-            newPolyline.setMap(google.map);
-        } else {
-            newPolyline = new google.maps.Polyline({
-                path: [],
-                geodesic: true,
-                strokeColor: '#33BD4E',
-                strokeOpacity: 1,
-                strokeWeight: 5
-            });
-            newPolyline.setMap(google.map);
-            setPolyline(newPolyline);
-        }
-    };
+    const getSortedRoutes = useCallback(() => routes
+        .sort((route1, route2) => route1.routeNumber > route2.routeNumber ? 1 : -1), [routes]);
 
-    const getSortedRoutes = () => routes
-        .sort((route1, route2) => route1.routeNumber > route2.routeNumber ? 1 : -1);
+    useEffect(() => {
+        if (googleMap) {
+            let newPolyline = polyline;
+            const newRoutes = getSortedRoutes().map(route => ({lat: route.latitude, lng: route.longitude}));
+            if (newPolyline) {
+                newPolyline.setMap(null);
+                newPolyline.setPath(newRoutes);
+                newPolyline.setMap(googleMap.map);
+            } else {
+                newPolyline = new googleMap.maps.Polyline({
+                    path: [],
+                    geodesic: true,
+                    strokeColor: '#33BD4E',
+                    strokeOpacity: 1,
+                    strokeWeight: 5
+                });
+                newPolyline.setMap(googleMap.map);
+                setPolyline(newPolyline);
+            }
+        }
+    }, [getSortedRoutes, googleMap, polyline]);
 
     const getRoutes = () => getSortedRoutes()
         .map(route => <Marker
@@ -138,7 +137,8 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
     };
 
     return <>
-        {editable && googleMap && <AddressFields google={googleMap} setCenter={setCenter}/>}
+        {editable && googleMap && <AddressField google={googleMap}
+                                                setCenter={setCenter}/>}
         <ContainerColumn>
             <LeftContainer style={{width: '69%', height: 400}}>
                 <GoogleMapReact bootstrapURLKeys={{key: GOOGLE_API_KEY}}
@@ -155,20 +155,15 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
                                 onChildClick={editable ? endDrag : () => null}
                                 onClick={editable ? onAddMarker : () => null}
                 >
-                    {googleMap && handlePolyline(googleMap)}
                     {getRoutes()}
                 </GoogleMapReact>
             </LeftContainer>
-            <RightContainer isBordered={true} style={{width: '30%', marginLeft: 0}}>
-                <List subheader={<ListSubheader>Routes</ListSubheader>}>
-                    {getSortedRoutes().map(route => <RouteItem key={route.routeNumber}
-                                                               onDelete={editable && ((routeNumber) => {
-                                                                   onDelete(routeNumber);
-                                                               })}
-                                                               route={route}
-                                                               center={center}
-                                                               setCenter={setCenter}/>)}
-                </List>
+            <RightContainer isBordered={true} style={{width: '30%'}}>
+                <RoutesList setCenter={setCenter}
+                            onDelete={onDelete}
+                            center={center}
+                            routes={getSortedRoutes()}
+                            editable={editable}/>
             </RightContainer>
         </ContainerColumn>
     </>;

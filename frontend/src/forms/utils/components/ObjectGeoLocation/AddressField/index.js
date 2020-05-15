@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import PropTypes from "prop-types";
+import LabeledInput from "../../../LabeledInput";
 
-const AddressFields = ({google, setCenter}) => {
-    const [autocompleteInput] = useState(React.createRef);
+const AddressField = ({google, setCenter}) => {
+    const autocompleteInput = useRef();
 
     useEffect(() => {
         const options = {
@@ -19,23 +20,15 @@ const AddressFields = ({google, setCenter}) => {
         });
     }, [autocompleteInput, google, setCenter]);
 
-    return (
-        <div className="form-group">
-            <label htmlFor="">Country</label>
-            <input type="text"
-                   id='autocomplete'
-                   name="autocomplete"
-                //onChange={evt => handlePlaceSelect(evt.target.value)}
-                   className="form-control"
-                   ref={autocompleteInput}
-            />
-        </div>
-    );
+    return <LabeledInput
+        id='autocomplete'
+        inputRef={autocompleteInput}
+        label='Location'/>;
 };
 
-AddressFields.propTypes = {
+AddressField.propTypes = {
     google: PropTypes.object.isRequired,
     setCenter: PropTypes.func.isRequired
 };
 
-export default AddressFields;
+export default AddressField;

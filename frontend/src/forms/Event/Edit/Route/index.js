@@ -5,6 +5,8 @@ import {onChange} from "../../../utils/utils";
 import {DEFAULT_COUNTRY, DEFAULT_LOCATION, DEFAULT_ROUTE} from "../../../utils/constants";
 import {updateEvent} from "../actions";
 import {connect} from "../../../../App/Context";
+import Container from "../../../utils/components/Container/ContainerRow";
+import ItemContainer from "../../../utils/components/Container/ItemContainer";
 
 const Route = ({eventRoute, updateEvent}) => {
     const [routeNumber, setRouteNumber] = useState(eventRoute.length || 1);
@@ -34,27 +36,31 @@ const Route = ({eventRoute, updateEvent}) => {
     };
 
     const addLocation = (paths, values) => {
+        const nextRouteNumber = eventRoute.length + 1;
         let newElement = {...DEFAULT_ROUTE};
         newElement.location = {...DEFAULT_LOCATION};
         newElement.location.country = {...DEFAULT_COUNTRY};
-        newElement.routeNumber = routeNumber;
+        newElement.routeNumber = nextRouteNumber;
         onChange(newElement, result => newElement = result)(paths, values);
-        setRouteNumber(routeNumber + 1);
+        setRouteNumber(nextRouteNumber);
         updateEvent('route', [...eventRoute, newElement])
     };
 
-    return <>
-        Add {routeNumber} route point (left click to add location):
-        <ObjectGeoLocation
-            onAdd={addLocation}
-            onDelete={onDelete}
-            editable={true}
-            routes={eventRoute}
-            onChange={onChangeLocation}
-            height={400}
-        />
-
-    </>;
+    return <Container>
+        <ItemContainer>
+            Add {routeNumber} route point (left click to add location):
+        </ItemContainer>
+        <ItemContainer>
+            <ObjectGeoLocation
+                onAdd={addLocation}
+                onDelete={onDelete}
+                editable={true}
+                routes={eventRoute}
+                onChange={onChangeLocation}
+                height={400}
+            />
+        </ItemContainer>
+    </Container>;
 };
 
 Route.propTypes = {
