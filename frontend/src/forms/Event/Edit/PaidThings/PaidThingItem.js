@@ -2,15 +2,15 @@ import React from 'react';
 import {CashPaidThing} from "../../../utils/types";
 import PropTypes from "prop-types";
 import SelectBox from "../../../utils/components/SelectBox";
-import ContainerColumn from "../../../utils/components/Container/ContainerColumn";
+import ItemContainer from "../../../utils/components/Container/ItemContainer";
 
 const PaidThingItem = ({cashCategories, paidThing, onChange}) => {
-    return <ContainerColumn style={{width: '300px'}}>
-        {paidThing.paidThing.name} => <SelectBox onChange={onChange}
-                                                 labelText={'cashCategory'}
-                                                 value={paidThing.cashCategory}
-                                                 items={cashCategories}/>
-    </ContainerColumn>
+    return <ItemContainer>
+        <SelectBox onChange={onChange}
+                   labelText={paidThing.paidThing.name}
+                   value={paidThing.cashCategory}
+                   items={cashCategories}/>
+    </ItemContainer>
 };
 
 PaidThingItem.propTypes = {

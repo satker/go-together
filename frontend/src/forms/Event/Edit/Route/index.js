@@ -50,7 +50,6 @@ const Route = ({eventRoute, updateEvent}) => {
         <ItemContainer>
             Add {routeNumber} route point (left click to add location):
         </ItemContainer>
-        <ItemContainer>
             <ObjectGeoLocation
                 onAdd={addLocation}
                 onDelete={onDelete}
@@ -59,7 +58,6 @@ const Route = ({eventRoute, updateEvent}) => {
                 onChange={onChangeLocation}
                 height={400}
             />
-        </ItemContainer>
     </Container>;
 };
 

@@ -50,7 +50,7 @@ const IntegrationAutosuggest = ({formId, setResult, placeholder, url, urlParam, 
     return (
         <StyledAutocomplete
             id={formId + "autocomplete"}
-            style={{width: 400}}
+            fullWidth
             open={open}
             onOpen={() => {
                 setOpen(true);

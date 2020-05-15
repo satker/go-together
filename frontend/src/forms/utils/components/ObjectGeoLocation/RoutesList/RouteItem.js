@@ -10,7 +10,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 const RouteItem = ({center, setCenter, route, onDelete}) => {
     return <ContainerColumn>
         <ListItem selected={center.lat === route.latitude && center.lng === route.longitude}
-                  onClick={() => setCenter([route.latitude, route.longitude])}>
+                  onClick={() => setCenter({lat: route.latitude, lng: route.longitude})}>
             <ListItemIcon>
                 {route.routeNumber}
             </ListItemIcon>
@@ -24,7 +24,7 @@ const RouteItem = ({center, setCenter, route, onDelete}) => {
 };
 
 RouteItem.propTypes = {
-    center: PropTypes.oneOfType([CoordinateCenter, PropTypes.arrayOf(PropTypes.number)]),
+    center: CoordinateCenter,
     route: Route.isRequired,
     setCenter: PropTypes.func.isRequired,
     onDelete: PropTypes.oneOfType([PropTypes.func, PropTypes.bool])

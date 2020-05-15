@@ -2,6 +2,7 @@ import React from "react";
 import RouteItem from "./RouteItem";
 import List from "@material-ui/core/List";
 import PropTypes from "prop-types";
+import {CoordinateCenter} from "../../../types";
 
 const RoutesList = ({routes, editable, onDelete, center, setCenter}) => {
     return <List style={{overflow: 'auto'}}>
@@ -19,7 +20,7 @@ RoutesList.propTypes = {
     routes: PropTypes.array,
     editable: PropTypes.bool,
     onDelete: PropTypes.func,
-    center: PropTypes.arrayOf(PropTypes.number),
+    center: CoordinateCenter,
     setCenter: PropTypes.func.isRequired
 };
 

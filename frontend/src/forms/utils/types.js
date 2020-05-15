@@ -17,6 +17,8 @@ export const SimpleObject = PropTypes.exact({
 });
 
 export const ResponseData = PropTypes.exact({
+    type: PropTypes.string.isRequired,
+    headers: PropTypes.string,
     inProcess: PropTypes.bool.isRequired,
     response: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
     error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool])

@@ -16,7 +16,7 @@ const AddressField = ({google, setCenter}) => {
 
         autocompleteCustom.addListener('place_changed', () => {
             const addressObject = autocompleteCustom.getPlace();
-            setCenter([addressObject.geometry.location.lat(), addressObject.geometry.location.lng()]);
+            setCenter({lat: addressObject.geometry.location.lat(), lng: addressObject.geometry.location.lng()});
         });
     }, [autocompleteInput, google, setCenter]);
 

@@ -11,23 +11,23 @@ import LeftContainer from "../Container/LeftContainer";
 import RightContainer from "../Container/RightContainer";
 import {GOOGLE_API_KEY, request} from "./GoogleMapsApiRequest";
 import RoutesList from "./RoutesList";
+import Container from "../Container/ContainerRow";
+import ItemContainer from "../Container/ItemContainer";
 
-const getMapOptions = () => {
-    return {
-        disableDefaultUI: true,
-        mapTypeControl: true,
-        streetViewControl: true,
-        styles: [{featureType: 'poi', elementType: 'labels', stylers: [{visibility: 'on'}]}],
-    };
+const getMapOptions = {
+    disableDefaultUI: true,
+    mapTypeControl: true,
+    streetViewControl: true,
+    styles: [{featureType: 'poi', elementType: 'labels', stylers: [{visibility: 'on'}]}],
 };
 
 const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd, height}) => {
-    const [center, setCenter] = useState([18.5204, 73.8567]);
+    const [center, setCenter] = useState({lat: 18.5204, lng: 73.8567});
     const [isDraggable, setIsDraggable] = useState(true);
     const [zoomValue, setZoomValue] = useState(zoom || 9);
     const [currentKey, setCurrentKey] = useState(0);
-    const [currentLat, setCurrentLat] = useState(center[0]);
-    const [currentLng, setCurrentLng] = useState(center[1]);
+    const [currentLat, setCurrentLat] = useState(center.lat);
+    const [currentLng, setCurrentLng] = useState(center.lng);
     const [googleMap, setGoogleMap] = useState(null);
     const [polyline, setPolyline] = useState(null);
 
@@ -136,9 +136,11 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd, h
         });
     };
 
-    return <>
-        {editable && googleMap && <AddressField google={googleMap}
-                                                setCenter={setCenter}/>}
+    return <Container>
+        <ItemContainer>
+            {editable && googleMap && <AddressField google={googleMap}
+                                                    setCenter={setCenter}/>}
+        </ItemContainer>
         <ContainerColumn>
             <LeftContainer style={{width: '69%', height}}>
                 <GoogleMapReact bootstrapURLKeys={{key: GOOGLE_API_KEY}}
@@ -166,7 +168,7 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd, h
                             editable={editable}/>
             </RightContainer>
         </ContainerColumn>
-    </>;
+    </Container>;
 };
 
 ObjectGeoLocation.props = {

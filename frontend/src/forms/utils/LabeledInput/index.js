@@ -31,6 +31,7 @@ const LabeledInput = ({
 
     return <TextField style={{background: 'white'}}
                       label={label}
+                      fullWidth
                       variant="outlined"
                       id={id}
                       {...textFieldProps}/>

@@ -1,9 +1,13 @@
 import React from "react";
 import './style.css';
 import PropTypes from "prop-types";
+import {Box} from "@material-ui/core";
 
 const LeftContainer = ({children, style}) => {
-    return <div className='container-main-info-item' style={style}>{children}</div>
+    return <Box display="flex"
+                alignContent="flex-start"
+                flexDirection="column"
+                style={style}>{children}</Box>
 };
 
 LeftContainer.propTypes = {
