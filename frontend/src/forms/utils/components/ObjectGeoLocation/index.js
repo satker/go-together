@@ -21,7 +21,7 @@ const getMapOptions = () => {
     };
 };
 
-const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) => {
+const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd, height}) => {
     const [center, setCenter] = useState([18.5204, 73.8567]);
     const [isDraggable, setIsDraggable] = useState(true);
     const [zoomValue, setZoomValue] = useState(zoom || 9);
@@ -140,7 +140,7 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
         {editable && googleMap && <AddressField google={googleMap}
                                                 setCenter={setCenter}/>}
         <ContainerColumn>
-            <LeftContainer style={{width: '69%', height: 400}}>
+            <LeftContainer style={{width: '69%', height}}>
                 <GoogleMapReact bootstrapURLKeys={{key: GOOGLE_API_KEY}}
                                 yesIWantToUseGoogleMapApiInternals
                                 onGoogleApiLoaded={handleGoogleMapApi}
@@ -158,7 +158,7 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
                     {getRoutes()}
                 </GoogleMapReact>
             </LeftContainer>
-            <RightContainer isBordered={true} style={{width: '30%'}}>
+            <RightContainer isBordered={true} style={{width: '30%', height}}>
                 <RoutesList setCenter={setCenter}
                             onDelete={onDelete}
                             center={center}
@@ -175,7 +175,12 @@ ObjectGeoLocation.props = {
     onChange: PropTypes.func,
     zoom: PropTypes.number,
     onDelete: PropTypes.func,
-    onAdd: PropTypes.func
+    onAdd: PropTypes.func,
+    height: PropTypes.number
+};
+
+ObjectGeoLocation.defaultProps = {
+    height: 400
 };
 
 export default ObjectGeoLocation;

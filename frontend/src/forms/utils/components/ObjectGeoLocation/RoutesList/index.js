@@ -1,11 +1,10 @@
 import React from "react";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import RouteItem from "./RouteItem";
 import List from "@material-ui/core/List";
 import PropTypes from "prop-types";
 
 const RoutesList = ({routes, editable, onDelete, center, setCenter}) => {
-    return <List subheader={<ListSubheader>Routes</ListSubheader>}>
+    return <List style={{overflow: 'auto'}}>
         {routes.map(route => <RouteItem key={route.routeNumber}
                                         onDelete={editable && ((routeNumber) => {
                                             onDelete(routeNumber);
