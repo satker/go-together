@@ -9,10 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.go.together.dto.MessageType.TO_USER;
 
@@ -68,11 +65,5 @@ public class MessageRepository extends CustomRepository<Message> {
                         .and()
                         .group(whereUserIdPresented))
                 .fetchAll();
-    }
-
-    public Map<UUID, List<Message>> findLastMessagesForUserId(UUID myId) {
-        Collection<Message> messages = createQuery().groupingByLastRow("authorId", "date",
-                createWhere().condition("messageType", SqlOperator.EQUAL, TO_USER)).fetchAll();
-        return messages.stream().collect(Collectors.groupingBy(Message::getRecipientId));
     }
 }

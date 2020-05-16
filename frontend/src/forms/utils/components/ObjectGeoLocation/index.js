@@ -5,7 +5,7 @@ import GoogleMapReact from 'google-map-react';
 import "./style_place.css";
 import Marker from "./Marker";
 import {getAddress, getCity, getCountry, getState} from "./utils";
-import AddressField from "./AddressField";
+import AutocompleteLocation from "../AutocompleteLocation";
 import ContainerColumn from "../Container/ContainerColumn";
 import LeftContainer from "../Container/LeftContainer";
 import RightContainer from "../Container/RightContainer";
@@ -138,8 +138,8 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd, h
 
     return <Container>
         <ItemContainer>
-            {editable && googleMap && <AddressField google={googleMap}
-                                                    setCenter={setCenter}/>}
+            {editable && googleMap && <AutocompleteLocation google={googleMap}
+                                                            setCenter={setCenter}/>}
         </ItemContainer>
         <ContainerColumn>
             <LeftContainer style={{width: '69%', height}}>

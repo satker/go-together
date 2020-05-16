@@ -1,22 +1,22 @@
 import React, {useEffect} from 'react';
 import PropTypes from "prop-types";
 import 'react-dates/initialize';
-import {AutosuggestionLocations} from "../utils/components/Autosuggestion";
+import {AutosuggestionLocations} from "../../utils/components/Autosuggestion";
 import 'react-dates/lib/css/_datepicker.css';
-import CheckInOutDates from '../utils/components/CheckInOutDates'
-import {FORM_DTO, LOCATION_SERVICE_URL, SEARCH_OBJECT_DEFAULT} from '../utils/constants'
-import {connect} from "../../App/Context";
+import CheckInOutDates from '../../utils/components/CheckInOutDates'
+import {FORM_DTO, LOCATION_SERVICE_URL, SEARCH_OBJECT_DEFAULT} from '../../utils/constants'
+import {connect} from "../../../App/Context";
 import {isEqual} from "lodash";
-import {SearchObject} from "../utils/types";
-import {setArrivalDate, setDepartureDate, setPage} from "./actions";
+import {SearchObject} from "../../utils/types";
+import {setArrivalDate, setDepartureDate, setPage} from "../actions";
 import Slider from "@material-ui/core/Slider";
-import CustomButton from "../utils/components/CustomButton";
+import CustomButton from "../../utils/components/CustomButton";
 
-const SearchForm = ({
-                        searchObject, onChangeSearchObject, filterObject,
-                        setFilterObject, onClearSearchObject,
-                        setPage, setArrivalDate, setDepartureDate
-                    }) => {
+const Filter = ({
+                    searchObject, onChangeSearchObject, filterObject,
+                    setFilterObject, onClearSearchObject,
+                    setPage, setArrivalDate, setDepartureDate
+                }) => {
 
     useEffect(() => {
         const checkDates = (searchObject.arrivalDate && !searchObject.departureDate) ||
@@ -162,7 +162,7 @@ const SearchForm = ({
     </div>
 };
 
-SearchForm.propTypes = {
+Filter.propTypes = {
     searchObject: SearchObject.isRequired,
     onChangeSearchObject: PropTypes.func.isRequired,
     onClearSearchObject: PropTypes.func.isRequired,
@@ -173,4 +173,4 @@ SearchForm.propTypes = {
 };
 
 export default connect(null,
-    {setPage, setArrivalDate, setDepartureDate})(SearchForm);
+    {setPage, setArrivalDate, setDepartureDate})(Filter);

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import LabeledInput from "../../../../utils/LabeledInput";
+import LabeledInput from "../../../../utils/components/LabeledInput";
 import {connect} from "../../../../../App/Context";
 import PropTypes from "prop-types";
 import {Review} from "../../../../utils/types";

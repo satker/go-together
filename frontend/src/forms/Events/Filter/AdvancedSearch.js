@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {connect} from "../../App/Context";
+import {connect} from "../../../App/Context";
 import * as PropTypes from "prop-types";
-import {SearchObject} from "../utils/types";
-import {getApartmentTypes, getLanguages, getParameters} from "./actions";
+import {SearchObject} from "../../utils/types";
+import {getApartmentTypes, getLanguages, getParameters} from "../actions";
 
 const AdvancedSearch = ({
                             focus, setFocus, searchObject, onChangeSearchObject,

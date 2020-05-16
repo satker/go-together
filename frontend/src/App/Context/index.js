@@ -1,8 +1,7 @@
-import React, {useState} from "react";
+import React from "react";
 import {fetchAndSetToken} from "../utils/api/request";
 import {USER_ID} from "../../forms/utils/constants";
 import {get as getCookie} from 'js-cookie'
-import {onChange} from "../../forms/utils/utils";
 import {components} from "../../forms/reducers";
 import {createContextValue} from "../utils/utils";
 import {
@@ -24,21 +23,13 @@ export const context = {
     arrivalDate: createContextValue(ARRIVAL_DATE),
     departureDate: createContextValue(DEPARTURE_DATE),
     page: createContextValue(PAGE, 0),
-    pageSize: createContextValue(PAGE_SIZE, 9),
+    pageSize: createContextValue(PAGE_SIZE, 2),
     components: {...components}
 };
 
 export const Context = React.createContext({});
 
 const actionsStore = {};
-
-export const Provider = ({children}) => {
-    const [state, setState] = useState({...context});
-
-    return <Context.Provider value={[state, onChange(state, setState)]}>
-        {children}
-    </Context.Provider>;
-};
 
 const setToContext = setState => (pathData) => setState(pathData.path, {...pathData.data});
 

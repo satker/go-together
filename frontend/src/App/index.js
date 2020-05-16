@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import './index.css';
 
 import {useRedirect, useRoutes} from 'hookrouter';
 import Events from "../forms/Events";
@@ -38,7 +37,7 @@ const App = () => {
 
     return state.formId.value && <Context.Provider value={[state, onChange(state, setState)]}>
         <NavBar/>
-        <div className="Content">{route}</div>
+        {route}
     </Context.Provider>;
 };
 

@@ -12,19 +12,19 @@ import java.util.UUID;
 @Repository
 public class LocationRepository extends CustomRepository<Location> {
     @Transactional
-    public Collection<Location> findLocationByName(String location, int start, int end) {
+    public Collection<Location> findLocationByName(String location, int start, int pageSize) {
         return createQuery()
                 .where(createWhere().condition("name", SqlOperator.LIKE, location.toLowerCase()))
-                .fetchAllPageable(start, end);
+                .fetchAllPageable(start, pageSize);
     }
 
     @Transactional
     public Collection<Location> findLocationByNameAndByCountryId(String location, Collection<UUID> countryIds,
-                                                                 int start, int end) {
+                                                                 int start, int pageSize) {
         return createQuery()
                 .where(createWhere().condition("name", SqlOperator.LIKE, location.toLowerCase())
                         .and().condition("country_id", SqlOperator.IN, countryIds))
-                .fetchAllPageable(start, end);
+                .fetchAllPageable(start, pageSize);
     }
 }
 

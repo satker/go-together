@@ -1,8 +1,8 @@
 import React, {useEffect, useRef} from 'react';
 import PropTypes from "prop-types";
-import LabeledInput from "../../../LabeledInput";
+import LabeledInput from "../LabeledInput";
 
-const AddressField = ({google, setCenter}) => {
+const AutocompleteLocation = ({google, setCenter}) => {
     const autocompleteInput = useRef();
 
     useEffect(() => {
@@ -26,9 +26,9 @@ const AddressField = ({google, setCenter}) => {
         label='Location'/>;
 };
 
-AddressField.propTypes = {
+AutocompleteLocation.propTypes = {
     google: PropTypes.object.isRequired,
     setCenter: PropTypes.func.isRequired
 };
 
-export default AddressField;
+export default AutocompleteLocation;
