@@ -20,7 +20,7 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
     public CustomSqlBuilder(Class<E> clazz, EntityManager entityManager) {
         joinTables = new HashMap<>();
         String entityLink = getEntityLink(clazz);
-        query = new StringBuilder("FROM " + clazz.getSimpleName() + " " + entityLink);
+        query = new StringBuilder("select distinct " + entityLink + " FROM " + clazz.getSimpleName() + " " + entityLink);
         Arrays.stream(clazz.getDeclaredFields())
                 .filter(field1 -> field1.getAnnotation(ElementCollection.class) != null)
                 .forEach(field1 -> {
@@ -31,6 +31,7 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
                             .append(generatedTableName);
                     joinTables.put(field1.getName(), generatedTableName);
                 });
+        //query.append(" FETCH ").append(entityLink).append(".id ");
         this.entityManager = entityManager;
         this.clazz = clazz;
     }
@@ -75,7 +76,8 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
     }
 
     public Number getCountRows() {
-        return entityManager.createQuery("SELECT COUNT (" + getEntityLink(clazz) + ".id) " + query.toString(), Number.class)
+        return entityManager.createQuery("SELECT COUNT (DISTINCT " + getEntityLink(clazz) + ".id) FROM " +
+                clazz.getSimpleName() + " " + getEntityLink(clazz), Number.class)
                 .getSingleResult();
     }
 
