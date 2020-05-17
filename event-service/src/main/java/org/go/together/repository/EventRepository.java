@@ -14,7 +14,7 @@ public class EventRepository extends CustomRepository<Event> {
     @Transactional
     public Collection<Event> findEventsByPagination(PageDto pageDto) {
         int startRow = pageDto.getPage() * pageDto.getSize();
-        return createQuery().fetchAllPageable(startRow, pageDto.getSize());
+        return createQuery().fetchWithPageable(startRow, pageDto.getSize());
     }
 
     @Transactional
@@ -26,6 +26,6 @@ public class EventRepository extends CustomRepository<Event> {
     public Collection<Event> findEventsByNameLike(String name, int start, int pageSize) {
         return createQuery()
                 .where(createWhere().condition("name", SqlOperator.LIKE, name.toLowerCase()))
-                .fetchAllPageable(start, pageSize);
+                .fetchWithPageable(start, pageSize);
     }
 }

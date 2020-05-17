@@ -44,7 +44,7 @@ public class LocationService extends CrudService<LocationDto, Location> {
 
             locations = locationRepository.findLocationByNameAndByCountryId(splitedLocation, countryIds, 0, 5);
         } else {
-            locations = locationRepository.createQuery().fetchAllPageable(0, 5);
+            locations = locationRepository.createQuery().fetchWithPageable(0, 5);
         }
         return locations.stream()
                 .map(loc -> new SimpleDto(loc.getId().toString(), loc.getName() + ", " +

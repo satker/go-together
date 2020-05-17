@@ -67,7 +67,7 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
         return entityManager.createQuery(query.toString(), clazz).getResultStream().findFirst();
     }
 
-    public Collection<E> fetchAllPageable(int start, int pageSize) {
+    public Collection<E> fetchWithPageable(int start, int pageSize) {
         TypedQuery<E> query = entityManager.createQuery(this.query.toString(), clazz);
         query.setFirstResult(start);
         query.setMaxResults(pageSize);

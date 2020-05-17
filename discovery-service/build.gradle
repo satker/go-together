@@ -18,8 +18,5 @@ dependencies {
 
             "org.springframework.cloud:spring-cloud-starter-netflix-eureka-server:${springCloudVersion}",
             "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
-            "org.springframework.boot:spring-boot-starter-jersey:${springBootVersion}",
-
-            "com.google.code.gson:gson:${gsonVersion}",
     )
 }
