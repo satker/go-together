@@ -23,7 +23,7 @@ export const context = {
     arrivalDate: createContextValue(ARRIVAL_DATE),
     departureDate: createContextValue(DEPARTURE_DATE),
     page: createContextValue(PAGE, 0),
-    pageSize: createContextValue(PAGE_SIZE, 2),
+    pageSize: createContextValue(PAGE_SIZE, 9),
     components: {...components}
 };
 
