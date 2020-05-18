@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {connect} from "../../../../App/Context";
 import {withStyles} from "@material-ui/core";
+
+import {connect} from "App/Context";
+import {ResponseData} from "forms/utils/types";
+
 import {getOptions} from "./actions";
-import {ResponseData} from "../../types";
 import {AUTOSUGGESTION_OPTIONS_EVENTS, AUTOSUGGESTION_OPTIONS_LOCATIONS} from "./constants";
 
 const StyledAutocomplete = withStyles({

@@ -1,9 +1,11 @@
 import React, {useEffect} from 'react';
-import {connect} from "../../../App/Context";
 import * as PropTypes from "prop-types";
+
+import {connect} from "App/Context";
+import LoadableContent from "forms/utils/components/LoadableContent";
+
 import EditForm from "./EditForm";
 import {getEvent, updateEvent} from "./actions";
-import LoadableContent from "../../utils/components/LoadableContent";
 
 const CreateEvent = ({id, event, getEvent}) => {
     useEffect(() => {

@@ -1,11 +1,12 @@
 import React from 'react';
-import {CoordinateCenter, Route} from '../../../types'
 import PropTypes from "prop-types";
-import Delete from "../../Icon/Delete";
-import ContainerColumn from "../../Container/ContainerColumn";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+
+import {CoordinateCenter, Route} from 'forms/utils/types'
+import Delete from "forms/utils/components/Icon/Delete";
+import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 
 const RouteItem = ({center, setCenter, route, onDelete}) => {
     return <ContainerColumn>

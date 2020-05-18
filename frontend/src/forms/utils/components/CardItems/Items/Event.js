@@ -1,13 +1,14 @@
 import React from 'react';
-import Gallery from "../../Galery";
 import PropTypes from "prop-types";
-import {getSrcForImg} from "../../../utils";
-import {Event} from "../../../types";
-import DeleteIcon from "../../Icon/Delete";
-import {PHOTO_OBJECT} from "../../../constants";
-import EventLikes from "../../Event/EventLikes";
-import {connect} from "../../../../../App/Context";
 import {Card, CardActionArea, CardActions, CardContent, CardMedia, Typography} from "@material-ui/core";
+
+import Gallery from "forms/utils/components/Galery";
+import {getSrcForImg} from "forms/utils/utils";
+import {Event} from "forms/utils/types";
+import DeleteIcon from "forms/utils/components/Icon/Delete";
+import {PHOTO_OBJECT} from "forms/utils/constants";
+import EventLikes from "forms/utils/components/Event/EventLikes";
+import {connect} from "App/Context";
 
 const ItemEvent = ({event, onDelete, userId, eventIds}) => {
     return <Card>

@@ -1,6 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import PropTypes from "prop-types";
-import LabeledInput from "../LabeledInput";
+
+import LabeledInput from "forms/utils/components/LabeledInput";
 
 const AutocompleteLocation = ({google, setCenter}) => {
     const autocompleteInput = useRef();

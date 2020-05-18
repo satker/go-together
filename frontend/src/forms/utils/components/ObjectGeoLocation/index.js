@@ -2,17 +2,19 @@ import React, {useCallback, useEffect, useState} from "react";
 import PropTypes from "prop-types";
 import GoogleMapReact from 'google-map-react';
 
-import "./style_place.css";
+import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
+import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
+import LeftContainer from "forms/utils/components/Container/LeftContainer";
+import RightContainer from "forms/utils/components/Container/RightContainer";
+import Container from "forms/utils/components/Container/ContainerRow";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+
+import {GOOGLE_API_KEY, request} from "./GoogleMapsApiRequest";
 import Marker from "./Marker";
 import {getAddress, getCity, getCountry, getState} from "./utils";
-import AutocompleteLocation from "../AutocompleteLocation";
-import ContainerColumn from "../Container/ContainerColumn";
-import LeftContainer from "../Container/LeftContainer";
-import RightContainer from "../Container/RightContainer";
-import {GOOGLE_API_KEY, request} from "./GoogleMapsApiRequest";
 import RoutesList from "./RoutesList";
-import Container from "../Container/ContainerRow";
-import ItemContainer from "../Container/ItemContainer";
+
+import "./style_place.css";
 
 const getMapOptions = {
     disableDefaultUI: true,

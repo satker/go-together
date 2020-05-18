@@ -1,8 +1,10 @@
-import {EVENT_SERVICE_URL} from "../../utils/constants";
-import {EDIT_EVENT_EVENT, EDIT_EVENT_NEW_EVENT, EDIT_EVENT_UPDATED_EVENT} from "./constants";
-import {POST, PUT} from "../../../App/utils/api/constants";
-import {onChange} from "../../utils/utils";
 import moment from "moment";
+
+import {EVENT_SERVICE_URL} from "forms/utils/constants";
+import {POST, PUT} from "App/utils/api/constants";
+import {onChange} from "forms/utils/utils";
+
+import {EDIT_EVENT_EVENT, EDIT_EVENT_NEW_EVENT, EDIT_EVENT_UPDATED_EVENT} from "./constants";
 
 export const getEvent = (id) => (dispatch) => {
     dispatch({

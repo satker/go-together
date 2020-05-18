@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
+import {DateRangePicker, START_DATE} from "react-dates";
+
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
-import {DateRangePicker, START_DATE} from "react-dates";
 
 const CheckInOutDates = ({startDate, endDate, setStartDate, setEndDate, readOnly}) => {
     const [focusedInput, setFocusedInput] = useState(START_DATE);

@@ -1,9 +1,10 @@
 import React from "react";
-import {fetchAndSetToken} from "../utils/api/request";
-import {USER_ID} from "../../forms/utils/constants";
-import {get as getCookie} from 'js-cookie'
-import {components} from "../../forms/reducers";
-import {createContextValue} from "../utils/utils";
+import {get as getCookie} from 'js-cookie';
+
+import {fetchAndSetToken} from "App/utils/api/request";
+import {USER_ID} from "forms/utils/constants";
+import {components} from "forms/reducers";
+import {createContextValue} from "App/utils/utils";
 import {
     ARRIVAL_DATE,
     CONTEXT_USER_ID,

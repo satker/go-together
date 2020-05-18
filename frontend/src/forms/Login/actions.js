@@ -1,7 +1,8 @@
-import {LOGIN_URL, USER_SERVICE_URL} from "../utils/constants";
-import {CONTEXT_USER_ID, CSRF_TOKEN} from "../../App/Context/constants";
+import {LOGIN_URL, USER_SERVICE_URL} from "forms/utils/constants";
+import {CONTEXT_USER_ID, CSRF_TOKEN} from "App/Context/constants";
+import {POST} from "App/utils/api/constants";
+
 import {LOGIN_HEADERS, LOGIN_ID} from "./constants";
-import {POST} from "../../App/utils/api/constants";
 
 export const setUserId = (userId) => (dispatch) => {
     dispatch({

@@ -1,9 +1,10 @@
 import React from "react";
-import {getSrcForImg} from "../../../../utils/utils";
-import {User} from "../../../../utils/types";
-import RightContainer from "../../../../utils/components/Container/RightContainer";
 import {Card, CardContent, CardMedia, Typography} from "@material-ui/core";
-import {connect} from "../../../../../App/Context";
+
+import {getSrcForImg} from "forms/utils/utils";
+import {User} from "forms/utils/types";
+import RightContainer from "forms/utils/components/Container/RightContainer";
+import {connect} from "App/Context";
 
 const Profile = ({author}) => {
     return <RightContainer>

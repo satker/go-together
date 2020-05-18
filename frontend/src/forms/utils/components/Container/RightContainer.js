@@ -1,7 +1,8 @@
 import React from "react";
-import './style.css';
 import PropTypes from "prop-types";
 import {Box} from "@material-ui/core";
+
+import './style.css';
 
 const RightContainer = ({children, style, isBordered}) => {
     const styleClass = isBordered ? ' custom-border' : '';

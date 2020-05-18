@@ -1,11 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from "prop-types";
-import Delete from "../Icon/Delete";
-import {getSrcForImg} from "../../utils";
+import {Card, CardMedia} from "@material-ui/core";
+
+import Delete from "forms/utils/components/Icon/Delete";
+import {getSrcForImg} from "forms/utils/utils";
+
 import ItemEvent from "./Items/Event";
 import SimpleUserStatus from "./Items/SimpleUserStatus";
+
 import './style.css'
-import {Card, CardMedia} from "@material-ui/core";
 
 const GroupItems = ({onDelete, items, onClick, onAction, isEvents, isPhotos, isUsers}) => {
     const [parsedCards, setParsedCards] = useState([]);

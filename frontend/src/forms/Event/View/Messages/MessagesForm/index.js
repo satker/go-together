@@ -1,9 +1,11 @@
 import React, {useCallback, useEffect, useState} from "react";
+import moment from "moment";
+
+import {connect} from "App/Context";
+
 import MessagesContainer from "./MesagesContainer";
 import WebRTCInputMessage from "./WebRTCInputMessage";
-import {connect} from "../../../../../App/Context";
 import {getMessagesByEvent} from "../actions";
-import moment from "moment";
 
 const MessagesForm = ({event, userMessageId, userId, messagesByEvent, getMessagesByEvent}) => {
     const [parsedReviewsByEvent, setParsedReviewsByEvent] = useState([]);

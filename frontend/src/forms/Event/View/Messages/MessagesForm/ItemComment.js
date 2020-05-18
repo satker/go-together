@@ -1,5 +1,6 @@
 import React from "react";
-import {Review} from "../../../../utils/types";
+
+import {Review} from "forms/utils/types";
 
 const ItemComment = ({review, style, timestampStyle}) => {
     const date = review.date.format('LLL');

@@ -1,13 +1,15 @@
 import React, {useEffect} from "react";
-import {connect} from "../../../App/Context";
-import {Event} from "../../utils/types";
-import FormReference from "../../utils/components/FormReference";
-import ObjectGeoLocation from "../../utils/components/ObjectGeoLocation";
+import PropTypes from 'prop-types';
+
+import {connect} from "App/Context";
+import {Event} from "forms/utils/types";
+import FormReference from "forms/utils/components/FormReference";
+import ObjectGeoLocation from "forms/utils/components/ObjectGeoLocation";
+import Container from "forms/utils/components/Container/ContainerRow";
+
 import Users from "./Users";
 import MainInfo from "./MainInfo";
-import Container from "../../utils/components/Container/ContainerRow";
 import {getUsers} from "./actions";
-import PropTypes from 'prop-types';
 
 const ViewForm = ({event, getUsers, userId}) => {
     useEffect(() => {

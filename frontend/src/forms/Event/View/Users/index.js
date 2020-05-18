@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import ElementTabs from "../../../utils/components/Tabs";
 import PropTypes from "prop-types";
-import {ResponseData} from "../../../utils/types";
-import {connect} from "../../../../App/Context";
+
+import ElementTabs from "forms/utils/components/Tabs";
+import {ResponseData} from "forms/utils/types";
+import LoadableContent from "forms/utils/components/LoadableContent";
+import {connect} from "App/Context";
+
 import Messages from "../Messages";
 import {postUserStatus} from "./actions";
 import {getStatuses, getUsers} from "../actions";
-import LoadableContent from "../../../utils/components/LoadableContent";
 
 const Users = ({event, users, statuses, userId, postUserStatus, userStatus, getUsers, getStatuses}) => {
     const [userMessageId, setUserMessageId] = useState(null);

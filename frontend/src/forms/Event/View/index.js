@@ -1,9 +1,11 @@
 import React, {useEffect} from "react";
-import {connect} from "../../../App/Context";
 import PropTypes from 'prop-types';
+
+import LoadableContent from "forms/utils/components/LoadableContent";
+import {connect} from "App/Context";
+import {ResponseData} from "forms/utils/types";
+
 import {getEvent} from "./actions";
-import {ResponseData} from "../../utils/types";
-import LoadableContent from "../../utils/components/LoadableContent";
 import ViewForm from "./ViewForm";
 
 const ViewEvent = ({id, getEvent, event}) => {

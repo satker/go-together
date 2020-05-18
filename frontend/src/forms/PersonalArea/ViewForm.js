@@ -1,7 +1,8 @@
 import React from "react";
-import ItemContainer from "../utils/components/Container/ItemContainer";
 import PropTypes from "prop-types";
-import ContainerRow from "../utils/components/Container/ContainerRow";
+
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import ContainerRow from "forms/utils/components/Container/ContainerRow";
 
 const ViewForm = ({profile}) => {
     return <ContainerRow>

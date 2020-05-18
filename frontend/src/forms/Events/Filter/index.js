@@ -1,16 +1,16 @@
 import React, {useEffect} from 'react';
 import PropTypes from "prop-types";
-import 'react-dates/initialize';
-import {AutosuggestionLocations} from "../../utils/components/Autosuggestion";
-import 'react-dates/lib/css/_datepicker.css';
-import CheckInOutDates from '../../utils/components/CheckInOutDates'
-import {FORM_DTO, LOCATION_SERVICE_URL, SEARCH_OBJECT_DEFAULT} from '../../utils/constants'
-import {connect} from "../../../App/Context";
-import {isEqual} from "lodash";
-import {SearchObject} from "../../utils/types";
-import {setArrivalDate, setDepartureDate, setPage} from "../actions";
 import Slider from "@material-ui/core/Slider";
-import CustomButton from "../../utils/components/CustomButton";
+import {isEqual} from "lodash";
+
+import {AutosuggestionLocations} from "forms/utils/components/Autosuggestion";
+import CheckInOutDates from 'forms/utils/components/CheckInOutDates'
+import {FORM_DTO, LOCATION_SERVICE_URL, SEARCH_OBJECT_DEFAULT} from 'forms/utils/constants'
+import {connect} from "App/Context";
+import {SearchObject} from "forms/utils/types";
+import CustomButton from "forms/utils/components/CustomButton";
+
+import {setArrivalDate, setDepartureDate, setPage} from "../actions";
 
 const Filter = ({
                     searchObject, onChangeSearchObject, filterObject,

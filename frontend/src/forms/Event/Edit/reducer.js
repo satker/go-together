@@ -1,8 +1,9 @@
-import {createEmptyResponse} from "../../../App/utils/utils";
+import {createEmptyResponse} from "App/utils/utils";
+import {DEFAULT_CREATE_EVENT} from "forms/utils/constants";
+
 import {paidThings} from "./PaidThings/reducers";
 import {mainInfo} from "./MainInfo/reducers";
 import {EDIT_EVENT_EVENT, EDIT_EVENT_NEW_EVENT, EDIT_EVENT_UPDATED_EVENT} from "./constants";
-import {DEFAULT_CREATE_EVENT} from "../../utils/constants";
 
 export const eventEdit = {
     event: createEmptyResponse(EDIT_EVENT_EVENT, {...DEFAULT_CREATE_EVENT}),

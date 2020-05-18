@@ -1,6 +1,7 @@
-import {USER_SERVICE_URL} from "../../../constants";
+import {USER_SERVICE_URL} from "forms/utils/constants";
+import {POST, PUT} from "App/utils/api/constants";
+
 import {EVENT_LIKES, EVENT_LIKES_NEW_LIKE} from "./constants";
-import {POST, PUT} from "../../../../../App/utils/api/constants";
 
 export const putNewLike = (eventId) => (dispatch, state) => {
     dispatch({

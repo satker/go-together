@@ -1,4 +1,4 @@
-import {CONTEXT_USER_ID, CSRF_TOKEN} from "../Context/constants";
+import {CONTEXT_USER_ID, CSRF_TOKEN} from "App/Context/constants";
 
 export const cleanUserId = () => (dispatch) => {
     dispatch({

@@ -1,4 +1,5 @@
-import {createEmptyResponse} from "../../App/utils/utils";
+import {createEmptyResponse} from "App/utils/utils";
+
 import {PERSONAL_AREA_CHECK_MAIL, PERSONAL_AREA_UPDATED_USER, PERSONAL_AREA_USER_INFO} from "./constants";
 
 export const personalArea = {

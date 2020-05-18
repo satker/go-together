@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from "prop-types";
-import {connect} from "../../../../../App/Context";
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+
+import {connect} from "App/Context";
+import LoadableContent from "forms/utils/components/LoadableContent";
+
 import {postLikes, putNewLike} from "./actions";
-import LoadableContent from "../../LoadableContent";
 
 const EventLikes = ({eventId, putNewLike, newLike, postLikes, likes, userId, eventIds}) => {
     const [flag, setFlag] = useState(false);

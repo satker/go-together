@@ -1,14 +1,16 @@
-import SelectBox from "../../../../utils/components/SelectBox";
-import CheckInOutDates from "../../../../utils/components/CheckInOutDates";
 import React, {useEffect} from "react";
-import {getHousingTypes} from "../actions";
-import {connect} from "../../../../../App/Context";
-import {Event, ResponseData} from "../../../../utils/types";
-import PropTypes from "prop-types";
-import LabeledInput from "../../../../utils/components/LabeledInput";
-import ItemContainer from "../../../../utils/components/Container/ItemContainer";
-import {updateEvent} from "../../actions";
 import moment from "moment";
+
+import SelectBox from "forms/utils/components/SelectBox";
+import CheckInOutDates from "forms/utils/components/CheckInOutDates";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import {Event, ResponseData} from "forms/utils/types";
+
+import LabeledInput from "forms/utils/components/LabeledInput";
+import {getHousingTypes} from "../actions";
+import {connect} from "App/Context";
+import PropTypes from "prop-types";
+import {updateEvent} from "../../actions";
 
 const CommonInfo = ({event, updateEvent, getHousingTypes, housingTypes}) => {
     useEffect(() => {

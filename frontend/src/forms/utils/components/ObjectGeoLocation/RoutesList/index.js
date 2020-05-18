@@ -1,8 +1,10 @@
 import React from "react";
-import RouteItem from "./RouteItem";
-import List from "@material-ui/core/List";
 import PropTypes from "prop-types";
-import {CoordinateCenter} from "../../../types";
+import List from "@material-ui/core/List";
+
+import {CoordinateCenter} from "forms/utils/types";
+
+import RouteItem from "./RouteItem";
 
 const RoutesList = ({routes, editable, onDelete, center, setCenter}) => {
     return <List style={{overflow: 'auto'}}>

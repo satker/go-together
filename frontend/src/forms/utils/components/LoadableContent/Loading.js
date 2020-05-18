@@ -1,7 +1,8 @@
 import React from "react";
-import './index.css'
 import PropTypes from "prop-types";
 import CircularProgress from "@material-ui/core/CircularProgress";
+
+import './index.css'
 
 const Loading = ({loadingMessage}) => {
     return <div className='loading'>

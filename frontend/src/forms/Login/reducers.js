@@ -1,4 +1,4 @@
-import {createEmptyResponse} from "../../App/utils/utils";
+import {createEmptyResponse} from "App/utils/utils";
 import {LOGIN_HEADERS, LOGIN_ID} from "./constants";
 
 export const login = {

@@ -1,4 +1,4 @@
-import {USER_SERVICE_URL} from "../utils/constants";
+import {USER_SERVICE_URL} from "forms/utils/constants";
 import {
     CREATED_USER,
     REGISTER_ALL_INTERESTS,
@@ -6,7 +6,7 @@ import {
     REGISTER_CHECK_MAIL,
     REGISTER_CHECK_USERNAME
 } from "./constants";
-import {PUT} from "../../App/utils/api/constants";
+import {PUT} from "App/utils/api/constants";
 
 const URL_USERS_LANGUAGES = USER_SERVICE_URL + "/languages";
 const URL_USERS_INTERESTS = USER_SERVICE_URL + "/interests";

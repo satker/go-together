@@ -1,9 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {ResponseData} from '../../types';
+import {isEmpty} from "lodash";
+
+import {ResponseData} from 'forms/utils/types';
+
 import Loading from "./Loading";
 import ErrorMessage from "./ErrorMessage";
-import {isEmpty} from "lodash";
 
 const LoadableContent = ({children, loadableData, loadingMessage, additionalCheck}) => {
     if (loadableData.inProcess ||

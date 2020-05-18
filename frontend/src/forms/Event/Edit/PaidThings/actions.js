@@ -1,4 +1,4 @@
-import {EVENTS_URL} from "../../../utils/constants";
+import {EVENTS_URL} from "forms/utils/constants";
 import {PAID_THINGS, PAID_THINGS_CASH_CATEGORIES} from "./constants";
 
 export const getCashCategories = () => (dispatch) => {

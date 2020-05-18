@@ -1,6 +1,7 @@
-import {findPath} from "../utils";
+import {findPath} from "App/utils/utils";
+import {context} from "App/Context";
+
 import {GET} from "./constants";
-import {context} from "../../Context";
 
 const resolveStatus = (pathData, isToken, setResult) => (response) => {
     if (isToken) {

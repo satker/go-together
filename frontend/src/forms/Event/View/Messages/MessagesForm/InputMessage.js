@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from "react";
-import LabeledInput from "../../../../utils/components/LabeledInput";
-import {connect} from "../../../../../App/Context";
 import PropTypes from "prop-types";
-import {Review} from "../../../../utils/types";
-import {putNewMessage} from "../actions";
 import moment from "moment";
 import SendIcon from "@material-ui/icons/Send";
-import CustomButton from "../../../../utils/components/CustomButton";
+
+import {connect} from "App/Context";
+import LabeledInput from "forms/utils/components/LabeledInput";
+import {Review} from "forms/utils/types";
+import CustomButton from "forms/utils/components/CustomButton";
+
+import {putNewMessage} from "../actions";
 
 const InputMessage = ({
                           userId, eventId, setMessages, messages,

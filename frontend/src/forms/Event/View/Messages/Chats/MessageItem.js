@@ -1,5 +1,6 @@
 import React from 'react';
-import {getSrcForImg} from "../../../../utils/utils";
+
+import {getSrcForImg} from "forms/utils/utils";
 
 const MessageItem = ({message, user, userMessageId, setUserMessageId}) => {
     return <div className='message-item custom-border' onClick={() => setUserMessageId(user.id)}
