@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from "react";
-import SearchForm from "./SearchForm";
-import ReactPaginate from 'react-paginate';
+import Filter from "./Filter";
 import {FORM_DTO, SEARCH_OBJECT_DEFAULT} from '../utils/constants'
-import './styles.css'
 import {get, isEqual, set} from "lodash";
 import GroupItems from "../utils/components/CardItems";
 import {connect} from "../../App/Context";
@@ -10,9 +8,11 @@ import {postFindEvents} from "./actions";
 import Container from "../utils/components/Container/ContainerRow";
 import LoadableContent from "../utils/components/LoadableContent";
 import {postLikes} from "../utils/components/Event/EventLikes/actions";
+import CustomPagination from "../utils/components/Pagination";
 
-const Events = ({pageSize, postFindEvents, setEventId, findEvents, postLikes}) => {
+const Events = ({pageSize, postFindEvents, findEvents, postLikes}) => {
     const [searchObject, setSearchObject] = useState({...SEARCH_OBJECT_DEFAULT});
+    const [page, setPage] = useState(1);
     const [filterObject, setFilterObject] = useState({...FORM_DTO("apartment.id")});
 
     useEffect(() => {
@@ -31,7 +31,8 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents, postLikes}) =
     }, [postFindEvents, filterObject]);
 
     const onClickNextPage = page => {
-        filterObject.page.page = page.selected;
+        filterObject.page.page = page - 1;
+        setPage(page);
         postFindEvents(filterObject);
     };
 
@@ -52,11 +53,11 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents, postLikes}) =
 
     return <Container>
         <Container className='search-container'>
-            <SearchForm filterObject={filterObject}
-                        setFilterObject={setFilterObject}
-                        searchObject={searchObject}
-                        onChangeSearchObject={onChangeSearchObject}
-                        onClearSearchObject={onClearSearchObject}
+            <Filter filterObject={filterObject}
+                    setFilterObject={setFilterObject}
+                    searchObject={searchObject}
+                    onChangeSearchObject={onChangeSearchObject}
+                    onClearSearchObject={onClearSearchObject}
             />
         </Container>
         <Container className='events-container'>
@@ -68,25 +69,9 @@ const Events = ({pageSize, postFindEvents, setEventId, findEvents, postLikes}) =
                 />
             </LoadableContent>
         </Container>
-        <br/>
-        {pageCount <= 1 || <Container sm="12" md={{size: 6, offset: 3}}>
-            <div className="react-paginate">
-                <ReactPaginate
-                    previousLabel={"← Previous"}
-                    nextLabel={"Next →"}
-                    breakLabel={'...'}
-                    breakClassName={'break-me'}
-                    pageCount={pageCount}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={5}
-                    onPageChange={onClickNextPage}
-                    containerClassName={'pagination'}
-                    subContainerClassName={'pages pagination'}
-                    activeClassName={'active'}
-                />
-            </div>
-        </Container>
-        }
+        {pageCount <= 1 || <CustomPagination pageCount={pageCount}
+                                             page={page}
+                                             setPage={onClickNextPage}/>}
     </Container>;
 };
 

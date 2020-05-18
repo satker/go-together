@@ -1,8 +1,7 @@
-import React, {useState} from "react";
+import React from "react";
 import {fetchAndSetToken} from "../utils/api/request";
 import {USER_ID} from "../../forms/utils/constants";
 import {get as getCookie} from 'js-cookie'
-import {onChange} from "../../forms/utils/utils";
 import {components} from "../../forms/reducers";
 import {createContextValue} from "../utils/utils";
 import {
@@ -32,21 +31,13 @@ export const Context = React.createContext({});
 
 const actionsStore = {};
 
-export const Provider = ({children}) => {
-    const [state, setState] = useState({...context});
-
-    return <Context.Provider value={[state, onChange(state, setState)]}>
-        {children}
-    </Context.Provider>;
-};
-
 const setToContext = setState => (pathData) => setState(pathData.path, {...pathData.data});
 
 const wrapActions = (actions, state, setState, ACTIONS_ID) => {
     if (!actions) {
         return {};
     }
-    const FORM_ID = ACTIONS_ID || 'actions';
+    const FORM_ID = ACTIONS_ID || state.formId.value;
 
     const result = {};
     for (const action in actions) {
@@ -68,7 +59,7 @@ export const connect = (mapStateToProps, actions, ACTIONS_ID) => (Component) => 
     <Context.Consumer>
         {([state, setState]) =>
             <Component {...props}
-                       {...(mapStateToProps ? mapStateToProps(ACTIONS_ID)(state) : {})}
+                       {...(mapStateToProps ? mapStateToProps(ACTIONS_ID || state.formId.value)(state) : {})}
                        {...wrapActions(actions, state, setState, ACTIONS_ID)}
             />}
     </Context.Consumer>;

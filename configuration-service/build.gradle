@@ -14,7 +14,6 @@ repositories {
 
 dependencies {
     compile(
-            "org.springframework.boot:spring-boot-gradle-plugin:${springCloudVersion}",
             "org.springframework.boot:spring-boot-starter-test:${springCloudVersion}",
             "org.springframework.cloud:spring-cloud-config-server:${springCloudVersion}"
     )

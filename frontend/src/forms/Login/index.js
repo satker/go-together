@@ -4,7 +4,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import * as PropTypes from "prop-types";
 import './style.css'
 import {getLoginId, postLogin, setCsrfToken, setUserId} from "./actions";
-import LabeledInput from "../utils/LabeledInput";
+import LabeledInput from "../utils/components/LabeledInput";
 import ItemContainer from "../utils/components/Container/ItemContainer";
 import ContainerColumn from "../utils/components/Container/ContainerColumn";
 import {navigate} from "hookrouter";

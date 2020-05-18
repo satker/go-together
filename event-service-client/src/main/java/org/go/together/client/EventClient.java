@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
-@FeignClient(name = "event-service", url = "http://localhost:8081")
+@FeignClient(name = "event-service")
 public interface EventClient {
     @GetMapping("/events/{eventId}")
     EventDto getEventById(@PathVariable("eventId") UUID eventId);

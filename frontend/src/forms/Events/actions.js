@@ -4,6 +4,7 @@ import {POST} from "../../App/utils/api/constants";
 import {ARRIVAL_DATE, DEPARTURE_DATE, PAGE} from "../../App/Context/constants";
 
 export const postFindEvents = (filterObject) => (dispatch) => {
+    console.log(filterObject.page.page);
     dispatch({
         type: EVENTS_FIND_EVENTS,
         url: EVENTS_URL + '/find',

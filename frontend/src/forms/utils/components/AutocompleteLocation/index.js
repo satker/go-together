@@ -1,8 +1,8 @@
 import React, {useEffect, useRef} from 'react';
 import PropTypes from "prop-types";
-import LabeledInput from "../../../LabeledInput";
+import LabeledInput from "../LabeledInput";
 
-const AddressField = ({google, setCenter}) => {
+const AutocompleteLocation = ({google, setCenter}) => {
     const autocompleteInput = useRef();
 
     useEffect(() => {
@@ -16,7 +16,7 @@ const AddressField = ({google, setCenter}) => {
 
         autocompleteCustom.addListener('place_changed', () => {
             const addressObject = autocompleteCustom.getPlace();
-            setCenter([addressObject.geometry.location.lat(), addressObject.geometry.location.lng()]);
+            setCenter({lat: addressObject.geometry.location.lat(), lng: addressObject.geometry.location.lng()});
         });
     }, [autocompleteInput, google, setCenter]);
 
@@ -26,9 +26,9 @@ const AddressField = ({google, setCenter}) => {
         label='Location'/>;
 };
 
-AddressField.propTypes = {
+AutocompleteLocation.propTypes = {
     google: PropTypes.object.isRequired,
     setCenter: PropTypes.func.isRequired
 };
 
-export default AddressField;
+export default AutocompleteLocation;

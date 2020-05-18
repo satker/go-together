@@ -19,7 +19,7 @@ dependencies {
 
             "org.projectlombok:lombok:${lombokVersion}",
             "com.google.guava:guava:${guavaVersion}",
-            "org.jooq:jooq:3.12.3",
+
             'org.apache.commons:commons-lang3:3.9'
     )
 

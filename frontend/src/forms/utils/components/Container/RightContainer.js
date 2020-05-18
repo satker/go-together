@@ -1,10 +1,14 @@
 import React from "react";
 import './style.css';
 import PropTypes from "prop-types";
+import {Box} from "@material-ui/core";
 
 const RightContainer = ({children, style, isBordered}) => {
-    const styleClass = 'container-main-info-item container-right' + (isBordered ? ' custom-border' : '');
-    return <div className={styleClass} style={style}>{children}</div>
+    const styleClass = isBordered ? ' custom-border' : '';
+    return <Box display="flex"
+                alignContent="flex-start"
+                flexDirection="column"
+                className={styleClass} style={style}>{children}</Box>
 };
 
 RightContainer.propTypes = {

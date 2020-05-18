@@ -6,6 +6,8 @@ import {DEFAULT_PAID_THING} from "../../../utils/constants";
 import {connect} from "../../../../App/Context";
 import {getCashCategories, getPayedThings} from "./actions";
 import {updateEvent} from "../actions";
+import Container from "../../../utils/components/Container/ContainerRow";
+import ItemContainer from "../../../utils/components/Container/ItemContainer";
 
 const PaidThings = ({
                         event, updateEvent, cashCategories, payedThings,
@@ -38,17 +40,17 @@ const PaidThings = ({
         updateEvent('paidThings', oldArray);
     };
 
-    return <div className='flex-column'>
-        <div className='flex'>
+    return <Container>
+        <ItemContainer>
             Choose paid thing:
-        </div>
+        </ItemContainer>
         {event.paidThings.map((paidThing, index) =>
             <PaidThingItem
                 key={index}
                 cashCategories={cashCategories.response}
                 paidThing={paidThing}
                 onChange={onChangePaidThing(index)}/>)}
-    </div>;
+    </Container>;
 };
 
 PaidThings.propTypes = {

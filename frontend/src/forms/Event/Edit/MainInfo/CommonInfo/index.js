@@ -5,7 +5,7 @@ import {getHousingTypes} from "../actions";
 import {connect} from "../../../../../App/Context";
 import {Event, ResponseData} from "../../../../utils/types";
 import PropTypes from "prop-types";
-import LabeledInput from "../../../../utils/LabeledInput";
+import LabeledInput from "../../../../utils/components/LabeledInput";
 import ItemContainer from "../../../../utils/components/Container/ItemContainer";
 import {updateEvent} from "../../actions";
 import moment from "moment";

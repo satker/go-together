@@ -35,7 +35,7 @@ public class EventController implements EventClient {
 
     @Override
     public ResponseDto<EventDto> find(FormDto formDto) {
-        return new ResponseDto<EventDto>(formDto.getPage(), eventService.findAll());
+        return eventService.find(formDto.getPage());
     }
 
     @Override

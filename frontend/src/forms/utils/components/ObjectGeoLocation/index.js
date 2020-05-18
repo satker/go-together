@@ -5,29 +5,29 @@ import GoogleMapReact from 'google-map-react';
 import "./style_place.css";
 import Marker from "./Marker";
 import {getAddress, getCity, getCountry, getState} from "./utils";
-import AddressField from "./AddressField";
+import AutocompleteLocation from "../AutocompleteLocation";
 import ContainerColumn from "../Container/ContainerColumn";
 import LeftContainer from "../Container/LeftContainer";
 import RightContainer from "../Container/RightContainer";
 import {GOOGLE_API_KEY, request} from "./GoogleMapsApiRequest";
 import RoutesList from "./RoutesList";
+import Container from "../Container/ContainerRow";
+import ItemContainer from "../Container/ItemContainer";
 
-const getMapOptions = () => {
-    return {
-        disableDefaultUI: true,
-        mapTypeControl: true,
-        streetViewControl: true,
-        styles: [{featureType: 'poi', elementType: 'labels', stylers: [{visibility: 'on'}]}],
-    };
+const getMapOptions = {
+    disableDefaultUI: true,
+    mapTypeControl: true,
+    streetViewControl: true,
+    styles: [{featureType: 'poi', elementType: 'labels', stylers: [{visibility: 'on'}]}],
 };
 
-const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) => {
-    const [center, setCenter] = useState([18.5204, 73.8567]);
+const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd, height}) => {
+    const [center, setCenter] = useState({lat: 18.5204, lng: 73.8567});
     const [isDraggable, setIsDraggable] = useState(true);
     const [zoomValue, setZoomValue] = useState(zoom || 9);
     const [currentKey, setCurrentKey] = useState(0);
-    const [currentLat, setCurrentLat] = useState(center[0]);
-    const [currentLng, setCurrentLng] = useState(center[1]);
+    const [currentLat, setCurrentLat] = useState(center.lat);
+    const [currentLng, setCurrentLng] = useState(center.lng);
     const [googleMap, setGoogleMap] = useState(null);
     const [polyline, setPolyline] = useState(null);
 
@@ -136,11 +136,13 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
         });
     };
 
-    return <>
-        {editable && googleMap && <AddressField google={googleMap}
-                                                setCenter={setCenter}/>}
+    return <Container>
+        <ItemContainer>
+            {editable && googleMap && <AutocompleteLocation google={googleMap}
+                                                            setCenter={setCenter}/>}
+        </ItemContainer>
         <ContainerColumn>
-            <LeftContainer style={{width: '69%', height: 400}}>
+            <LeftContainer style={{width: '69%', height}}>
                 <GoogleMapReact bootstrapURLKeys={{key: GOOGLE_API_KEY}}
                                 yesIWantToUseGoogleMapApiInternals
                                 onGoogleApiLoaded={handleGoogleMapApi}
@@ -158,7 +160,7 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
                     {getRoutes()}
                 </GoogleMapReact>
             </LeftContainer>
-            <RightContainer isBordered={true} style={{width: '30%'}}>
+            <RightContainer isBordered={true} style={{width: '30%', height}}>
                 <RoutesList setCenter={setCenter}
                             onDelete={onDelete}
                             center={center}
@@ -166,7 +168,7 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd}) 
                             editable={editable}/>
             </RightContainer>
         </ContainerColumn>
-    </>;
+    </Container>;
 };
 
 ObjectGeoLocation.props = {
@@ -175,7 +177,12 @@ ObjectGeoLocation.props = {
     onChange: PropTypes.func,
     zoom: PropTypes.number,
     onDelete: PropTypes.func,
-    onAdd: PropTypes.func
+    onAdd: PropTypes.func,
+    height: PropTypes.number
+};
+
+ObjectGeoLocation.defaultProps = {
+    height: 400
 };
 
 export default ObjectGeoLocation;

@@ -1,11 +1,11 @@
 import React from "react";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import RouteItem from "./RouteItem";
 import List from "@material-ui/core/List";
 import PropTypes from "prop-types";
+import {CoordinateCenter} from "../../../types";
 
 const RoutesList = ({routes, editable, onDelete, center, setCenter}) => {
-    return <List subheader={<ListSubheader>Routes</ListSubheader>}>
+    return <List style={{overflow: 'auto'}}>
         {routes.map(route => <RouteItem key={route.routeNumber}
                                         onDelete={editable && ((routeNumber) => {
                                             onDelete(routeNumber);
@@ -20,7 +20,7 @@ RoutesList.propTypes = {
     routes: PropTypes.array,
     editable: PropTypes.bool,
     onDelete: PropTypes.func,
-    center: PropTypes.arrayOf(PropTypes.number),
+    center: CoordinateCenter,
     setCenter: PropTypes.func.isRequired
 };
 

@@ -35,7 +35,7 @@ import {getAllInterests, getAllLanguages, getCheckMail, getCheckUserName, regist
 import CardMedia from "@material-ui/core/CardMedia";
 import ErrorMessage from "../utils/components/LoadableContent/ErrorMessage";
 import LoadableContent from "../utils/components/LoadableContent";
-import LabeledInput from "../utils/LabeledInput";
+import LabeledInput from "../utils/components/LabeledInput";
 import CustomButton from "../utils/components/CustomButton";
 
 const FormRegister = ({

@@ -6,11 +6,8 @@ import org.go.together.interfaces.IdentifiedEntity;
 import javax.persistence.ElementCollection;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.go.together.logic.repository.utils.sql.ObjectStringParser.parseToString;
 
@@ -23,7 +20,7 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
     public CustomSqlBuilder(Class<E> clazz, EntityManager entityManager) {
         joinTables = new HashMap<>();
         String entityLink = getEntityLink(clazz);
-        query = new StringBuilder("FROM " + clazz.getSimpleName() + " " + entityLink);
+        query = new StringBuilder("select distinct " + entityLink + " FROM " + clazz.getSimpleName() + " " + entityLink);
         Arrays.stream(clazz.getDeclaredFields())
                 .filter(field1 -> field1.getAnnotation(ElementCollection.class) != null)
                 .forEach(field1 -> {
@@ -34,6 +31,7 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
                             .append(generatedTableName);
                     joinTables.put(field1.getName(), generatedTableName);
                 });
+        //query.append(" FETCH ").append(entityLink).append(".id ");
         this.entityManager = entityManager;
         this.clazz = clazz;
     }
@@ -57,50 +55,30 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
         return getEntityLink(clazz) + "." + field;
     }
 
-    public CustomSqlBuilder<E> groupingByLastRow(String groupingField, String fieldDate, WhereBuilder whereBuilder) {
-        String fields = Stream.of(clazz.getFields()).map(Field::getName).collect(Collectors.joining(", "));
-        query.append("(select ")
-                .append(fields)
-                .append(", row_number() over (partition by ")
-                .append(groupingField)
-                .append(" order by ")
-                .append(fieldDate)
-                .append(" desc) as rn")
-                .append(query)
-                .append(whereBuilder.getWhereQuery())
-                .append(") t")
-                .append(" WHERE rn = 1");
-        return orderBy(groupingField, false);
-    }
-
-    public CustomSqlBuilder<E> orderBy(String field, Boolean isUnique) {
-        query.append(" ORDER BY ")
-                .append(field)
-                .append(isUnique ? " DESC " : StringUtils.EMPTY);
-        return this;
-    }
-
     public CustomSqlBuilder<E> where(WhereBuilder whereBuilder) {
         query.append(whereBuilder.getWhereQuery());
         return this;
     }
 
-    @Transactional
     public Collection<E> fetchAll() {
         return entityManager.createQuery(query.toString(), clazz).getResultList();
     }
 
-    @Transactional
     public Optional<E> fetchOne() {
         return entityManager.createQuery(query.toString(), clazz).getResultStream().findFirst();
     }
 
-    @Transactional
-    public Collection<E> fetchAllPageable(int start, int end) {
+    public Collection<E> fetchWithPageable(int start, int pageSize) {
         TypedQuery<E> query = entityManager.createQuery(this.query.toString(), clazz);
         query.setFirstResult(start);
-        query.setMaxResults(end);
+        query.setMaxResults(pageSize);
         return query.getResultList();
+    }
+
+    public Number getCountRows() {
+        return entityManager.createQuery("SELECT COUNT (DISTINCT " + getEntityLink(clazz) + ".id) FROM " +
+                clazz.getSimpleName() + " " + getEntityLink(clazz), Number.class)
+                .getSingleResult();
     }
 
     public class WhereBuilder {

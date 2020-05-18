@@ -1,10 +1,14 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import './style.css';
+import {Box} from "@material-ui/core";
 
 const ContainerColumn = ({children, isBordered, style}) => {
-    const styleClass = 'container-main-info margin-bottom-20' + (isBordered ? ' custom-border' : '');
-    return <div className={styleClass} style={style}>{children}</div>
+    const styleClass = 'margin-bottom-20 margin-right-item' + (isBordered ? ' custom-border' : '');
+    return <Box display="flex"
+                flexWrap="wrap"
+                flexDirection="row"
+                justifyContent="space-between" className={styleClass} style={style}>{children}</Box>
 };
 
 ContainerColumn.propTypes = {

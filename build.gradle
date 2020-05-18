@@ -3,15 +3,12 @@ version '1.0.1.SNAPSHOT'
 
 buildscript {
     ext {
-        springBootVersion = '2.2.5.RELEASE'
-        springCloudVersion = '2.2.1.RELEASE'
+        springBootVersion = '2.3.0.RELEASE'
+        springCloudVersion = '2.2.2.RELEASE'
         lombokVersion='1.18.12'
-        gsonVersion = '2.8.5'
         jsonWebTokenVersion = '0.9.1'
-        jakartaXmlBindApiVersion = '2.3.2'
-        glassfishJaxbVersion = '2.3.2'
-        guavaVersion='23.6-jre'
-        postgresDriver='42.2.10'
+        guavaVersion='29.0-jre'
+        postgresDriver='42.2.12'
     }
     repositories {
         mavenCentral()
