@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {DEFAULT_EVENT_USER} from "../../../utils/constants";
-import {connect} from "../../../../App/Context";
-import {EventUser} from "../../../utils/types";
 import PropTypes from "prop-types";
+
+import {DEFAULT_EVENT_USER} from "forms/utils/constants";
+import {connect} from "App/Context";
+import {EventUser} from "forms/utils/types";
+import CustomButton from "forms/utils/components/CustomButton";
+
 import {deleteMeFromList, postMeToList} from "./actions";
-import CustomButton from "../../../utils/components/CustomButton";
 
 const ParticipationButton = ({
                                  eventId, users, getUsers, userId, postMeToList,

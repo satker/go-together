@@ -1,4 +1,4 @@
-import {EVENT_SERVICE_URL, EVENTS_URL} from "../../utils/constants";
+import {EVENT_SERVICE_URL, EVENTS_URL} from "forms/utils/constants";
 import {EVENT_VIEW_EVENT, EVENT_VIEW_STATUSES, EVENT_VIEW_USERS} from "./constants";
 
 export const getEvent = (id) => (dispatch) => {

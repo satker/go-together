@@ -1,4 +1,4 @@
-import {createEmptyResponse} from "../../App/utils/utils";
+import {createEmptyResponse} from "App/utils/utils";
 import {
     CREATED_USER,
     REGISTER_ALL_INTERESTS,

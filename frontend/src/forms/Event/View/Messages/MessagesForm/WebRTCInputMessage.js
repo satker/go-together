@@ -1,8 +1,10 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {HOST} from "../../../../utils/constants";
-import {connect} from "../../../../../App/Context";
 import PropTypes from "prop-types";
-import {Review} from "../../../../utils/types";
+
+import {HOST} from "forms/utils/constants";
+import {connect} from "App/Context";
+import {Review} from "forms/utils/types";
+
 import {
     initialize,
     send,

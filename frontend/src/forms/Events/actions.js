@@ -1,10 +1,10 @@
-import {EVENT_SERVICE_URL, EVENTS_URL, USER_SERVICE_URL} from "../utils/constants";
+import {EVENT_SERVICE_URL, EVENTS_URL, USER_SERVICE_URL} from "forms/utils/constants";
+import {POST} from "App/utils/api/constants";
+import {ARRIVAL_DATE, DEPARTURE_DATE, PAGE} from "App/Context/constants";
+
 import {EVENTS_APARTMENT_TYPES, EVENTS_FIND_EVENTS, EVENTS_LANGUAGES, EVENTS_PARAMETERS} from "./constants";
-import {POST} from "../../App/utils/api/constants";
-import {ARRIVAL_DATE, DEPARTURE_DATE, PAGE} from "../../App/Context/constants";
 
 export const postFindEvents = (filterObject) => (dispatch) => {
-    console.log(filterObject.page.page);
     dispatch({
         type: EVENTS_FIND_EVENTS,
         url: EVENTS_URL + '/find',

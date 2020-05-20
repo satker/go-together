@@ -1,11 +1,12 @@
 import React from "react";
-import {EventUser} from "../../../types";
-import DeleteIcon from "../../Icon/Delete";
 import PropTypes from "prop-types";
-import AcceptIcon from "../../Icon/Accept";
-import MessageIcon from "../../Icon/Message";
-import {getSrcForImg} from "../../../utils";
 import {Card, CardActions, CardContent, CardMedia, Typography} from "@material-ui/core";
+
+import {EventUser} from "forms/utils/types";
+import DeleteIcon from "forms/utils/components/Icon/Delete";
+import AcceptIcon from "forms/utils/components/Icon/Accept";
+import MessageIcon from "forms/utils/components/Icon/Message";
+import {getSrcForImg} from "forms/utils/utils";
 
 const SimpleUserStatus = ({userEvent, onDelete, onClick, onAction}) => {
     return <Card style={{align: 'center', flexDirection: 'column'}}>

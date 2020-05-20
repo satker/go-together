@@ -1,9 +1,9 @@
-import {utils} from './utils/reducers'
-import {personalArea} from "./PersonalArea/reducers";
-import {events} from "./Events/reducers";
-import {event} from "./Event/reducers";
-import {register} from "./Register/reducers";
-import {login} from "./Login/reducers";
+import {utils} from 'forms/utils/reducers'
+import {personalArea} from "forms/PersonalArea/reducers";
+import {events} from "forms/Events/reducers";
+import {event} from "forms/Event/reducers";
+import {register} from "forms/Register/reducers";
+import {login} from "forms/Login/reducers";
 
 export const components = {
     utils,

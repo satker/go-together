@@ -1,8 +1,10 @@
 import React from "react";
-import ItemComment from "./ItemComment";
-import {connect} from "../../../../../App/Context";
-import {Review} from "../../../../utils/types";
 import PropTypes from "prop-types";
+
+import {connect} from "App/Context";
+import {Review} from "forms/utils/types";
+
+import ItemComment from "./ItemComment";
 
 const MessagesContainer = ({reviews, event, userId}) => {
     return reviews.length !== 0 ? reviews.map((review, key) =>

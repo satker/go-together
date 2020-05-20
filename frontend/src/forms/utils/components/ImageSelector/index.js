@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Switch} from "@material-ui/core";
-import {createFileReaderToParsePhoto, createPhotoObj} from "../../utils";
-import {PhotoObject} from "../../types";
-import LabeledInput from "../LabeledInput";
-import CustomButton from "../CustomButton";
-import ItemContainer from "../Container/ItemContainer";
-import ContainerRow from "../Container/ContainerRow";
+
+import {createFileReaderToParsePhoto, createPhotoObj} from "forms/utils/utils";
+import {PhotoObject} from "forms/utils/types";
+import LabeledInput from "forms/utils/components/LabeledInput";
+import CustomButton from "forms/utils/components/CustomButton";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import ContainerRow from "forms/utils/components/Container/ContainerRow";
 
 const ImageSelector = ({photos, setPhotos, multiple}) => {
     const [isPhotoUrl, setIsPhotoUrl] = useState(false);

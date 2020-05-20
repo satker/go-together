@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 import {css, StyleSheet} from 'aphrodite/no-important';
 import Lightbox from 'react-images';
-import CustomButton from "./CustomButton";
+
+import CustomButton from "forms/utils/components/CustomButton";
 
 const Gallery = ({
                      images, heading, subheading, preventScroll,

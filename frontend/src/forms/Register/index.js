@@ -1,19 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {AutosuggestionLocations} from "../utils/components/Autosuggestion";
-import {LOCATION_SERVICE_URL} from '../utils/constants'
-import {connect} from "../../App/Context";
-import {getSrcForImg} from "../utils/utils";
+import CardMedia from "@material-ui/core/CardMedia";
 import {navigate} from 'hookrouter';
-import ImageSelector from "../utils/components/ImageSelector";
-import {
-    handleConfirmPassword,
-    handleDescription,
-    handleMail,
-    handleName,
-    handlePassword,
-    handlePhoto,
-    handleUserName,
-} from "./validation";
+
+import {AutosuggestionLocations} from "forms/utils/components/Autosuggestion";
+import {LOCATION_SERVICE_URL} from 'forms/utils/constants'
+import {connect} from "App/Context";
+import {getSrcForImg} from "forms/utils/utils";
+import ImageSelector from "forms/utils/components/ImageSelector";
+import CustomReference from "forms/utils/components/CustomReference";
+import MultipleSelectBox from "forms/utils/components/MultipleSelectBox";
+import Container from "forms/utils/components/Container/ContainerRow";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import ErrorMessage from "forms/utils/components/LoadableContent/ErrorMessage";
+import LoadableContent from "forms/utils/components/LoadableContent";
+import LabeledInput from "forms/utils/components/LabeledInput";
+import CustomButton from "forms/utils/components/CustomButton";
+
+import {getAllInterests, getAllLanguages, getCheckMail, getCheckUserName, registerUser} from "./actions";
 import {
     EMPTY_FIRST_NAME,
     EMPTY_LAST_NAME,
@@ -27,16 +30,15 @@ import {
     NOT_GOOD_LOGIN,
     NOT_GOOD_MAIL
 } from "./constants";
-import CustomReference from "../utils/components/CustomReference";
-import MultipleSelectBox from "../utils/components/MultipleSelectBox";
-import Container from "../utils/components/Container/ContainerRow";
-import ItemContainer from "../utils/components/Container/ItemContainer";
-import {getAllInterests, getAllLanguages, getCheckMail, getCheckUserName, registerUser} from "./actions";
-import CardMedia from "@material-ui/core/CardMedia";
-import ErrorMessage from "../utils/components/LoadableContent/ErrorMessage";
-import LoadableContent from "../utils/components/LoadableContent";
-import LabeledInput from "../utils/components/LabeledInput";
-import CustomButton from "../utils/components/CustomButton";
+import {
+    handleConfirmPassword,
+    handleDescription,
+    handleMail,
+    handleName,
+    handlePassword,
+    handlePhoto,
+    handleUserName,
+} from "./validation";
 
 const FormRegister = ({
                           allLanguages, allInterests, getAllInterests, getAllLanguages, getCheckMail, checkMail,

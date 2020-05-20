@@ -1,4 +1,5 @@
-import {createEmptyResponse} from "../../../../../App/utils/utils";
+import {createEmptyResponse} from "App/utils/utils";
+
 import {EVENT_LIKES, EVENT_LIKES_NEW_LIKE} from "./constants";
 
 export const eventLikes = {

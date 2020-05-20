@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from "react";
-import NavTab from "./NavTab";
 import PropTypes from "prop-types";
-import {groupBy, mapValues} from 'lodash';
-import GroupItems from "../CardItems";
-import './style.css'
 import {AppBar, Tabs} from "@material-ui/core";
+import {groupBy, mapValues} from 'lodash';
+
+import GroupItems from "forms/utils/components/CardItems";
+
 import TabPanel from "./TabPanel";
+import NavTab from "./NavTab";
+import './style.css'
 
 const ElementTabs = (props) => {
     const {tabs, elements, elementsFieldTab} = props;

@@ -1,18 +1,19 @@
 import React, {useEffect, useState} from 'react';
-
 import {useRedirect, useRoutes} from 'hookrouter';
-import Events from "../forms/Events";
-import Event from "../forms/Event";
-import PersonalArea from "../forms/PersonalArea";
+
+import Events from "forms/Events";
+import Event from "forms/Event";
+import PersonalArea from "forms/PersonalArea";
+import FormRegister from "forms/Register";
+import {Context, context} from "App/Context";
+import {onChange} from "forms/utils/utils";
+import {FORM_ID as FORM_ID_EVENTS} from "forms/Events/constants";
+import {FORM_ID as FORM_ID_EVENT_VIEW} from "forms/Event/View/constants";
+import {FORM_ID_CREATE, FORM_ID_EDIT} from "forms/Event/Edit/constants";
+import {FORM_ID as FORM_ID_REGISTER} from "forms/Register/constants";
+import {FORM_ID as FORM_ID_PERSONAL_AREA} from "forms/PersonalArea/constants";
+
 import NavBar from "./NavBar";
-import FormRegister from "../forms/Register";
-import {Context, context} from "../App/Context";
-import {onChange} from "../forms/utils/utils";
-import {FORM_ID as FORM_ID_EVENTS} from "../forms/Events/constants";
-import {FORM_ID as FORM_ID_EVENT_VIEW} from "../forms/Event/View/constants";
-import {FORM_ID_CREATE, FORM_ID_EDIT} from "../forms/Event/Edit/constants";
-import {FORM_ID as FORM_ID_REGISTER} from "../forms/Register/constants";
-import {FORM_ID as FORM_ID_PERSONAL_AREA} from "../forms/PersonalArea/constants";
 
 const routers = {
     '/events': () => <Events key={FORM_ID_EVENTS}/>,

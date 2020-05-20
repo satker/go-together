@@ -1,11 +1,12 @@
 import React from "react";
-import {connect} from "../../Context";
 import PropTypes from "prop-types";
+
 import CreateButton from "../Buttons/CreateButton";
 import NotificationButton from "../Buttons/NotificationButton";
 import AccountButton from "../Buttons/AccountButton";
 import LogoutButton from "../Buttons/LogoutButton";
-import FormLogin from "../../../forms/Login";
+import {connect} from "App/Context";
+import FormLogin from "forms/Login";
 
 const ToolbarButtons = ({userId, menuId, handleMenuClose}) => {
     return userId !== null ? [

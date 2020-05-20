@@ -5,7 +5,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Checkbox from "@material-ui/core/Checkbox";
 import MenuItem from "@material-ui/core/MenuItem";
 import {find} from "lodash";
-import {SimpleObject} from "../types";
+
+import {SimpleObject} from "forms/utils/types";
 
 const MultipleSelectBox = ({optionsSimple, value, onChange, label}) => {
     const handleChange = (event) => onChange(event.target.value);

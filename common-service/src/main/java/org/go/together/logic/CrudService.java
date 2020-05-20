@@ -13,9 +13,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> {
-    private Mapper<D, E> mapper;
-    private Validator<D> validator;
-    private CustomRepository<E> repository;
+    private final Mapper<D, E> mapper;
+    private final Validator<D> validator;
+    private final CustomRepository<E> repository;
 
     protected CrudService(CustomRepository<E> repository, Mapper<D, E> mapper, Validator<D> validator) {
         this.repository = repository;

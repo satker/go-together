@@ -68,10 +68,6 @@ public class EventService extends CrudService<EventDto, Event> {
         contentClient.delete(event.getEventPhotoId());
     }
 
-    public Collection<EventDto> findAll() {
-        return eventMapper.entitiesToDtos(eventRepository.findAll());
-    }
-
     public Set<SimpleDto> autocompleteEvents(String name) {
         Collection<Event> events;
         if (StringUtils.isNotBlank(name)) {

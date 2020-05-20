@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from "react";
-import Filter from "./Filter";
-import {FORM_DTO, SEARCH_OBJECT_DEFAULT} from '../utils/constants'
 import {get, isEqual, set} from "lodash";
-import GroupItems from "../utils/components/CardItems";
-import {connect} from "../../App/Context";
+
+import {FORM_DTO, SEARCH_OBJECT_DEFAULT} from 'forms/utils/constants'
+import GroupItems from "forms/utils/components/CardItems";
+import {connect} from "App/Context";
+import Container from "forms/utils/components/Container/ContainerRow";
+import LoadableContent from "forms/utils/components/LoadableContent";
+import {postLikes} from "forms/utils/components/Event/EventLikes/actions";
+import CustomPagination from "forms/utils/components/Pagination";
+
 import {postFindEvents} from "./actions";
-import Container from "../utils/components/Container/ContainerRow";
-import LoadableContent from "../utils/components/LoadableContent";
-import {postLikes} from "../utils/components/Event/EventLikes/actions";
-import CustomPagination from "../utils/components/Pagination";
+import Filter from "./Filter";
 
 const Events = ({pageSize, postFindEvents, findEvents, postLikes}) => {
     const [searchObject, setSearchObject] = useState({...SEARCH_OBJECT_DEFAULT});

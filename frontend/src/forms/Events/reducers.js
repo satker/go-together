@@ -1,4 +1,5 @@
-import {createEmptyResponse} from "../../App/utils/utils";
+import {createEmptyResponse} from "App/utils/utils";
+
 import {EVENTS_APARTMENT_TYPES, EVENTS_FIND_EVENTS, EVENTS_LANGUAGES, EVENTS_PARAMETERS} from "./constants";
 
 export const events = {

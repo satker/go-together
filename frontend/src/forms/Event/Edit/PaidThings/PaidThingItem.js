@@ -1,8 +1,9 @@
 import React from 'react';
-import {CashPaidThing} from "../../../utils/types";
 import PropTypes from "prop-types";
-import SelectBox from "../../../utils/components/SelectBox";
-import ItemContainer from "../../../utils/components/Container/ItemContainer";
+
+import {CashPaidThing} from "forms/utils/types";
+import SelectBox from "forms/utils/components/SelectBox";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
 
 const PaidThingItem = ({cashCategories, paidThing, onChange}) => {
     return <ItemContainer>

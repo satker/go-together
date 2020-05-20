@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from "react";
-import Container from "../utils/components/Container/ContainerRow";
-import {onChange} from "../utils/utils";
-import ItemContainer from "../utils/components/Container/ItemContainer";
+
+import Container from "forms/utils/components/Container/ContainerRow";
+import {onChange} from "forms/utils/utils";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import LoadableContent from "forms/utils/components/LoadableContent";
+import CustomButton from "forms/utils/components/CustomButton";
+import {connect} from "App/Context";
+
 import {getCheckMail, getUserInfo, putUpdatedUser} from "./actions";
-import {connect} from "../../App/Context";
 import EditForm from "./EditForm";
 import ViewForm from "./ViewForm";
-import LoadableContent from "../utils/components/LoadableContent";
-import CustomButton from "../utils/components/CustomButton";
 
 const PersonalArea = ({userInfo, getUserInfo, updatedUser, putUpdatedUser}) => {
     const [isEdited, setIsEdited] = useState(false);

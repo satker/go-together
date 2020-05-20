@@ -1,11 +1,11 @@
 import React from "react";
-import GroupItems from "../../../../utils/components/CardItems";
-import ImageSelector from "../../../../utils/components/ImageSelector";
-import {Event} from "../../../../utils/types";
+import GroupItems from "forms/utils/components/CardItems";
+import ImageSelector from "forms/utils/components/ImageSelector";
+import {Event} from "forms/utils/types";
 import PropTypes from "prop-types";
-import ItemContainer from "../../../../utils/components/Container/ItemContainer";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import {updateEvent} from "../../actions";
-import {connect} from "../../../../../App/Context";
+import {connect} from "App/Context";
 
 const Photos = ({event, updateEvent}) => {
     return <>

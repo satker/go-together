@@ -1,7 +1,9 @@
 import React from "react";
+
+import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
+
 import CommonInfo from "./CommonInfo";
 import Profile from "./Profile";
-import ContainerColumn from "../../../utils/components/Container/ContainerColumn";
 
 const MainInfo = () => {
     return <ContainerColumn>

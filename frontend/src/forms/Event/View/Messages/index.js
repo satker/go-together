@@ -1,10 +1,13 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import './style.css'
+
+import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
+import {connect} from "App/Context";
+
 import UserChats from "./Chats";
-import ContainerColumn from "../../../utils/components/Container/ContainerColumn";
 import MessagesForm from "./MessagesForm";
-import {connect} from "../../../../App/Context";
+
+import './style.css'
 
 const Messages = ({userMessageId, eventAuthorId, setUserMessageId, userId}) => {
     return <ContainerColumn isBordered>

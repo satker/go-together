@@ -1,12 +1,14 @@
 import React, {useState} from 'react';
-import ObjectGeoLocation from "../../../utils/components/ObjectGeoLocation";
 import PropTypes from "prop-types";
-import {onChange} from "../../../utils/utils";
-import {DEFAULT_COUNTRY, DEFAULT_LOCATION, DEFAULT_ROUTE} from "../../../utils/constants";
+
+import ObjectGeoLocation from "forms/utils/components/ObjectGeoLocation";
+import {onChange} from "forms/utils/utils";
+import Container from "forms/utils/components/Container/ContainerRow";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import {DEFAULT_COUNTRY, DEFAULT_LOCATION, DEFAULT_ROUTE} from "forms/utils/constants";
+import {connect} from "App/Context";
+
 import {updateEvent} from "../actions";
-import {connect} from "../../../../App/Context";
-import Container from "../../../utils/components/Container/ContainerRow";
-import ItemContainer from "../../../utils/components/Container/ItemContainer";
 
 const Route = ({eventRoute, updateEvent}) => {
     const [routeNumber, setRouteNumber] = useState(eventRoute.length || 1);

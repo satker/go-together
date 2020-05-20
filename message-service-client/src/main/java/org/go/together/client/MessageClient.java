@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-@FeignClient(name = "message-service", url = "http://localhost:8064")
+@FeignClient(name = "message-service")
 public interface MessageClient {
     @GetMapping("users/{userId}/notifications")
     Set<NotificationDto> getNotifications(@PathVariable("userId") UUID userId);

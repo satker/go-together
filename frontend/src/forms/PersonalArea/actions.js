@@ -1,6 +1,7 @@
-import {USER_SERVICE_URL} from "../utils/constants";
+import {USER_SERVICE_URL} from "forms/utils/constants";
+import {PUT} from "App/utils/api/constants";
+
 import {PERSONAL_AREA_CHECK_MAIL, PERSONAL_AREA_UPDATED_USER, PERSONAL_AREA_USER_INFO} from "./constants";
-import {PUT} from "../../App/utils/api/constants";
 
 const URL_USER = USER_SERVICE_URL + "/users/_id_";
 const URLtoCheck = USER_SERVICE_URL + '/users/check/mail/_mail_';

@@ -6,9 +6,10 @@ import IconButton from "@material-ui/core/IconButton";
 import {navigate} from "hookrouter";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import AppBar from "@material-ui/core/AppBar";
+
 import {fade, makeStyles} from "@material-ui/core/styles";
-import {EVENT_SERVICE_URL} from "../../../forms/utils/constants";
-import {AutosuggestionEvents} from "../../../forms/utils/components/Autosuggestion";
+import {EVENT_SERVICE_URL} from "forms/utils/constants";
+import {AutosuggestionEvents} from "forms/utils/components/Autosuggestion";
 import ToolbarButtons from "../ToolbarButtons";
 
 const useStyles = makeStyles(theme => ({

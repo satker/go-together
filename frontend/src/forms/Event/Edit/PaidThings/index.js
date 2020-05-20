@@ -1,13 +1,15 @@
 import React, {useEffect} from 'react';
-import {Event, ResponseData} from "../../../utils/types";
 import PropTypes from "prop-types";
+
+import {Event, ResponseData} from "forms/utils/types";
+import {DEFAULT_PAID_THING} from "forms/utils/constants";
+import Container from "forms/utils/components/Container/ContainerRow";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import {connect} from "App/Context";
+
 import PaidThingItem from "./PaidThingItem";
-import {DEFAULT_PAID_THING} from "../../../utils/constants";
-import {connect} from "../../../../App/Context";
 import {getCashCategories, getPayedThings} from "./actions";
 import {updateEvent} from "../actions";
-import Container from "../../../utils/components/Container/ContainerRow";
-import ItemContainer from "../../../utils/components/Container/ItemContainer";
 
 const PaidThings = ({
                         event, updateEvent, cashCategories, payedThings,

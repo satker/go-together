@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import './style.css';
 import {Box} from "@material-ui/core";
+
+import './style.css';
 
 const ContainerColumn = ({children, isBordered, style}) => {
     const styleClass = 'margin-bottom-20 margin-right-item' + (isBordered ? ' custom-border' : '');

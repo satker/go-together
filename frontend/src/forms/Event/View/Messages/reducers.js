@@ -1,4 +1,5 @@
-import {createEmptyResponse} from "../../../../App/utils/utils";
+import {createEmptyResponse} from "App/utils/utils";
+
 import {MESSAGES_CHATS, MESSAGES_MESSAGES_BY_EVENT, MESSAGES_NEW_MESSAGE, MESSAGES_USERS_INFO} from "./constants";
 
 export const messages = {

@@ -1,6 +1,7 @@
-import {MESSAGE_SERVICE_URL} from "../../../utils/constants";
+import {MESSAGE_SERVICE_URL} from "forms/utils/constants";
+import {PUT} from "App/utils/api/constants";
+
 import {MESSAGES_MESSAGES_BY_EVENT, MESSAGES_NEW_MESSAGE} from "./constants";
-import {PUT} from "../../../../App/utils/api/constants";
 
 export const getMessagesByEvent = (eventId, authorId) => (dispatch) => {
     dispatch({

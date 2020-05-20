@@ -1,13 +1,14 @@
+import React, {useEffect} from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import PropTypes from "prop-types";
-import React, {useEffect} from "react";
+
 import {set as setCookie} from "js-cookie";
-import {USER_ID} from "../../../forms/utils/constants";
-import {connect} from "../../Context";
+import {USER_ID} from "forms/utils/constants";
+import {connect} from "App/Context";
 import {cleanToken, cleanUserId} from "../actions";
-import {CSRF_TOKEN} from "../../Context/constants";
+import {CSRF_TOKEN} from "App/Context/constants";
 
 const LogoutButton = ({menuId, cleanUserId, cleanToken, userId}) => {
     const logout = () => {

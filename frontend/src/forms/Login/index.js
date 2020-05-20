@@ -1,21 +1,23 @@
 import React, {useEffect, useState} from 'react';
-import {connect} from "../../App/Context";
-import MenuItem from "@material-ui/core/MenuItem";
 import * as PropTypes from "prop-types";
-import './style.css'
-import {getLoginId, postLogin, setCsrfToken, setUserId} from "./actions";
-import LabeledInput from "../utils/components/LabeledInput";
-import ItemContainer from "../utils/components/Container/ItemContainer";
-import ContainerColumn from "../utils/components/Container/ContainerColumn";
-import {navigate} from "hookrouter";
-import CustomButton from "../utils/components/CustomButton";
+import MenuItem from "@material-ui/core/MenuItem";
+import {connect} from "App/Context";
 import {set as setCookie} from "js-cookie";
-import {USER_ID} from "../utils/constants";
-import {CSRF_TOKEN} from "../../App/Context/constants";
+import {navigate} from "hookrouter";
+
+import LabeledInput from "forms/utils/components/LabeledInput";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
+import CustomButton from "forms/utils/components/CustomButton";
+import {USER_ID} from "forms/utils/constants";
+import {CSRF_TOKEN} from "App/Context/constants";
+
+import {getLoginId, postLogin, setCsrfToken, setUserId} from "./actions";
+import './style.css'
 
 const FormLogin = ({
                        formId, postLogin, handleMenuClose, loginId, getLoginId,
-                       setUserId, csrfToken, setCsrfToken, loginToken
+                       setUserId, setCsrfToken, loginToken
                    }) => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
@@ -93,7 +95,6 @@ FormLogin.propTypes = {
 const mapStateToProps = () => (state) => ({
     loginId: state.components.forms.login.loginId,
     loginToken: state.components.forms.login.loginToken,
-    csrfToken: state.csrfToken
 });
 
 export default connect(mapStateToProps,

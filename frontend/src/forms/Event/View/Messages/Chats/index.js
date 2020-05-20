@@ -1,10 +1,12 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {connect} from "../../../../../App/Context";
 import PropTypes from "prop-types";
-import {keys} from 'lodash'
+import {keys} from 'lodash';
+
+import {connect} from "App/Context";
+import {ResponseData} from "forms/utils/types";
+
 import MessageItem from "./MessageItem";
 import {getChats, postUsersInfo} from "./actions";
-import {ResponseData} from "../../../../utils/types";
 
 const UserChats = ({
                        event, userMessageId, setUserMessageId, userId,

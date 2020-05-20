@@ -1,14 +1,16 @@
 import React, {useEffect} from "react";
-import EventLikes from "../../../../utils/components/Event/EventLikes";
-import ParticipationButton from "../../ParticipationButton";
-import {connect} from "../../../../../App/Context";
-import * as PropTypes from "prop-types";
-import {Event, ResponseData} from "../../../../utils/types";
-import LeftContainer from "../../../../utils/components/Container/LeftContainer";
-import ItemContainer from "../../../../utils/components/Container/ItemContainer";
+import PropTypes from "prop-types";
 import moment from "moment";
-import LoadableContent from "../../../../utils/components/LoadableContent";
-import {postLikes} from "../../../../utils/components/Event/EventLikes/actions";
+
+import EventLikes from "forms/utils/components/Event/EventLikes";
+import LoadableContent from "forms/utils/components/LoadableContent";
+import {postLikes} from "forms/utils/components/Event/EventLikes/actions";
+import {Event, ResponseData} from "forms/utils/types";
+import LeftContainer from "forms/utils/components/Container/LeftContainer";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import {connect} from "App/Context";
+
+import ParticipationButton from "../../ParticipationButton";
 import {getUsers} from "../../actions";
 
 const CommonInfo = ({event, users, getUsers, userId, postLikes}) => {

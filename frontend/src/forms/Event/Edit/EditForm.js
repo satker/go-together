@@ -1,15 +1,17 @@
 import React, {useEffect} from 'react';
-import MainInfo from "./MainInfo";
-import {connect} from "../../../App/Context";
-import {Event, ResponseData} from "../../utils/types";
 import {navigate} from 'hookrouter';
-import PaidThings from "./PaidThings";
-import Route from "./Route";
-import Container from "../../utils/components/Container/ContainerRow";
 import * as PropTypes from "prop-types";
+
+import {connect} from "App/Context";
+import {Event, ResponseData} from "forms/utils/types";
+import CustomButton from "forms/utils/components/CustomButton";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import Container from "forms/utils/components/Container/ContainerRow";
+
+import PaidThings from "./PaidThings";
+import MainInfo from "./MainInfo";
+import Route from "./Route";
 import {postUpdatedEvent, putNewEvent, updateEvent} from "./actions";
-import CustomButton from "../../utils/components/CustomButton";
-import ItemContainer from "../../utils/components/Container/ItemContainer";
 
 const EditForm = ({
                       event, userId, postUpdatedEvent, putNewEvent,

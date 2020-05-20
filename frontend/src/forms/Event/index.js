@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from "prop-types";
+
 import ViewEvent from "./View";
 import CreateEvent from "./Edit";
-import * as PropTypes from "prop-types";
 
 const Event = ({id, isView}) => isView ?
     <ViewEvent id={id}/> :

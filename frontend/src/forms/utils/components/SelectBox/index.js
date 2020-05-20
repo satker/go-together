@@ -1,12 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
-import {SimpleObject} from "../../types";
-import PropTypes from 'prop-types';
+
+import {SimpleObject} from "forms/utils/types";
+
 import './style.css';
 
-const Index = ({items, value, onChange, labelText}) => {
+const SelectBox = ({items, value, onChange, labelText}) => {
     const componentId = labelText.toLowerCase().replace(' ', '_');
     return <FormControl component={componentId} className='select-box-custom' fullWidth>
         <InputLabel id={"select-label-" + componentId}>{labelText}</InputLabel>
@@ -22,11 +24,11 @@ const Index = ({items, value, onChange, labelText}) => {
     </FormControl>
 };
 
-Index.propTypes = {
+SelectBox.propTypes = {
     items: PropTypes.arrayOf(SimpleObject).isRequired,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     labelText: PropTypes.string.isRequired,
 };
 
-export default Index;
+export default SelectBox;
