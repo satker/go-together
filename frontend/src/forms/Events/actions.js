@@ -5,7 +5,6 @@ import {ARRIVAL_DATE, DEPARTURE_DATE, PAGE} from "App/Context/constants";
 import {EVENTS_APARTMENT_TYPES, EVENTS_FIND_EVENTS, EVENTS_LANGUAGES, EVENTS_PARAMETERS} from "./constants";
 
 export const postFindEvents = (filterObject) => (dispatch) => {
-    console.log(filterObject.page.page);
     dispatch({
         type: EVENTS_FIND_EVENTS,
         url: EVENTS_URL + '/find',

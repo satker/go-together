@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 import java.util.UUID;
 
-@FeignClient(name = "location-service", url = "http://localhost:8090")
+@FeignClient(name = "location-service")
 public interface LocationClient {
     @GetMapping("/events/{eventId}/routes")
     Set<EventLocationDto> getEventRoute(@PathVariable("eventId") UUID eventId);

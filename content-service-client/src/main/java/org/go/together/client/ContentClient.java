@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
-@FeignClient(name = "content-service", url = "http://localhost:8099")
+@FeignClient(name = "content-service")
 public interface ContentClient {
     @PutMapping("/photos")
     Collection<IdDto> savePhotos(@RequestBody Set<PhotoDto> userPhotos);
