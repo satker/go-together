@@ -68,8 +68,9 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd, h
 
     const endDrag = () => {
         request(currentLat, currentLng, (result) => {
+            const addressObject = result.results[0];
             onChange(currentKey, ['location.name', 'location.country.name', 'location.state', 'address'],
-                [getCity(result), getCountry(result), getState(result), getAddress(result)]);
+                [getCity(addressObject), getCountry(addressObject), getState(addressObject), getAddress(addressObject)]);
         });
     };
 
@@ -132,16 +133,16 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd, h
 
     const onAddMarker = ({lat, lng}) => {
         request(lat, lng, (result) => {
+            const addressObject = result.results[0];
             onAdd(['latitude', 'longitude', 'location.name',
                     'location.country.name', 'location.state', 'address'],
-                [lat, lng, getCity(result), getCountry(result), getState(result), getAddress(result)]);
+                [lat, lng, getCity(addressObject), getCountry(addressObject), getState(addressObject), getAddress(addressObject)]);
         });
     };
 
     return <Container>
         <ItemContainer>
-            {editable && googleMap && <AutocompleteLocation google={googleMap}
-                                                            setCenter={setCenter}/>}
+            {editable && googleMap && <AutocompleteLocation setCenter={setCenter}/>}
         </ItemContainer>
         <ContainerColumn>
             <LeftContainer style={{width: '69%', height}}>

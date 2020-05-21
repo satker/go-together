@@ -2,9 +2,8 @@ import React, {useEffect, useState} from 'react';
 import CardMedia from "@material-ui/core/CardMedia";
 import {navigate} from 'hookrouter';
 
-import {AutosuggestionLocations} from "forms/utils/components/Autosuggestion";
-import {LOCATION_SERVICE_URL} from 'forms/utils/constants'
 import {connect} from "App/Context";
+import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
 import {getSrcForImg} from "forms/utils/utils";
 import ImageSelector from "forms/utils/components/ImageSelector";
 import CustomReference from "forms/utils/components/CustomReference";
@@ -182,13 +181,7 @@ const FormRegister = ({
             />
         </ItemContainer>
         <ItemContainer>
-            <AutosuggestionLocations
-                formId='register_'
-                setResult={(value) => setLocation(value)}
-                placeholder={'Search a location (CITY,COUNTRY)'}
-                url={LOCATION_SERVICE_URL + '/locations'}
-                urlParam={'name'}
-            />
+            <AutocompleteLocation onChangeLocation={setLocation}/>
         </ItemContainer>
         <ItemContainer>
             <LabeledInput

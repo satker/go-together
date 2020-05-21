@@ -1,10 +1,23 @@
 import React, {useEffect, useRef} from 'react';
 import PropTypes from "prop-types";
 
+import {DEFAULT_COUNTRY, DEFAULT_LOCATION, DEFAULT_ROUTE} from "forms/utils/constants";
+import {getCity, getCountry, getState} from "forms/utils/components/ObjectGeoLocation/utils";
 import LabeledInput from "forms/utils/components/LabeledInput";
+import {onChange} from "forms/utils/utils";
 
-const AutocompleteLocation = ({google, setCenter}) => {
+const google = window.google;
+
+const AutocompleteLocation = ({setCenter, onChangeLocation}) => {
     const autocompleteInput = useRef();
+
+    const getLocation = (paths, values) => {
+        let newLocation = {...DEFAULT_ROUTE};
+        newLocation = {...DEFAULT_LOCATION};
+        newLocation.country = {...DEFAULT_COUNTRY};
+        onChange(newLocation, result => newLocation = result)(paths, values);
+        return newLocation;
+    };
 
     useEffect(() => {
         const options = {
@@ -17,7 +30,13 @@ const AutocompleteLocation = ({google, setCenter}) => {
 
         autocompleteCustom.addListener('place_changed', () => {
             const addressObject = autocompleteCustom.getPlace();
-            setCenter({lat: addressObject.geometry.location.lat(), lng: addressObject.geometry.location.lng()});
+            if (onChangeLocation) {
+                const newLocation = getLocation(['name', 'country.name', 'state'],
+                    [getCity(addressObject), getCountry(addressObject), getState(addressObject)]);
+                onChangeLocation(newLocation);
+            } else if (setCenter) {
+                setCenter({lat: addressObject.geometry.location.lat(), lng: addressObject.geometry.location.lng()});
+            }
         });
     }, [autocompleteInput, google, setCenter]);
 
@@ -28,8 +47,8 @@ const AutocompleteLocation = ({google, setCenter}) => {
 };
 
 AutocompleteLocation.propTypes = {
-    google: PropTypes.object.isRequired,
-    setCenter: PropTypes.func.isRequired
+    setCenter: PropTypes.func,
+    onChangeLocation: PropTypes.func
 };
 
 export default AutocompleteLocation;
