@@ -1,15 +1,12 @@
 package org.go.together.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.dto.SimpleDto;
 import org.go.together.dto.validation.DateIntervalDto;
 import org.go.together.dto.validation.NumberIntervalDto;
 import org.go.together.dto.validation.StringRegexDto;
-import org.go.together.interfaces.Dto;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -113,33 +110,6 @@ public class ValidatorUtils {
                         StringUtils.EMPTY)
                 .collect(Collectors.joining());
     }
-
-    public static String checkAnotherServiceValidationCorrectCheck(Map<String, Pair<Function<Dto, String>,
-            Collection<Dto>>> mapForCheck) {
-        final String message = "Dto field %s don't pass validation: ";
-        return mapForCheck.entrySet().stream()
-                .map(stringPairEntry -> {
-                    String errorsCollection = stringPairEntry.getValue().getValue().stream()
-                            .map(stringPairEntry.getValue().getKey())
-                            .filter(StringUtils::isNotBlank)
-                            .collect(Collectors.joining(". "));
-                    if (StringUtils.isNotBlank(errorsCollection)) {
-                        return String.format(message, stringPairEntry.getKey()).concat(errorsCollection);
-                    }
-                    return StringUtils.EMPTY;
-                })
-                .collect(Collectors.joining());
-    }
-
-    public static boolean isUUIDCorrect(String uuid) {
-        try {
-            UUID.fromString(uuid);
-            return StringUtils.isNotBlank(uuid);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
 
     private static boolean isCorrectSimpleDto(Collection<SimpleDto> simpleDto) {
         if (simpleDto.isEmpty()) {

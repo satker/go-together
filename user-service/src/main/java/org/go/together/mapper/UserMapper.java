@@ -56,7 +56,7 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
                 .collect(Collectors.toSet()));
         user.setMail(dto.getMail());
         user.setLogin(dto.getLogin());
-        user.setLocationId(dto.getLocation().getId());
+        user.setLocationId(locationClient.saveLocation(dto.getLocation()).getId());
         user.setLastName(dto.getLastName());
         user.setFirstName(dto.getFirstName());
         user.setDescription(dto.getDescription());

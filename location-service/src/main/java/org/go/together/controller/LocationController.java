@@ -44,8 +44,13 @@ public class LocationController implements LocationClient {
     }
 
     @Override
-    public String validate(EventLocationDto eventLocationDto) {
+    public String validateRoutes(EventLocationDto eventLocationDto) {
         return eventLocationService.validate(eventLocationDto);
+    }
+
+    @Override
+    public String validateLocation(LocationDto locationDto) {
+        return locationService.validate(locationDto);
     }
 
     @Override
@@ -56,5 +61,10 @@ public class LocationController implements LocationClient {
     @Override
     public Set<SimpleDto> autocompleteLocations(String name) {
         return locationService.getLocationsByName(name);
+    }
+
+    @Override
+    public IdDto saveLocation(LocationDto locationDto) {
+        return locationService.create(locationDto);
     }
 }

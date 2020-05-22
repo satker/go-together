@@ -9,12 +9,9 @@ import RightContainer from "forms/utils/components/Container/RightContainer";
 import Container from "forms/utils/components/Container/ContainerRow";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 
-import {GOOGLE_API_KEY, request} from "./GoogleMapsApiRequest";
 import Marker from "./Marker";
-import {getAddress, getCity, getCountry, getState} from "./utils";
+import {getAddress, getCity, getCountry, getState, GOOGLE_API_KEY, request} from "./utils";
 import RoutesList from "./RoutesList";
-
-import "./style_place.css";
 
 const getMapOptions = {
     disableDefaultUI: true,

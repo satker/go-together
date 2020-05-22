@@ -70,7 +70,7 @@ public class EventValidator extends Validator<EventDto> {
                 .forEach(errors::append);
 
         dto.getRoute().stream()
-                .map(locationClient::validate)
+                .map(locationClient::validateRoutes)
                 .filter(StringUtils::isNotBlank)
                 .forEach(errors::append);
 

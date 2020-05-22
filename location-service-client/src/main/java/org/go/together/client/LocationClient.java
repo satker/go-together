@@ -25,7 +25,10 @@ public interface LocationClient {
     boolean deleteRoutes(@RequestBody Set<UUID> eventLocationDtos);
 
     @PostMapping("/routes/validate")
-    String validate(@RequestBody EventLocationDto eventLocationDto);
+    String validateRoutes(@RequestBody EventLocationDto eventLocationDto);
+
+    @PostMapping("/locations/validate")
+    String validateLocation(@RequestBody LocationDto locationDto);
 
     @GetMapping("/locations/{locationId}")
     LocationDto getLocationById(@PathVariable("locationId") UUID locationId);
@@ -33,4 +36,6 @@ public interface LocationClient {
     @GetMapping("/locations")
     Set<SimpleDto> autocompleteLocations(@RequestParam("name") String name);
 
+    @PostMapping("/locations")
+    IdDto saveLocation(@RequestBody LocationDto locationDto);
 }

@@ -101,17 +101,18 @@ const FormRegister = ({
     }, [checkUserName, setCheckedUserName, setIsUserNameReadyForRegister]);
 
     const handleSubmit = () => {
-        let body = {};
-        body.login = login;
-        body.mail = mail;
-        body.firstName = firstName;
-        body.lastName = lastName;
-        body.location = location;
-        body.description = description;
-        body.userPhotos = [userPhoto];//
-        body.password = password;
-        body.languages = languages.map(lang => ({id: lang.value, name: lang.label}));
-        body.interests = interests.map(interest => ({id: interest.value, name: interest.label}));
+        let body = {
+            login,
+            mail,
+            firstName,
+            lastName,
+            location,
+            description,
+            userPhotos: [userPhoto],
+            password,
+            languages,
+            interests
+        };
         registerUser(body);
     };
 
@@ -122,6 +123,7 @@ const FormRegister = ({
     }, [registeredUser]);
 
     const moveToMainPage = () => navigate('/');
+    console.log(languages, interests)
 
     return <Container>
         <ItemContainer>
