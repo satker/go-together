@@ -12,6 +12,7 @@ import {connect} from "App/Context";
 
 import ParticipationButton from "../../ParticipationButton";
 import {getUsers} from "../../actions";
+import Container from "forms/utils/components/Container/ContainerRow";
 
 const CommonInfo = ({event, users, getUsers, userId, postLikes}) => {
     useEffect(() => {
@@ -44,10 +45,12 @@ const CommonInfo = ({event, users, getUsers, userId, postLikes}) => {
             <h5>Event paid things:</h5>
         </ItemContainer>
         <ItemContainer>
-            {event.paidThings.map((p, key) => {
-                return (<p key={key}>• {p.cashCategory} - {p.paidThing.name}</p>
-                )
-            })}
+            <Container>
+                {event.paidThings.map((p, key) => {
+                    return (<ItemContainer key={key}>• {p.cashCategory} - {p.paidThing.name}</ItemContainer>
+                    )
+                })}
+            </Container>
         </ItemContainer>
         <ItemContainer>
             Trip dates: {moment(event.startDate).format('LLL')} -> {moment(event.endDate).format('LLL')}

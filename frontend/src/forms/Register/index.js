@@ -214,7 +214,7 @@ const FormRegister = ({
             </LoadableContent>
         </ItemContainer>
         <ItemContainer>
-            {userPhoto && <CardMedia style={{height: '255px'}}
+            {userPhoto && <CardMedia style={{height: '255px', width: '350px'}}
                                      component="img"
                                      image={getSrcForImg(userPhoto)}/>}
             <ImageSelector photos={userPhoto}
