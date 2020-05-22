@@ -75,7 +75,6 @@ const WebRTCInputMessage = ({
     }, [conn, peerConnection, event, sentUserId, sentUserRecipientId]);
 
     const createOffer = useCallback(() => {
-        console.log('create offer');
 
         peerConnection.createOffer((offer) => {
             send({
@@ -96,9 +95,7 @@ const WebRTCInputMessage = ({
             dataChannel.send(JSON.stringify(newMessage));
         }
     };
-    console.log('rerender', {...peerConnection});
 
-    console.log(sentUserId, sentUserRecipientId, peerConnection);
     return sentUserId && sentUserRecipientId && peerConnection &&
         <InputMessage readOnly={readOnly}
                       userId={sentUserId}

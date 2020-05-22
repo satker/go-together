@@ -5,27 +5,19 @@ import {Switch} from "@material-ui/core";
 import {createFileReaderToParsePhoto, createPhotoObj} from "forms/utils/utils";
 import {PhotoObject} from "forms/utils/types";
 import LabeledInput from "forms/utils/components/LabeledInput";
-import CustomButton from "forms/utils/components/CustomButton";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import ContainerRow from "forms/utils/components/Container/ContainerRow";
 
 const ImageSelector = ({photos, setPhotos, multiple}) => {
     const [isPhotoUrl, setIsPhotoUrl] = useState(false);
     const [photoFiles, setPhotoFiles] = useState([]);
-    const [photosToPush, setPhotosToPush] = useState([]);
-
     const [fileLength, setFileLength] = useState(0);
-    const [currentLength, setCurrentLength] = useState(0);
-
-    const addPhoto = () => {
-        isPhotoUrl ? addPhotoUrl(photosToPush) : addPhotoFile(photosToPush.files);
-    };
+    const [lock, setLock] = useState(false);
 
     const addPhotoUrl = (roomPhotoUrl) => {
         setFileLength(1);
         const photo = createPhotoObj(true, roomPhotoUrl);
         setPhotoFiles(photo);
-        setCurrentLength(1);
     };
 
     const addPhotoFile = (customPhotoFiles) => {
@@ -33,17 +25,20 @@ const ImageSelector = ({photos, setPhotos, multiple}) => {
         for (const customPhotoFile of customPhotoFiles) {
             createFileReaderToParsePhoto(customPhotoFile).then(result => {
                 photoFiles.push(createPhotoObj(false, result));
-                setCurrentLength(photoFiles.length);
+                setLock(true);
             })
         }
     };
 
     useEffect(() => {
-        if (photoFiles.length !== 0 && currentLength === fileLength) {
+        if (lock) {
+            setLock(false);
+        }
+        if (photoFiles.length !== 0 && photoFiles.length === fileLength) {
             setPhotos(multiple ? [...photos, ...photoFiles] : photoFiles[0]);
             setPhotoFiles([])
         }
-    }, [currentLength, fileLength, photoFiles, setPhotoFiles, setPhotos, photos, multiple]);
+    }, [fileLength, photoFiles, setPhotos, photos, multiple, lock]);
 
     return <ContainerRow>
         <ItemContainer>
@@ -57,15 +52,12 @@ const ImageSelector = ({photos, setPhotos, multiple}) => {
                 <LabeledInput
                     id="photoUrl"
                     label="Photo url"
-                    onChange={setPhotosToPush}
+                    onChange={addPhotoUrl}
                 />
                 : <input type="file"
                          multiple={multiple}
                          name="file"
-                         onChange={(evt) => setPhotosToPush(evt.target)}/>}
-        </ItemContainer>
-        <ItemContainer>
-            <CustomButton text='Add photo' disabled={!photosToPush} onClick={addPhoto}/>
+                         onChange={(evt) => addPhotoFile(evt.target.files)}/>}
         </ItemContainer>
     </ContainerRow>;
 };

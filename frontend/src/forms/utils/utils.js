@@ -1,5 +1,4 @@
 import {get, set} from "lodash";
-import {PHOTO_OBJECT} from "./constants";
 
 export const getSrcForImg = (photoObj) => {
     if (!photoObj) {
@@ -21,7 +20,14 @@ export const createFileReaderToParsePhoto = (photo) => new Promise((resolve) => 
 
 export const createPhotoObj = (isUrl, data) => {
 
-    const newPhotoObj = {...PHOTO_OBJECT};
+    const newPhotoObj = {
+        id: null,
+        photoUrl: null,
+        content: {
+            type: null,
+            photoContent: null
+        }
+    };
 
     if (isUrl) {
         newPhotoObj.photoUrl = data;

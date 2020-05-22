@@ -123,7 +123,6 @@ const FormRegister = ({
     }, [registeredUser]);
 
     const moveToMainPage = () => navigate('/');
-    console.log(languages, interests)
 
     return <Container>
         <ItemContainer>
@@ -215,7 +214,9 @@ const FormRegister = ({
             </LoadableContent>
         </ItemContainer>
         <ItemContainer>
-            {userPhoto && <CardMedia img={getSrcForImg(userPhoto)}/>}
+            {userPhoto && <CardMedia style={{height: '255px'}}
+                                     component="img"
+                                     image={getSrcForImg(userPhoto)}/>}
             <ImageSelector photos={userPhoto}
                            setPhotos={photo => {
                                handlePhoto(photo, setCheckedPhoto, setIsPhotoReadyForRegister);
