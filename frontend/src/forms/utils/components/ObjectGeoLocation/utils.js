@@ -1,4 +1,4 @@
-import {GET} from "../../../../App/utils/api/constants";
+import {GET} from "App/utils/api/constants";
 
 export const GOOGLE_API_KEY = "AIzaSyBSjnMkN8ckymUWZO5v0q-cZW9WppoFsyM";
 

@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-
-import {SimpleObject} from "forms/utils/types";
 import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
 import {makeStyles} from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
+
+import {SimpleObject} from "forms/utils/types";
 
 const useStyles = makeStyles(theme => ({
     formControl: {
