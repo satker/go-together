@@ -82,11 +82,9 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
     }
 
     public class WhereBuilder {
-        private StringBuilder whereQuery;
-        private Class<E> clazz;
+        private final StringBuilder whereQuery;
 
-        public WhereBuilder(Class<E> clazz, Boolean isGroup) {
-            this.clazz = clazz;
+        public WhereBuilder(Boolean isGroup) {
             whereQuery = new StringBuilder(isGroup ? StringUtils.EMPTY : " WHERE ");
         }
 
