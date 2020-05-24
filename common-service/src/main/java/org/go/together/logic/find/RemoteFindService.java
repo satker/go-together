@@ -4,14 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FilterDto;
 import org.go.together.dto.filter.FormDto;
-import org.go.together.exceptions.IncorrectDtoException;
 import org.go.together.exceptions.ServiceTransportException;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RemoteFindService {
     private final String serviceName;
@@ -20,33 +22,33 @@ public class RemoteFindService {
         this.serviceName = serviceName;
     }
 
-    public Collection<Object> getFiltersToRequest(Map<String, FilterDto> currentFilters,
-                                                  FormDto dto) {
+    public Map<String, Collection<Object>> getFiltersToRequest(Map<String, FilterDto> currentFilters,
+                                                               Map<String, FilterDto> filters) {
         Map<String, FormDto> filtersToAnotherServices = new HashMap<>();
-        dto.getFilters().forEach((key, value) -> {
+        filters.forEach((key, value) -> {
             String[] keys = key.split("\\.", 2);
             if (keys[0].equals(serviceName)) {
                 currentFilters.put(keys[1], value);
-            } else if (keys[0].matches(".*-service.*")) {
-                convertToAnotherRequest(dto, filtersToAnotherServices, key, value);
+            } else if (FieldParser.isFieldParsed(key) && FieldParser.getRemoteFieldToSearch(key).matches(".*-service.*")) {
+                convertToAnotherRequest(filtersToAnotherServices, key, value);
             }
         });
         if (!filtersToAnotherServices.isEmpty()) {
             return getFilterResultFromOtherServices(filtersToAnotherServices);
         }
 
-        return Collections.emptyList();
+        return Collections.emptyMap();
     }
 
-    private void convertToAnotherRequest(FormDto formDto, Map<String, FormDto> filtersToAnotherServices, String key, FilterDto value) {
-        String[] serviceAndValue = key.split("\\.", 3);
-        if (!serviceAndValue[0].matches(".*-service")) {
-            throw new IncorrectDtoException("Incorrect service name");
-        }
+    private void convertToAnotherRequest(Map<String, FormDto> filtersToAnotherServices, String key, FilterDto value) {
+        String serviceName = FieldParser.getServiceName(key);
+        FormDto stringFilterDtoMap = filtersToAnotherServices.get(serviceName);
+        String localEntityField = FieldParser.getLocalEntityField(key);
 
-        FormDto stringFilterDtoMap = filtersToAnotherServices.get(serviceAndValue[0]);
-        String keyFilterDto = serviceAndValue[1] + "." + serviceAndValue[2];
-        String mainField = serviceAndValue[1] + "." + formDto.getMainIdField();
+        String serviceLocalField = serviceName + "&" + localEntityField;
+
+        String keyFilterDto = FieldParser.getFieldSearch(key);
+        String remoteGetField = FieldParser.getRemoteGetField(key);
         if (stringFilterDtoMap != null) {
             Map<String, FilterDto> filters = stringFilterDtoMap.getFilters();
             FilterDto filterDto = filters.get(keyFilterDto);
@@ -56,27 +58,29 @@ public class RemoteFindService {
                 filterDto = value;
             }
             filters.put(keyFilterDto, filterDto);
-            FormDto formDto1 = new FormDto(null, filters, mainField, false);
-            filtersToAnotherServices.put(serviceAndValue[0], formDto1);
+            FormDto formDto1 = new FormDto(null, filters, remoteGetField, false);
+            filtersToAnotherServices.put(serviceLocalField, formDto1);
         } else {
             Map<String, FilterDto> map = new HashMap<>();
             map.put(keyFilterDto, value);
-            FormDto formDto1 = new FormDto(null, map, mainField, false);
-            filtersToAnotherServices.put(serviceAndValue[0], formDto1);
+            FormDto formDto1 = new FormDto(null, map, remoteGetField, false);
+            filtersToAnotherServices.put(serviceLocalField, formDto1);
         }
     }
 
-    protected Collection<Object> getFilterResultFromOtherServices(Map<String, FormDto> filtersToAnotherServices) {
-        Collection<Object> result = new HashSet<>();
-        for (Map.Entry<String, FormDto> stringFormDtoEntry : filtersToAnotherServices.entrySet()) {
-            Collection<Object> request = sendRequestAndGetFoundIds(stringFormDtoEntry.getKey(), stringFormDtoEntry.getValue());
+    protected Map<String, Collection<Object>> getFilterResultFromOtherServices(Map<String, FormDto> filtersToAnotherServices) {
+        Map<String, Collection<Object>> result = new HashMap<>();
+        for (Map.Entry<String, FormDto> filtersService : filtersToAnotherServices.entrySet()) {
+            String[] serviceField = filtersService.getKey().split("&");
+            Collection<Object> request = sendRequestAndGetFoundIds(serviceField[0], filtersService.getValue());
             if (request == null || request.isEmpty()) {
-                return Collections.emptySet();
+                return Collections.emptyMap();
             } else {
-                if (result.isEmpty()) {
-                    result.addAll(request);
+                result.put(serviceField[1], request);
+                if (result.get(serviceField[1]).isEmpty()) {
+                    result.put(serviceField[1], request);
                 } else {
-                    result.retainAll(request);
+                    result.get(serviceField[1]).addAll(request);
                 }
             }
         }

@@ -26,19 +26,21 @@ public abstract class LocalFindService<E extends IdentifiedEntity> {
 
     public abstract String getServiceName();
 
-    protected Map<String, FilterDto> enrichFilterByFoundedValues(String mainFieldForCurrentService,
-                                                                 Collection<Object> foundedKeysFromAnotherService,
+    protected Map<String, FilterDto> enrichFilterByFoundedValues(Map<String, Collection<Object>> foundedKeysFromAnotherService,
                                                                  Map<String, FilterDto> currentServiceFilters) {
         if (foundedKeysFromAnotherService.isEmpty()) {
             return currentServiceFilters;
         }
-        Set<SimpleDto> valuesFromOtherService = foundedKeysFromAnotherService.stream()
-                .map(key -> new SimpleDto(String.valueOf(key), String.valueOf(key)))
-                .collect(Collectors.toSet());
+        foundedKeysFromAnotherService.forEach((key, values) -> {
+            Set<SimpleDto> valuesFromOtherService = values.stream()
+                    .map(value -> new SimpleDto(String.valueOf(value), String.valueOf(value)))
+                    .collect(Collectors.toSet());
 
-        FilterDto filterDto = new FilterDto(FilterSqlOperator.IN, valuesFromOtherService);
-        Map<String, FilterDto> filterForCurrentService = Collections.singletonMap(mainFieldForCurrentService, filterDto);
-        currentServiceFilters.putAll(filterForCurrentService);
+            FilterDto filterDto = new FilterDto(FilterSqlOperator.IN, valuesFromOtherService);
+            Map<String, FilterDto> filterForCurrentService = Collections.singletonMap(key, filterDto);
+            currentServiceFilters.putAll(filterForCurrentService);
+        });
+
         return currentServiceFilters;
     }
 

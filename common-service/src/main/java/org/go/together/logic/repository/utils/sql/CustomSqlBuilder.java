@@ -3,10 +3,7 @@ package org.go.together.logic.repository.utils.sql;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.interfaces.IdentifiedEntity;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -23,8 +20,14 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
         String entityLink = getEntityLink(clazz);
         String selectQuery = selectRow == null ? entityLink : entityLink + "." + selectRow;
         query = new StringBuilder("select distinct " + selectQuery + " FROM " + clazz.getSimpleName() + " " + entityLink);
+        appendJoins(clazz, query);
+        this.entityManager = entityManager;
+        this.clazz = clazz;
+    }
+
+    private void appendJoins(Class<E> clazz, StringBuilder query) {
         Arrays.stream(clazz.getDeclaredFields())
-                .filter(field1 -> field1.getAnnotation(ElementCollection.class) != null)
+                .filter(field1 -> field1.getAnnotation(ElementCollection.class) != null || field1.getAnnotation(ManyToMany.class) != null)
                 .forEach(field1 -> {
                     String generatedTableName = getJoinTableName(field1, clazz);
                     query.append(" left join ")
@@ -33,8 +36,6 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
                             .append(generatedTableName);
                     joinTables.put(field1.getName(), generatedTableName);
                 });
-        this.entityManager = entityManager;
-        this.clazz = clazz;
     }
 
     private String getJoinTableName(Field field, Class<E> clazz) {
@@ -90,8 +91,11 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
     }
 
     public Number getCountRowsWhere(WhereBuilder whereBuilder) {
-        return entityManager.createQuery("SELECT COUNT (DISTINCT " + getEntityLink(clazz) + ".id) FROM " +
-                clazz.getSimpleName() + " " + getEntityLink(clazz) + " " + whereBuilder.getWhereQuery(), Number.class)
+        StringBuilder query = new StringBuilder("SELECT COUNT (DISTINCT " + getEntityLink(clazz) + ".id) FROM " +
+                clazz.getSimpleName() + " " + getEntityLink(clazz) + " ");
+        appendJoins(clazz, query);
+        query.append(whereBuilder.getWhereQuery());
+        return entityManager.createQuery(query.toString(), Number.class)
                 .getSingleResult();
     }
 
@@ -111,10 +115,13 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
 
         public WhereBuilder condition(String field, SqlOperator sqlOperator, Object value) {
             String parsedValue = parseToString(value);
-            String joinTableName = joinTables.get(field);
+            Optional<Map.Entry<String, String>> joinTableNameOptional = joinTables.entrySet().stream()
+                    .filter(joinName -> field.startsWith(joinName.getKey() + "."))
+                    .findFirst();
             String fieldName = getEntityField(field, clazz);
-            if (StringUtils.isNotBlank(joinTableName)) {
-                fieldName = joinTableName;
+            if (joinTableNameOptional.isPresent()) {
+                Map.Entry<String, String> joinTableName = joinTableNameOptional.get();
+                fieldName = field.replaceFirst(joinTableName.getKey(), joinTableName.getValue());
             }
             whereQuery.append(sqlOperator.getBiFunction().apply(fieldName, parsedValue));
             return this;

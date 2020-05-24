@@ -33,12 +33,11 @@ public abstract class FilterService<E extends IdentifiedEntity> extends LocalFin
         Map<String, FilterDto> currentFilters = new HashMap<>();
 
         // Get filters result to another service : OK
-        Collection<Object> filterKeysFromOtherServices = remoteFindService.getFiltersToRequest(currentFilters, formDto);
+        Map<String, Collection<Object>> filterKeysFromOtherServices = remoteFindService.getFiltersToRequest(currentFilters, formDto.getFilters());
         ////////////////
 
         // get values from this service + other service result
-        Map<String, FilterDto> filtersToCurrentService = enrichFilterByFoundedValues(mainFieldForCurrentService,
-                filterKeysFromOtherServices, currentFilters);
+        Map<String, FilterDto> filtersToCurrentService = enrichFilterByFoundedValues(filterKeysFromOtherServices, currentFilters);
 
         return getValuesInCurrentService(formDto.getMainIdField(), filtersToCurrentService, formDto.getPage());
     }
