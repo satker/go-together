@@ -5,6 +5,7 @@ import org.go.together.interfaces.IdentifiedEntity;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -17,10 +18,11 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
     private final Class<E> clazz;
     private final Map<String, String> joinTables;
 
-    public CustomSqlBuilder(Class<E> clazz, EntityManager entityManager) {
+    public CustomSqlBuilder(Class<E> clazz, EntityManager entityManager, String selectRow) {
         joinTables = new HashMap<>();
         String entityLink = getEntityLink(clazz);
-        query = new StringBuilder("select distinct " + entityLink + " FROM " + clazz.getSimpleName() + " " + entityLink);
+        String selectQuery = selectRow == null ? entityLink : entityLink + "." + selectRow;
+        query = new StringBuilder("select distinct " + selectQuery + " FROM " + clazz.getSimpleName() + " " + entityLink);
         Arrays.stream(clazz.getDeclaredFields())
                 .filter(field1 -> field1.getAnnotation(ElementCollection.class) != null)
                 .forEach(field1 -> {
@@ -31,7 +33,6 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
                             .append(generatedTableName);
                     joinTables.put(field1.getName(), generatedTableName);
                 });
-        //query.append(" FETCH ").append(entityLink).append(".id ");
         this.entityManager = entityManager;
         this.clazz = clazz;
     }
@@ -75,14 +76,30 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
         return query.getResultList();
     }
 
+    public Collection<Object> fetchWithPageableNotDefined(int start, int pageSize) {
+        Query query = entityManager.createQuery(this.query.toString());
+        query.setFirstResult(start);
+        query.setMaxResults(pageSize);
+        return query.getResultList();
+    }
+
     public Number getCountRows() {
         return entityManager.createQuery("SELECT COUNT (DISTINCT " + getEntityLink(clazz) + ".id) FROM " +
                 clazz.getSimpleName() + " " + getEntityLink(clazz), Number.class)
                 .getSingleResult();
     }
 
+    public Number getCountRowsWhere(WhereBuilder whereBuilder) {
+        return entityManager.createQuery("SELECT COUNT (DISTINCT " + getEntityLink(clazz) + ".id) FROM " +
+                clazz.getSimpleName() + " " + getEntityLink(clazz) + " " + whereBuilder.getWhereQuery(), Number.class)
+                .getSingleResult();
+    }
+
     public class WhereBuilder {
         private final StringBuilder whereQuery;
+
+        private static final String AND = " and ";
+        private static final String OR = " or ";
 
         public WhereBuilder(Boolean isGroup) {
             whereQuery = new StringBuilder(isGroup ? StringUtils.EMPTY : " WHERE ");
@@ -111,12 +128,17 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
         }
 
         public WhereBuilder and() {
-            whereQuery.append(" and ");
+            whereQuery.append(AND);
             return this;
         }
 
         public WhereBuilder or() {
-            whereQuery.append(" or ");
+            whereQuery.append(OR);
+            return this;
+        }
+
+        public WhereBuilder cutLastAnd() {
+            whereQuery.setLength(whereQuery.length() - AND.length());
             return this;
         }
     }

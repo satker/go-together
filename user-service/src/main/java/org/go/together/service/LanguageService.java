@@ -30,6 +30,11 @@ public class LanguageService extends CrudService<LanguageDto, Language> {
 
     }
 
+    @Override
+    public String getServiceName() {
+        return "language";
+    }
+
 /*@Override
     public ImmutableMap<String, FunctionToGetValue> getFields() {
         return null;

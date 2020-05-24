@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.go.together.dto.SimpleDto;
-import org.go.together.logic.repository.utils.sql.SqlOperator;
+import org.go.together.logic.FilterSqlOperator;
 
 import java.util.Collection;
 
@@ -12,7 +12,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FilterDto {
-    private SqlOperator filterType;
+    private FilterSqlOperator filterType;
     private Collection<SimpleDto> values;
 
     public void addValue(Collection<SimpleDto> values) {

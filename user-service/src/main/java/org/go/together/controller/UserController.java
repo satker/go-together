@@ -2,6 +2,8 @@ package org.go.together.controller;
 
 import org.go.together.client.UserClient;
 import org.go.together.dto.*;
+import org.go.together.dto.filter.FormDto;
+import org.go.together.logic.FindController;
 import org.go.together.service.InterestService;
 import org.go.together.service.LanguageService;
 import org.go.together.service.UserService;
@@ -10,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 
 @RestController
-class UserController implements UserClient {
+class UserController extends FindController implements UserClient {
     private final UserService userService;
     private final LanguageService languageService;
     private final InterestService interestService;
@@ -18,9 +20,15 @@ class UserController implements UserClient {
     public UserController(UserService userService,
                           LanguageService languageService,
                           InterestService interestService) {
+        super(Arrays.asList(userService, languageService, interestService));
         this.userService = userService;
         this.languageService = languageService;
         this.interestService = interestService;
+    }
+
+    @Override
+    public ResponseDto find(FormDto formDto) {
+        return super.find(formDto);
     }
 
     @Override

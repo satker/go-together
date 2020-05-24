@@ -67,4 +67,9 @@ public class MessageService extends CrudService<MessageDto, Message> {
     protected void updateEntityForCreate(Message entity, MessageDto dto) {
         entity.setDate(new Date());
     }
+
+    @Override
+    public String getServiceName() {
+        return "message";
+    }
 }

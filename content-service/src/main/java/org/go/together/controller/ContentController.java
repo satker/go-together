@@ -4,21 +4,26 @@ import org.go.together.client.ContentClient;
 import org.go.together.dto.EventPhotoDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.PhotoDto;
+import org.go.together.dto.ResponseDto;
+import org.go.together.dto.filter.FormDto;
+import org.go.together.logic.FindController;
 import org.go.together.service.EventPhotoService;
 import org.go.together.service.PhotoService;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-public class ContentController implements ContentClient {
+public class ContentController extends FindController implements ContentClient {
     private final PhotoService photoService;
     private final EventPhotoService eventPhotoService;
 
     public ContentController(PhotoService photoService, EventPhotoService eventPhotoService) {
+        super(Arrays.asList(photoService, eventPhotoService));
         this.photoService = photoService;
         this.eventPhotoService = eventPhotoService;
     }
@@ -58,5 +63,10 @@ public class ContentController implements ContentClient {
     @Override
     public void delete(UUID eventPhotoId) {
         eventPhotoService.delete(eventPhotoId);
+    }
+
+    @Override
+    public ResponseDto find(FormDto formDto) {
+        return super.find(formDto);
     }
 }

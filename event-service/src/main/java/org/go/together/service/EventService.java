@@ -80,7 +80,7 @@ public class EventService extends CrudService<EventDto, Event> {
                 .collect(Collectors.toSet());
     }
 
-    public ResponseDto<EventDto> find(PageDto page) {
+    public ResponseDto find(PageDto page) {
         Set<EventDto> eventsByPagination = eventRepository.findEventsByPagination(page).stream()
                 .map(eventMapper::entityToDto)
                 .collect(Collectors.toSet());
@@ -90,6 +90,11 @@ public class EventService extends CrudService<EventDto, Event> {
         pageDto.setSize(page.getSize());
         pageDto.setTotalSize(countEvents);
         pageDto.setSort(page.getSort());
-        return new ResponseDto<>(pageDto, eventsByPagination);
+        return new ResponseDto(pageDto, eventsByPagination);
+    }
+
+    @Override
+    public String getServiceName() {
+        return "event";
     }
 }

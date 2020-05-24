@@ -26,4 +26,9 @@ public class InterestService extends CrudService<InterestDto, Interest> {
     public Collection<InterestDto> getInterests() {
         return interestMapper.entitiesToDtos(interestRepository.findAll());
     }
+
+    @Override
+    public String getServiceName() {
+        return "interest";
+    }
 }

@@ -15,7 +15,7 @@ import Filter from "./Filter";
 const Events = ({pageSize, postFindEvents, findEvents, postLikes}) => {
     const [searchObject, setSearchObject] = useState({...SEARCH_OBJECT_DEFAULT});
     const [page, setPage] = useState(1);
-    const [filterObject, setFilterObject] = useState({...FORM_DTO("apartment.id")});
+    const [filterObject, setFilterObject] = useState({...FORM_DTO("event")});
 
     useEffect(() => {
         filterObject.page.size = pageSize;

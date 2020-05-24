@@ -1,6 +1,7 @@
 package org.go.together.client;
 
 import org.go.together.dto.*;
+import org.go.together.dto.filter.FormDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,9 @@ public interface UserClient {
 
     @PutMapping("/users")
     IdDto add(@RequestBody UserDto input);
+
+    @PostMapping("/find")
+    ResponseDto find(@RequestBody FormDto formDto);
 
     @GetMapping("/users/check/login/{login}")
     boolean checkIsGoodUsername(@PathVariable("login") String username);

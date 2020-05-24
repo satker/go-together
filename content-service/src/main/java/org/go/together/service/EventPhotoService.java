@@ -71,4 +71,9 @@ public class EventPhotoService extends CrudService<EventPhotoDto, EventPhoto> {
                 .map(eventPhotoMapper::entityToDto)
                 .orElse(null);
     }
+
+    @Override
+    public String getServiceName() {
+        return "eventPhoto";
+    }
 }

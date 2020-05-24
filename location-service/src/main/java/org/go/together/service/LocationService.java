@@ -52,6 +52,11 @@ public class LocationService extends CrudService<LocationDto, Location> {
                 .collect(Collectors.toSet());
     }
 
+    @Override
+    public String getServiceName() {
+        return "location";
+    }
+
     /*@Override
     public ImmutableMap<String, FunctionToGetValue> getFields() {
         return ImmutableMap.<String, FunctionToGetValue>builder()

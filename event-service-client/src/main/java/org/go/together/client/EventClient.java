@@ -14,8 +14,8 @@ public interface EventClient {
     @GetMapping("/events/{eventId}")
     EventDto getEventById(@PathVariable("eventId") UUID eventId);
 
-    @PostMapping("/events/find")
-    ResponseDto<EventDto> find(@RequestBody FormDto formDto);
+    @PostMapping("/find")
+    ResponseDto find(@RequestBody FormDto formDto);
 
     @PutMapping("/events")
     IdDto createEvent(@RequestBody EventDto eventDto);

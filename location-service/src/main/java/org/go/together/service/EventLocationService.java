@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class EventLocationService extends CrudService<EventLocationDto, EventLocation> {
     private final EventLocationMapper eventLocationMapper;
-    private EventLocationRepository eventLocationRepository;
+    private final EventLocationRepository eventLocationRepository;
 
     public EventLocationService(EventLocationRepository eventLocationRepository,
                                 EventLocationMapper eventLocationMapper,
@@ -81,5 +81,10 @@ public class EventLocationService extends CrudService<EventLocationDto, EventLoc
                 });
 
         return result;
+    }
+
+    @Override
+    public String getServiceName() {
+        return "eventLocation";
     }
 }

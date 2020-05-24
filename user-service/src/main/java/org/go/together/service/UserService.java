@@ -168,6 +168,11 @@ public class UserService extends CrudService<UserDto, SystemUser> {
         return simpleUserMapper.entitiesToDtos(allUsersByIds);
     }
 
+    @Override
+    public String getServiceName() {
+        return "user";
+    }
+
 /*@Override
     public ImmutableMap<String, FunctionToGetValue> getFields() {
         return null;

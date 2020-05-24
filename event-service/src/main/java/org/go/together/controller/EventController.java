@@ -3,11 +3,13 @@ package org.go.together.controller;
 import org.go.together.client.EventClient;
 import org.go.together.dto.*;
 import org.go.together.dto.filter.FormDto;
+import org.go.together.logic.FindController;
 import org.go.together.service.EventService;
 import org.go.together.service.EventUserService;
 import org.go.together.service.PaidThingService;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
@@ -15,7 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RestController
-public class EventController implements EventClient {
+public class EventController extends FindController implements EventClient {
     private final EventService eventService;
     private final PaidThingService paidThingService;
     private final EventUserService eventUserService;
@@ -23,6 +25,7 @@ public class EventController implements EventClient {
     public EventController(EventService eventService,
                            PaidThingService paidThingService,
                            EventUserService eventUserService) {
+        super(Arrays.asList(eventService, paidThingService, paidThingService));
         this.eventService = eventService;
         this.paidThingService = paidThingService;
         this.eventUserService = eventUserService;
@@ -34,8 +37,8 @@ public class EventController implements EventClient {
     }
 
     @Override
-    public ResponseDto<EventDto> find(FormDto formDto) {
-        return eventService.find(formDto.getPage());
+    public ResponseDto find(FormDto formDto) {
+        return super.find(formDto);
     }
 
     @Override

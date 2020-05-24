@@ -39,7 +39,13 @@ public abstract class CustomRepository<E extends IdentifiedEntity> {
     }
 
     public CustomSqlBuilder<E> createQuery() {
-        CustomSqlBuilder<E> customSqlBuilder = new CustomSqlBuilder<>(getEntityClass(), entityManager);
+        CustomSqlBuilder<E> customSqlBuilder = new CustomSqlBuilder<>(getEntityClass(), entityManager, null);
+        newQuery = customSqlBuilder;
+        return customSqlBuilder;
+    }
+
+    public CustomSqlBuilder<E> createQuery(String selectRow) {
+        CustomSqlBuilder<E> customSqlBuilder = new CustomSqlBuilder<>(getEntityClass(), entityManager, selectRow);
         newQuery = customSqlBuilder;
         return customSqlBuilder;
     }
@@ -52,7 +58,7 @@ public abstract class CustomRepository<E extends IdentifiedEntity> {
         return newQuery.new WhereBuilder(true);
     }
 
-    private Class<E> getEntityClass() {
+    public Class<E> getEntityClass() {
         Class clazz = this.getClass();
 
         do {

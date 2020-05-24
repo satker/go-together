@@ -38,4 +38,9 @@ public class EventUserService extends CrudService<EventUserDto, EventUser> {
         super.delete(eventUserByUserIdAndEventId.get().getId());
         return true;
     }
+
+    @Override
+    public String getServiceName() {
+        return "eventUser";
+    }
 }

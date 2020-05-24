@@ -1,9 +1,7 @@
 package org.go.together.client;
 
-import org.go.together.dto.EventLocationDto;
-import org.go.together.dto.IdDto;
-import org.go.together.dto.LocationDto;
-import org.go.together.dto.SimpleDto;
+import org.go.together.dto.*;
+import org.go.together.dto.filter.FormDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,4 +36,7 @@ public interface LocationClient {
 
     @PostMapping("/locations")
     IdDto saveLocation(@RequestBody LocationDto locationDto);
+
+    @PostMapping("/find")
+    ResponseDto find(@RequestBody FormDto formDto);
 }

@@ -26,4 +26,9 @@ public class PaidThingService extends CrudService<PaidThingDto, PaidThing> {
     public Collection<PaidThingDto> getPaidThings() {
         return paidThingMapper.entitiesToDtos(paidThingRepository.findAll());
     }
+
+    @Override
+    public String getServiceName() {
+        return "paidThing";
+    }
 }

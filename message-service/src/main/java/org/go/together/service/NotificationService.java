@@ -15,4 +15,9 @@ public class NotificationService extends CrudService<NotificationDto, Notificati
                                   NotificationValidator notificationValidator) {
         super(notificationRepository, notificationMapper, notificationValidator);
     }
+
+    @Override
+    public String getServiceName() {
+        return "notification";
+    }
 }

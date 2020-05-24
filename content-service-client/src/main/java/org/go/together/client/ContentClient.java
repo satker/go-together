@@ -3,6 +3,8 @@ package org.go.together.client;
 import org.go.together.dto.EventPhotoDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.PhotoDto;
+import org.go.together.dto.ResponseDto;
+import org.go.together.dto.filter.FormDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,4 +34,7 @@ public interface ContentClient {
 
     @DeleteMapping("/events/photos/{eventPhotoId}")
     void delete(@PathVariable("eventPhotoId") UUID eventPhotoId);
+
+    @PostMapping("/find")
+    ResponseDto find(@RequestBody FormDto formDto);
 }

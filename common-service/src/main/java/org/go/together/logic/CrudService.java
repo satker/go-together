@@ -1,7 +1,11 @@
 package org.go.together.logic;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.dto.IdDto;
+import org.go.together.dto.ResponseDto;
+import org.go.together.dto.filter.FormDto;
+import org.go.together.dto.filter.PageDto;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.exceptions.ValidationException;
 import org.go.together.interfaces.Dto;
@@ -9,15 +13,18 @@ import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.interfaces.Mapper;
 import org.go.together.logic.repository.CustomRepository;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> {
+public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> extends FilterService<E> {
     private final Mapper<D, E> mapper;
     private final Validator<D> validator;
     private final CustomRepository<E> repository;
 
     protected CrudService(CustomRepository<E> repository, Mapper<D, E> mapper, Validator<D> validator) {
+        super(repository);
         this.repository = repository;
         this.mapper = mapper;
         this.validator = validator;
@@ -61,6 +68,20 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> {
         } else {
             throw new CannotFindEntityException("Cannot find entity by id " + uuid);
         }
+    }
+
+    public ResponseDto find(FormDto formDto) {
+        Pair<PageDto, Collection<Object>> pageDtoResult = super.findByFormDto(formDto);
+
+        Collection<Object> values = pageDtoResult.getValue();
+
+        if (values.iterator().next() instanceof IdentifiedEntity) {
+            values = values.stream()
+                    .map(value -> (E) value)
+                    .map(mapper::entityToDto)
+                    .collect(Collectors.toSet());
+        }
+        return new ResponseDto(pageDtoResult.getKey(), values);
     }
 
     public String validate(D dto) {

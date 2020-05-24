@@ -15,4 +15,9 @@ public class EventPaidThingService extends CrudService<EventPaidThingDto, EventP
                                     EventPaidThingValidator eventPaidThingValidator) {
         super(eventPaidThingRepository, eventPaidThingMapper, eventPaidThingValidator);
     }
+
+    @Override
+    public String getServiceName() {
+        return "eventPaidThing";
+    }
 }

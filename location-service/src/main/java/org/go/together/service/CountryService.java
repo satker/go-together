@@ -42,6 +42,11 @@ public class CountryService extends CrudService<CountryDto, Country> {
         return countryRepository.findCountriesLike(countryName);
     }
 
+    @Override
+    public String getServiceName() {
+        return "country";
+    }
+
     /*private void getCountries() {
         List<Country> inputList = new ArrayList<>();
         try {
