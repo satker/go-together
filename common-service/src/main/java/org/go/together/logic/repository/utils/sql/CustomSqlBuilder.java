@@ -116,7 +116,7 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
         public WhereBuilder condition(String field, SqlOperator sqlOperator, Object value) {
             String parsedValue = parseToString(value);
             Optional<Map.Entry<String, String>> joinTableNameOptional = joinTables.entrySet().stream()
-                    .filter(joinName -> field.startsWith(joinName.getKey() + "."))
+                    .filter(joinName -> field.startsWith(joinName.getKey()))
                     .findFirst();
             String fieldName = getEntityField(field, clazz);
             if (joinTableNameOptional.isPresent()) {
