@@ -66,7 +66,7 @@ public class ContentController extends FindController implements ContentClient {
     }
 
     @Override
-    public ResponseDto find(FormDto formDto) {
+    public ResponseDto<Object> find(FormDto formDto) {
         return super.find(formDto);
     }
 }

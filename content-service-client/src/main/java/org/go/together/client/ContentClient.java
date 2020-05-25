@@ -36,5 +36,5 @@ public interface ContentClient {
     void delete(@PathVariable("eventPhotoId") UUID eventPhotoId);
 
     @PostMapping("/find")
-    ResponseDto find(@RequestBody FormDto formDto);
+    ResponseDto<Object> find(@RequestBody FormDto formDto);
 }

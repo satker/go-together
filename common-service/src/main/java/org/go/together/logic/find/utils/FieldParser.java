@@ -1,5 +1,6 @@
-package org.go.together.logic.find;
+package org.go.together.logic.find.utils;
 
+import org.go.together.dto.filter.FieldMapper;
 import org.go.together.exceptions.IncorrectFindObject;
 
 import java.util.Map;

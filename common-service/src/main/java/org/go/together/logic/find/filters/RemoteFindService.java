@@ -3,12 +3,12 @@ package org.go.together.logic.find.filters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.ResponseDto;
+import org.go.together.dto.filter.FieldMapper;
 import org.go.together.dto.filter.FilterDto;
 import org.go.together.dto.filter.FormDto;
 import org.go.together.exceptions.RemoteClientFindException;
 import org.go.together.exceptions.ServiceTransportException;
-import org.go.together.logic.find.FieldMapper;
-import org.go.together.logic.find.FieldParser;
+import org.go.together.logic.find.utils.FieldParser;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -20,12 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RemoteFindService implements Filter<Collection<Object>> {
-    private final String serviceName;
-
-    public RemoteFindService(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
     public Map<String, Collection<Object>> getFilters(Map<String, FilterDto> filters,
                                                       Map<String, FieldMapper> availableFields) {
         Map<String, FormDto> filtersToAnotherServices = new HashMap<>();
@@ -48,9 +42,9 @@ public class RemoteFindService implements Filter<Collection<Object>> {
                                          String anotherServiceSearchField,
                                          FieldMapper fieldMapper,
                                          FilterDto value) {
-        FormDto stringFilterDtoMap = filtersToAnotherServices.get(serviceName);
-
         String serviceLocalField = fieldMapper.getRemoteServiceName() + "&" + fieldMapper.getCurrentServiceField();
+
+        FormDto stringFilterDtoMap = filtersToAnotherServices.get(serviceLocalField);
 
         String remoteGetField = fieldMapper.getRemoteServiceMapping() + "." + fieldMapper.getRemoteServiceFieldGetter();
 
@@ -79,7 +73,7 @@ public class RemoteFindService implements Filter<Collection<Object>> {
             String[] serviceField = filtersService.getKey().split("&");
             Collection<Object> request = sendRequestAndGetFoundIds(serviceField[0], filtersService.getValue());
             if (request == null || request.isEmpty()) {
-                return Collections.emptyMap();
+                return null;
             } else {
                 if (result.get(serviceField[1]) == null) {
                     result.put(serviceField[1], request);
@@ -113,7 +107,7 @@ public class RemoteFindService implements Filter<Collection<Object>> {
                 throw new ServiceTransportException("Service " + serviceId + " is unavailable.");
             }
 
-            ResponseDto map = objectMapper.readValue(response.body(), ResponseDto.class);
+            ResponseDto<Object> map = objectMapper.readValue(response.body(), ResponseDto.class);
             return map.getResult();
         } catch (Exception e) {
             throw new RemoteClientFindException(serviceId, e);

@@ -2,8 +2,8 @@ package org.go.together.service;
 
 import org.go.together.dto.EventPhotoDto;
 import org.go.together.dto.IdDto;
+import org.go.together.dto.filter.FieldMapper;
 import org.go.together.logic.CrudService;
-import org.go.together.logic.find.FieldMapper;
 import org.go.together.mapper.EventPhotoMapper;
 import org.go.together.model.EventPhoto;
 import org.go.together.model.Photo;

@@ -37,7 +37,7 @@ public class EventController extends FindController implements EventClient {
     }
 
     @Override
-    public ResponseDto find(FormDto formDto) {
+    public ResponseDto<Object> find(FormDto formDto) {
         return super.find(formDto);
     }
 

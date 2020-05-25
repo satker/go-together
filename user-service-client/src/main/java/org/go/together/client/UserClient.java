@@ -19,7 +19,7 @@ public interface UserClient {
     IdDto add(@RequestBody UserDto input);
 
     @PostMapping("/find")
-    ResponseDto find(@RequestBody FormDto formDto);
+    ResponseDto<Object> find(@RequestBody FormDto formDto);
 
     @GetMapping("/users/check/login/{login}")
     boolean checkIsGoodUsername(@PathVariable("login") String username);

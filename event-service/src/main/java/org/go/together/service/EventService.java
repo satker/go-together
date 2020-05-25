@@ -5,9 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.*;
-import org.go.together.dto.filter.PageDto;
+import org.go.together.dto.filter.FieldMapper;
 import org.go.together.logic.CrudService;
-import org.go.together.logic.find.FieldMapper;
 import org.go.together.mapper.EventMapper;
 import org.go.together.model.Event;
 import org.go.together.repository.EventRepository;
@@ -25,7 +24,6 @@ public class EventService extends CrudService<EventDto, Event> {
     private final LocationClient locationClient;
     private final ContentClient contentClient;
     private final EventRepository eventRepository;
-    private final EventMapper eventMapper;
 
     protected EventService(EventRepository eventRepository,
                            EventMapper eventMapper,
@@ -36,7 +34,6 @@ public class EventService extends CrudService<EventDto, Event> {
         this.locationClient = locationClient;
         this.contentClient = contentClient;
         this.eventRepository = eventRepository;
-        this.eventMapper = eventMapper;
     }
 
     @Override
@@ -81,19 +78,6 @@ public class EventService extends CrudService<EventDto, Event> {
         return events.stream()
                 .map(event -> new SimpleDto(event.getId().toString(), event.getName()))
                 .collect(Collectors.toSet());
-    }
-
-    public ResponseDto find(PageDto page) {
-        Set<EventDto> eventsByPagination = eventRepository.findEventsByPagination(page).stream()
-                .map(eventMapper::entityToDto)
-                .collect(Collectors.toSet());
-        long countEvents = eventRepository.getCountEvents();
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(page.getPage());
-        pageDto.setSize(page.getSize());
-        pageDto.setTotalSize(countEvents);
-        pageDto.setSort(page.getSort());
-        return new ResponseDto(pageDto, eventsByPagination);
     }
 
     @Override

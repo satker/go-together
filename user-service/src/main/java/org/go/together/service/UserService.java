@@ -6,9 +6,9 @@ import org.go.together.dto.IdDto;
 import org.go.together.dto.Role;
 import org.go.together.dto.SimpleUserDto;
 import org.go.together.dto.UserDto;
+import org.go.together.dto.filter.FieldMapper;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.logic.CrudService;
-import org.go.together.logic.find.FieldMapper;
 import org.go.together.mapper.SimpleUserMapper;
 import org.go.together.mapper.UserMapper;
 import org.go.together.model.Language;
@@ -180,6 +180,8 @@ public class UserService extends CrudService<UserDto, SystemUser> {
         return ImmutableMap.<String, FieldMapper>builder()
                 .put("languages", FieldMapper.builder()
                         .currentServiceField("languages").build())
+                .put("interests", FieldMapper.builder()
+                        .currentServiceField("interests").build())
                 .build();
     }
 }

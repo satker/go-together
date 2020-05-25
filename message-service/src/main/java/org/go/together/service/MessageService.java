@@ -2,8 +2,8 @@ package org.go.together.service;
 
 import org.go.together.dto.MessageDto;
 import org.go.together.dto.MessageType;
+import org.go.together.dto.filter.FieldMapper;
 import org.go.together.logic.CrudService;
-import org.go.together.logic.find.FieldMapper;
 import org.go.together.mapper.MessageMapper;
 import org.go.together.model.Message;
 import org.go.together.repository.MessageRepository;

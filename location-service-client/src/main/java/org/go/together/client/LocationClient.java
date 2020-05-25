@@ -38,5 +38,5 @@ public interface LocationClient {
     IdDto saveLocation(@RequestBody LocationDto locationDto);
 
     @PostMapping("/find")
-    ResponseDto find(@RequestBody FormDto formDto);
+    ResponseDto<Object> find(@RequestBody FormDto formDto);
 }

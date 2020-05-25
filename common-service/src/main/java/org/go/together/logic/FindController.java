@@ -13,7 +13,7 @@ public abstract class FindController {
         this.services = services;
     }
 
-    public ResponseDto find(FormDto formDto) {
+    public ResponseDto<Object> find(FormDto formDto) {
         String[] serviceNameField = formDto.getMainIdField().split("\\.", 2);
         return services.stream()
                 .filter(crudService -> crudService.getServiceName().equals(serviceNameField[0]))

@@ -1,8 +1,8 @@
 package org.go.together.service;
 
 import org.go.together.dto.NotificationDto;
+import org.go.together.dto.filter.FieldMapper;
 import org.go.together.logic.CrudService;
-import org.go.together.logic.find.FieldMapper;
 import org.go.together.mapper.NotificationMapper;
 import org.go.together.model.Notification;
 import org.go.together.repository.NotificationRepository;

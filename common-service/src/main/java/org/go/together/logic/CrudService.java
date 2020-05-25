@@ -70,18 +70,19 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         }
     }
 
-    public ResponseDto find(FormDto formDto) {
+    public ResponseDto<Object> find(FormDto formDto) {
         Pair<PageDto, Collection<Object>> pageDtoResult = super.findByFormDto(formDto);
 
         Collection<Object> values = pageDtoResult.getValue();
-
-        if (values.iterator().next() instanceof IdentifiedEntity) {
+        if (values != null
+                && !values.isEmpty()
+                && values.iterator().next() instanceof IdentifiedEntity) {
             values = values.stream()
                     .map(value -> (E) value)
                     .map(mapper::entityToDto)
                     .collect(Collectors.toSet());
         }
-        return new ResponseDto(pageDtoResult.getKey(), values);
+        return new ResponseDto<>(pageDtoResult.getKey(), values);
     }
 
     public String validate(D dto) {

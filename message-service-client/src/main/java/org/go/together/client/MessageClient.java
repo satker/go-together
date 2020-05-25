@@ -48,7 +48,7 @@ public interface MessageClient {
                                      @RequestBody MessageDto messageDto);
 
     @PostMapping("/find")
-    ResponseDto find(@RequestBody FormDto formDto);
+    ResponseDto<Object> find(@RequestBody FormDto formDto);
 
     @PostMapping("users/{userId}/messages/{otherUserId}")
     Set<MessageDto> updateMessageToAnotherUser(@PathVariable("userId") UUID myId,

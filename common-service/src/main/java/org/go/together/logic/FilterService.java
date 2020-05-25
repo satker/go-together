@@ -2,11 +2,11 @@ package org.go.together.logic;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.dto.SimpleDto;
+import org.go.together.dto.filter.FieldMapper;
 import org.go.together.dto.filter.FilterDto;
 import org.go.together.dto.filter.FormDto;
 import org.go.together.dto.filter.PageDto;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.go.together.logic.find.FieldMapper;
 import org.go.together.logic.find.filters.Filter;
 import org.go.together.logic.find.filters.LocalFindService;
 import org.go.together.logic.find.filters.RemoteFindService;
@@ -28,7 +28,7 @@ public abstract class FilterService<E extends IdentifiedEntity> {
 
     protected FilterService(CustomRepository<E> repository) {
         this.repository = new FindRepositoryImpl<>(getServiceName(), repository);
-        this.remoteFindService = new RemoteFindService(getServiceName());
+        this.remoteFindService = new RemoteFindService();
         localFindService = new LocalFindService();
     }
 
@@ -41,20 +41,27 @@ public abstract class FilterService<E extends IdentifiedEntity> {
             return repository.getResult(formDto.getMainIdField(), null, formDto.getPage());
         }
         Map<String, FilterDto> commonService = getFilters(formDto);
+        if (commonService == null) {
+            PageDto notFoundPageDto = null;
+            if (formDto.getPage() != null) {
+                notFoundPageDto = new PageDto(0, formDto.getPage().getSize(), 0L, formDto.getPage().getSort());
+            }
+            return Pair.of(notFoundPageDto, Collections.emptyList());
+        }
         return repository.getResult(formDto.getMainIdField(), commonService, formDto.getPage());
     }
 
     private Map<String, FilterDto> getFilters(FormDto formDto) {
         Map<String, FilterDto> localFilters = localFindService.getFilters(formDto.getFilters(), getMappingFields());
         Map<String, Collection<Object>> remoteFilters = remoteFindService.getFilters(formDto.getFilters(), getMappingFields());
+        if (remoteFilters == null) {
+            return null;
+        }
         return getConcatRemoteAndLocalFilters(remoteFilters, localFilters);
     }
 
     private Map<String, FilterDto> getConcatRemoteAndLocalFilters(Map<String, Collection<Object>> remoteFilters,
                                                                   Map<String, FilterDto> localFilters) {
-        if (remoteFilters.isEmpty()) {
-            return localFilters;
-        }
         remoteFilters.forEach((key, values) -> {
             Set<SimpleDto> valuesFromOtherService = values.stream()
                     .map(value -> new SimpleDto(String.valueOf(value), String.valueOf(value)))

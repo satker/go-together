@@ -1,8 +1,8 @@
 package org.go.together.logic.find.filters;
 
+import org.go.together.dto.filter.FieldMapper;
 import org.go.together.dto.filter.FilterDto;
-import org.go.together.logic.find.FieldMapper;
-import org.go.together.logic.find.FieldParser;
+import org.go.together.logic.find.utils.FieldParser;
 
 import java.util.HashMap;
 import java.util.Map;

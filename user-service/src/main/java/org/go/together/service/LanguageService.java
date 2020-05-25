@@ -1,8 +1,8 @@
 package org.go.together.service;
 
 import org.go.together.dto.LanguageDto;
+import org.go.together.dto.filter.FieldMapper;
 import org.go.together.logic.CrudService;
-import org.go.together.logic.find.FieldMapper;
 import org.go.together.mapper.LanguageMapper;
 import org.go.together.model.Language;
 import org.go.together.repository.LanguageRepository;
@@ -41,15 +41,4 @@ public class LanguageService extends CrudService<LanguageDto, Language> {
     public Map<String, FieldMapper> getMappingFields() {
         return null;
     }
-
-/*@Override
-    public ImmutableMap<String, FunctionToGetValue> getFields() {
-        return null;
-    }
-
-    @Override
-    public String getServiceName() {
-        return "language";
-    }*/
-
 }

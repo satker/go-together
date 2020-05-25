@@ -10,7 +10,7 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseDto {
+public class ResponseDto<T> {
     private PageDto page;
-    private Collection result;
+    private Collection<T> result;
 }
