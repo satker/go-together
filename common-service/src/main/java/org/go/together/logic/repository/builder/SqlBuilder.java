@@ -1,64 +1,37 @@
-package org.go.together.logic.repository.utils.sql;
+package org.go.together.logic.repository.builder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.interfaces.IdentifiedEntity;
+import org.go.together.logic.repository.utils.sql.SqlOperator;
 
-import javax.persistence.*;
-import java.lang.reflect.Field;
-import java.util.*;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 
+import static org.go.together.logic.repository.builder.utils.BuilderUtils.getEntityField;
+import static org.go.together.logic.repository.builder.utils.BuilderUtils.getEntityLink;
 import static org.go.together.logic.repository.utils.sql.ObjectStringParser.parseToString;
 
-public class CustomSqlBuilder<E extends IdentifiedEntity> {
+public class SqlBuilder<E extends IdentifiedEntity> {
     private final StringBuilder query;
     private final EntityManager entityManager;
     private final Class<E> clazz;
-    private final Map<String, String> joinTables;
+    private final JoinBuilder<E> joinBuilder;
 
-    public CustomSqlBuilder(Class<E> clazz, EntityManager entityManager, String selectRow) {
-        joinTables = new HashMap<>();
+    public SqlBuilder(Class<E> clazz, EntityManager entityManager, String selectRow) {
         String entityLink = getEntityLink(clazz);
         String selectQuery = selectRow == null ? entityLink : entityLink + "." + selectRow;
         query = new StringBuilder("select distinct " + selectQuery + " FROM " + clazz.getSimpleName() + " " + entityLink);
-        appendJoins(clazz, query);
+        joinBuilder = new JoinBuilder<>(clazz);
         this.entityManager = entityManager;
         this.clazz = clazz;
     }
 
-    private void appendJoins(Class<E> clazz, StringBuilder query) {
-        Arrays.stream(clazz.getDeclaredFields())
-                .filter(field1 -> field1.getAnnotation(ElementCollection.class) != null || field1.getAnnotation(ManyToMany.class) != null)
-                .forEach(field1 -> {
-                    String generatedTableName = getJoinTableName(field1, clazz);
-                    query.append(" left join ")
-                            .append(getEntityField(field1.getName(), clazz))
-                            .append(" ")
-                            .append(generatedTableName);
-                    joinTables.put(field1.getName(), generatedTableName);
-                });
-    }
-
-    private String getJoinTableName(Field field, Class<E> clazz) {
-        return getEntityLink(clazz) + "_" + field.getName();
-    }
-
-    private String getEntityLink(Class<E> clazz) {
-        char[] chars = clazz.getSimpleName().toCharArray();
-        StringBuilder entityLink = new StringBuilder();
-        for (char aChar : chars) {
-            if (Character.isUpperCase(aChar)) {
-                entityLink.append(aChar);
-            }
-        }
-        return entityLink.toString().toLowerCase();
-    }
-
-    private String getEntityField(String field, Class<E> clazz) {
-        return getEntityLink(clazz) + "." + field;
-    }
-
-    public CustomSqlBuilder<E> where(WhereBuilder whereBuilder) {
-        query.append(whereBuilder.getWhereQuery());
+    public SqlBuilder<E> where(WhereBuilder whereBuilder) {
+        query.append(whereBuilder.getWhereClause());
         return this;
     }
 
@@ -95,22 +68,25 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
     }
 
     public Number getCountRowsWhere(WhereBuilder whereBuilder) {
-        StringBuilder query = new StringBuilder("SELECT COUNT (DISTINCT " + getEntityLink(clazz) + ".id) FROM " +
-                clazz.getSimpleName() + " " + getEntityLink(clazz) + " ");
-        appendJoins(clazz, query);
-        query.append(whereBuilder.getWhereQuery());
-        return entityManager.createQuery(query.toString(), Number.class)
-                .getSingleResult();
+        String query = "SELECT COUNT (DISTINCT " + getEntityLink(clazz) + ".id) FROM " +
+                clazz.getSimpleName() + " " + getEntityLink(clazz) + " " + whereBuilder.getWhereClause();
+        return entityManager.createQuery(query, Number.class).getSingleResult();
     }
 
     public class WhereBuilder {
+        private final StringBuilder join;
         private final StringBuilder whereQuery;
 
         private static final String AND = " and ";
         private static final String OR = " or ";
 
         public WhereBuilder(Boolean isGroup) {
+            join = new StringBuilder();
             whereQuery = new StringBuilder(isGroup ? StringUtils.EMPTY : " WHERE ");
+        }
+
+        protected String getWhereClause() {
+            return join + " " + whereQuery;
         }
 
         protected StringBuilder getWhereQuery() {
@@ -119,16 +95,22 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
 
         public WhereBuilder condition(String field, SqlOperator sqlOperator, Object value) {
             String parsedValue = parseToString(value);
-            Optional<Map.Entry<String, String>> joinTableNameOptional = joinTables.entrySet().stream()
-                    .filter(joinName -> field.startsWith(joinName.getKey()))
-                    .findFirst();
-            String fieldName = getEntityField(field, clazz);
-            if (joinTableNameOptional.isPresent()) {
-                Map.Entry<String, String> joinTableName = joinTableNameOptional.get();
-                fieldName = field.replaceFirst(joinTableName.getKey(), joinTableName.getValue());
-            }
+            String fieldName = getFieldWithJoin(field);
             whereQuery.append(sqlOperator.getBiFunction().apply(fieldName, parsedValue));
             return this;
+        }
+
+        private String getFieldWithJoin(String field) {
+            String fieldName = getEntityField(field, clazz);
+            Optional<Map.Entry<String, String>> joinTableNameOptional = joinBuilder.getJoinTables().entrySet().stream()
+                    .filter(joinName -> field.startsWith(joinName.getKey()))
+                    .findFirst();
+            if (joinTableNameOptional.isPresent()) {
+                Map.Entry<String, String> joinTableName = joinTableNameOptional.get();
+                join.append(joinBuilder.createLeftJoin(joinTableName));
+                fieldName = field.replaceFirst(joinTableName.getKey(), joinTableName.getValue());
+            }
+            return fieldName;
         }
 
         public WhereBuilder group(WhereBuilder whereBuilder) {
@@ -148,9 +130,8 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
             return this;
         }
 
-        public WhereBuilder cutLastAnd() {
+        public void cutLastAnd() {
             whereQuery.setLength(whereQuery.length() - AND.length());
-            return this;
         }
     }
 }

@@ -8,7 +8,7 @@ import org.go.together.dto.filter.PageDto;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.logic.FilterSqlOperator;
 import org.go.together.logic.repository.CustomRepository;
-import org.go.together.logic.repository.utils.sql.CustomSqlBuilder;
+import org.go.together.logic.repository.builder.SqlBuilder;
 
 import java.util.Collection;
 import java.util.Map;
@@ -26,7 +26,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
     @Override
     public Pair<PageDto, Collection<Object>> getResult(String mainField, Map<String, FilterDto> filters, PageDto page) {
         String mainKeyToSort = mainField.replaceAll(serviceName + "\\.", "");
-        CustomSqlBuilder<E> query;
+        SqlBuilder<E> query;
         if (StringUtils.isNotBlank(mainKeyToSort) && !mainKeyToSort.equals(serviceName)) {
             query = repository.createQuery(mainKeyToSort);
         } else {
@@ -36,7 +36,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
         if (filters == null || filters.isEmpty()) {
             countRows = (long) query.getCountRows();
         } else {
-            CustomSqlBuilder<E>.WhereBuilder whereBuilder = repository.createWhere();
+            SqlBuilder<E>.WhereBuilder whereBuilder = repository.createWhere();
             // get current main key
             filters.forEach((key, value) -> {
                 FilterSqlOperator filterType = value.getFilterType();
