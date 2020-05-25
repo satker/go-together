@@ -11,6 +11,7 @@ import org.go.together.exceptions.ValidationException;
 import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.interfaces.Mapper;
+import org.go.together.logic.find.FindService;
 import org.go.together.logic.repository.CustomRepository;
 
 import java.util.Collection;
@@ -18,7 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> extends FilterService<E> {
+public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> extends FindService<E> {
     private final Mapper<D, E> mapper;
     private final Validator<D> validator;
     private final CustomRepository<E> repository;

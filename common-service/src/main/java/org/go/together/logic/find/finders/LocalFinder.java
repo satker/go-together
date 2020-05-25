@@ -1,4 +1,4 @@
-package org.go.together.logic.find.filters;
+package org.go.together.logic.find.finders;
 
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.dto.filter.FilterDto;
@@ -7,7 +7,7 @@ import org.go.together.logic.find.utils.FieldParser;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LocalFindService implements Filter<FilterDto> {
+public class LocalFinder implements Finder<FilterDto> {
     public Map<String, FilterDto> getFilters(Map<String, FilterDto> filters,
                                              Map<String, FieldMapper> availableFields) {
         Map<String, FilterDto> currentFilters = new HashMap<>();

@@ -1,7 +1,8 @@
-package org.go.together.logic;
+package org.go.together.logic.find;
 
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FormDto;
+import org.go.together.logic.CrudService;
 
 import java.util.List;
 import java.util.stream.Collectors;

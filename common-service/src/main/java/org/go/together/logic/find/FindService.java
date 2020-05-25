@@ -1,4 +1,4 @@
-package org.go.together.logic;
+package org.go.together.logic.find;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.dto.SimpleDto;
@@ -7,9 +7,10 @@ import org.go.together.dto.filter.FilterDto;
 import org.go.together.dto.filter.FormDto;
 import org.go.together.dto.filter.PageDto;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.go.together.logic.find.filters.Filter;
-import org.go.together.logic.find.filters.LocalFindService;
-import org.go.together.logic.find.filters.RemoteFindService;
+import org.go.together.logic.find.enums.FindSqlOperator;
+import org.go.together.logic.find.finders.Finder;
+import org.go.together.logic.find.finders.LocalFinder;
+import org.go.together.logic.find.finders.RemoteFinder;
 import org.go.together.logic.find.repository.FindRepository;
 import org.go.together.logic.find.repository.FindRepositoryImpl;
 import org.go.together.logic.repository.CustomRepository;
@@ -20,16 +21,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class FilterService<E extends IdentifiedEntity> {
+public abstract class FindService<E extends IdentifiedEntity> {
     private final FindRepository repository;
 
-    private final Filter<Collection<Object>> remoteFindService;
-    private final Filter<FilterDto> localFindService;
+    private final Finder<Collection<Object>> remoteFindService;
+    private final Finder<FilterDto> localFindService;
 
-    protected FilterService(CustomRepository<E> repository) {
+    protected FindService(CustomRepository<E> repository) {
         this.repository = new FindRepositoryImpl<>(getServiceName(), repository);
-        this.remoteFindService = new RemoteFindService();
-        localFindService = new LocalFindService();
+        this.remoteFindService = new RemoteFinder();
+        localFindService = new LocalFinder();
     }
 
     public abstract String getServiceName();
@@ -67,7 +68,7 @@ public abstract class FilterService<E extends IdentifiedEntity> {
                     .map(value -> new SimpleDto(String.valueOf(value), String.valueOf(value)))
                     .collect(Collectors.toSet());
 
-            FilterDto filterDto = new FilterDto(FilterSqlOperator.IN, valuesFromOtherService);
+            FilterDto filterDto = new FilterDto(FindSqlOperator.IN, valuesFromOtherService);
             Map<String, FilterDto> filterForCurrentService = Collections.singletonMap(key, filterDto);
             localFilters.putAll(filterForCurrentService);
         });

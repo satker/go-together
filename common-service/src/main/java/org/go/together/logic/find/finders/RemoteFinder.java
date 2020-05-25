@@ -1,4 +1,4 @@
-package org.go.together.logic.find.filters;
+package org.go.together.logic.find.finders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RemoteFindService implements Filter<Collection<Object>> {
+public class RemoteFinder implements Finder<Collection<Object>> {
     public Map<String, Collection<Object>> getFilters(Map<String, FilterDto> filters,
                                                       Map<String, FieldMapper> availableFields) {
         Map<String, FormDto> filtersToAnotherServices = new HashMap<>();

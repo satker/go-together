@@ -6,7 +6,7 @@ import org.go.together.dto.SimpleDto;
 import org.go.together.dto.filter.FilterDto;
 import org.go.together.dto.filter.PageDto;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.go.together.logic.FilterSqlOperator;
+import org.go.together.logic.find.enums.FindSqlOperator;
 import org.go.together.logic.repository.CustomRepository;
 import org.go.together.logic.repository.builder.SqlBuilder;
 
@@ -39,7 +39,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
             SqlBuilder<E>.WhereBuilder whereBuilder = repository.createWhere();
             // get current main key
             filters.forEach((key, value) -> {
-                FilterSqlOperator filterType = value.getFilterType();
+                FindSqlOperator filterType = value.getFilterType();
                 Collection<SimpleDto> values = value.getValues();
                 Function<Collection<SimpleDto>, Object> dtosMapper = filterType.getSearchObjectFromDtos();
                 whereBuilder.condition(key, filterType.getOperator(), dtosMapper.apply(values)).and();

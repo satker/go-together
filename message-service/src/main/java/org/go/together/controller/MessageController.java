@@ -6,7 +6,7 @@ import org.go.together.dto.MessageDto;
 import org.go.together.dto.NotificationDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FormDto;
-import org.go.together.logic.FindController;
+import org.go.together.logic.find.FindController;
 import org.go.together.service.MessageService;
 import org.go.together.service.NotificationService;
 import org.springframework.web.bind.annotation.RestController;

@@ -6,7 +6,7 @@ import org.go.together.dto.IdDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FormDto;
-import org.go.together.logic.FindController;
+import org.go.together.logic.find.FindController;
 import org.go.together.service.EventPhotoService;
 import org.go.together.service.PhotoService;
 import org.springframework.web.bind.annotation.RestController;
