@@ -17,10 +17,6 @@ public class FieldParser {
         return getParsedString(string)[1];
     }
 
-    public static String getRemoteGetField(String string) {
-        return getParsedString(string)[2];
-    }
-
     public static String getServiceName(String string) {
         return getRemoteFieldToSearch(string).split("\\.", 2)[0];
     }
@@ -36,9 +32,5 @@ public class FieldParser {
 
     public static String getFieldSearch(String string) {
         return getParsedString(string)[1];
-    }
-
-    public static boolean isFieldParsed(String string) {
-        return getParsedString(string).length == 2;
     }
 }

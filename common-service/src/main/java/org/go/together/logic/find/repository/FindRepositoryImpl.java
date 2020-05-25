@@ -1,4 +1,4 @@
-package org.go.together.logic.find;
+package org.go.together.logic.find.repository;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -11,46 +11,23 @@ import org.go.together.logic.repository.CustomRepository;
 import org.go.together.logic.repository.utils.sql.CustomSqlBuilder;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-public abstract class LocalFindService<E extends IdentifiedEntity> {
+public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepository {
+    private final String serviceName;
     private final CustomRepository<E> repository;
 
-    protected LocalFindService(CustomRepository<E> repository) {
+    public FindRepositoryImpl(String serviceName, CustomRepository<E> repository) {
+        this.serviceName = serviceName;
         this.repository = repository;
     }
 
-    public abstract String getServiceName();
-
-    public abstract Map<String, FieldMapper> getMappingFields();
-
-    protected Map<String, FilterDto> enrichFilterByFoundedValues(Map<String, Collection<Object>> foundedKeysFromAnotherService,
-                                                                 Map<String, FilterDto> currentServiceFilters) {
-        if (foundedKeysFromAnotherService.isEmpty()) {
-            return currentServiceFilters;
-        }
-        foundedKeysFromAnotherService.forEach((key, values) -> {
-            Set<SimpleDto> valuesFromOtherService = values.stream()
-                    .map(value -> new SimpleDto(String.valueOf(value), String.valueOf(value)))
-                    .collect(Collectors.toSet());
-
-            FilterDto filterDto = new FilterDto(FilterSqlOperator.IN, valuesFromOtherService);
-            Map<String, FilterDto> filterForCurrentService = Collections.singletonMap(key, filterDto);
-            currentServiceFilters.putAll(filterForCurrentService);
-        });
-
-        return currentServiceFilters;
-    }
-
-    // get values
-    protected Pair<PageDto, Collection<Object>> getValuesInCurrentService(String mainField, Map<String, FilterDto> filters, PageDto page) {
-        String mainKeyToSort = mainField.replaceAll(getServiceName() + "\\.", "");
+    @Override
+    public Pair<PageDto, Collection<Object>> getResult(String mainField, Map<String, FilterDto> filters, PageDto page) {
+        String mainKeyToSort = mainField.replaceAll(serviceName + "\\.", "");
         CustomSqlBuilder<E> query;
-        if (StringUtils.isNotBlank(mainKeyToSort) && !mainKeyToSort.equals(getServiceName())) {
+        if (StringUtils.isNotBlank(mainKeyToSort) && !mainKeyToSort.equals(serviceName)) {
             query = repository.createQuery(mainKeyToSort);
         } else {
             query = repository.createQuery();
