@@ -2,12 +2,14 @@ package org.go.together.service;
 
 import org.go.together.dto.LanguageDto;
 import org.go.together.logic.CrudService;
+import org.go.together.logic.find.FieldMapper;
 import org.go.together.mapper.LanguageMapper;
 import org.go.together.model.Language;
 import org.go.together.repository.LanguageRepository;
 import org.go.together.validation.LanguageValidator;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,6 +35,11 @@ public class LanguageService extends CrudService<LanguageDto, Language> {
     @Override
     public String getServiceName() {
         return "language";
+    }
+
+    @Override
+    public Map<String, FieldMapper> getMappingFields() {
+        return null;
     }
 
 /*@Override

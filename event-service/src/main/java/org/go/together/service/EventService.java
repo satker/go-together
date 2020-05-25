@@ -1,11 +1,13 @@
 package org.go.together.service;
 
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.*;
 import org.go.together.dto.filter.PageDto;
 import org.go.together.logic.CrudService;
+import org.go.together.logic.find.FieldMapper;
 import org.go.together.mapper.EventMapper;
 import org.go.together.model.Event;
 import org.go.together.repository.EventRepository;
@@ -13,6 +15,7 @@ import org.go.together.validation.EventValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -96,5 +99,18 @@ public class EventService extends CrudService<EventDto, Event> {
     @Override
     public String getServiceName() {
         return "event";
+    }
+
+    @Override
+    public Map<String, FieldMapper> getMappingFields() {
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("name", FieldMapper.builder()
+                        .currentServiceField("name").build())
+                .put("authorId", FieldMapper.builder()
+                        .currentServiceField("authorId")
+                        .remoteServiceName("user-service")
+                        .remoteServiceMapping("user")
+                        .remoteServiceFieldGetter("id").build())
+                .build();
     }
 }

@@ -3,6 +3,7 @@ package org.go.together.service;
 import org.go.together.dto.MessageDto;
 import org.go.together.dto.MessageType;
 import org.go.together.logic.CrudService;
+import org.go.together.logic.find.FieldMapper;
 import org.go.together.mapper.MessageMapper;
 import org.go.together.model.Message;
 import org.go.together.repository.MessageRepository;
@@ -71,5 +72,10 @@ public class MessageService extends CrudService<MessageDto, Message> {
     @Override
     public String getServiceName() {
         return "message";
+    }
+
+    @Override
+    public Map<String, FieldMapper> getMappingFields() {
+        return null;
     }
 }

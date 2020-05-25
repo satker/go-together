@@ -84,6 +84,10 @@ public class CustomSqlBuilder<E extends IdentifiedEntity> {
         return query.getResultList();
     }
 
+    public Collection<Object> fetchAllNotDefined() {
+        return entityManager.createQuery(this.query.toString()).getResultList();
+    }
+
     public Number getCountRows() {
         return entityManager.createQuery("SELECT COUNT (DISTINCT " + getEntityLink(clazz) + ".id) FROM " +
                 clazz.getSimpleName() + " " + getEntityLink(clazz), Number.class)

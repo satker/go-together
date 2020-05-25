@@ -5,6 +5,7 @@ import org.go.together.dto.IdDto;
 import org.go.together.dto.PhotoCategory;
 import org.go.together.dto.PhotoDto;
 import org.go.together.logic.CrudService;
+import org.go.together.logic.find.FieldMapper;
 import org.go.together.mapper.PhotoMapper;
 import org.go.together.model.Photo;
 import org.go.together.repository.PhotoRepository;
@@ -87,5 +88,10 @@ public class PhotoService extends CrudService<PhotoDto, Photo> {
     @Override
     public String getServiceName() {
         return "photo";
+    }
+
+    @Override
+    public Map<String, FieldMapper> getMappingFields() {
+        return null;
     }
 }

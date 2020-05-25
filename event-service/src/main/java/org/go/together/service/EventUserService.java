@@ -2,6 +2,7 @@ package org.go.together.service;
 
 import org.go.together.dto.EventUserDto;
 import org.go.together.logic.CrudService;
+import org.go.together.logic.find.FieldMapper;
 import org.go.together.mapper.EventUserMapper;
 import org.go.together.model.EventUser;
 import org.go.together.repository.EventUserRepository;
@@ -9,6 +10,7 @@ import org.go.together.validation.EventUserValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,5 +44,10 @@ public class EventUserService extends CrudService<EventUserDto, EventUser> {
     @Override
     public String getServiceName() {
         return "eventUser";
+    }
+
+    @Override
+    public Map<String, FieldMapper> getMappingFields() {
+        return null;
     }
 }

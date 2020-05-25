@@ -1,5 +1,6 @@
 package org.go.together.service;
 
+import com.google.common.collect.ImmutableMap;
 import org.go.together.client.ContentClient;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.Role;
@@ -7,6 +8,7 @@ import org.go.together.dto.SimpleUserDto;
 import org.go.together.dto.UserDto;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.logic.CrudService;
+import org.go.together.logic.find.FieldMapper;
 import org.go.together.mapper.SimpleUserMapper;
 import org.go.together.mapper.UserMapper;
 import org.go.together.model.Language;
@@ -173,14 +175,11 @@ public class UserService extends CrudService<UserDto, SystemUser> {
         return "user";
     }
 
-/*@Override
-    public ImmutableMap<String, FunctionToGetValue> getFields() {
-        return null;
-    }
-
     @Override
-    public String getServiceName() {
-        return "user";
-    }*/
-
+    public Map<String, FieldMapper> getMappingFields() {
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("languages", FieldMapper.builder()
+                        .currentServiceField("languages").build())
+                .build();
+    }
 }

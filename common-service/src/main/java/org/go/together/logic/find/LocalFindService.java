@@ -26,6 +26,8 @@ public abstract class LocalFindService<E extends IdentifiedEntity> {
 
     public abstract String getServiceName();
 
+    public abstract Map<String, FieldMapper> getMappingFields();
+
     protected Map<String, FilterDto> enrichFilterByFoundedValues(Map<String, Collection<Object>> foundedKeysFromAnotherService,
                                                                  Map<String, FilterDto> currentServiceFilters) {
         if (foundedKeysFromAnotherService.isEmpty()) {
@@ -69,8 +71,14 @@ public abstract class LocalFindService<E extends IdentifiedEntity> {
             query.where(whereBuilder);
             countRows = (long) repository.createQuery().getCountRowsWhere(whereBuilder);
         }
-        PageDto pageDto = new PageDto(page.getPage(), page.getSize(), countRows, page.getSort());
-        Collection<Object> result = query.fetchWithPageableNotDefined(page.getPage() * page.getSize(), page.getSize());
+        PageDto pageDto = null;
+        Collection<Object> result;
+        if (page != null) {
+            pageDto = new PageDto(page.getPage(), page.getSize(), countRows, page.getSort());
+            result = query.fetchWithPageableNotDefined(page.getPage() * page.getSize(), page.getSize());
+        } else {
+            result = query.fetchAllNotDefined();
+        }
         return Pair.of(pageDto, result);
     }
 }

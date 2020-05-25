@@ -21,8 +21,6 @@ public abstract class FilterService<E extends IdentifiedEntity> extends LocalFin
     }
 
     public Pair<PageDto, Collection<Object>> findByFormDto(FormDto formDto) {
-        // Get field for search : OK
-        String mainFieldForCurrentService = formDto.getMainIdField().replaceAll(getServiceName() + "\\.", "");
 
         if (formDto.getFilters().isEmpty()) {
             // if filters null search only by main field and group by this field
@@ -33,7 +31,8 @@ public abstract class FilterService<E extends IdentifiedEntity> extends LocalFin
         Map<String, FilterDto> currentFilters = new HashMap<>();
 
         // Get filters result to another service : OK
-        Map<String, Collection<Object>> filterKeysFromOtherServices = remoteFindService.getFiltersToRequest(currentFilters, formDto.getFilters());
+        Map<String, Collection<Object>> filterKeysFromOtherServices = remoteFindService.getFiltersToRequest(currentFilters,
+                formDto.getFilters(), getMappingFields());
         ////////////////
 
         // get values from this service + other service result

@@ -1,9 +1,11 @@
 package org.go.together.logic.find;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FilterDto;
 import org.go.together.dto.filter.FormDto;
+import org.go.together.exceptions.RemoteClientFindException;
 import org.go.together.exceptions.ServiceTransportException;
 
 import java.net.URI;
@@ -23,14 +25,17 @@ public class RemoteFindService {
     }
 
     public Map<String, Collection<Object>> getFiltersToRequest(Map<String, FilterDto> currentFilters,
-                                                               Map<String, FilterDto> filters) {
+                                                               Map<String, FilterDto> filters,
+                                                               Map<String, FieldMapper> availableFields) {
         Map<String, FormDto> filtersToAnotherServices = new HashMap<>();
         filters.forEach((key, value) -> {
-            String[] keys = key.split("\\.", 2);
-            if (keys[0].equals(serviceName)) {
-                currentFilters.put(keys[1], value);
-            } else if (FieldParser.isFieldParsed(key) && FieldParser.getRemoteFieldToSearch(key).matches(".*-service.*")) {
-                convertToAnotherRequest(filtersToAnotherServices, key, value);
+            FieldMapper fieldMapper = FieldParser.getFieldMapper(availableFields, key);
+            if (fieldMapper.getRemoteServiceName() == null) {
+                currentFilters.put(fieldMapper.getCurrentServiceField(), value);
+            } else if (FieldParser.isFieldParsed(key)
+                    && StringUtils.isNotBlank(fieldMapper.getRemoteServiceFieldGetter())
+                    && fieldMapper.getRemoteServiceName().matches(".*-service")) {
+                convertToAnotherRequest(filtersToAnotherServices, key, fieldMapper, value);
             }
         });
         if (!filtersToAnotherServices.isEmpty()) {
@@ -40,15 +45,17 @@ public class RemoteFindService {
         return Collections.emptyMap();
     }
 
-    private void convertToAnotherRequest(Map<String, FormDto> filtersToAnotherServices, String key, FilterDto value) {
-        String serviceName = FieldParser.getServiceName(key);
+    private void convertToAnotherRequest(Map<String, FormDto> filtersToAnotherServices,
+                                         String key,
+                                         FieldMapper fieldMapper,
+                                         FilterDto value) {
         FormDto stringFilterDtoMap = filtersToAnotherServices.get(serviceName);
-        String localEntityField = FieldParser.getLocalEntityField(key);
 
-        String serviceLocalField = serviceName + "&" + localEntityField;
+        String serviceLocalField = fieldMapper.getRemoteServiceName() + "&" + FieldParser.getLocalEntityField(key);
 
         String keyFilterDto = FieldParser.getFieldSearch(key);
-        String remoteGetField = FieldParser.getRemoteGetField(key);
+        String remoteGetField = fieldMapper.getRemoteServiceMapping() + "." + fieldMapper.getRemoteServiceFieldGetter();
+
         if (stringFilterDtoMap != null) {
             Map<String, FilterDto> filters = stringFilterDtoMap.getFilters();
             FilterDto filterDto = filters.get(keyFilterDto);
@@ -76,8 +83,7 @@ public class RemoteFindService {
             if (request == null || request.isEmpty()) {
                 return Collections.emptyMap();
             } else {
-                result.put(serviceField[1], request);
-                if (result.get(serviceField[1]).isEmpty()) {
+                if (result.get(serviceField[1]) == null) {
                     result.put(serviceField[1], request);
                 } else {
                     result.get(serviceField[1]).addAll(request);
@@ -112,8 +118,7 @@ public class RemoteFindService {
             ResponseDto map = objectMapper.readValue(response.body(), ResponseDto.class);
             return map.getResult();
         } catch (Exception e) {
-
+            throw new RemoteClientFindException(serviceId, e);
         }
-        return null;
     }
 }
