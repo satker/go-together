@@ -21,7 +21,7 @@ public class ObjectStringParser {
         if (val instanceof Collection) {
             return ((Collection<Object>) val).stream()
                     .map(ObjectStringParser::parseToString)
-                    .collect(Collectors.joining(",", "(", ")")).toString();
+                    .collect(Collectors.joining(",", "(", ")"));
         }
         return "'" + val.toString() + "'";
     }

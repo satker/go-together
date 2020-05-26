@@ -27,7 +27,7 @@ class UserController extends FindController implements UserClient {
     }
 
     @Override
-    public ResponseDto find(FormDto formDto) {
+    public ResponseDto<Object> find(FormDto formDto) {
         return super.find(formDto);
     }
 

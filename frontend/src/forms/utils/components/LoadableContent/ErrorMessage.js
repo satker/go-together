@@ -5,7 +5,7 @@ import './index.css'
 
 const ErrorMessage = ({error}) => {
     return error ? <div className='error'>
-        Error. {error}
+        Error. {error.toString()}
     </div> : null;
 };
 

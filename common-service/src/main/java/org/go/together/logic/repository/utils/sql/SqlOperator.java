@@ -16,7 +16,7 @@ public enum SqlOperator {
     EMPTY_COLLECTION((field, val) -> field + " is empty "),
     NOT_EMPTY_COLLECTION((field, val) -> field + " is not empty ");
 
-    private BiFunction<String, String, String> biFunction;
+    private final BiFunction<String, String, String> biFunction;
 
 
     SqlOperator(BiFunction<String, String, String> biFunction) {

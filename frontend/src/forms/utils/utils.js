@@ -60,4 +60,40 @@ export const onChange = (state, setState) => (path, value) => {
     }
 };
 
-export const capitalizeFirstLetter = (str) => str.charAt(0).toLowerCase() + str.slice(1);
+export const FilterOperator = {
+    LIKE: {
+        operator: "LIKE",
+        valueMapper: value => [({id: value, name: value})]
+    },
+    IN: {
+        operator: 'IN',
+        valueMapper: values => values.map(value => ({id: value.id, name: value.name}))
+    },
+    START_DATE: {
+        operator: 'START_DATE',
+        valueMapper: value => [({id: value, name: value})]
+    },
+    END_DATE: {
+        operator: 'END_DATE',
+        valueMapper: value => [({id: value, name: value})]
+    },
+}
+
+export const getFilterDto = (filterType, values) => {
+    return {
+        filterType: filterType.operator,
+        values: filterType.valueMapper(values)
+    }
+}
+
+export const updateFormDto = (formDto, setFormDto) => (filterType, values, searchField) => {
+    let resultFilterObject = {...formDto};
+    if (values) {
+        resultFilterObject.filters[searchField] = getFilterDto(filterType, values);
+    } else if (resultFilterObject.filters.hasOwnProperty(searchField)) {
+        delete resultFilterObject.filters[searchField];
+    } else {
+        return;
+    }
+    setFormDto(resultFilterObject);
+}

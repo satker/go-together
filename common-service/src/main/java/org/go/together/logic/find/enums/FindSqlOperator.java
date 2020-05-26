@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 public enum FindSqlOperator {
     LIKE(SqlOperator.LIKE, dtos -> dtos.iterator().next().getId()),
     EQUAL(SqlOperator.EQUAL, dtos -> dtos.iterator().next().getId()),
+    START_DATE(SqlOperator.GREATER_OR_EQUAL, dtos -> dtos.iterator().next().getId()),
+    END_DATE(SqlOperator.LESS_OR_EQUAL, dtos -> dtos.iterator().next().getId()),
     IN(SqlOperator.IN, dtos -> dtos.stream().map(SimpleDto::getId).collect(Collectors.toSet()));
 
     private final SqlOperator operator;

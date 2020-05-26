@@ -95,6 +95,10 @@ public class EventService extends CrudService<EventDto, Event> {
                         .remoteServiceName("user-service")
                         .remoteServiceMapping("user")
                         .remoteServiceFieldGetter("id").build())
+                .put("startDate", FieldMapper.builder()
+                        .currentServiceField("startDate").build())
+                .put("endDate", FieldMapper.builder()
+                        .currentServiceField("endDate").build())
                 .build();
     }
 }

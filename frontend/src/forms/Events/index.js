@@ -1,19 +1,18 @@
 import React, {useEffect, useState} from "react";
-import {get, isEqual, set} from "lodash";
 
-import {FORM_DTO, SEARCH_OBJECT_DEFAULT} from 'forms/utils/constants'
+import {FORM_DTO} from 'forms/utils/constants'
 import GroupItems from "forms/utils/components/CardItems";
 import {connect} from "App/Context";
 import Container from "forms/utils/components/Container/ContainerRow";
 import LoadableContent from "forms/utils/components/LoadableContent";
 import {postLikes} from "forms/utils/components/Event/EventLikes/actions";
 import CustomPagination from "forms/utils/components/Pagination";
+import {updateFormDto} from "forms/utils/utils";
 
 import {postFindEvents} from "./actions";
 import Filter from "./Filter";
 
 const Events = ({pageSize, postFindEvents, findEvents, postLikes}) => {
-    const [searchObject, setSearchObject] = useState({...SEARCH_OBJECT_DEFAULT});
     const [page, setPage] = useState(1);
     const [filterObject, setFilterObject] = useState({...FORM_DTO("event")});
 
@@ -40,26 +39,13 @@ const Events = ({pageSize, postFindEvents, findEvents, postLikes}) => {
 
     const onDelete = () => null;
 
-    const onChangeSearchObject = (field, value) => {
-        const object = {...searchObject};
-        if (!isEqual(get(object, field), value)) {
-            set(object, field, value);
-            setSearchObject(object);
-        }
-    };
-
-    const onClearSearchObject = () => setSearchObject({...SEARCH_OBJECT_DEFAULT});
-
     const pageCount = findEvents.response.page ?
         findEvents.response.page.totalSize / findEvents.response.page.size : 0;
 
     return <Container>
         <Container className='search-container'>
-            <Filter filterObject={filterObject}
-                    setFilterObject={setFilterObject}
-                    searchObject={searchObject}
-                    onChangeSearchObject={onChangeSearchObject}
-                    onClearSearchObject={onClearSearchObject}
+            <Filter updateFilterObject={updateFormDto(filterObject, setFilterObject)}
+                    filterObject={filterObject}
             />
         </Container>
         <Container className='events-container'>
