@@ -2,6 +2,7 @@ package org.go.together.logic.repository;
 
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.logic.repository.builder.SqlBuilder;
+import org.go.together.logic.repository.builder.WhereBuilder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,7 +17,7 @@ public abstract class CustomRepository<E extends IdentifiedEntity> {
     @PersistenceContext
     private EntityManager entityManager;
 
-    private SqlBuilder<E> newQuery;
+    private final Class<E> clazz = getEntityClass();
 
     @Transactional
     public E save(E entity) {
@@ -39,23 +40,19 @@ public abstract class CustomRepository<E extends IdentifiedEntity> {
     }
 
     public SqlBuilder<E> createQuery() {
-        SqlBuilder<E> sqlBuilder = new SqlBuilder<>(getEntityClass(), entityManager, null);
-        newQuery = sqlBuilder;
-        return sqlBuilder;
+        return new SqlBuilder<>(getEntityClass(), entityManager, null);
     }
 
     public SqlBuilder<E> createQuery(String selectRow) {
-        SqlBuilder<E> sqlBuilder = new SqlBuilder<>(getEntityClass(), entityManager, selectRow);
-        newQuery = sqlBuilder;
-        return sqlBuilder;
+        return new SqlBuilder<>(getEntityClass(), entityManager, selectRow);
     }
 
-    public SqlBuilder<E>.WhereBuilder createWhere() {
-        return newQuery.new WhereBuilder(false);
+    public WhereBuilder<E> createWhere() {
+        return new WhereBuilder<>(false, clazz);
     }
 
-    public SqlBuilder<E>.WhereBuilder createGroup() {
-        return newQuery.new WhereBuilder(true);
+    public WhereBuilder<E> createGroup() {
+        return new WhereBuilder<>(true, clazz);
     }
 
     public Class<E> getEntityClass() {

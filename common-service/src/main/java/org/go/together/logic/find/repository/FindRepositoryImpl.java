@@ -9,6 +9,7 @@ import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.logic.find.enums.FindSqlOperator;
 import org.go.together.logic.repository.CustomRepository;
 import org.go.together.logic.repository.builder.SqlBuilder;
+import org.go.together.logic.repository.builder.WhereBuilder;
 
 import java.util.Collection;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
         if (filters == null || filters.isEmpty()) {
             countRows = (long) query.getCountRows();
         } else {
-            SqlBuilder<E>.WhereBuilder whereBuilder = getWhereBuilder(filters);
+            WhereBuilder<E> whereBuilder = getWhereBuilder(filters);
             query.where(whereBuilder);
             countRows = (long) repository.createQuery().getCountRowsWhere(whereBuilder);
         }
@@ -69,8 +70,8 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
         return pageDto;
     }
 
-    private SqlBuilder<E>.WhereBuilder getWhereBuilder(Map<String, FilterDto> filters) {
-        SqlBuilder<E>.WhereBuilder whereBuilder = repository.createWhere();
+    private WhereBuilder<E> getWhereBuilder(Map<String, FilterDto> filters) {
+        WhereBuilder<E> whereBuilder = repository.createWhere();
         // get current main key
         filters.forEach((key, value) -> {
             FindSqlOperator filterType = value.getFilterType();
