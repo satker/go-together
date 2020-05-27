@@ -1,7 +1,6 @@
 package org.go.together.logic.find.finders;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.dto.filter.FilterDto;
 import org.go.together.dto.filter.FormDto;
@@ -21,7 +20,7 @@ public class RemoteFinder implements Finder<Collection<Object>> {
         Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices = new HashMap<>();
         filters.forEach((key, value) -> {
             FieldMapper fieldMapper = FieldParser.getFieldMapper(availableFields, key);
-            if (StringUtils.isNotBlank(fieldMapper.getRemoteServiceFieldGetter())
+            if (StringUtils.isNotBlank(fieldMapper.getPathRemoteFieldGetter())
                     && fieldMapper.getRemoteServiceClient() != null) {
                 String anotherServiceSearchField = FieldParser.getFieldSearch(key);
                 convertToAnotherRequest(filtersToAnotherServices, anotherServiceSearchField, fieldMapper, value);
@@ -41,34 +40,43 @@ public class RemoteFinder implements Finder<Collection<Object>> {
         ClientLocalFieldObject clientLocalFieldObject = ClientLocalFieldObject.builder()
                 .client(fieldMapper.getRemoteServiceClient())
                 .localField(fieldMapper.getCurrentServiceField()).build();
-
         FormDto stringFilterDtoMap = filtersToAnotherServices.get(clientLocalFieldObject);
+        FormDto remoteClientFormDto = getRemoteClientFormDto(anotherServiceSearchField, value, stringFilterDtoMap, fieldMapper);
+        filtersToAnotherServices.put(clientLocalFieldObject, remoteClientFormDto);
+    }
 
-        String remoteGetField = fieldMapper.getRemoteServiceName() + "." + fieldMapper.getRemoteServiceFieldGetter();
+    private FormDto getRemoteClientFormDto(String anotherServiceSearchField,
+                                           FilterDto value,
+                                           FormDto stringFilterDtoMap,
+                                           FieldMapper fieldMapper) {
+        String remoteGetField = fieldMapper.getPathRemoteFieldGetter();
 
         if (stringFilterDtoMap != null) {
             Map<String, FilterDto> filters = stringFilterDtoMap.getFilters();
-            FilterDto filterDto = filters.get(anotherServiceSearchField);
-            if (filterDto != null) {
-                filterDto.addValue(value.getValues());
-            } else {
-                filterDto = value;
-            }
-            filters.put(anotherServiceSearchField, filterDto);
-            FormDto formDto1 = new FormDto(null, filters, remoteGetField);
-            filtersToAnotherServices.put(clientLocalFieldObject, formDto1);
+            FilterDto enrichedFilterDto = getFilterDtoWithValues(anotherServiceSearchField, value, filters);
+            filters.put(anotherServiceSearchField, enrichedFilterDto);
+            return new FormDto(null, filters, remoteGetField);
         } else {
             Map<String, FilterDto> map = new HashMap<>();
             map.put(anotherServiceSearchField, value);
-            FormDto formDto1 = new FormDto(null, map, remoteGetField);
-            filtersToAnotherServices.put(clientLocalFieldObject, formDto1);
+            return new FormDto(null, map, remoteGetField);
         }
+    }
+
+    private FilterDto getFilterDtoWithValues(String anotherServiceSearchField, FilterDto value, Map<String, FilterDto> filters) {
+        FilterDto filterDto = filters.get(anotherServiceSearchField);
+        if (filterDto != null) {
+            filterDto.addValue(value.getValues());
+        } else {
+            filterDto = value;
+        }
+        return filterDto;
     }
 
     private Map<String, Collection<Object>> getFilterResultFromOtherServices(Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices) {
         Map<String, Collection<Object>> result = new HashMap<>();
         for (Map.Entry<ClientLocalFieldObject, FormDto> filtersService : filtersToAnotherServices.entrySet()) {
-            Collection<Object> request = sendRequestAndGetFoundIds(filtersService.getKey().getClient(), filtersService.getValue());
+            Collection<Object> request = getRemoteResult(filtersService.getKey().getClient(), filtersService.getValue());
             if (request == null || request.isEmpty()) {
                 return null;
             } else {
@@ -84,10 +92,9 @@ public class RemoteFinder implements Finder<Collection<Object>> {
     }
 
     // keys from another service
-    private Collection<Object> sendRequestAndGetFoundIds(FindClient client, FormDto body) {
+    private Collection<Object> getRemoteResult(FindClient client, FormDto formDto) {
         try {
-            ResponseDto<Object> map = client.find(body);
-            return map.getResult();
+            return client.find(formDto).getResult();
         } catch (Exception e) {
             throw new RemoteClientFindException(e);
         }

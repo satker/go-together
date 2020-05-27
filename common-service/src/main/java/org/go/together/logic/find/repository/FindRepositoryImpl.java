@@ -26,36 +26,58 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
     @Override
     public Pair<PageDto, Collection<Object>> getResult(String mainField, Map<String, FilterDto> filters, PageDto page) {
         String mainKeyToSort = mainField.replaceAll(serviceName + "\\.", "");
+        SqlBuilder<E> query = getSqlBuilder(mainKeyToSort);
+        long countRows;
+        if (filters == null || filters.isEmpty()) {
+            countRows = (long) query.getCountRows();
+        } else {
+            SqlBuilder<E>.WhereBuilder whereBuilder = getWhereBuilder(filters);
+            query.where(whereBuilder);
+            countRows = (long) repository.createQuery().getCountRowsWhere(whereBuilder);
+        }
+        PageDto pageDto = getPageDto(page, countRows);
+        Collection<Object> result = getResult(page, query);
+        return Pair.of(pageDto, result);
+    }
+
+    private SqlBuilder<E> getSqlBuilder(String mainKeyToSort) {
         SqlBuilder<E> query;
         if (StringUtils.isNotBlank(mainKeyToSort) && !mainKeyToSort.equals(serviceName)) {
             query = repository.createQuery(mainKeyToSort);
         } else {
             query = repository.createQuery();
         }
-        long countRows;
-        if (filters == null || filters.isEmpty()) {
-            countRows = (long) query.getCountRows();
-        } else {
-            SqlBuilder<E>.WhereBuilder whereBuilder = repository.createWhere();
-            // get current main key
-            filters.forEach((key, value) -> {
-                FindSqlOperator filterType = value.getFilterType();
-                Collection<SimpleDto> values = value.getValues();
-                Function<Collection<SimpleDto>, Object> dtosMapper = filterType.getSearchObjectFromDtos();
-                whereBuilder.condition(key, filterType.getOperator(), dtosMapper.apply(values)).and();
-            });
-            whereBuilder.cutLastAnd();
-            query.where(whereBuilder);
-            countRows = (long) repository.createQuery().getCountRowsWhere(whereBuilder);
-        }
-        PageDto pageDto = null;
+        return query;
+    }
+
+    private Collection<Object> getResult(PageDto page, SqlBuilder<E> query) {
         Collection<Object> result;
         if (page != null) {
-            pageDto = new PageDto(page.getPage(), page.getSize(), countRows, page.getSort());
             result = query.fetchWithPageableNotDefined(page.getPage() * page.getSize(), page.getSize());
         } else {
             result = query.fetchAllNotDefined();
         }
-        return Pair.of(pageDto, result);
+        return result;
+    }
+
+    private PageDto getPageDto(PageDto page, long countRows) {
+        PageDto pageDto = null;
+        if (page != null) {
+            pageDto = new PageDto(page.getPage(), page.getSize(), countRows, page.getSort());
+        }
+        return pageDto;
+    }
+
+    private SqlBuilder<E>.WhereBuilder getWhereBuilder(Map<String, FilterDto> filters) {
+        SqlBuilder<E>.WhereBuilder whereBuilder = repository.createWhere();
+        // get current main key
+        filters.forEach((key, value) -> {
+            FindSqlOperator filterType = value.getFilterType();
+            Collection<SimpleDto> values = value.getValues();
+            Function<Collection<SimpleDto>, Object> dtosMapper = filterType.getSearchObjectFromDtos();
+            whereBuilder.condition(key, filterType.getOperator(), dtosMapper.apply(values)).and();
+        });
+        whereBuilder.cutLastAnd();
+        return whereBuilder;
     }
 }
