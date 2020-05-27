@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import PropTypes from "prop-types";
 
-import {AutosuggestionLocations} from "forms/utils/components/Autosuggestion";
+import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
 import CheckInOutDates from 'forms/utils/components/CheckInOutDates'
-import {FORM_DTO, LOCATION_SERVICE_URL} from 'forms/utils/constants'
+import {FORM_DTO} from 'forms/utils/constants'
 import {SearchObject} from "forms/utils/types";
 import {FilterOperator} from "forms/utils/utils";
 import CustomButton from "forms/utils/components/CustomButton";
@@ -15,8 +15,7 @@ import AuthorFilters from "./AuthorFilters";
 const Filter = ({
                     filterObject, updateFilterObject
                 }) => {
-    const [location, setLocation] = useState(null);
-
+    const [routesNumber, setRoutesNumber] = useState([]);
     const clearFilters = () => {
         updateFilterObject({...FORM_DTO("event")});
         setPage(0);
@@ -25,16 +24,20 @@ const Filter = ({
         updateFilterObject(filterOperation, date, searchField);
     }
 
+    const onChangeLocation = (index) => (location) => {
+        console.log(index, location)
+    }
+
     const startDate = filterObject.filters['startDate'];
     const endDate = filterObject.filters['endDate'];
 
     return <div className='container-search-events'>
         <div className='flex'>
-            <AutosuggestionLocations formId='search_form_'
-                                     setResult={setLocation}
-                                     placeholder={'Search a location (CITY,COUNTRY)'}
-                                     url={LOCATION_SERVICE_URL + '/locations'}
-                                     urlParam={'name'}/>
+            {routesNumber.map((route, index) =>
+                <AutocompleteLocation key={index} setCenter={onChangeLocation(index)}/>
+            )}
+            <CustomButton onClick={() => setRoutesNumber([...routesNumber, routesNumber.length + 1])}
+                          text='Add location'/>
         </div>
         <div className='flex margin-left-custom'>
             <CheckInOutDates startDate={startDate && startDate.values[0]?.id}

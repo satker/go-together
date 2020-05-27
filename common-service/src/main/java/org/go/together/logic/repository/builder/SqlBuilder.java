@@ -16,49 +16,69 @@ import static org.go.together.logic.repository.builder.utils.BuilderUtils.getEnt
 import static org.go.together.logic.repository.utils.sql.ObjectStringParser.parseToString;
 
 public class SqlBuilder<E extends IdentifiedEntity> {
+    private final String from;
     private final StringBuilder query;
     private final EntityManager entityManager;
     private final Class<E> clazz;
     private final JoinBuilder<E> joinBuilder;
+    private final String select;
 
     public SqlBuilder(Class<E> clazz, EntityManager entityManager, String selectRow) {
         String entityLink = getEntityLink(clazz);
         String selectQuery = selectRow == null ? entityLink : entityLink + "." + selectRow;
-        query = new StringBuilder("select distinct " + selectQuery + " FROM " + clazz.getSimpleName() + " " + entityLink);
+        select = "select distinct " + selectQuery;
+        from = " FROM " + clazz.getSimpleName() + " " + entityLink;
         joinBuilder = new JoinBuilder<>(clazz);
+        query = new StringBuilder();
         this.entityManager = entityManager;
         this.clazz = clazz;
     }
 
     public SqlBuilder<E> where(WhereBuilder whereBuilder) {
-        query.append(whereBuilder.getWhereClause());
+        String joinQuery = whereBuilder.getJoinQuery().toString();
+        if (StringUtils.isNotEmpty(joinQuery)) {
+            query.append(select);
+            query.append(from);
+            query.append(joinQuery);
+        } else {
+            query.append(from);
+        }
+        query.append(whereBuilder.getWhereQuery());
         return this;
     }
 
     public Collection<E> fetchAll() {
-        return entityManager.createQuery(query.toString(), clazz).getResultList();
+        return entityManager.createQuery(getQuery(), clazz).getResultList();
     }
 
     public Optional<E> fetchOne() {
-        return entityManager.createQuery(query.toString(), clazz).getResultStream().findFirst();
+        return entityManager.createQuery(getQuery(), clazz).getResultStream().findFirst();
     }
 
     public Collection<E> fetchWithPageable(int start, int pageSize) {
-        TypedQuery<E> query = entityManager.createQuery(this.query.toString(), clazz);
+        TypedQuery<E> query = entityManager.createQuery(getQuery(), clazz);
         query.setFirstResult(start);
         query.setMaxResults(pageSize);
         return query.getResultList();
     }
 
     public Collection<Object> fetchWithPageableNotDefined(int start, int pageSize) {
-        Query query = entityManager.createQuery(this.query.toString());
+        Query query = entityManager.createQuery(getQuery());
         query.setFirstResult(start);
         query.setMaxResults(pageSize);
         return query.getResultList();
     }
 
     public Collection<Object> fetchAllNotDefined() {
-        return entityManager.createQuery(this.query.toString()).getResultList();
+        return entityManager.createQuery(getQuery()).getResultList();
+    }
+
+    public String getQuery() {
+        if (StringUtils.isNotEmpty(query)) {
+            return query.toString();
+        } else {
+            return from;
+        }
     }
 
     public Number getCountRows() {
@@ -69,7 +89,8 @@ public class SqlBuilder<E extends IdentifiedEntity> {
 
     public Number getCountRowsWhere(WhereBuilder whereBuilder) {
         String query = "SELECT COUNT (DISTINCT " + getEntityLink(clazz) + ".id) FROM " +
-                clazz.getSimpleName() + " " + getEntityLink(clazz) + " " + whereBuilder.getWhereClause();
+                clazz.getSimpleName() + " " + getEntityLink(clazz) + " " + whereBuilder.getJoinQuery() +
+                whereBuilder.getWhereQuery();
         return entityManager.createQuery(query, Number.class).getSingleResult();
     }
 
@@ -85,12 +106,12 @@ public class SqlBuilder<E extends IdentifiedEntity> {
             whereQuery = new StringBuilder(isGroup ? StringUtils.EMPTY : " WHERE ");
         }
 
-        protected String getWhereClause() {
-            return join + " " + whereQuery;
-        }
-
         protected StringBuilder getWhereQuery() {
             return whereQuery;
+        }
+
+        protected StringBuilder getJoinQuery() {
+            return join;
         }
 
         public WhereBuilder condition(String field, SqlOperator sqlOperator, Object value) {

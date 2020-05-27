@@ -5,6 +5,7 @@ import org.go.together.logic.repository.builder.utils.BuilderUtils;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,7 +18,10 @@ public class JoinBuilder<E extends IdentifiedEntity> {
     public JoinBuilder(Class<E> clazz) {
         this.clazz = clazz;
         Arrays.stream(clazz.getDeclaredFields())
-                .filter(field1 -> field1.getAnnotation(ElementCollection.class) != null || field1.getAnnotation(ManyToMany.class) != null)
+                .filter(field1 -> field1.getAnnotation(ElementCollection.class) != null ||
+                        field1.getAnnotation(ManyToMany.class) != null ||
+                        field1.getAnnotation(OneToMany.class) != null
+                )
                 .map(Field::getName)
                 .forEach(fieldName -> {
                     String generatedTableName = getJoinTableName(fieldName, clazz);
