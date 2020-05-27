@@ -90,7 +90,7 @@ public class EventService extends CrudService<EventDto, Event> {
         return ImmutableMap.<String, FieldMapper>builder()
                 .put("name", FieldMapper.builder()
                         .currentServiceField("name").build())
-                .put("authorId", FieldMapper.builder()
+                .put("author", FieldMapper.builder()
                         .currentServiceField("authorId")
                         .remoteServiceName("user-service")
                         .remoteServiceMapping("user")
