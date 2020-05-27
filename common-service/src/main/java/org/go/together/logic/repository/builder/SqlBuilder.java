@@ -63,14 +63,14 @@ public class SqlBuilder<E extends IdentifiedEntity> {
     }
 
     public Collection<Object> fetchWithPageableNotDefined(int start, int pageSize) {
-        Query query = entityManager.createQuery(getQuery());
+        Query query = entityManager.createQuery(getQuery(), Object.class);
         query.setFirstResult(start);
         query.setMaxResults(pageSize);
         return query.getResultList();
     }
 
     public Collection<Object> fetchAllNotDefined() {
-        return entityManager.createQuery(getQuery()).getResultList();
+        return entityManager.createQuery(getQuery(), Object.class).getResultList();
     }
 
     public String getQuery() {
