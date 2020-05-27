@@ -25,8 +25,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
 
     @Override
     public Pair<PageDto, Collection<Object>> getResult(String mainField, Map<String, FilterDto> filters, PageDto page) {
-        String mainKeyToSort = mainField.replaceAll(serviceName + "\\.", "");
-        SqlBuilder<E> query = getSqlBuilder(mainKeyToSort);
+        SqlBuilder<E> query = getSqlBuilder(mainField);
         long countRows;
         if (filters == null || filters.isEmpty()) {
             countRows = (long) query.getCountRows();
@@ -40,7 +39,9 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
         return Pair.of(pageDto, result);
     }
 
-    private SqlBuilder<E> getSqlBuilder(String mainKeyToSort) {
+    private SqlBuilder<E> getSqlBuilder(String mainField) {
+        String mainKeyToSort = mainField.replaceAll(serviceName + "\\.", "");
+
         SqlBuilder<E> query;
         if (StringUtils.isNotBlank(mainKeyToSort) && !mainKeyToSort.equals(serviceName)) {
             query = repository.createQuery(mainKeyToSort);
