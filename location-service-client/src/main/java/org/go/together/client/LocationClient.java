@@ -1,7 +1,10 @@
 package org.go.together.client;
 
-import org.go.together.dto.*;
-import org.go.together.dto.filter.FormDto;
+import org.go.together.dto.EventLocationDto;
+import org.go.together.dto.IdDto;
+import org.go.together.dto.LocationDto;
+import org.go.together.dto.SimpleDto;
+import org.go.together.interfaces.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @FeignClient(name = "location-service")
-public interface LocationClient {
+public interface LocationClient extends FindClient {
     @GetMapping("/events/{eventId}/routes")
     Set<EventLocationDto> getEventRoute(@PathVariable("eventId") UUID eventId);
 
@@ -36,7 +39,4 @@ public interface LocationClient {
 
     @PostMapping("/locations")
     IdDto saveLocation(@RequestBody LocationDto locationDto);
-
-    @PostMapping("/find")
-    ResponseDto<Object> find(@RequestBody FormDto formDto);
 }

@@ -13,7 +13,7 @@ public class LocalFinder implements Finder<FilterDto> {
         Map<String, FilterDto> currentFilters = new HashMap<>();
         filters.forEach((key, value) -> {
             FieldMapper fieldMapper = FieldParser.getFieldMapper(availableFields, key);
-            if (fieldMapper.getRemoteServiceName() == null) {
+            if (fieldMapper.getRemoteServiceClient() == null) {
                 currentFilters.put(fieldMapper.getCurrentServiceField(), value);
             }
         });

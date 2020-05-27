@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
+import org.go.together.client.UserClient;
 import org.go.together.dto.*;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.logic.CrudService;
@@ -24,16 +25,19 @@ public class EventService extends CrudService<EventDto, Event> {
     private final LocationClient locationClient;
     private final ContentClient contentClient;
     private final EventRepository eventRepository;
+    private final UserClient userClient;
 
     protected EventService(EventRepository eventRepository,
                            EventMapper eventMapper,
                            EventValidator eventValidator,
                            LocationClient locationClient,
-                           ContentClient contentClient) {
+                           ContentClient contentClient,
+                           UserClient userClient) {
         super(eventRepository, eventMapper, eventValidator);
         this.locationClient = locationClient;
         this.contentClient = contentClient;
         this.eventRepository = eventRepository;
+        this.userClient = userClient;
     }
 
     @Override
@@ -92,8 +96,8 @@ public class EventService extends CrudService<EventDto, Event> {
                         .currentServiceField("name").build())
                 .put("author", FieldMapper.builder()
                         .currentServiceField("authorId")
-                        .remoteServiceName("user-service")
-                        .remoteServiceMapping("user")
+                        .remoteServiceClient(userClient)
+                        .remoteServiceName("user")
                         .remoteServiceFieldGetter("id").build())
                 .put("startDate", FieldMapper.builder()
                         .currentServiceField("startDate").build())

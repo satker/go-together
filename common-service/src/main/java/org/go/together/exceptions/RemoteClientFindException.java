@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class RemoteClientFindException extends RuntimeException {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(RemoteClientFindException.class);
 
-    public RemoteClientFindException(String service, Exception e) {
-        super("Service " + service + " cannot find by reason: " + e.getMessage());
-        log.error("Service " + service + " cannot find by reason: " + e.getMessage());
+    public RemoteClientFindException(Exception e) {
+        super("Cannot find by reason: " + e.getMessage());
+        log.error("Cannot find by reason: " + e.getMessage());
     }
 }

@@ -1,14 +1,14 @@
 package org.go.together.client;
 
 import org.go.together.dto.*;
-import org.go.together.dto.filter.FormDto;
+import org.go.together.interfaces.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @FeignClient(name = "user-service")
-public interface UserClient {
+public interface UserClient extends FindClient {
     @GetMapping("/users")
     UserDto findUserByLogin(@RequestParam("login") String login);
 
@@ -17,9 +17,6 @@ public interface UserClient {
 
     @PutMapping("/users")
     IdDto add(@RequestBody UserDto input);
-
-    @PostMapping("/find")
-    ResponseDto<Object> find(@RequestBody FormDto formDto);
 
     @GetMapping("/users/check/login/{login}")
     boolean checkIsGoodUsername(@PathVariable("login") String username);

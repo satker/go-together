@@ -24,7 +24,7 @@ const AuthorFilters = ({
     }, [getLanguages, getInterests]);
 
     const onChangeFilterObject = (field, set) => (values) => {
-        const searchField = "author&" + field + ".id";
+        const searchField = "author?" + field + ".id";
         updateFilterObject(FilterOperator.IN, values, searchField);
         set(values);
     }

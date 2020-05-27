@@ -3,8 +3,7 @@ package org.go.together.client;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.MessageDto;
 import org.go.together.dto.NotificationDto;
-import org.go.together.dto.ResponseDto;
-import org.go.together.dto.filter.FormDto;
+import org.go.together.interfaces.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @FeignClient(name = "message-service")
-public interface MessageClient {
+public interface MessageClient extends FindClient {
     @GetMapping("users/{userId}/notifications")
     Set<NotificationDto> getNotifications(@PathVariable("userId") UUID userId);
 
@@ -46,9 +45,6 @@ public interface MessageClient {
     @PutMapping("users/{userId}/reviews")
     Set<MessageDto> sentReviewToUser(@PathVariable("userId") UUID userId,
                                      @RequestBody MessageDto messageDto);
-
-    @PostMapping("/find")
-    ResponseDto<Object> find(@RequestBody FormDto formDto);
 
     @PostMapping("users/{userId}/messages/{otherUserId}")
     Set<MessageDto> updateMessageToAnotherUser(@PathVariable("userId") UUID myId,
