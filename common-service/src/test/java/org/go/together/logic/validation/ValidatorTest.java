@@ -121,11 +121,20 @@ class ValidatorTest {
         assertTrue(validate.contains("test name"));
     }
 
+    @Test
+    void validateWithEmptyNameJoinTest() {
+        testDto.getJoinTestEntities().forEach(joinTestDto -> joinTestDto.setName(EMPTY));
+
+        String validate = testValidator.validate(testDto);
+
+        assertTrue(validate.contains("test name"));
+    }
+
     private TestDto createTestDto(UUID idTest, String nameTest, long numberTest, Date dateTest,
                                   Date startDate, Date endDate, long startNumber, long endNumber,
                                   SimpleDto simpleDto, double longitude, double latitude) {
         Set<JoinTestDto> joinTestDtos = new HashSet<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1; i < 10; i++) {
             UUID id = UUID.randomUUID();
             String name = "join test " + i;
             JoinTestDto joinTestDto = new JoinTestDto();
@@ -135,7 +144,7 @@ class ValidatorTest {
         }
 
         Set<ManyJoinDto> manyJoinDtos = new HashSet<>();
-        for (int i = 0; i < 15; i++) {
+        for (int i = 1; i < 15; i++) {
             UUID id = UUID.randomUUID();
             String name = "many join test " + i;
             ManyJoinDto manyJoinDto = new ManyJoinDto();
@@ -146,7 +155,7 @@ class ValidatorTest {
         }
 
         Set<String> elementsDto = new HashSet<>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 1; i < 20; i++) {
             UUID id = UUID.randomUUID();
             elementsDto.add(id.toString());
         }

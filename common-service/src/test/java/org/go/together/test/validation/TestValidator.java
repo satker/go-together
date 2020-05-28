@@ -1,6 +1,7 @@
 package org.go.together.test.validation;
 
 import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.SimpleDto;
 import org.go.together.dto.validation.DateIntervalDto;
 import org.go.together.dto.validation.NumberIntervalDto;
@@ -15,6 +16,15 @@ import java.util.Optional;
 
 @Component
 public class TestValidator extends Validator<TestDto> {
+    private final ManyJoinValidator manyJoinValidator;
+    private final JoinTestValidator joinTestValidator;
+
+    public TestValidator(ManyJoinValidator manyJoinValidator,
+                         JoinTestValidator joinTestValidator) {
+        this.manyJoinValidator = manyJoinValidator;
+        this.joinTestValidator = joinTestValidator;
+    }
+
     @Override
     public void getMapsForCheck(TestDto dto) {
         super.STRINGS_FOR_BLANK_CHECK = ImmutableMap.<String, String>builder()
@@ -39,4 +49,20 @@ public class TestValidator extends Validator<TestDto> {
                 .put("test number interval", new NumberIntervalDto(dto.getNumber(), dto.getStartNumber(), dto.getEndNumber()))
                 .build();
     }
+
+    protected String commonValidateCustom(TestDto dto) {
+        StringBuilder errors = new StringBuilder();
+
+        dto.getJoinTestEntities().stream()
+                .map(joinTestValidator::validate)
+                .filter(StringUtils::isNotBlank)
+                .forEach(errors::append);
+
+        dto.getManyJoinEntities().stream()
+                .map(manyJoinValidator::validate)
+                .filter(StringUtils::isNotBlank)
+                .forEach(errors::append);
+        return errors.toString();
+    }
+
 }

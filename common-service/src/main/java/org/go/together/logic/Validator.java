@@ -55,7 +55,7 @@ public abstract class Validator<CD extends Dto> {
                 .append(ValidatorUtils.checkDateIntervalIsCorrect(DATES_CORRECT_CHECK))
                 .append(ValidatorUtils.checkNullObject(OBJECT_NULL_CHECK))
                 .append(ValidatorUtils.checkNumberIntervalIsCorrect(NUMBER_INTERVAL_CORRECT_CHECK));
-        if (StringUtils.isNotBlank(errors)) {
+        if (StringUtils.isBlank(errors)) {
             errors.append(commonValidateCustom(dto));
         }
         return errors.toString();
