@@ -51,6 +51,11 @@ public class TestService extends CrudService<TestDto, TestEntity> {
                         .remoteServiceClient(anotherClient)
                         .remoteServiceName("element")
                         .remoteServiceFieldGetter("id").build())
+                .put("joinTestEntities", FieldMapper.builder()
+                        .currentServiceField("joinTestEntities")
+                        .remoteServiceClient(anotherClient)
+                        .remoteServiceName("join")
+                        .remoteServiceFieldGetter("id").build())
                 .build();
     }
 }

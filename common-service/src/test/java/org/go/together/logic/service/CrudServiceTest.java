@@ -9,6 +9,7 @@ import org.go.together.dto.filter.FilterDto;
 import org.go.together.dto.filter.FormDto;
 import org.go.together.dto.filter.PageDto;
 import org.go.together.exceptions.IncorrectFindObject;
+import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.dto.TestDto;
 import org.go.together.test.entities.TestEntity;
@@ -85,6 +86,7 @@ class CrudServiceTest {
     public void clean() {
         testDto = null;
         entityManager.clear();
+        testService.setAnotherClient(null);
     }
 
     @Test
@@ -249,7 +251,7 @@ class CrudServiceTest {
     }
 
     @Test
-    void findFromRemoteService() {
+    void findFromRemoteServiceToElements() {
         testService.create(testDto);
 
         FormDto formDto = new FormDto();
@@ -262,7 +264,7 @@ class CrudServiceTest {
             uuids.add(UUID.fromString(uuid));
         }
         testService.setAnotherClient(uuids);
-        formDto.setFilters(Collections.singletonMap("elements.id?id", filterDto));
+        formDto.setFilters(Collections.singletonMap("elements?element.id", filterDto));
         PageDto pageDto = new PageDto();
         pageDto.setPage(0);
         pageDto.setSize(3);
@@ -277,5 +279,59 @@ class CrudServiceTest {
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
         assertTrue(result instanceof TestDto);
         assertEquals(testDto, result);
+    }
+
+    @Test
+    void findFromRemoteServiceToJoinTable() {
+        testService.create(testDto);
+
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField("test");
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(IN);
+        filterDto.setValues(Collections.singleton(new SimpleDto("filter", "filter")));
+        Collection<Object> uuids = new HashSet<>();
+        for (JoinTestDto joinTestDto : testDto.getJoinTestEntities()) {
+            uuids.add(joinTestDto.getId());
+        }
+        testService.setAnotherClient(uuids);
+        formDto.setFilters(Collections.singletonMap("joinTestEntities.id?join.id", filterDto));
+        PageDto pageDto = new PageDto();
+        pageDto.setPage(0);
+        pageDto.setSize(3);
+        pageDto.setSort(Collections.emptyList());
+        pageDto.setTotalSize(0L);
+        formDto.setPage(pageDto);
+        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+
+        Object result = objectResponseDto.getResult().iterator().next();
+
+        assertEquals(1, objectResponseDto.getResult().size());
+        assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        assertTrue(result instanceof TestDto);
+        assertEquals(testDto, result);
+    }
+
+    @Test
+    void findFromRemoteServiceEmptyResult() {
+        testService.create(testDto);
+
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField("test");
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(IN);
+        filterDto.setValues(Collections.singleton(new SimpleDto("filter", "filter")));
+        testService.setAnotherClient(Collections.emptyList());
+        formDto.setFilters(Collections.singletonMap("joinTestEntities.id?join.id", filterDto));
+        PageDto pageDto = new PageDto();
+        pageDto.setPage(0);
+        pageDto.setSize(3);
+        pageDto.setSort(Collections.emptyList());
+        pageDto.setTotalSize(0L);
+        formDto.setPage(pageDto);
+        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+
+        assertEquals(0, objectResponseDto.getResult().size());
+        assertEquals(0, objectResponseDto.getPage().getTotalSize());
     }
 }

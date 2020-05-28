@@ -23,7 +23,11 @@ public class RemoteFinder implements Finder<Collection<Object>> {
             if (StringUtils.isNotBlank(fieldMapper.getPathRemoteFieldGetter())
                     && fieldMapper.getRemoteServiceClient() != null) {
                 String anotherServiceSearchField = FieldParser.getFieldSearch(key);
-                convertToAnotherRequest(filtersToAnotherServices, anotherServiceSearchField, fieldMapper, value);
+                convertToAnotherRequest(FieldParser.getLocalEntityField(key),
+                        filtersToAnotherServices,
+                        anotherServiceSearchField,
+                        fieldMapper,
+                        value);
             }
         });
         if (!filtersToAnotherServices.isEmpty()) {
@@ -33,13 +37,14 @@ public class RemoteFinder implements Finder<Collection<Object>> {
         return Collections.emptyMap();
     }
 
-    private void convertToAnotherRequest(Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices,
+    private void convertToAnotherRequest(String key,
+                                         Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices,
                                          String anotherServiceSearchField,
                                          FieldMapper fieldMapper,
                                          FilterDto value) {
         ClientLocalFieldObject clientLocalFieldObject = ClientLocalFieldObject.builder()
                 .client(fieldMapper.getRemoteServiceClient())
-                .localField(fieldMapper.getCurrentServiceField()).build();
+                .localField(key).build();
         FormDto stringFilterDtoMap = filtersToAnotherServices.get(clientLocalFieldObject);
         FormDto remoteClientFormDto = getRemoteClientFormDto(anotherServiceSearchField, value, stringFilterDtoMap, fieldMapper);
         filtersToAnotherServices.put(clientLocalFieldObject, remoteClientFormDto);
