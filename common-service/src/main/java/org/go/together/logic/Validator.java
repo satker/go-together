@@ -11,18 +11,16 @@ import org.go.together.utils.ValidatorUtils;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Optional;
 
 public abstract class Validator<CD extends Dto> {
     public Map<String, String> STRINGS_FOR_BLANK_CHECK = new HashMap<>();
     public Map<String, Collection<SimpleDto>> SIMPLE_DTO_CORRECT_CHECK = new HashMap<>();
     public Map<String, Number> NUMBER_CORRECT_ZERO_OR_NEGATIVE_CHECK = new HashMap<>();
-    public Map<String, Number> NUMBER_CORRECT_NEGATIVE_CHECK = new HashMap<>();
     public Map<String, Collection<?>> COLLECTION_CORRECT_CHECK = new HashMap<>();
     public Map<String, StringRegexDto> REGEX_STRING_CORRECT_CHECK = new HashMap<>();
-    public Map<String, UUID> UUID_CORRECT_CHECK = new HashMap<>();
     public Map<String, DateIntervalDto> DATES_CORRECT_CHECK = new HashMap<>();
-    public Map<String, Object> OBJECT_NULL_CHECK = new HashMap<>();
+    public Map<String, Optional<Object>> OBJECT_NULL_CHECK = new HashMap<>();
     public Map<String, NumberIntervalDto> NUMBER_INTERVAL_CORRECT_CHECK = new HashMap<>();
 
     public String validateForCreate(CD dto) {
@@ -52,14 +50,12 @@ public abstract class Validator<CD extends Dto> {
         errors.append(ValidatorUtils.checkEmptyString(STRINGS_FOR_BLANK_CHECK))
                 .append(ValidatorUtils.checkEmptySimpleDto(SIMPLE_DTO_CORRECT_CHECK))
                 .append(ValidatorUtils.checkZeroOrNegativeNumber(NUMBER_CORRECT_ZERO_OR_NEGATIVE_CHECK))
-                .append(ValidatorUtils.checkNegativeNumber(NUMBER_CORRECT_NEGATIVE_CHECK))
                 .append(ValidatorUtils.checkCorrectCollection(COLLECTION_CORRECT_CHECK))
                 .append(ValidatorUtils.checkStringByRegex(REGEX_STRING_CORRECT_CHECK))
-                .append(ValidatorUtils.checkUUIDIsCorrect(UUID_CORRECT_CHECK))
                 .append(ValidatorUtils.checkDateIntervalIsCorrect(DATES_CORRECT_CHECK))
                 .append(ValidatorUtils.checkNullObject(OBJECT_NULL_CHECK))
                 .append(ValidatorUtils.checkNumberIntervalIsCorrect(NUMBER_INTERVAL_CORRECT_CHECK));
-        if (StringUtils.isBlank(errors)) {
+        if (StringUtils.isNotBlank(errors)) {
             errors.append(commonValidateCustom(dto));
         }
         return errors.toString();

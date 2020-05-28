@@ -11,10 +11,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ValidatorUtils {
-    public static String checkNullObject(Map<String, Object> objectMap) {
+    public static String checkNullObject(Map<String, Optional<Object>> objectMap) {
         final String message = "Field %s is null. ";
         return objectMap.entrySet().stream()
-                .map(string -> string.getValue() == null ?
+                .map(string -> string.getValue().isEmpty() ?
                         String.format(message, string.getKey()) :
                         StringUtils.EMPTY)
                 .collect(Collectors.joining());

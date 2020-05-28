@@ -2,6 +2,7 @@ package org.go.together.logic.mapper;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.context.RepositoryContext;
+import org.go.together.dto.SimpleDto;
 import org.go.together.interfaces.Identified;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.dto.ManyJoinDto;
@@ -27,10 +28,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = RepositoryContext.class)
 class MapperTest {
-    TestDto testDto;
-    TestEntity testEntity;
     @Autowired
     private TestMapper testMapper;
+
+    TestDto testDto;
+    TestEntity testEntity;
 
     @BeforeEach
     void init() {
@@ -38,8 +40,19 @@ class MapperTest {
         String name = "test name";
         long number = 6;
         Date date = new Date();
+        Date startDate = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(startDate);
+        c.add(Calendar.MONTH, 1);
+        Date endDate = c.getTime();
+        long startNumber = 1;
+        long endNumber = 3;
+        double latitude = 18.313230192867607;
+        double longitude = 74.39449363632201;
+        SimpleDto simpleDto = new SimpleDto("simpleDto", "simpleDto");
 
-        Pair<TestEntity, TestDto> testDtoAndEntity = createTestDtoAndEntity(id, name, number, date);
+        Pair<TestEntity, TestDto> testDtoAndEntity = createTestDtoAndEntity(id, name, number, date, startDate, endDate,
+                startNumber, endNumber, simpleDto, longitude, latitude);
 
         testDto = testDtoAndEntity.getRight();
         testEntity = testDtoAndEntity.getLeft();
@@ -71,8 +84,19 @@ class MapperTest {
         String name = "test name1";
         long number = 62;
         Date date = new Date();
+        Date startDate = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(startDate);
+        c.add(Calendar.MONTH, 3);
+        Date endDate = c.getTime();
+        long startNumber = 11;
+        long endNumber = 32;
+        SimpleDto simpleDto = new SimpleDto("simpleDtoNext", "simpleDtoNext");
+        double longitude = 74.48513084335326;
+        double latitude = 19.0625353790555;
 
-        Pair<TestEntity, TestDto> testDtoAndEntity = createTestDtoAndEntity(id, name, number, date);
+        Pair<TestEntity, TestDto> testDtoAndEntity = createTestDtoAndEntity(id, name, number, date, startDate, endDate,
+                startNumber, endNumber, simpleDto, longitude, latitude);
 
         Collection<TestDto> testDtos = Arrays.asList(testDto, testDtoAndEntity.getRight());
         Collection<TestEntity> testEntities = Arrays.asList(testEntity, testDtoAndEntity.getLeft());
@@ -89,8 +113,19 @@ class MapperTest {
         String name = "test name2";
         long number = 65;
         Date date = new Date();
+        Date startDate = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(startDate);
+        c.add(Calendar.MONTH, 5);
+        Date endDate = c.getTime();
+        long startNumber = 112;
+        long endNumber = 323;
+        SimpleDto simpleDto = new SimpleDto("simpleDtoNext1", "simpleDtoNext1");
+        double longitude = 73.12419944686889;
+        double latitude = 18.796236122618033;
 
-        Pair<TestEntity, TestDto> testDtoAndEntity = createTestDtoAndEntity(id, name, number, date);
+        Pair<TestEntity, TestDto> testDtoAndEntity = createTestDtoAndEntity(id, name, number, date, startDate, endDate,
+                startNumber, endNumber, simpleDto, longitude, latitude);
 
         Collection<TestDto> testDtos = Arrays.asList(testDto, testDtoAndEntity.getRight());
         Collection<TestEntity> testEntities = Arrays.asList(testEntity, testDtoAndEntity.getLeft());
@@ -113,7 +148,9 @@ class MapperTest {
     }
 
 
-    private Pair<TestEntity, TestDto> createTestDtoAndEntity(UUID idTest, String nameTest, long numberTest, Date dateTest) {
+    private Pair<TestEntity, TestDto> createTestDtoAndEntity(UUID idTest, String nameTest, long numberTest, Date dateTest,
+                                                             Date startDate, Date endDate, long startNumber, long endNumber,
+                                                             SimpleDto simpleDto, double longitude, double latitude) {
         Set<JoinTestEntity> joinTestEntities = new HashSet<>();
         Set<JoinTestDto> joinTestDtos = new HashSet<>();
         for (int i = 0; i < 10; i++) {
@@ -167,6 +204,13 @@ class MapperTest {
         testEntityPrepare.setNumber(numberTest);
         testEntityPrepare.setName(nameTest);
         testEntityPrepare.setDate(dateTest);
+        testEntityPrepare.setSimpleDto(simpleDto.getId());
+        testEntityPrepare.setStartNumber(startNumber);
+        testEntityPrepare.setStartDate(startDate);
+        testEntityPrepare.setLongitude(longitude);
+        testEntityPrepare.setLatitude(latitude);
+        testEntityPrepare.setEndNumber(endNumber);
+        testEntityPrepare.setEndDate(endDate);
 
         TestDto testDtoPrepare = new TestDto();
         testDtoPrepare.setManyJoinEntities(manyJoinDtos);
@@ -176,6 +220,13 @@ class MapperTest {
         testDtoPrepare.setName(nameTest);
         testDtoPrepare.setDate(dateTest);
         testDtoPrepare.setId(idTest);
+        testDtoPrepare.setSimpleDto(simpleDto);
+        testDtoPrepare.setLongitude(longitude);
+        testDtoPrepare.setLatitude(latitude);
+        testDtoPrepare.setStartNumber(startNumber);
+        testDtoPrepare.setEndNumber(endNumber);
+        testDtoPrepare.setStartDate(startDate);
+        testDtoPrepare.setEndDate(endDate);
 
         return Pair.of(testEntityPrepare, testDtoPrepare);
     }
