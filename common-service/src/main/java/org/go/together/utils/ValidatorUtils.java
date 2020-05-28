@@ -39,15 +39,6 @@ public class ValidatorUtils {
                 .collect(Collectors.joining());
     }
 
-    public static String checkNegativeNumber(Map<String, Number> numbersForCheck) {
-        final String message = "Number %s is negative ";
-        return numbersForCheck.entrySet().stream()
-                .map(number -> number.getValue().doubleValue() < 0 ?
-                        String.format(message, number.getKey()) :
-                        StringUtils.EMPTY)
-                .collect(Collectors.joining());
-    }
-
     public static String checkEmptySimpleDto(Map<String, Collection<SimpleDto>> simpleDtoMap) {
         final String message = "Field %s is incorrect. ";
         return simpleDtoMap.entrySet().stream()

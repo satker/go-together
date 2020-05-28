@@ -48,6 +48,12 @@ public class TestValidator extends Validator<TestDto> {
         super.NUMBER_INTERVAL_CORRECT_CHECK = ImmutableMap.<String, NumberIntervalDto>builder()
                 .put("test number interval", new NumberIntervalDto(dto.getNumber(), dto.getStartNumber(), dto.getEndNumber()))
                 .build();
+        super.COLLECTION_CORRECT_CHECK =
+                ImmutableMap.<String, Collection<?>>builder()
+                        .put("test elements", dto.getElements())
+                        .put("test join tests", dto.getJoinTestEntities())
+                        .put("test many joins", dto.getManyJoinEntities())
+                        .build();
     }
 
     protected String commonValidateCustom(TestDto dto) {

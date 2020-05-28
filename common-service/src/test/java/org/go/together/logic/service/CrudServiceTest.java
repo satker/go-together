@@ -7,6 +7,7 @@ import org.go.together.test.dto.TestDto;
 import org.go.together.test.entities.TestEntity;
 import org.go.together.test.mapper.JoinTestMapper;
 import org.go.together.test.mapper.ManyJoinMapper;
+import org.go.together.test.mapper.TestMapper;
 import org.go.together.test.repository.TestRepository;
 import org.go.together.test.service.TestService;
 import org.junit.jupiter.api.AfterEach;
@@ -26,6 +27,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.go.together.test.TestUtils.createTestDto;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
@@ -44,6 +46,8 @@ class CrudServiceTest {
     private JoinTestMapper joinTestMapper;
     @Autowired
     private ManyJoinMapper manyJoinMapper;
+    @Autowired
+    private TestMapper testMapper;
 
     @BeforeEach
     public void init() {
@@ -82,28 +86,49 @@ class CrudServiceTest {
     void create() {
         IdDto idDto = testService.create(testDto);
 
-        Optional<TestEntity> byId = testRepository.findById(idDto.getId());
+        Optional<TestEntity> savedEntity = testRepository.findById(idDto.getId());
 
-        assertTrue(byId.isPresent());
+        assertTrue(savedEntity.isPresent());
+        assertEquals(testMapper.entityToDto(savedEntity.get()), testDto);
     }
 
     @Test
     void update() {
+        final String newName = "new test name";
+        IdDto savedId = testService.create(testDto);
+        Optional<TestEntity> savedEntity = testRepository.findById(savedId.getId());
+        assertTrue(savedEntity.isPresent());
+        testDto.setName(newName);
+        IdDto updatedId = testService.update(testDto);
+        Optional<TestEntity> updatedEntity = testRepository.findById(updatedId.getId());
+
+        assertTrue(updatedEntity.isPresent());
+        assertEquals(savedId, updatedId);
+        assertEquals(newName, updatedEntity.get().getName());
     }
 
     @Test
     void read() {
+        IdDto savedId = testService.create(testDto);
+
+        TestDto readDto = testService.read(savedId.getId());
+
+        assertEquals(testDto, readDto);
     }
 
     @Test
     void delete() {
+        IdDto savedId = testService.create(testDto);
+
+        testService.delete(savedId.getId());
+
+        Optional<TestEntity> deletedEntity = testRepository.findById(savedId.getId());
+
+        assertTrue(deletedEntity.isEmpty());
     }
 
     @Test
     void find() {
-    }
 
-    @Test
-    void validate() {
     }
 }

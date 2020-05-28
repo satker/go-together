@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.go.together.test.TestUtils.createTestDto;
@@ -130,5 +128,42 @@ class ValidatorTest {
         String validate = testValidator.validate(testDto);
 
         assertTrue(validate.contains("test name"));
+    }
+
+    @Test
+    void validateWithEmptyCollection() {
+        testDto.setJoinTestEntities(Collections.emptySet());
+
+        String validate = testValidator.validate(testDto);
+
+        assertTrue(validate.contains("test join tests"));
+    }
+
+    @Test
+    void validateDtoCollection() {
+        UUID id = UUID.randomUUID();
+        String name = "test1 name";
+        long number = 11;
+        Date date = new Date();
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(date);
+        startCalendar.add(Calendar.MONTH, 2);
+        Date startDate = startCalendar.getTime();
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(startDate);
+        endCalendar.add(Calendar.MONTH, 2);
+        Date endDate = endCalendar.getTime();
+        long startNumber = 11;
+        long endNumber = 32;
+        double latitude = 11.313230192867607;
+        double longitude = 75.39449363632201;
+        SimpleDto simpleDto = new SimpleDto("simpleDto1", "simpleDto1");
+
+        TestDto testDtoAnother = createTestDto(id, name, number, date, startDate, endDate,
+                startNumber, endNumber, simpleDto, longitude, latitude);
+
+        String validate = testValidator.validateDtos(Arrays.asList(testDto, testDtoAnother));
+
+        assertTrue(StringUtils.isBlank(validate));
     }
 }
