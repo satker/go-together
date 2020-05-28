@@ -1,6 +1,7 @@
 package org.go.together.test.entities;
 
 import org.go.together.interfaces.IdentifiedEntity;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,6 +10,7 @@ import java.util.UUID;
 @Entity
 public class JoinTestEntity implements IdentifiedEntity {
     @Id
+    @Type(type = "uuid-char")
     private UUID id;
     private String name;
 
