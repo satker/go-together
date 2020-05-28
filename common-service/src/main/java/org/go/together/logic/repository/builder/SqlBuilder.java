@@ -17,8 +17,10 @@ public class SqlBuilder<E extends IdentifiedEntity> {
     private final EntityManager entityManager;
     private final Class<E> clazz;
     private final String select;
+    private final String selectRow;
 
     public SqlBuilder(Class<E> clazz, EntityManager entityManager, String selectRow) {
+        this.selectRow = selectRow;
         String entityLink = getEntityLink(clazz);
         String selectQuery = selectRow == null ? entityLink : entityLink + "." + selectRow;
         select = "select distinct " + selectQuery;
@@ -35,6 +37,10 @@ public class SqlBuilder<E extends IdentifiedEntity> {
             query.append(from);
             query.append(joinQuery);
         } else {
+            if (StringUtils.isNotBlank(selectRow)) {
+                query.append("select ")
+                        .append(selectRow);
+            }
             query.append(from);
         }
         query.append(whereBuilder.getWhereQuery());

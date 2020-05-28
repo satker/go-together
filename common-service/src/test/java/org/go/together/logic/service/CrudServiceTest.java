@@ -1,8 +1,13 @@
 package org.go.together.logic.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.IdDto;
+import org.go.together.dto.ResponseDto;
 import org.go.together.dto.SimpleDto;
+import org.go.together.dto.filter.FilterDto;
+import org.go.together.dto.filter.FormDto;
+import org.go.together.dto.filter.PageDto;
 import org.go.together.test.dto.TestDto;
 import org.go.together.test.entities.TestEntity;
 import org.go.together.test.mapper.JoinTestMapper;
@@ -21,11 +26,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.persistence.EntityManager;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
+import static org.go.together.logic.find.enums.FindSqlOperator.LIKE;
 import static org.go.together.test.TestUtils.createTestDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -128,7 +131,61 @@ class CrudServiceTest {
     }
 
     @Test
-    void find() {
+    void validate() {
+        String validate = testService.validate(testDto);
 
+        assertTrue(StringUtils.isBlank(validate));
+    }
+
+    @Test
+    void find() {
+        testService.create(testDto);
+
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField("test");
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(LIKE);
+        filterDto.setValues(Collections.singleton(new SimpleDto("test", "test")));
+        formDto.setFilters(Collections.singletonMap("name", filterDto));
+        PageDto pageDto = new PageDto();
+        pageDto.setPage(0);
+        pageDto.setSize(3);
+        pageDto.setSort(Collections.emptyList());
+        pageDto.setTotalSize(0L);
+        formDto.setPage(pageDto);
+        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+
+        Object result = objectResponseDto.getResult().iterator().next();
+
+        assertEquals(1, objectResponseDto.getResult().size());
+        assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        assertTrue(result instanceof TestDto);
+        assertEquals(testDto, result);
+    }
+
+    @Test
+    void findWithOneField() {
+        testService.create(testDto);
+
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField("test.id");
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(LIKE);
+        filterDto.setValues(Collections.singleton(new SimpleDto("test", "test")));
+        formDto.setFilters(Collections.singletonMap("name", filterDto));
+        PageDto pageDto = new PageDto();
+        pageDto.setPage(0);
+        pageDto.setSize(3);
+        pageDto.setSort(Collections.emptyList());
+        pageDto.setTotalSize(0L);
+        formDto.setPage(pageDto);
+        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+
+        Object result = objectResponseDto.getResult().iterator().next();
+
+        assertEquals(1, objectResponseDto.getResult().size());
+        assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        assertTrue(result instanceof UUID);
+        assertEquals(testDto.getId(), result);
     }
 }

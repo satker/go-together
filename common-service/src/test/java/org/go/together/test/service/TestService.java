@@ -1,5 +1,6 @@
 package org.go.together.test.service;
 
+import com.google.common.collect.ImmutableMap;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.logic.CrudService;
 import org.go.together.test.dto.TestDto;
@@ -21,11 +22,13 @@ public class TestService extends CrudService<TestDto, TestEntity> {
 
     @Override
     public String getServiceName() {
-        return null;
+        return "test";
     }
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return null;
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("name", FieldMapper.builder()
+                        .currentServiceField("name").build()).build();
     }
 }
