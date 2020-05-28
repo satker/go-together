@@ -5,7 +5,6 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,7 +30,7 @@ public class TestEntity implements IdentifiedEntity {
     @JoinTable(name = "test_many_join",
             joinColumns = @JoinColumn(name = "test_id"),
             inverseJoinColumns = @JoinColumn(name = "many_join_id"))
-    private Set<ManyJoinEntity> manyJoinEntities = new HashSet<>();
+    private Set<ManyJoinEntity> manyJoinEntities;
 
     public TestEntity() {
     }
