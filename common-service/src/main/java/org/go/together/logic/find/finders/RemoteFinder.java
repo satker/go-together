@@ -23,7 +23,7 @@ public class RemoteFinder implements Finder<Collection<Object>> {
             if (StringUtils.isNotBlank(fieldMapper.getPathRemoteFieldGetter())
                     && fieldMapper.getRemoteServiceClient() != null) {
                 String anotherServiceSearchField = FieldParser.getFieldSearch(key);
-                convertToAnotherRequest(FieldParser.getLocalEntityField(key),
+                convertToAnotherRequest(FieldParser.getLocalFieldForSearch(fieldMapper, key),
                         filtersToAnotherServices,
                         anotherServiceSearchField,
                         fieldMapper,

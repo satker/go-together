@@ -28,4 +28,12 @@ public class FieldParser {
         }
         return fieldMapper;
     }
+
+    public static String getLocalFieldForSearch(FieldMapper fieldMapper, String string) {
+        String[] split = getParsedString(string)[0].split("\\.", 2);
+        if (split.length > 1) {
+            return fieldMapper.getCurrentServiceField() + "." + split[1];
+        }
+        return fieldMapper.getCurrentServiceField();
+    }
 }
