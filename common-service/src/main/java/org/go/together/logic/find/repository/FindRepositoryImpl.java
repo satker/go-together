@@ -139,7 +139,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
     private void addCondition(Map<String, Object> value,
                               BiConsumer<Pair<String, Object>, WhereBuilder> searchObjectFromDtos,
                               WhereBuilder<E> groupWhere, String field) {
-        String[] searchField = field.split("\\.");
+        String[] searchField = FieldParser.getSplitByDotString(field);
         Object searchObject = value.get(searchField[searchField.length - 1]);
         Pair<String, Object> searchPair = Pair.of(field, searchObject);
         searchObjectFromDtos.accept(searchPair, groupWhere);

@@ -4,8 +4,11 @@ import org.go.together.dto.filter.FieldMapper;
 import org.go.together.dto.filter.FilterDto;
 import org.go.together.logic.find.utils.FieldParser;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.go.together.logic.find.utils.FieldParser.getCorrectedLocalFieldForSearch;
 
 public class LocalFinder implements Finder<FilterDto> {
     public Map<String, FilterDto> getFilters(Map<String, FilterDto> filters,
@@ -16,7 +19,10 @@ public class LocalFinder implements Finder<FilterDto> {
             boolean isNotRemote = fieldMappers.values().stream()
                     .allMatch(fieldMapper -> fieldMapper.getRemoteServiceClient() == null);
             if (isNotRemote) {
-                String localFieldForSearch = FieldParser.getLocalFieldForSearch(fieldMappers, key);
+                String localFieldForSearch = getCorrectedLocalFieldForSearch(fieldMappers, key);
+                Collection<Map<String, Object>> correctedLocalFieldForSearch =
+                        getCorrectedLocalFieldForSearch(fieldMappers, value.getValues());
+                value.setValues(correctedLocalFieldForSearch);
                 result.put(localFieldForSearch, value);
             }
         });

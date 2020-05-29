@@ -1,6 +1,5 @@
 package org.go.together.logic.find.finders;
 
-import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.dto.filter.FilterDto;
 import org.go.together.dto.filter.FormDto;
@@ -21,7 +20,7 @@ public class RemoteFinder implements Finder<Collection<Object>> {
         filters.forEach((key, value) -> {
             Map<String, FieldMapper> fieldMappers = FieldParser.getFieldMappers(availableFields, key);
             fieldMappers.forEach((field, fieldMapper) -> {
-                String localFieldForSearch = FieldParser.getLocalFieldForSearch(fieldMappers, field);
+                String localFieldForSearch = FieldParser.getCorrectedLocalFieldForSearch(fieldMappers, field);
                 getFiltersToAnotherService(filtersToAnotherServices, localFieldForSearch, value, fieldMapper,
                         FieldParser.getFieldSearch(key));
             });
@@ -38,8 +37,7 @@ public class RemoteFinder implements Finder<Collection<Object>> {
                                             FilterDto filterDto,
                                             FieldMapper fieldMapper,
                                             String anotherServiceSearchField) {
-        if (StringUtils.isNotBlank(fieldMapper.getPathRemoteFieldGetter())
-                && fieldMapper.getRemoteServiceClient() != null) {
+        if (fieldMapper.getRemoteServiceClient() != null) {
             convertToAnotherRequest(currentServiceSearchField,
                     filtersToAnotherServices,
                     anotherServiceSearchField,

@@ -3,7 +3,8 @@ package org.go.together.logic.find.utils;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.exceptions.IncorrectFindObject;
 
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -15,22 +16,23 @@ public class FieldParser {
     public static final String GROUP_OR = "\\|";
     private static final String GROUP_START = "\\[";
     private static final String GROUP_END = "]";
+    private static final String REGEX_GROUP = "^\\[[a-zA-Z&|.]*]$";
 
     private static String[] getParsedString(String string) {
         return string.split(DELIMITER);
     }
 
-    private static String[] getSplitByCommaString(String string) {
+    public static String[] getSplitByDotString(String string) {
         return string.split("\\.");
     }
 
     public static String[] getLocalEntityField(String string) {
-        Pattern pattern = Pattern.compile("^\\[[a-zA-Z&|.]*]$");
+        Pattern pattern = Pattern.compile(REGEX_GROUP);
         Matcher matcher = pattern.matcher(string);
         if (matcher.find()) {
             return new String[]{matcher.group(0)};
         } else {
-            return getSplitByCommaString(getParsedString(string)[0]);
+            return getSplitByDotString(getParsedString(string)[0]);
         }
     }
 
@@ -58,7 +60,7 @@ public class FieldParser {
 
     private static FieldMapper getFieldMapper(Map<String, FieldMapper> availableFields,
                                               String field) {
-        String[] splitByCommaString = getSplitByCommaString(field);
+        String[] splitByCommaString = getSplitByDotString(field);
         if (splitByCommaString.length > 1) {
             return availableFields.get(splitByCommaString[0]);
         }
@@ -73,15 +75,40 @@ public class FieldParser {
         }
     }
 
-    public static String getLocalFieldForSearch(Map<String, FieldMapper> fieldMappers, String string) {
-        fieldMappers.forEach((fieldName, fieldMapper) ->
-                string.replaceAll(fieldName, fieldMapper.getCurrentServiceField()));
+    public static String getCorrectedLocalFieldForSearch(Map<String, FieldMapper> fieldMappers, String string) {
+        for (Map.Entry<String, FieldMapper> entry : fieldMappers.entrySet()) {
+            String fieldName = entry.getKey();
+            FieldMapper fieldMapper = entry.getValue();
+            string = string.replaceAll(fieldName, fieldMapper.getCurrentServiceField());
+        }
         return string;
+    }
+
+    public static Collection<Map<String, Object>> getCorrectedLocalFieldForSearch(Map<String, FieldMapper> fieldMappers,
+                                                                                  Collection<Map<String, Object>> filters) {
+        return filters.stream().map((filter) -> {
+            Map<String, Object> changedKeys = new HashMap<>();
+            Set<String> collectedKeys = filter.keySet().stream().map((field) -> {
+                String currentServiceField = fieldMappers.get(field).getCurrentServiceField();
+                if (!currentServiceField.equals(field)) {
+                    changedKeys.put(currentServiceField, filter.get(field));
+                    return null;
+                } else {
+                    return field;
+                }
+            })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+            Map<String, Object> result = collectedKeys.stream()
+                    .collect(Collectors.toMap(Function.identity(), filter::get));
+            result.putAll(changedKeys);
+            return result;
+        }).collect(Collectors.toSet());
     }
 
     public static String[] getSingleGroupFields(String localEntityField) {
         String[] result;
-        if (localEntityField.matches("^\\[[a-zA-Z&|.]*]$")) {
+        if (localEntityField.matches(REGEX_GROUP)) {
             result = localEntityField.replaceFirst(GROUP_START, "")
                     .replaceFirst(GROUP_END, "")
                     .split(GROUP_OR + "|" + GROUP_AND);

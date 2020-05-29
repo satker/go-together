@@ -46,6 +46,10 @@ public class TestService extends CrudService<TestDto, TestEntity> {
                         .currentServiceField("name").build())
                 .put("number", FieldMapper.builder()
                         .currentServiceField("number").build())
+                .put("names", FieldMapper.builder()
+                        .currentServiceField("name").build())
+                .put("numbers", FieldMapper.builder()
+                        .currentServiceField("number").build())
                 .put("manyJoinEntities", FieldMapper.builder()
                         .currentServiceField("manyJoinEntities").build())
                 .put("elements", FieldMapper.builder()
@@ -57,6 +61,11 @@ public class TestService extends CrudService<TestDto, TestEntity> {
                         .currentServiceField("joinTestEntities")
                         .remoteServiceClient(anotherClient)
                         .remoteServiceName("join")
+                        .remoteServiceFieldGetter("id").build())
+                .put("elementss", FieldMapper.builder()
+                        .currentServiceField("elements")
+                        .remoteServiceClient(anotherClient)
+                        .remoteServiceName("element")
                         .remoteServiceFieldGetter("id").build())
                 .build();
     }

@@ -430,4 +430,101 @@ class CrudServiceTest {
         assertTrue(result instanceof TestDto);
         assertEquals(testDto, result);
     }
+
+    @Test
+    void findWithMultipleGroupAndMaskField() {
+        testService.create(testDto);
+
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField("test");
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(EQUAL);
+        Map<String, Object> values = new HashMap<>();
+        values.put("names", "test name");
+        values.put("numbers", 1);
+        Map<String, Object> values1 = new HashMap<>();
+        values1.put("names", "test");
+        values1.put("numbers", 2);
+        filterDto.setValues(Arrays.asList(values, values1));
+        formDto.setFilters(Collections.singletonMap("[names&numbers]", filterDto));
+        PageDto pageDto = new PageDto();
+        pageDto.setPage(0);
+        pageDto.setSize(3);
+        pageDto.setSort(Collections.emptyList());
+        pageDto.setTotalSize(0L);
+        formDto.setPage(pageDto);
+        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+
+        Object result = objectResponseDto.getResult().iterator().next();
+
+        assertEquals(1, objectResponseDto.getResult().size());
+        assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        assertTrue(result instanceof TestDto);
+        assertEquals(testDto, result);
+    }
+
+    @Test
+    void findFromRemoteServiceToElementsWithMaskedFields() {
+        testService.create(testDto);
+
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField("test");
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(IN);
+        filterDto.setValues(Collections.singleton(Collections.singletonMap("id", Collections.singleton("filter"))));
+        Collection<Object> uuids = new HashSet<>();
+        for (String uuid : testDto.getElements()) {
+            uuids.add(UUID.fromString(uuid));
+        }
+        testService.setAnotherClient(uuids);
+        formDto.setFilters(Collections.singletonMap("elementss?element.id", filterDto));
+        PageDto pageDto = new PageDto();
+        pageDto.setPage(0);
+        pageDto.setSize(3);
+        pageDto.setSort(Collections.emptyList());
+        pageDto.setTotalSize(0L);
+        formDto.setPage(pageDto);
+        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+
+        Object result = objectResponseDto.getResult().iterator().next();
+
+        assertEquals(1, objectResponseDto.getResult().size());
+        assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        assertTrue(result instanceof TestDto);
+        assertEquals(testDto, result);
+    }
+
+    @Test
+    void findFromRemoteServiceToElementsWithGroupFields() {
+        testService.create(testDto);
+
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField("test");
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(IN);
+        Map<String, Object> objectObjectHashMap = new HashMap<>();
+        objectObjectHashMap.put("id", Collections.singleton("filter"));
+        objectObjectHashMap.put("name", Collections.singleton("filtername"));
+        filterDto.setValues(Collections.singleton(objectObjectHashMap));
+        Collection<Object> uuids = new HashSet<>();
+        for (String uuid : testDto.getElements()) {
+            uuids.add(UUID.fromString(uuid));
+        }
+        testService.setAnotherClient(uuids);
+        formDto.setFilters(Collections.singletonMap("elements?element.[id|name]", filterDto));
+        PageDto pageDto = new PageDto();
+        pageDto.setPage(0);
+        pageDto.setSize(3);
+        pageDto.setSort(Collections.emptyList());
+        pageDto.setTotalSize(0L);
+        formDto.setPage(pageDto);
+        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+
+        Object result = objectResponseDto.getResult().iterator().next();
+
+        assertEquals(1, objectResponseDto.getResult().size());
+        assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        assertTrue(result instanceof TestDto);
+        assertEquals(testDto, result);
+    }
 }

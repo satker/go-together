@@ -12,6 +12,7 @@ import org.go.together.logic.find.finders.LocalFinder;
 import org.go.together.logic.find.finders.RemoteFinder;
 import org.go.together.logic.find.repository.FindRepository;
 import org.go.together.logic.find.repository.FindRepositoryImpl;
+import org.go.together.logic.find.utils.FieldParser;
 import org.go.together.logic.repository.CustomRepository;
 
 import java.util.Collection;
@@ -71,7 +72,7 @@ public abstract class FindService<E extends IdentifiedEntity> {
     }
 
     private String getCorrectFilterValuesKey(String key) {
-        String[] splitedKey = key.split("\\.");
+        String[] splitedKey = FieldParser.getSplitByDotString(key);
         if (splitedKey.length > 1) {
             return splitedKey[splitedKey.length - 1];
         }
