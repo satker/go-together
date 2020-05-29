@@ -9,8 +9,11 @@ public class ObjectStringParser {
         if (val instanceof String) {
             return "'" + val + "'";
         }
-        if (val instanceof Number) {
+        if (val instanceof Double) {
             return Double.toString((Double) val);
+        }
+        if (val instanceof Integer) {
+            return Integer.toString((Integer) val);
         }
         if (val instanceof UUID) {
             return "'" + val.toString() + "'";

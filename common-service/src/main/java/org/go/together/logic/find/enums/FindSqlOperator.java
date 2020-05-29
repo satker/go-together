@@ -1,33 +1,30 @@
 package org.go.together.logic.find.enums;
 
-import org.go.together.dto.SimpleDto;
+import org.apache.commons.lang3.tuple.Pair;
+import org.go.together.logic.repository.builder.WhereBuilder;
 import org.go.together.logic.repository.utils.sql.SqlOperator;
 
-import java.util.Collection;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.function.BiConsumer;
 
 public enum FindSqlOperator {
-    LIKE(SqlOperator.LIKE, dtos -> dtos.iterator().next().getId()),
-    EQUAL(SqlOperator.EQUAL, dtos -> dtos.iterator().next().getId()),
-    START_DATE(SqlOperator.GREATER_OR_EQUAL, dtos -> dtos.iterator().next().getId()),
-    END_DATE(SqlOperator.LESS_OR_EQUAL, dtos -> dtos.iterator().next().getId()),
-    IN(SqlOperator.IN, dtos -> dtos.stream().map(SimpleDto::getId).collect(Collectors.toSet()));
+    LIKE((entry, whereBuilder) ->
+            whereBuilder.condition(entry.getKey(), SqlOperator.LIKE, entry.getValue())),
+    EQUAL((entry, whereBuilder) ->
+            whereBuilder.condition(entry.getKey(), SqlOperator.EQUAL, entry.getValue())),
+    START_DATE((entry, whereBuilder) ->
+            whereBuilder.condition(entry.getKey(), SqlOperator.GREATER_OR_EQUAL, entry.getValue())),
+    END_DATE((entry, whereBuilder) ->
+            whereBuilder.condition(entry.getKey(), SqlOperator.LESS_OR_EQUAL, entry.getValue())),
+    IN((entry, whereBuilder) ->
+            whereBuilder.condition(entry.getKey(), SqlOperator.IN, entry.getValue()));
 
-    private final SqlOperator operator;
-    private final Function<Collection<SimpleDto>, Object> getSearchObjectFromDtos;
+    private final BiConsumer<Pair<String, Object>, WhereBuilder> getSearchObjectFromDtos;
 
-    FindSqlOperator(SqlOperator operator,
-                    Function<Collection<SimpleDto>, Object> getSearchObjectFromDtos) {
-        this.operator = operator;
+    FindSqlOperator(BiConsumer<Pair<String, Object>, WhereBuilder> getSearchObjectFromDtos) {
         this.getSearchObjectFromDtos = getSearchObjectFromDtos;
     }
 
-    public SqlOperator getOperator() {
-        return operator;
-    }
-
-    public Function<Collection<SimpleDto>, Object> getSearchObjectFromDtos() {
+    public BiConsumer<Pair<String, Object>, WhereBuilder> getSearchObjectFromDtos() {
         return getSearchObjectFromDtos;
     }
 }

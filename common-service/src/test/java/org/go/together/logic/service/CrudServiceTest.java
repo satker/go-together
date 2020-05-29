@@ -31,8 +31,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import javax.persistence.EntityManager;
 import java.util.*;
 
-import static org.go.together.logic.find.enums.FindSqlOperator.IN;
-import static org.go.together.logic.find.enums.FindSqlOperator.LIKE;
+import static org.go.together.logic.find.enums.FindSqlOperator.*;
 import static org.go.together.test.TestUtils.createTestDto;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -149,7 +148,7 @@ class CrudServiceTest {
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
         filterDto.setFilterType(LIKE);
-        filterDto.setValues(Collections.singleton(new SimpleDto("test", "test")));
+        filterDto.setValues(Collections.singleton(Collections.singletonMap("name", "test")));
         formDto.setFilters(Collections.singletonMap("name", filterDto));
         PageDto pageDto = new PageDto();
         pageDto.setPage(0);
@@ -175,7 +174,7 @@ class CrudServiceTest {
         formDto.setMainIdField("test.id");
         FilterDto filterDto = new FilterDto();
         filterDto.setFilterType(LIKE);
-        filterDto.setValues(Collections.singleton(new SimpleDto("test", "test")));
+        filterDto.setValues(Collections.singleton(Collections.singletonMap("name", "test")));
         formDto.setFilters(Collections.singletonMap("name", filterDto));
         PageDto pageDto = new PageDto();
         pageDto.setPage(0);
@@ -201,11 +200,11 @@ class CrudServiceTest {
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
         filterDto.setFilterType(IN);
-        Set<SimpleDto> simpleDtos = new HashSet<>();
+        Set<UUID> uuids = new HashSet<>();
         for (ManyJoinDto manyJoinDto : testDto.getManyJoinEntities()) {
-            simpleDtos.add(new SimpleDto(manyJoinDto.getId().toString(), manyJoinDto.getId().toString()));
+            uuids.add(manyJoinDto.getId());
         }
-        filterDto.setValues(simpleDtos);
+        filterDto.setValues(Collections.singleton(Collections.singletonMap("id", uuids)));
         formDto.setFilters(Collections.singletonMap("manyJoinEntities.id", filterDto));
         PageDto pageDto = new PageDto();
         pageDto.setPage(0);
@@ -234,11 +233,11 @@ class CrudServiceTest {
                     formDto.setMainIdField("test");
                     FilterDto filterDto = new FilterDto();
                     filterDto.setFilterType(IN);
-                    Set<SimpleDto> simpleDtos = new HashSet<>();
+                    Set<UUID> uuids = new HashSet<>();
                     for (ManyJoinDto manyJoinDto : testDto.getManyJoinEntities()) {
-                        simpleDtos.add(new SimpleDto(manyJoinDto.getId().toString(), manyJoinDto.getId().toString()));
+                        uuids.add(manyJoinDto.getId());
                     }
-                    filterDto.setValues(simpleDtos);
+                    filterDto.setValues(Collections.singleton(Collections.singletonMap("someUndefinedField", uuids)));
                     formDto.setFilters(Collections.singletonMap("someUndefinedField", filterDto));
                     PageDto pageDto = new PageDto();
                     pageDto.setPage(0);
@@ -258,7 +257,7 @@ class CrudServiceTest {
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
         filterDto.setFilterType(IN);
-        filterDto.setValues(Collections.singleton(new SimpleDto("filter", "filter")));
+        filterDto.setValues(Collections.singleton(Collections.singletonMap("id", Collections.singleton("filter"))));
         Collection<Object> uuids = new HashSet<>();
         for (String uuid : testDto.getElements()) {
             uuids.add(UUID.fromString(uuid));
@@ -289,7 +288,7 @@ class CrudServiceTest {
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
         filterDto.setFilterType(IN);
-        filterDto.setValues(Collections.singleton(new SimpleDto("filter", "filter")));
+        filterDto.setValues(Collections.singleton(Collections.singletonMap("id", Collections.singleton("filter"))));
         Collection<Object> uuids = new HashSet<>();
         for (JoinTestDto joinTestDto : testDto.getJoinTestEntities()) {
             uuids.add(joinTestDto.getId());
@@ -320,7 +319,7 @@ class CrudServiceTest {
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
         filterDto.setFilterType(IN);
-        filterDto.setValues(Collections.singleton(new SimpleDto("filter", "filter")));
+        filterDto.setValues(Collections.singleton(Collections.singletonMap("id", "filter")));
         testService.setAnotherClient(Collections.emptyList());
         formDto.setFilters(Collections.singletonMap("joinTestEntities.id?join.id", filterDto));
         PageDto pageDto = new PageDto();
@@ -333,5 +332,102 @@ class CrudServiceTest {
 
         assertEquals(0, objectResponseDto.getResult().size());
         assertEquals(0, objectResponseDto.getPage().getTotalSize());
+    }
+
+    @Test
+    void findWithGroup() {
+        testService.create(testDto);
+
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField("test");
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(EQUAL);
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", "test name");
+        values.put("number", 1);
+        filterDto.setValues(Collections.singleton(values));
+        formDto.setFilters(Collections.singletonMap("[name&number]", filterDto));
+        PageDto pageDto = new PageDto();
+        pageDto.setPage(0);
+        pageDto.setSize(3);
+        pageDto.setSort(Collections.emptyList());
+        pageDto.setTotalSize(0L);
+        formDto.setPage(pageDto);
+        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+
+        Object result = objectResponseDto.getResult().iterator().next();
+
+        assertEquals(1, objectResponseDto.getResult().size());
+        assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        assertTrue(result instanceof TestDto);
+        assertEquals(testDto, result);
+    }
+
+    @Test
+    void findWithMultipleGroup() {
+        testService.create(testDto);
+
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField("test");
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(EQUAL);
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", "test name");
+        values.put("number", 1);
+        Map<String, Object> values1 = new HashMap<>();
+        values1.put("name", "test");
+        values1.put("number", 2);
+        filterDto.setValues(Arrays.asList(values, values1));
+        formDto.setFilters(Collections.singletonMap("[name&number]", filterDto));
+        PageDto pageDto = new PageDto();
+        pageDto.setPage(0);
+        pageDto.setSize(3);
+        pageDto.setSort(Collections.emptyList());
+        pageDto.setTotalSize(0L);
+        formDto.setPage(pageDto);
+        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+
+        Object result = objectResponseDto.getResult().iterator().next();
+
+        assertEquals(1, objectResponseDto.getResult().size());
+        assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        assertTrue(result instanceof TestDto);
+        assertEquals(testDto, result);
+    }
+
+    @Test
+    void findWithMultipleGroupAndJoinTable() {
+        testService.create(testDto);
+
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField("test");
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(IN);
+        Map<String, Object> values = new HashMap<>();
+        Set<UUID> uuids = new HashSet<>();
+        for (ManyJoinDto manyJoinDto : testDto.getManyJoinEntities()) {
+            uuids.add(manyJoinDto.getId());
+        }
+        values.put("name", Collections.singleton("test name"));
+        values.put("id", uuids);
+        Map<String, Object> values1 = new HashMap<>();
+        values1.put("name", Collections.singleton("test"));
+        values1.put("id", Collections.emptyList());
+        filterDto.setValues(Arrays.asList(values, values1));
+        formDto.setFilters(Collections.singletonMap("[name&manyJoinEntities.id]", filterDto));
+        PageDto pageDto = new PageDto();
+        pageDto.setPage(0);
+        pageDto.setSize(3);
+        pageDto.setSort(Collections.emptyList());
+        pageDto.setTotalSize(0L);
+        formDto.setPage(pageDto);
+        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+
+        Object result = objectResponseDto.getResult().iterator().next();
+
+        assertEquals(1, objectResponseDto.getResult().size());
+        assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        assertTrue(result instanceof TestDto);
+        assertEquals(testDto, result);
     }
 }

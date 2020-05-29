@@ -19,22 +19,33 @@ public class RemoteFinder implements Finder<Collection<Object>> {
                                                       Map<String, FieldMapper> availableFields) {
         Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices = new HashMap<>();
         filters.forEach((key, value) -> {
-            FieldMapper fieldMapper = FieldParser.getFieldMapper(availableFields, key);
-            if (StringUtils.isNotBlank(fieldMapper.getPathRemoteFieldGetter())
-                    && fieldMapper.getRemoteServiceClient() != null) {
-                String anotherServiceSearchField = FieldParser.getFieldSearch(key);
-                convertToAnotherRequest(FieldParser.getLocalFieldForSearch(fieldMapper, key),
-                        filtersToAnotherServices,
-                        anotherServiceSearchField,
-                        fieldMapper,
-                        value);
-            }
+            Map<String, FieldMapper> fieldMappers = FieldParser.getFieldMappers(availableFields, key);
+            fieldMappers.forEach((field, fieldMapper) -> {
+                String localFieldForSearch = FieldParser.getLocalFieldForSearch(fieldMappers, field);
+                getFiltersToAnotherService(filtersToAnotherServices, localFieldForSearch, value, fieldMapper,
+                        FieldParser.getFieldSearch(key));
+            });
         });
         if (!filtersToAnotherServices.isEmpty()) {
             return getFilterResultFromOtherServices(filtersToAnotherServices);
         }
 
         return Collections.emptyMap();
+    }
+
+    private void getFiltersToAnotherService(Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices,
+                                            String currentServiceSearchField,
+                                            FilterDto filterDto,
+                                            FieldMapper fieldMapper,
+                                            String anotherServiceSearchField) {
+        if (StringUtils.isNotBlank(fieldMapper.getPathRemoteFieldGetter())
+                && fieldMapper.getRemoteServiceClient() != null) {
+            convertToAnotherRequest(currentServiceSearchField,
+                    filtersToAnotherServices,
+                    anotherServiceSearchField,
+                    fieldMapper,
+                    filterDto);
+        }
     }
 
     private void convertToAnotherRequest(String key,

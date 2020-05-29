@@ -44,6 +44,8 @@ public class TestService extends CrudService<TestDto, TestEntity> {
         return ImmutableMap.<String, FieldMapper>builder()
                 .put("name", FieldMapper.builder()
                         .currentServiceField("name").build())
+                .put("number", FieldMapper.builder()
+                        .currentServiceField("number").build())
                 .put("manyJoinEntities", FieldMapper.builder()
                         .currentServiceField("manyJoinEntities").build())
                 .put("elements", FieldMapper.builder()

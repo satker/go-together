@@ -12,9 +12,11 @@ public class LocalFinder implements Finder<FilterDto> {
                                              Map<String, FieldMapper> availableFields) {
         Map<String, FilterDto> result = new HashMap<>();
         filters.forEach((key, value) -> {
-            FieldMapper fieldMapper = FieldParser.getFieldMapper(availableFields, key);
-            if (fieldMapper.getRemoteServiceClient() == null) {
-                String localFieldForSearch = FieldParser.getLocalFieldForSearch(fieldMapper, key);
+            Map<String, FieldMapper> fieldMappers = FieldParser.getFieldMappers(availableFields, key);
+            boolean isNotRemote = fieldMappers.values().stream()
+                    .allMatch(fieldMapper -> fieldMapper.getRemoteServiceClient() == null);
+            if (isNotRemote) {
+                String localFieldForSearch = FieldParser.getLocalFieldForSearch(fieldMappers, key);
                 result.put(localFieldForSearch, value);
             }
         });

@@ -1,7 +1,6 @@
 package org.go.together.logic.find;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.go.together.dto.SimpleDto;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.dto.filter.FilterDto;
 import org.go.together.dto.filter.FormDto;
@@ -18,8 +17,6 @@ import org.go.together.logic.repository.CustomRepository;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public abstract class FindService<E extends IdentifiedEntity> {
     private final FindRepository repository;
@@ -64,15 +61,20 @@ public abstract class FindService<E extends IdentifiedEntity> {
     private Map<String, FilterDto> getConcatRemoteAndLocalFilters(Map<String, Collection<Object>> remoteFilters,
                                                                   Map<String, FilterDto> localFilters) {
         remoteFilters.forEach((key, values) -> {
-            Set<SimpleDto> valuesFromOtherService = values.stream()
-                    .map(value -> new SimpleDto(String.valueOf(value), String.valueOf(value)))
-                    .collect(Collectors.toSet());
-
-            FilterDto filterDto = new FilterDto(FindSqlOperator.IN, valuesFromOtherService);
+            FilterDto filterDto = new FilterDto(FindSqlOperator.IN,
+                    Collections.singleton(Collections.singletonMap(getCorrectFilterValuesKey(key), values)));
             Map<String, FilterDto> filterForCurrentService = Collections.singletonMap(key, filterDto);
             localFilters.putAll(filterForCurrentService);
         });
 
         return localFilters;
+    }
+
+    private String getCorrectFilterValuesKey(String key) {
+        String[] splitedKey = key.split("\\.");
+        if (splitedKey.length > 1) {
+            return splitedKey[splitedKey.length - 1];
+        }
+        return key;
     }
 }

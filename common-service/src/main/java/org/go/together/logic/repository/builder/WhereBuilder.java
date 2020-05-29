@@ -29,8 +29,12 @@ public class WhereBuilder<E extends IdentifiedEntity> {
         return whereQuery;
     }
 
-    protected StringBuilder getJoinQuery() {
+    public StringBuilder getJoinQuery() {
         return join;
+    }
+
+    public void addJoin(StringBuilder join) {
+        this.join.append(join);
     }
 
     public WhereBuilder<E> condition(String field, SqlOperator sqlOperator, Object value) {
@@ -71,6 +75,14 @@ public class WhereBuilder<E extends IdentifiedEntity> {
     }
 
     public void cutLastAnd() {
-        whereQuery.setLength(whereQuery.length() - AND.length());
+        if (whereQuery.toString().endsWith(AND)) {
+            whereQuery.setLength(whereQuery.length() - AND.length());
+        }
+    }
+
+    public void cutLastOr() {
+        if (whereQuery.toString().endsWith(OR)) {
+            whereQuery.setLength(whereQuery.length() - OR.length());
+        }
     }
 }
