@@ -21,11 +21,12 @@ import static org.go.together.logic.find.utils.FieldParser.getSingleGroupFields;
 public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepository {
     private final String serviceName;
     private final CustomRepository<E> repository;
-    private final StringBuilder join = new StringBuilder();
+    private final StringBuilder join;
 
     public FindRepositoryImpl(String serviceName, CustomRepository<E> repository) {
         this.serviceName = serviceName;
         this.repository = repository;
+        join = new StringBuilder();
     }
 
     @Override
@@ -40,6 +41,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
             countRows = (long) repository.createQuery().getCountRowsWhere(whereBuilder);
         }
         PageDto pageDto = getPageDto(page, countRows);
+        System.out.println(query.getQuery());
         Collection<Object> result = getResult(page, query);
         return Pair.of(pageDto, result);
     }
@@ -76,8 +78,6 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
 
     private WhereBuilder<E> getWhereBuilder(Map<String, FilterDto> filters) {
         WhereBuilder<E> whereBuilder = repository.createWhere();
-        // get current main key
-        // TODO: think about dilimiter realization | &
         filters.forEach((key, value) -> {
             FindSqlOperator filterType = value.getFilterType();
             BiConsumer<Pair<String, Object>, WhereBuilder> searchObjectFromDtos =
@@ -89,7 +89,6 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
             if (groupFields.length > 1) {
                 WhereBuilder<E> groupWhere = repository.createGroup();
                 addGroups(suffix, searchField, value, searchObjectFromDtos, groupFields, groupWhere);
-                join.append(groupWhere.getJoinQuery());
                 whereBuilder.group(groupWhere).and();
             } else if (groupFields.length == 1) {
                 value.getValues().forEach(map -> {
@@ -99,7 +98,9 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
                         field = suffix + field;
                     }
                     addCondition(map, searchObjectFromDtos, groupWhere, field);
-                    join.append(groupWhere.getJoinQuery());
+                    if (!join.toString().contains(groupWhere.getJoinQuery())) {
+                        join.append(groupWhere.getJoinQuery());
+                    }
                     whereBuilder.group(groupWhere).and();
                 });
             }
@@ -130,9 +131,15 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
                                 addDelimiter(key, whereAdd, field);
                             });
                     if (value.getValues().size() > 1) {
+                        if (!join.toString().contains(innerGroup.getJoinQuery())) {
+                            join.append(innerGroup.getJoinQuery());
+                        }
                         groupWhere.group(innerGroup).or();
+                    } else {
+                        if (!join.toString().contains(groupWhere.getJoinQuery())) {
+                            join.append(groupWhere.getJoinQuery());
+                        }
                     }
-                    join.append(innerGroup.getJoinQuery());
                 });
         groupWhere.cutLastOr();
     }

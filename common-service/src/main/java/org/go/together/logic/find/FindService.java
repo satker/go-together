@@ -20,13 +20,13 @@ import java.util.Collections;
 import java.util.Map;
 
 public abstract class FindService<E extends IdentifiedEntity> {
-    private final FindRepository repository;
+    private final CustomRepository<E> repository;
 
     private final Finder<Collection<Object>> remoteFindService;
     private final CorrectFieldService correctFieldService = new CorrectFieldService();
 
     protected FindService(CustomRepository<E> repository) {
-        this.repository = new FindRepositoryImpl<>(getServiceName(), repository);
+        this.repository = repository;
         this.remoteFindService = new RemoteFinder();
     }
 
@@ -35,8 +35,9 @@ public abstract class FindService<E extends IdentifiedEntity> {
     public abstract Map<String, FieldMapper> getMappingFields();
 
     public Pair<PageDto, Collection<Object>> findByFormDto(FormDto formDto) {
+        FindRepository findRepository = new FindRepositoryImpl<>(getServiceName(), repository);
         if (formDto.getFilters().isEmpty()) {
-            return repository.getResult(formDto.getMainIdField(), null, formDto.getPage());
+            return findRepository.getResult(formDto.getMainIdField(), null, formDto.getPage());
         }
         Map<String, FilterDto> commonService = getFilters(formDto);
         if (commonService == null) {
@@ -46,7 +47,7 @@ public abstract class FindService<E extends IdentifiedEntity> {
             }
             return Pair.of(notFoundPageDto, Collections.emptyList());
         }
-        return repository.getResult(formDto.getMainIdField(), commonService, formDto.getPage());
+        return findRepository.getResult(formDto.getMainIdField(), commonService, formDto.getPage());
     }
 
     private Map<String, FilterDto> getFilters(FormDto formDto) {
