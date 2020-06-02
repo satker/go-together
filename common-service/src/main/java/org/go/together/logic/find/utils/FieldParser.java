@@ -3,8 +3,7 @@ package org.go.together.logic.find.utils;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.exceptions.IncorrectFindObject;
 
-import java.util.*;
-import java.util.function.Function;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -26,7 +25,7 @@ public class FieldParser {
         return string.split("\\.");
     }
 
-    public static String[] getLocalEntityField(String string) {
+    public static String[] getPathFields(String string) {
         Pattern pattern = Pattern.compile(REGEX_GROUP);
         Matcher matcher = pattern.matcher(string);
         if (matcher.find()) {
@@ -46,7 +45,7 @@ public class FieldParser {
 
     public static Map<String, FieldMapper> getFieldMappers(Map<String, FieldMapper> availableFields,
                                                            String searchField) {
-        String[] localEntityFullFields = getLocalEntityField(searchField);
+        String[] localEntityFullFields = getPathFields(searchField);
         String localEntityField = localEntityFullFields[0];
         String[] singleGroupFields = getSingleGroupFields(localEntityField);
         try {
@@ -68,42 +67,11 @@ public class FieldParser {
     }
 
     private static String getEntityField(String field, String[] localEntityFullFields) {
-        if (localEntityFullFields.length > 1) {
-            return field + "." + localEntityFullFields[1];
-        } else {
-            return field;
+        String[] splitByCommaString = getSplitByDotString(field);
+        if (splitByCommaString.length > 1) {
+            return splitByCommaString[0];
         }
-    }
-
-    public static String getCorrectedLocalFieldForSearch(Map<String, FieldMapper> fieldMappers, String string) {
-        for (Map.Entry<String, FieldMapper> entry : fieldMappers.entrySet()) {
-            String fieldName = entry.getKey();
-            FieldMapper fieldMapper = entry.getValue();
-            string = string.replaceAll(fieldName, fieldMapper.getCurrentServiceField());
-        }
-        return string;
-    }
-
-    public static Collection<Map<String, Object>> getCorrectedLocalFieldForSearch(Map<String, FieldMapper> fieldMappers,
-                                                                                  Collection<Map<String, Object>> filters) {
-        return filters.stream().map((filter) -> {
-            Map<String, Object> changedKeys = new HashMap<>();
-            Set<String> collectedKeys = filter.keySet().stream().map((field) -> {
-                String currentServiceField = fieldMappers.get(field).getCurrentServiceField();
-                if (!currentServiceField.equals(field)) {
-                    changedKeys.put(currentServiceField, filter.get(field));
-                    return null;
-                } else {
-                    return field;
-                }
-            })
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toSet());
-            Map<String, Object> result = collectedKeys.stream()
-                    .collect(Collectors.toMap(Function.identity(), filter::get));
-            result.putAll(changedKeys);
-            return result;
-        }).collect(Collectors.toSet());
+        return field;
     }
 
     public static String[] getSingleGroupFields(String localEntityField) {

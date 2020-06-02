@@ -18,13 +18,19 @@ import java.util.Map;
 @Service
 public class TestService extends CrudService<TestDto, TestEntity> {
     private final AnotherClient anotherClient;
+    private final ManyJoinService manyJoinService;
+    private final JoinTestService joinTestService;
 
     protected TestService(TestRepository repository,
                           TestMapper mapper,
                           TestValidator validator,
-                          AnotherClient anotherClient) {
+                          AnotherClient anotherClient,
+                          ManyJoinService manyJoinService,
+                          JoinTestService joinTestService) {
         super(repository, mapper, validator);
         this.anotherClient = anotherClient;
+        this.manyJoinService = manyJoinService;
+        this.joinTestService = joinTestService;
     }
 
     public void setAnotherClient(Collection<Object> result) {
@@ -51,6 +57,7 @@ public class TestService extends CrudService<TestDto, TestEntity> {
                 .put("numbers", FieldMapper.builder()
                         .currentServiceField("number").build())
                 .put("manyJoinEntities", FieldMapper.builder()
+                        .innerService(manyJoinService)
                         .currentServiceField("manyJoinEntities").build())
                 .put("elements", FieldMapper.builder()
                         .currentServiceField("elements")
@@ -59,6 +66,7 @@ public class TestService extends CrudService<TestDto, TestEntity> {
                         .remoteServiceFieldGetter("id").build())
                 .put("joinTestEntities", FieldMapper.builder()
                         .currentServiceField("joinTestEntities")
+                        .innerService(joinTestService)
                         .remoteServiceClient(anotherClient)
                         .remoteServiceName("join")
                         .remoteServiceFieldGetter("id").build())

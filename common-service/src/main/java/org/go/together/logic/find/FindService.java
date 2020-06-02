@@ -8,11 +8,11 @@ import org.go.together.dto.filter.PageDto;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.logic.find.enums.FindSqlOperator;
 import org.go.together.logic.find.finders.Finder;
-import org.go.together.logic.find.finders.LocalFinder;
 import org.go.together.logic.find.finders.RemoteFinder;
 import org.go.together.logic.find.repository.FindRepository;
 import org.go.together.logic.find.repository.FindRepositoryImpl;
 import org.go.together.logic.find.utils.FieldParser;
+import org.go.together.logic.find.validation.CorrectFieldService;
 import org.go.together.logic.repository.CustomRepository;
 
 import java.util.Collection;
@@ -23,12 +23,11 @@ public abstract class FindService<E extends IdentifiedEntity> {
     private final FindRepository repository;
 
     private final Finder<Collection<Object>> remoteFindService;
-    private final Finder<FilterDto> localFindService;
+    private final CorrectFieldService correctFieldService = new CorrectFieldService();
 
     protected FindService(CustomRepository<E> repository) {
         this.repository = new FindRepositoryImpl<>(getServiceName(), repository);
         this.remoteFindService = new RemoteFinder();
-        localFindService = new LocalFinder();
     }
 
     public abstract String getServiceName();
@@ -51,12 +50,12 @@ public abstract class FindService<E extends IdentifiedEntity> {
     }
 
     private Map<String, FilterDto> getFilters(FormDto formDto) {
-        Map<String, FilterDto> localFilters = localFindService.getFilters(formDto.getFilters(), getMappingFields());
-        Map<String, Collection<Object>> remoteFilters = remoteFindService.getFilters(formDto.getFilters(), getMappingFields());
+        Map<String, FilterDto> correctedFilters = correctFieldService.getCorrectedFilters(formDto.getFilters(), getMappingFields());
+        Map<String, Collection<Object>> remoteFilters = remoteFindService.getFilters(correctedFilters, getMappingFields());
         if (remoteFilters == null) {
             return null;
         }
-        return getConcatRemoteAndLocalFilters(remoteFilters, localFilters);
+        return getConcatRemoteAndLocalFilters(remoteFilters, correctedFilters);
     }
 
     private Map<String, FilterDto> getConcatRemoteAndLocalFilters(Map<String, Collection<Object>> remoteFilters,

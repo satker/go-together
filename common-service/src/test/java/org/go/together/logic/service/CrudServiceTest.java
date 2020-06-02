@@ -158,10 +158,9 @@ class CrudServiceTest {
         formDto.setPage(pageDto);
         ResponseDto<Object> objectResponseDto = testService.find(formDto);
 
-        Object result = objectResponseDto.getResult().iterator().next();
-
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        Object result = objectResponseDto.getResult().iterator().next();
         assertTrue(result instanceof TestDto);
         assertEquals(testDto, result);
     }
@@ -184,10 +183,10 @@ class CrudServiceTest {
         formDto.setPage(pageDto);
         ResponseDto<Object> objectResponseDto = testService.find(formDto);
 
-        Object result = objectResponseDto.getResult().iterator().next();
-
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        Object result = objectResponseDto.getResult().iterator().next();
+
         assertTrue(result instanceof UUID);
         assertEquals(testDto.getId(), result);
     }
@@ -214,10 +213,10 @@ class CrudServiceTest {
         formDto.setPage(pageDto);
         ResponseDto<Object> objectResponseDto = testService.find(formDto);
 
-        Object result = objectResponseDto.getResult().iterator().next();
-
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        Object result = objectResponseDto.getResult().iterator().next();
+
         assertTrue(result instanceof TestDto);
         assertEquals(testDto, result);
     }
@@ -272,10 +271,10 @@ class CrudServiceTest {
         formDto.setPage(pageDto);
         ResponseDto<Object> objectResponseDto = testService.find(formDto);
 
-        Object result = objectResponseDto.getResult().iterator().next();
-
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        Object result = objectResponseDto.getResult().iterator().next();
+
         assertTrue(result instanceof TestDto);
         assertEquals(testDto, result);
     }
@@ -303,10 +302,10 @@ class CrudServiceTest {
         formDto.setPage(pageDto);
         ResponseDto<Object> objectResponseDto = testService.find(formDto);
 
-        Object result = objectResponseDto.getResult().iterator().next();
-
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        Object result = objectResponseDto.getResult().iterator().next();
+
         assertTrue(result instanceof TestDto);
         assertEquals(testDto, result);
     }
@@ -355,10 +354,10 @@ class CrudServiceTest {
         formDto.setPage(pageDto);
         ResponseDto<Object> objectResponseDto = testService.find(formDto);
 
-        Object result = objectResponseDto.getResult().iterator().next();
-
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        Object result = objectResponseDto.getResult().iterator().next();
+
         assertTrue(result instanceof TestDto);
         assertEquals(testDto, result);
     }
@@ -387,10 +386,10 @@ class CrudServiceTest {
         formDto.setPage(pageDto);
         ResponseDto<Object> objectResponseDto = testService.find(formDto);
 
-        Object result = objectResponseDto.getResult().iterator().next();
-
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        Object result = objectResponseDto.getResult().iterator().next();
+
         assertTrue(result instanceof TestDto);
         assertEquals(testDto, result);
     }
@@ -409,12 +408,12 @@ class CrudServiceTest {
             uuids.add(manyJoinDto.getId());
         }
         values.put("name", Collections.singleton("test name"));
-        values.put("id", uuids);
+        values.put("manyJoinEntities.idw", uuids);
         Map<String, Object> values1 = new HashMap<>();
         values1.put("name", Collections.singleton("test"));
-        values1.put("id", Collections.emptyList());
+        values1.put("manyJoinEntities.idw", Collections.emptyList());
         filterDto.setValues(Arrays.asList(values, values1));
-        formDto.setFilters(Collections.singletonMap("[name&manyJoinEntities.id]", filterDto));
+        formDto.setFilters(Collections.singletonMap("[name&manyJoinEntities.idw]", filterDto));
         PageDto pageDto = new PageDto();
         pageDto.setPage(0);
         pageDto.setSize(3);
@@ -423,10 +422,10 @@ class CrudServiceTest {
         formDto.setPage(pageDto);
         ResponseDto<Object> objectResponseDto = testService.find(formDto);
 
-        Object result = objectResponseDto.getResult().iterator().next();
-
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        Object result = objectResponseDto.getResult().iterator().next();
+
         assertTrue(result instanceof TestDto);
         assertEquals(testDto, result);
     }
@@ -455,10 +454,10 @@ class CrudServiceTest {
         formDto.setPage(pageDto);
         ResponseDto<Object> objectResponseDto = testService.find(formDto);
 
-        Object result = objectResponseDto.getResult().iterator().next();
-
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        Object result = objectResponseDto.getResult().iterator().next();
+
         assertTrue(result instanceof TestDto);
         assertEquals(testDto, result);
     }
@@ -486,10 +485,10 @@ class CrudServiceTest {
         formDto.setPage(pageDto);
         ResponseDto<Object> objectResponseDto = testService.find(formDto);
 
-        Object result = objectResponseDto.getResult().iterator().next();
-
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        Object result = objectResponseDto.getResult().iterator().next();
+
         assertTrue(result instanceof TestDto);
         assertEquals(testDto, result);
     }
@@ -520,10 +519,43 @@ class CrudServiceTest {
         formDto.setPage(pageDto);
         ResponseDto<Object> objectResponseDto = testService.find(formDto);
 
+        assertEquals(1, objectResponseDto.getResult().size());
+        assertEquals(1, objectResponseDto.getPage().getTotalSize());
         Object result = objectResponseDto.getResult().iterator().next();
+
+        assertTrue(result instanceof TestDto);
+        assertEquals(testDto, result);
+    }
+
+    @Test
+    void findByManyToManyTableWithGroupValues() {
+        testService.create(testDto);
+
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField("test");
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(IN);
+        Set<UUID> uuids = new HashSet<>();
+        for (ManyJoinDto manyJoinDto : testDto.getManyJoinEntities()) {
+            uuids.add(manyJoinDto.getId());
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("idw", uuids);
+        map.put("namew", Collections.singleton("many join test 1"));
+        filterDto.setValues(Collections.singleton(map));
+        formDto.setFilters(Collections.singletonMap("manyJoinEntities.[idw&namew]", filterDto));
+        PageDto pageDto = new PageDto();
+        pageDto.setPage(0);
+        pageDto.setSize(3);
+        pageDto.setSort(Collections.emptyList());
+        pageDto.setTotalSize(0L);
+        formDto.setPage(pageDto);
+        ResponseDto<Object> objectResponseDto = testService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        Object result = objectResponseDto.getResult().iterator().next();
+
         assertTrue(result instanceof TestDto);
         assertEquals(testDto, result);
     }

@@ -51,7 +51,10 @@ public class WhereBuilder<E extends IdentifiedEntity> {
                 .findFirst();
         if (joinTableNameOptional.isPresent()) {
             Map.Entry<String, String> joinTableName = joinTableNameOptional.get();
-            join.append(joinBuilder.createLeftJoin(joinTableName));
+            String leftJoin = joinBuilder.createLeftJoin(joinTableName);
+            if (!join.toString().contains(leftJoin)) {
+                join.append(leftJoin);
+            }
             fieldName = field.replaceFirst(joinTableName.getKey(), joinTableName.getValue());
         }
         return fieldName;

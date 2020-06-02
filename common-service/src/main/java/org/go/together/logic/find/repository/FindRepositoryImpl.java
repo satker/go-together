@@ -82,15 +82,23 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
             FindSqlOperator filterType = value.getFilterType();
             BiConsumer<Pair<String, Object>, WhereBuilder> searchObjectFromDtos =
                     filterType.getSearchObjectFromDtos();
-            String[] groupFields = getSingleGroupFields(key);
+            String[] splitByDotString = FieldParser.getPathFields(key);
+            String searchField = splitByDotString[splitByDotString.length - 1];
+            String[] groupFields = getSingleGroupFields(searchField);
+            String suffix = key.replace(searchField, "");
             if (groupFields.length > 1) {
                 WhereBuilder<E> groupWhere = repository.createGroup();
-                addGroups(key, value, searchObjectFromDtos, groupFields, groupWhere);
+                addGroups(suffix, searchField, value, searchObjectFromDtos, groupFields, groupWhere);
+                join.append(groupWhere.getJoinQuery());
                 whereBuilder.group(groupWhere).and();
             } else if (groupFields.length == 1) {
                 value.getValues().forEach(map -> {
                     WhereBuilder<E> groupWhere = repository.createGroup();
-                    addCondition(map, searchObjectFromDtos, groupWhere, groupFields[0]);
+                    String field = groupFields[0];
+                    if (StringUtils.isNotBlank(suffix)) {
+                        field = suffix + field;
+                    }
+                    addCondition(map, searchObjectFromDtos, groupWhere, field);
                     join.append(groupWhere.getJoinQuery());
                     whereBuilder.group(groupWhere).and();
                 });
@@ -104,7 +112,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
         return whereBuilder;
     }
 
-    private void addGroups(String key, FilterDto value,
+    private void addGroups(String suffix, String key, FilterDto value,
                            BiConsumer<Pair<String, Object>, WhereBuilder> searchObjectFromDtos,
                            String[] groupFields,
                            WhereBuilder<E> groupWhere) {
@@ -114,7 +122,11 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
                     Stream.of(groupFields)
                             .forEach(field -> {
                                 WhereBuilder<E> whereAdd = value.getValues().size() > 1 ? innerGroup : groupWhere;
-                                addCondition(map, searchObjectFromDtos, whereAdd, field);
+                                String currentGroupField = field;
+                                if (StringUtils.isNotBlank(suffix)) {
+                                    currentGroupField = suffix + field;
+                                }
+                                addCondition(map, searchObjectFromDtos, whereAdd, currentGroupField);
                                 addDelimiter(key, whereAdd, field);
                             });
                     if (value.getValues().size() > 1) {
@@ -139,8 +151,11 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
     private void addCondition(Map<String, Object> value,
                               BiConsumer<Pair<String, Object>, WhereBuilder> searchObjectFromDtos,
                               WhereBuilder<E> groupWhere, String field) {
-        String[] searchField = FieldParser.getSplitByDotString(field);
-        Object searchObject = value.get(searchField[searchField.length - 1]);
+        Object searchObject = value.get(field);
+        if (searchObject == null) {
+            String[] searchField = FieldParser.getSplitByDotString(field);
+            searchObject = value.get(searchField[searchField.length - 1]);
+        }
         Pair<String, Object> searchPair = Pair.of(field, searchObject);
         searchObjectFromDtos.accept(searchPair, groupWhere);
     }
