@@ -1,5 +1,6 @@
 package org.go.together.service;
 
+import com.google.common.collect.ImmutableMap;
 import org.go.together.dto.InterestDto;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.logic.CrudService;
@@ -36,6 +37,8 @@ public class InterestService extends CrudService<InterestDto, Interest> {
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return null;
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("id", FieldMapper.builder()
+                        .currentServiceField("id").build()).build();
     }
 }

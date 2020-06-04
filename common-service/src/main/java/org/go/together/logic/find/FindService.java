@@ -17,7 +17,10 @@ import org.go.together.logic.repository.CustomRepository;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+
+import static org.go.together.logic.find.utils.FieldParser.getParsedString;
 
 public abstract class FindService<E extends IdentifiedEntity> {
     private final CustomRepository<E> repository;
@@ -51,12 +54,16 @@ public abstract class FindService<E extends IdentifiedEntity> {
     }
 
     private Map<String, FilterDto> getFilters(FormDto formDto) {
-        Map<String, FilterDto> correctedFilters = correctFieldService.getCorrectedFilters(formDto.getFilters(), getMappingFields());
-        Map<String, Collection<Object>> remoteFilters = remoteFindService.getFilters(correctedFilters, getMappingFields());
+        Pair<Map<String, FilterDto>, Map<String, FilterDto>>
+                correctedFilters = correctFieldService.getRemoteAndCorrectedFilters(formDto.getFilters(), getMappingFields());
+        Map<String, Collection<Object>> remoteFilters = new HashMap<>();
+        if (!correctedFilters.getLeft().isEmpty()) {
+            remoteFilters = remoteFindService.getFilters(correctedFilters.getLeft(), getMappingFields());
+        }
         if (remoteFilters == null) {
             return null;
         }
-        return getConcatRemoteAndLocalFilters(remoteFilters, correctedFilters);
+        return getConcatRemoteAndLocalFilters(remoteFilters, correctedFilters.getRight());
     }
 
     private Map<String, FilterDto> getConcatRemoteAndLocalFilters(Map<String, Collection<Object>> remoteFilters,
@@ -64,7 +71,8 @@ public abstract class FindService<E extends IdentifiedEntity> {
         remoteFilters.forEach((key, values) -> {
             FilterDto filterDto = new FilterDto(FindSqlOperator.IN,
                     Collections.singleton(Collections.singletonMap(getCorrectFilterValuesKey(key), values)));
-            Map<String, FilterDto> filterForCurrentService = Collections.singletonMap(key, filterDto);
+            Map<String, FilterDto> filterForCurrentService = Collections.singletonMap(getParsedString(key)[0], filterDto);
+            localFilters.remove(key);
             localFilters.putAll(filterForCurrentService);
         });
 
@@ -72,9 +80,10 @@ public abstract class FindService<E extends IdentifiedEntity> {
     }
 
     private String getCorrectFilterValuesKey(String key) {
-        String[] splitedKey = FieldParser.getSplitByDotString(key);
+        String[] splitedKey = FieldParser.getParsedString(key);
         if (splitedKey.length > 1) {
-            return splitedKey[splitedKey.length - 1];
+            String[] splitByDotString = FieldParser.getSplitByDotString(splitedKey[0]);
+            return splitByDotString[splitByDotString.length - 1];
         }
         return key;
     }

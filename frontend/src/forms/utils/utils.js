@@ -62,27 +62,26 @@ export const onChange = (state, setState) => (path, value) => {
 
 export const FilterOperator = {
     LIKE: {
-        operator: "LIKE",
-        valueMapper: value => [({id: value, name: value})]
+        operator: "LIKE"
+    },
+    EQUAL: {
+        operator: "EQUAL"
     },
     IN: {
-        operator: 'IN',
-        valueMapper: values => values.map(value => ({id: value.id, name: value.name}))
+        operator: 'IN'
     },
     START_DATE: {
-        operator: 'START_DATE',
-        valueMapper: value => [({id: value, name: value})]
+        operator: 'START_DATE'
     },
     END_DATE: {
-        operator: 'END_DATE',
-        valueMapper: value => [({id: value, name: value})]
+        operator: 'END_DATE'
     },
 }
 
 export const getFilterDto = (filterType, values) => {
     return {
         filterType: filterType.operator,
-        values: filterType.valueMapper(values)
+        values: values
     }
 }
 

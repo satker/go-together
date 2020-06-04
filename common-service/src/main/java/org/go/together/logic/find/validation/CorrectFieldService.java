@@ -14,9 +14,9 @@ import java.util.stream.Stream;
 import static org.go.together.logic.find.utils.FieldParser.*;
 
 public class CorrectFieldService {
-    public Map<String, FilterDto> getCorrectedFilters(Map<String, FilterDto> filters,
-                                                      Map<String, FieldMapper> availableFields) {
-        Map<String, FilterDto> result = new HashMap<>();
+    public Pair<Map<String, FilterDto>, Map<String, FilterDto>> getRemoteAndCorrectedFilters(Map<String, FilterDto> filters, Map<String, FieldMapper> availableFields) {
+        Map<String, FilterDto> localFilters = new HashMap<>();
+        Map<String, FilterDto> remoteFilters = new HashMap<>();
         filters.forEach((key, value) -> {
             Map<String, FieldMapper> fieldMappers = FieldParser.getFieldMappers(availableFields, key);
             boolean isNotRemote = fieldMappers.values().stream()
@@ -27,10 +27,12 @@ public class CorrectFieldService {
                 Collection<Map<String, Object>> correctedValuesForSearch =
                         getCorrectedValues(localFieldForSearch.getLeft(), value.getValues());
                 value.setValues(correctedValuesForSearch);
+                localFilters.put(localFieldForSearch.getRight(), value);
+            } else {
+                remoteFilters.put(localFieldForSearch.getRight(), value);
             }
-            result.put(localFieldForSearch.getRight(), value);
         });
-        return result;
+        return Pair.of(remoteFilters, localFilters);
     }
 
     public Collection<Map<String, Object>> getCorrectedValues(Map<String, String> fieldMappers,
@@ -61,6 +63,10 @@ public class CorrectFieldService {
         } else {
             result.append(localEntityCorrectChildField.getRight());
         }
+        String anotherServicePathFields = getAnotherServicePathFields(string);
+        if (anotherServicePathFields != null) {
+            result.append("?").append(anotherServicePathFields);
+        }
         return Pair.of(localEntityCorrectChildField.getLeft(), result.toString());
     }
 
@@ -86,11 +92,7 @@ public class CorrectFieldService {
                     fieldMappers.containsKey(splitByDotString[0])) {
                 FieldMapper fieldMapper = fieldMappers.get(splitByDotString[0]);
                 if (fieldMapper.getInnerService() != null) {
-                    StringBuilder changedField = new StringBuilder(fieldMapper.getCurrentServiceField());
-                    List<String> fieldsForChange = Arrays.asList(splitByDotString).subList(1, splitByDotString.length);
-                    String updatedField = (String) getCorrectedPathAndFields(String.join(".", fieldsForChange),
-                            fieldMapper.getInnerService().getMappingFields()).getRight();
-                    changedField.append(".").append(updatedField);
+                    StringBuilder changedField = getCorrectedField(splitByDotString, fieldMapper);
                     singleGroupFields.put(key, changedField.toString());
                 } else {
                     throw new IncorrectFindObject("Field " + key + " is unavailable for search.");
@@ -106,5 +108,14 @@ public class CorrectFieldService {
             result[0] = result[0].replaceAll(oldValue, newValue);
         });
         return Pair.of(singleGroupFields, result[0]);
+    }
+
+    private StringBuilder getCorrectedField(String[] splitByDotString, FieldMapper fieldMapper) {
+        StringBuilder changedField = new StringBuilder(fieldMapper.getCurrentServiceField());
+        List<String> fieldsForChange = Arrays.asList(splitByDotString).subList(1, splitByDotString.length);
+        String updatedField = (String) getCorrectedPathAndFields(String.join(".", fieldsForChange),
+                fieldMapper.getInnerService().getMappingFields()).getRight();
+        changedField.append(".").append(updatedField);
+        return changedField;
     }
 }

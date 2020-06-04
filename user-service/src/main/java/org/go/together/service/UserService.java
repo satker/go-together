@@ -31,17 +31,23 @@ public class UserService extends CrudService<UserDto, SystemUser> {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ContentClient contentClient;
     private final SimpleUserMapper simpleUserMapper;
+    private final LanguageService languageService;
+    private final InterestService interestService;
 
     public UserService(UserRepository userRepository, UserMapper userMapper,
                        UserValidator userValidator, BCryptPasswordEncoder bCryptPasswordEncoder,
                        ContentClient contentClient,
-                       SimpleUserMapper simpleUserMapper) {
+                       SimpleUserMapper simpleUserMapper,
+                       LanguageService languageService,
+                       InterestService interestService) {
         super(userRepository, userMapper, userValidator);
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.contentClient = contentClient;
         this.simpleUserMapper = simpleUserMapper;
+        this.languageService = languageService;
+        this.interestService = interestService;
     }
 
     public UserDto findUserByLogin(String login) {
@@ -179,8 +185,10 @@ public class UserService extends CrudService<UserDto, SystemUser> {
     public Map<String, FieldMapper> getMappingFields() {
         return ImmutableMap.<String, FieldMapper>builder()
                 .put("languages", FieldMapper.builder()
+                        .innerService(languageService)
                         .currentServiceField("languages").build())
                 .put("interests", FieldMapper.builder()
+                        .innerService(interestService)
                         .currentServiceField("interests").build())
                 .build();
     }

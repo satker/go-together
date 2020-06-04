@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import * as PropTypes from "prop-types";
+import PropTypes from "prop-types";
 
 import {connect} from "App/Context";
 
@@ -24,8 +24,15 @@ const AuthorFilters = ({
     }, [getLanguages, getInterests]);
 
     const onChangeFilterObject = (field, set) => (values) => {
-        const searchField = "author?" + field + ".id";
-        updateFilterObject(FilterOperator.IN, values, searchField);
+        const id = 'id';
+        const searchField = "author?" + field + "." + id;
+        let newValues = null;
+        if (values) {
+            newValues = values.map(value => ({
+                [id]: value[id]
+            }));
+        }
+        updateFilterObject(FilterOperator.EQUAL, newValues, searchField);
         set(values);
     }
 

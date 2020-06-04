@@ -18,11 +18,11 @@ public class RemoteFinder implements Finder<Collection<Object>> {
                                                       Map<String, FieldMapper> availableFields) {
         Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices = new HashMap<>();
         filters.forEach((key, value) -> {
-            Map<String, FieldMapper> fieldMappers = FieldParser.getFieldMappers(availableFields, key);
-            fieldMappers.values().stream()
-                    .filter(entry -> entry.getRemoteServiceClient() != null)
-                    .forEach(entry ->
-                            convertToAnotherRequest(filtersToAnotherServices, FieldParser.getFieldSearch(key), entry, value));
+            Map<String, FieldMapper> fieldMappers = FieldParser.getFieldMapperByRemoteField(availableFields, key);
+            fieldMappers.forEach((localField, fieldMapper) ->
+                    convertToAnotherRequest(filtersToAnotherServices, key,
+                            FieldParser.getFieldSearch(key),
+                            fieldMapper, value));
         });
         if (!filtersToAnotherServices.isEmpty()) {
             return getFilterResultFromOtherServices(filtersToAnotherServices);
@@ -32,12 +32,13 @@ public class RemoteFinder implements Finder<Collection<Object>> {
     }
 
     private void convertToAnotherRequest(Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices,
+                                         String currentLocalField,
                                          String anotherServiceSearchField,
                                          FieldMapper fieldMapper,
                                          FilterDto value) {
         ClientLocalFieldObject clientLocalFieldObject = ClientLocalFieldObject.builder()
                 .client(fieldMapper.getRemoteServiceClient())
-                .localField(anotherServiceSearchField).build();
+                .localField(currentLocalField).build();
         FormDto stringFilterDtoMap = filtersToAnotherServices.get(clientLocalFieldObject);
         FormDto remoteClientFormDto = getRemoteClientFormDto(anotherServiceSearchField, value, stringFilterDtoMap, fieldMapper);
         filtersToAnotherServices.put(clientLocalFieldObject, remoteClientFormDto);

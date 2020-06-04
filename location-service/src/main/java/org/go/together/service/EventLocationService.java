@@ -1,5 +1,6 @@
 package org.go.together.service;
 
+import com.google.common.collect.ImmutableMap;
 import org.go.together.dto.EventLocationDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.filter.FieldMapper;
@@ -91,6 +92,12 @@ public class EventLocationService extends CrudService<EventLocationDto, EventLoc
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return null;
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("routeNumber", FieldMapper.builder()
+                        .currentServiceField("routeNumber").build())
+                .put("latitude", FieldMapper.builder()
+                        .currentServiceField("latitude").build())
+                .put("longitude", FieldMapper.builder()
+                        .currentServiceField("longitude").build()).build();
     }
 }

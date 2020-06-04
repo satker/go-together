@@ -3,6 +3,8 @@ package org.go.together.logic.find.utils;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.exceptions.IncorrectFindObject;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,14 +12,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FieldParser {
-    private static final String DELIMITER = "\\?";
+    public static final String DELIMITER = "\\?";
     public static final String GROUP_AND = "&";
     public static final String GROUP_OR = "\\|";
     private static final String GROUP_START = "\\[";
     private static final String GROUP_END = "]";
     private static final String REGEX_GROUP = "^\\[[a-zA-Z&|.]*]$";
 
-    private static String[] getParsedString(String string) {
+    public static String[] getParsedString(String string) {
         return string.split(DELIMITER);
     }
 
@@ -35,12 +37,39 @@ public class FieldParser {
         }
     }
 
+    public static String getAnotherServicePathFields(String string) {
+        String[] otherServiceFields = getParsedString(string);
+        if (otherServiceFields.length > 1) {
+            return otherServiceFields[1];
+        }
+        return null;
+    }
+
     public static String getFieldSearch(String string) {
         String[] parsedString = getParsedString(string);
         if (parsedString.length > 1) {
             return parsedString[1];
         }
         return parsedString[0];
+    }
+
+    public static Map<String, FieldMapper> getFieldMapperByRemoteField(Map<String, FieldMapper> availableFields, String searchField) {
+        String[] localEntityFullFields = getPathFields(searchField);
+        String localEntityField = localEntityFullFields[0];
+        List<String> singleGroupFields = Arrays.asList(getSingleGroupFields(localEntityField));
+        return availableFields.entrySet().stream()
+                .filter(stringFieldMapperEntry -> singleGroupFields.contains(stringFieldMapperEntry.getValue().getCurrentServiceField()))
+                .collect(Collectors.toMap(entry ->
+                                findStringFromList(entry.getValue().getCurrentServiceField(), singleGroupFields),
+                        Map.Entry::getValue,
+                        (entry1, entry2) -> entry1));
+    }
+
+    private static String findStringFromList(String element, List<String> elements) {
+        return elements.stream()
+                .filter(string -> string.equals(element))
+                .findFirst().orElseThrow(() ->
+                        new IncorrectFindObject("Field " + element + " is unavailable for find."));
     }
 
     public static Map<String, FieldMapper> getFieldMappers(Map<String, FieldMapper> availableFields,

@@ -1,5 +1,6 @@
 package org.go.together.service;
 
+import com.google.common.collect.ImmutableMap;
 import org.go.together.dto.LanguageDto;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.logic.CrudService;
@@ -39,6 +40,8 @@ public class LanguageService extends CrudService<LanguageDto, Language> {
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return null;
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("id", FieldMapper.builder()
+                        .currentServiceField("id").build()).build();
     }
 }
