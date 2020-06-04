@@ -6,6 +6,8 @@ import {FORM_DTO} from 'forms/utils/constants'
 import {SearchObject} from "forms/utils/types";
 import {FilterOperator} from "forms/utils/utils";
 import CustomButton from "forms/utils/components/CustomButton";
+import Container from "forms/utils/components/Container/ContainerRow";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import {connect} from "App/Context";
 
 import {setArrivalDate, setDepartureDate, setPage} from "../actions";
@@ -32,19 +34,19 @@ const Filter = ({
     const startDate = filterObject.filters['startDate'];
     const endDate = filterObject.filters['endDate'];
 
-    return <div className='container-search-events'>
+    return <Container>
         <Locations updateFilterObject={updateFilterObject} filterObject={filterObject}/>
-        <div className='flex margin-left-custom'>
+        <ItemContainer>
             <CheckInOutDates startDate={startDate && startDate.values[0]?.startDate}
                              endDate={endDate && endDate.values[0]?.endDate}
                              setStartDate={onChangeDate('startDate', FilterOperator.START_DATE)}
                              setEndDate={onChangeDate('endDate', FilterOperator.END_DATE)}/>
-        </div>
+        </ItemContainer>
         <AuthorFilters updateFilterObject={updateFilterObject}/>
-        <div className='flex margin-left-custom'>
+        <ItemContainer>
             <CustomButton onClick={clearFilters} color="primary" text='Clear'/>
-        </div>
-    </div>
+        </ItemContainer>
+    </Container>
 };
 
 Filter.propTypes = {

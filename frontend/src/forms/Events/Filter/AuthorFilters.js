@@ -4,10 +4,11 @@ import PropTypes from "prop-types";
 import {connect} from "App/Context";
 
 import {SearchObject} from "forms/utils/types";
-import {getInterests, getLanguages} from "../actions";
 import MultipleSelectBox from "forms/utils/components/MultipleSelectBox";
 import LoadableContent from "forms/utils/components/LoadableContent";
 import {FilterOperator} from "forms/utils/utils";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import {getInterests, getLanguages} from "../actions";
 
 const AuthorFilters = ({
                            updateFilterObject,
@@ -37,18 +38,22 @@ const AuthorFilters = ({
     }
 
     return <>
-        <LoadableContent loadableData={interests}>
-            <MultipleSelectBox onChange={onChangeFilterObject('interests', setChooseInterests)}
-                               label='Interests'
-                               optionsSimple={interests.response}
-                               value={chooseInterests}/>
-        </LoadableContent>
-        <LoadableContent loadableData={languages}>
-            <MultipleSelectBox onChange={onChangeFilterObject('languages', setChooseLanguages)}
-                               value={chooseLanguages}
-                               optionsSimple={languages.response}
-                               label='Languages'/>
-        </LoadableContent>
+        <ItemContainer>
+            <LoadableContent loadableData={interests}>
+                <MultipleSelectBox onChange={onChangeFilterObject('interests', setChooseInterests)}
+                                   label='Interests'
+                                   optionsSimple={interests.response}
+                                   value={chooseInterests}/>
+            </LoadableContent>
+        </ItemContainer>
+        <ItemContainer>
+            <LoadableContent loadableData={languages}>
+                <MultipleSelectBox onChange={onChangeFilterObject('languages', setChooseLanguages)}
+                                   value={chooseLanguages}
+                                   optionsSimple={languages.response}
+                                   label='Languages'/>
+            </LoadableContent>
+        </ItemContainer>
     </>
 
 };
