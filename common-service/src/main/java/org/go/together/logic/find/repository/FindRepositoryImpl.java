@@ -42,7 +42,6 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
             countRows = (long) repository.createQuery().getCountRowsWhere(whereBuilder, query.getSelectRow(), query.getHaving());
         }
         PageDto pageDto = getPageDto(page, countRows);
-        System.out.println(query.getQuery());
         Collection<Object> result = getResult(page, query);
         return Pair.of(pageDto, result);
     }

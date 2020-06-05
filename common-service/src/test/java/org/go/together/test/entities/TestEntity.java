@@ -29,11 +29,12 @@ public class TestEntity implements IdentifiedEntity {
     @Type(type = "uuid-char")
     private Set<UUID> elements;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL,
+            orphanRemoval = true)
     @JoinColumn(name = "test_id")
     private Set<JoinTestEntity> joinTestEntities;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "test_many_join",
             joinColumns = @JoinColumn(name = "test_id"),
             inverseJoinColumns = @JoinColumn(name = "many_join_id"))
