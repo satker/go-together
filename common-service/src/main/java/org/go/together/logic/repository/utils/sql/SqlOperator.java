@@ -27,7 +27,7 @@ public enum SqlOperator {
         return " SQRT(POW(69.1 * (" + latitudeField + " - " + latitudeValue +
                 "), 2) + " +
                 "POW(69.1 * (" + longitudeValue + " - " + longitudeField +
-                ") * COS(latitude / 57.3), 2)) < 25 ";
+                ") * COS(" + latitudeField + " / 57.3), 2)) < 25 ";
     });
 
     private final BiFunction<String, String, String> biFunction;

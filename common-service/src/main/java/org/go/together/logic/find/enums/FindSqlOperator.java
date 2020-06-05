@@ -18,7 +18,7 @@ public enum FindSqlOperator {
     IN((entry, whereBuilder) ->
             whereBuilder.condition(entry.getKey(), SqlOperator.IN, entry.getValue())),
     NEAR_LOCATION((entry, whereBuilder) -> {
-        if (entry.getKey().startsWith("longitude") || entry.getKey().startsWith("latitude")) {
+        if (entry.getKey().contains("longitude")) {
             whereBuilder.condition(entry.getKey(), SqlOperator.NEAR_LOCATION, entry.getValue());
         } else {
             whereBuilder.condition(entry.getKey(), SqlOperator.EQUAL, entry.getValue());

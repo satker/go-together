@@ -12,17 +12,14 @@ import org.go.together.logic.repository.CustomRepository;
 import org.go.together.logic.repository.builder.SqlBuilder;
 import org.go.together.logic.repository.builder.WhereBuilder;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.go.together.logic.find.utils.FieldParser.getSingleGroupFields;
 import static org.go.together.logic.find.utils.FieldParser.getSplitHavingCountString;
 
 public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepository {
-    private static final String LAT_LNG = "latitude,longitude";
     private final String serviceName;
     private final CustomRepository<E> repository;
     private final StringBuilder join;
@@ -131,12 +128,10 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
                            FindSqlOperator filterType,
                            String[] groupFields,
                            WhereBuilder<E> groupWhere) {
-        List<String> finalFields = getFields(groupFields, filterType);
-        Collection<Map<String, Object>> finalValues = getValues(values, filterType);
         values.forEach(map -> {
             WhereBuilder<E> innerGroup = repository.createGroup();
-            finalFields.forEach(field -> {
-                WhereBuilder<E> whereAdd = finalValues.size() > 1 ? innerGroup : groupWhere;
+            Stream.of(groupFields).forEach(field -> {
+                WhereBuilder<E> whereAdd = values.size() > 1 ? innerGroup : groupWhere;
                 String currentGroupField = field;
                 if (StringUtils.isNotBlank(suffix)) {
                     currentGroupField = suffix + field;
@@ -144,7 +139,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
                 addCondition(map, filterType, whereAdd, currentGroupField);
                 addDelimiter(key, whereAdd, field);
             });
-            if (finalValues.size() > 1) {
+            if (values.size() > 1) {
                 if (!join.toString().contains(innerGroup.getJoinQuery())) {
                     join.append(innerGroup.getJoinQuery());
                 }
@@ -156,31 +151,6 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
             }
         });
         groupWhere.cutLastOr();
-    }
-
-    private Collection<Map<String, Object>> getValues(Collection<Map<String, Object>> values,
-                                                      FindSqlOperator filterType) {
-        if (filterType == FindSqlOperator.NEAR_LOCATION) {
-            return values.stream()
-                    .peek(map -> {
-                        Double latitude = (Double) map.remove("latitude");
-                        Double longitude = (Double) map.remove("longitude");
-                        map.put(LAT_LNG, latitude.toString() + "," + longitude.toString());
-                    }).collect(Collectors.toSet());
-        }
-        return values;
-    }
-
-    private List<String> getFields(String[] groupFields, FindSqlOperator filterType) {
-        List<String> fields = Arrays.asList(groupFields);
-        if (filterType == FindSqlOperator.NEAR_LOCATION) {
-            fields = fields.stream()
-                    .filter(groupField -> !groupField.startsWith("longitude"))
-                    .filter(groupField -> !groupField.startsWith("latitude"))
-                    .collect(Collectors.toList());
-            fields.add(LAT_LNG);
-        }
-        return fields;
     }
 
     private void addDelimiter(String key, WhereBuilder<E> groupWhere, String field) {

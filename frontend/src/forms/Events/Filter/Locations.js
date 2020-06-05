@@ -10,7 +10,8 @@ import DeleteIcon from "forms/utils/components/Icon/Delete";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import Container from "forms/utils/components/Container/ContainerRow";
 
-const LocationField = 'route?[routeNumber&latitude&longitude]';
+const LocationField = 'route?[routeNumber&latitude,longitude]';
+const latLng = "latitude,longitude";
 
 const Locations = ({updateFilterObject, filterObject}) => {
     const [routes, setRoutes] = useState({});
@@ -35,7 +36,6 @@ const Locations = ({updateFilterObject, filterObject}) => {
         keys(routes)
             .filter(routeNumber => parseInt(routeNumber) > parseInt(index))
             .forEach(routeNumber => {
-                console.log(updatedRoutes);
                 updatedRoutes[routeNumber - 1] = routes[routeNumber];
                 lastKey = routeNumber;
             });
@@ -48,8 +48,7 @@ const Locations = ({updateFilterObject, filterObject}) => {
     const onChangeLocation = (index) => (location) => {
         const newElement = {
             routeNumber: index,
-            latitude: location.lat,
-            longitude: location.lng
+            [latLng]: location.lat + ',' + location.lng
         };
         if (location) {
             if (filteredLocations) {

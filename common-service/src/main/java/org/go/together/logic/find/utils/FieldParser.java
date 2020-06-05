@@ -18,7 +18,7 @@ public class FieldParser {
     public static final String GROUP_OR = "\\|";
     private static final String GROUP_START = "\\[";
     private static final String GROUP_END = "]";
-    private static final String REGEX_GROUP = "^\\[[a-zA-Z&|.]*]$";
+    private static final String REGEX_GROUP = "^\\[[a-zA-Z&|.,]*]$";
 
     public static String[] getParsedString(String string) {
         return string.split(DELIMITER);

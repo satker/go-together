@@ -95,9 +95,7 @@ public class EventLocationService extends CrudService<EventLocationDto, EventLoc
         return ImmutableMap.<String, FieldMapper>builder()
                 .put("routeNumber", FieldMapper.builder()
                         .currentServiceField("routeNumber").build())
-                .put("latitude", FieldMapper.builder()
-                        .currentServiceField("latitude").build())
-                .put("longitude", FieldMapper.builder()
-                        .currentServiceField("longitude").build()).build();
+                .put("latitude,longitude", FieldMapper.builder()
+                        .currentServiceField("latitude,longitude").build()).build();
     }
 }
