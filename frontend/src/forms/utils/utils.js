@@ -1,4 +1,4 @@
-import {get, set} from "lodash";
+import {get, keys, set} from "lodash";
 
 export const getSrcForImg = (photoObj) => {
     if (!photoObj) {
@@ -85,8 +85,17 @@ export const getFilterDto = (filterType, values) => {
     }
 }
 
-export const updateFormDto = (formDto, setFormDto) => (filterType, values, searchField) => {
+export const updateFormDto = (formDto, setFormDto) => (filterType, values, searchField, havingCount = false) => {
     let resultFilterObject = {...formDto};
+    if (havingCount) {
+        const findValue = keys(resultFilterObject.filters)
+            .find(keyFilter => keyFilter.startsWith(searchField));
+        if (findValue) {
+            values = [...resultFilterObject.filters[findValue].values, ...values];
+            delete resultFilterObject.filters[findValue];
+        }
+        searchField = searchField + ':' + values.length;
+    }
     if (values) {
         resultFilterObject.filters[searchField] = getFilterDto(filterType, values);
     } else if (resultFilterObject.filters.hasOwnProperty(searchField)) {

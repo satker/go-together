@@ -40,11 +40,11 @@ public abstract class CustomRepository<E extends IdentifiedEntity> {
     }
 
     public SqlBuilder<E> createQuery() {
-        return new SqlBuilder<>(getEntityClass(), entityManager, null);
+        return new SqlBuilder<>(getEntityClass(), entityManager, null, null);
     }
 
-    public SqlBuilder<E> createQuery(String selectRow) {
-        return new SqlBuilder<>(getEntityClass(), entityManager, selectRow);
+    public SqlBuilder<E> createQuery(String selectRow, Integer havingCondition) {
+        return new SqlBuilder<>(getEntityClass(), entityManager, selectRow, havingCondition);
     }
 
     public WhereBuilder<E> createWhere() {

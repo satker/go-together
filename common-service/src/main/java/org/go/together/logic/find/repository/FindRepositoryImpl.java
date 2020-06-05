@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.dto.filter.FilterDto;
 import org.go.together.dto.filter.PageDto;
+import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.logic.find.enums.FindSqlOperator;
 import org.go.together.logic.find.utils.FieldParser;
@@ -17,6 +18,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 import static org.go.together.logic.find.utils.FieldParser.getSingleGroupFields;
+import static org.go.together.logic.find.utils.FieldParser.getSplitHavingCountString;
 
 public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepository {
     private final String serviceName;
@@ -38,7 +40,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
         } else {
             WhereBuilder<E> whereBuilder = getWhereBuilder(filters);
             query.where(whereBuilder);
-            countRows = (long) repository.createQuery().getCountRowsWhere(whereBuilder);
+            countRows = (long) repository.createQuery().getCountRowsWhere(whereBuilder, query.getSelectRow(), query.getHaving());
         }
         PageDto pageDto = getPageDto(page, countRows);
         System.out.println(query.getQuery());
@@ -51,7 +53,17 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
 
         SqlBuilder<E> query;
         if (StringUtils.isNotBlank(mainKeyToSort) && !mainKeyToSort.equals(serviceName)) {
-            query = repository.createQuery(mainKeyToSort);
+            String[] havingCondition = getSplitHavingCountString(mainKeyToSort);
+            if (havingCondition.length > 1) {
+                try {
+                    int havingNumber = Integer.parseInt(havingCondition[1]);
+                    query = repository.createQuery(havingCondition[0], havingNumber);
+                } catch (NumberFormatException e) {
+                    throw new IncorrectFindObject("Incorrect having condition: " + havingCondition[1]);
+                }
+            } else {
+                query = repository.createQuery(mainKeyToSort, null);
+            }
         } else {
             query = repository.createQuery();
         }

@@ -18,16 +18,35 @@ public class SqlBuilder<E extends IdentifiedEntity> {
     private final Class<E> clazz;
     private final String select;
     private final String selectRow;
+    private final StringBuilder havingCondition;
 
-    public SqlBuilder(Class<E> clazz, EntityManager entityManager, String selectRow) {
-        this.selectRow = selectRow;
+    public SqlBuilder(Class<E> clazz, EntityManager entityManager, String selectRow, Integer havingCondition) {
         String entityLink = getEntityLink(clazz);
         String selectQuery = selectRow == null ? entityLink : entityLink + "." + selectRow;
+        this.selectRow = selectQuery;
         select = "select distinct " + selectQuery;
         from = " FROM " + clazz.getSimpleName() + " " + entityLink;
         query = new StringBuilder();
         this.entityManager = entityManager;
         this.clazz = clazz;
+        if (havingCondition != null && selectRow != null) {
+            this.havingCondition = new StringBuilder().append(" group by ")
+                    .append(selectQuery)
+                    .append(" having count(")
+                    .append(selectQuery)
+                    .append(") = ")
+                    .append(havingCondition);
+        } else {
+            this.havingCondition = new StringBuilder();
+        }
+    }
+
+    public String getHaving() {
+        return havingCondition.toString();
+    }
+
+    public String getSelectRow() {
+        return selectRow;
     }
 
     public SqlBuilder<E> where(WhereBuilder<E> whereBuilder) {
@@ -44,6 +63,9 @@ public class SqlBuilder<E extends IdentifiedEntity> {
             query.append(from);
         }
         query.append(whereBuilder.getWhereQuery());
+        if (havingCondition != null) {
+            query.append(havingCondition);
+        }
         return this;
     }
 
@@ -63,7 +85,7 @@ public class SqlBuilder<E extends IdentifiedEntity> {
     }
 
     public Collection<Object> fetchWithPageableNotDefined(int start, int pageSize) {
-        Query query = entityManager.createQuery(getQuery(), Object.class);
+        Query query = entityManager.createQuery(getQuery());
         query.setFirstResult(start);
         query.setMaxResults(pageSize);
         return query.getResultList();
@@ -82,15 +104,31 @@ public class SqlBuilder<E extends IdentifiedEntity> {
     }
 
     public Number getCountRows() {
-        return entityManager.createQuery("SELECT COUNT (DISTINCT " + getEntityLink(clazz) + ".id) FROM " +
-                clazz.getSimpleName() + " " + getEntityLink(clazz), Number.class)
-                .getSingleResult();
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT COUNT (DISTINCT ")
+                .append(getEntityLink(clazz))
+                .append(".id) FROM ")
+                .append(clazz.getSimpleName())
+                .append(" ")
+                .append(getEntityLink(clazz));
+        return entityManager.createQuery(query.toString(), Number.class)
+                .getResultStream().count();
     }
 
-    public Number getCountRowsWhere(WhereBuilder<E> whereBuilder) {
-        String query = "SELECT COUNT (DISTINCT " + getEntityLink(clazz) + ".id) FROM " +
-                clazz.getSimpleName() + " " + getEntityLink(clazz) + " " + whereBuilder.getJoinQuery() +
-                whereBuilder.getWhereQuery();
-        return entityManager.createQuery(query, Number.class).getSingleResult();
+    public Number getCountRowsWhere(WhereBuilder<E> whereBuilder, String selectRow, String having) {
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT COUNT (DISTINCT ")
+                .append(selectRow)
+                .append(") FROM ")
+                .append(clazz.getSimpleName())
+                .append(" ")
+                .append(getEntityLink(clazz))
+                .append(" ")
+                .append(whereBuilder.getJoinQuery())
+                .append(whereBuilder.getWhereQuery());
+        if (having != null && StringUtils.isNotBlank(selectRow)) {
+            query.append(having);
+        }
+        return entityManager.createQuery(query.toString(), Number.class).getResultStream().count();
     }
 }

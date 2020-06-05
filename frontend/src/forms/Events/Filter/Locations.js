@@ -28,11 +28,10 @@ const Locations = ({updateFilterObject, filterObject}) => {
                     }
                     return value;
                 })
-            updateFilterObject(FilterOperator.EQUAL, newValue, LocationField);
+            updateFilterObject(FilterOperator.EQUAL, newValue, LocationField, true);
         }
         let lastKey = null;
         const updatedRoutes = {...routes}
-        console.log('updatedRoutes', index, updatedRoutes, routes, keys(routes));
         keys(routes)
             .filter(routeNumber => parseInt(routeNumber) > parseInt(index))
             .forEach(routeNumber => {
@@ -59,7 +58,7 @@ const Locations = ({updateFilterObject, filterObject}) => {
                 filteredLocations = [newElement]
             }
         }
-        updateFilterObject(FilterOperator.EQUAL, filteredLocations, LocationField);
+        updateFilterObject(FilterOperator.EQUAL, filteredLocations, LocationField, true);
     }
 
     const onAddLocation = () => {

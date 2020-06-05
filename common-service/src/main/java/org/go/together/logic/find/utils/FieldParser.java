@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 public class FieldParser {
     public static final String DELIMITER = "\\?";
+    public static final String HAVING_COUNT = ":";
     public static final String GROUP_AND = "&";
     public static final String GROUP_OR = "\\|";
     private static final String GROUP_START = "\\[";
@@ -25,6 +26,10 @@ public class FieldParser {
 
     public static String[] getSplitByDotString(String string) {
         return string.split("\\.");
+    }
+
+    public static String[] getSplitHavingCountString(String string) {
+        return string.split(HAVING_COUNT);
     }
 
     public static String[] getPathFields(String string) {
@@ -79,7 +84,7 @@ public class FieldParser {
         String[] singleGroupFields = getSingleGroupFields(localEntityField);
         try {
             return Stream.of(singleGroupFields)
-                    .collect(Collectors.toMap(field -> getEntityField(field, localEntityFullFields),
+                    .collect(Collectors.toMap(FieldParser::getEntityField,
                             field -> getFieldMapper(availableFields, field)));
         } catch (Exception exception) {
             throw new IncorrectFindObject("Field " + searchField + " is unavailable for search.");
@@ -95,7 +100,7 @@ public class FieldParser {
         return availableFields.get(field);
     }
 
-    private static String getEntityField(String field, String[] localEntityFullFields) {
+    private static String getEntityField(String field) {
         String[] splitByCommaString = getSplitByDotString(field);
         if (splitByCommaString.length > 1) {
             return splitByCommaString[0];
@@ -105,6 +110,7 @@ public class FieldParser {
 
     public static String[] getSingleGroupFields(String localEntityField) {
         String[] result;
+        localEntityField = getSplitHavingCountString(localEntityField)[0];
         if (localEntityField.matches(REGEX_GROUP)) {
             result = localEntityField.replaceFirst(GROUP_START, "")
                     .replaceFirst(GROUP_END, "")

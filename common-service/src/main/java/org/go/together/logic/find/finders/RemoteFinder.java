@@ -1,8 +1,10 @@
 package org.go.together.logic.find.finders;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.dto.filter.FilterDto;
 import org.go.together.dto.filter.FormDto;
+import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.exceptions.RemoteClientFindException;
 import org.go.together.interfaces.FindClient;
 import org.go.together.logic.find.utils.ClientLocalFieldObject;
@@ -38,7 +40,7 @@ public class RemoteFinder implements Finder<Collection<Object>> {
                                          FilterDto value) {
         ClientLocalFieldObject clientLocalFieldObject = ClientLocalFieldObject.builder()
                 .client(fieldMapper.getRemoteServiceClient())
-                .localField(currentLocalField).build();
+                .localField(FieldParser.getParsedString(currentLocalField)[0]).build();
         FormDto stringFilterDtoMap = filtersToAnotherServices.get(clientLocalFieldObject);
         FormDto remoteClientFormDto = getRemoteClientFormDto(anotherServiceSearchField, value, stringFilterDtoMap, fieldMapper);
         filtersToAnotherServices.put(clientLocalFieldObject, remoteClientFormDto);
@@ -48,18 +50,33 @@ public class RemoteFinder implements Finder<Collection<Object>> {
                                            FilterDto value,
                                            FormDto stringFilterDtoMap,
                                            FieldMapper fieldMapper) {
-        String remoteGetField = fieldMapper.getPathRemoteFieldGetter();
-
+        Pair<String, String> remoteMainAndGetField = getRemoteMainAndGetField(anotherServiceSearchField, fieldMapper);
         if (stringFilterDtoMap != null) {
             Map<String, FilterDto> filters = stringFilterDtoMap.getFilters();
-            FilterDto enrichedFilterDto = getFilterDtoWithValues(anotherServiceSearchField, value, filters);
-            filters.put(anotherServiceSearchField, enrichedFilterDto);
-            return new FormDto(null, filters, remoteGetField);
+            FilterDto enrichedFilterDto = getFilterDtoWithValues(remoteMainAndGetField.getRight(), value, filters);
+            filters.put(remoteMainAndGetField.getRight(), enrichedFilterDto);
+            return new FormDto(null, filters, remoteMainAndGetField.getLeft());
         } else {
             Map<String, FilterDto> map = new HashMap<>();
-            map.put(anotherServiceSearchField, value);
-            return new FormDto(null, map, remoteGetField);
+            map.put(remoteMainAndGetField.getRight(), value);
+            return new FormDto(null, map, remoteMainAndGetField.getLeft());
         }
+    }
+
+    private Pair<String, String> getRemoteMainAndGetField(String anotherServiceSearchField, FieldMapper fieldMapper) {
+        String remoteGetField = fieldMapper.getPathRemoteFieldGetter();
+
+        String[] havingCondition = FieldParser.getSplitHavingCountString(anotherServiceSearchField);
+        if (havingCondition.length > 1) {
+            try {
+                int havingNumber = Integer.parseInt(havingCondition[1]);
+                remoteGetField = remoteGetField + ":" + havingNumber;
+                return Pair.of(remoteGetField, havingCondition[0]);
+            } catch (NumberFormatException e) {
+                throw new IncorrectFindObject("Incorrect having condition: " + havingCondition[1]);
+            }
+        }
+        return Pair.of(remoteGetField, anotherServiceSearchField);
     }
 
     private FilterDto getFilterDtoWithValues(String anotherServiceSearchField, FilterDto value, Map<String, FilterDto> filters) {
