@@ -12,15 +12,17 @@ import org.go.together.logic.repository.CustomRepository;
 import org.go.together.logic.repository.builder.SqlBuilder;
 import org.go.together.logic.repository.builder.WhereBuilder;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import static org.go.together.logic.find.utils.FieldParser.getSingleGroupFields;
 import static org.go.together.logic.find.utils.FieldParser.getSplitHavingCountString;
 
 public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepository {
+    private static final String LAT_LNG = "latitude,longitude";
     private final String serviceName;
     private final CustomRepository<E> repository;
     private final StringBuilder join;
@@ -92,15 +94,13 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
         WhereBuilder<E> whereBuilder = repository.createWhere();
         filters.forEach((key, value) -> {
             FindSqlOperator filterType = value.getFilterType();
-            BiConsumer<Pair<String, Object>, WhereBuilder> searchObjectFromDtos =
-                    filterType.getSearchObjectFromDtos();
             String[] splitByDotString = FieldParser.getPathFields(key);
             String searchField = splitByDotString[splitByDotString.length - 1];
             String[] groupFields = getSingleGroupFields(searchField);
             String suffix = key.replace(searchField, "");
             if (groupFields.length > 1) {
                 WhereBuilder<E> groupWhere = repository.createGroup();
-                addGroups(suffix, searchField, value, searchObjectFromDtos, groupFields, groupWhere);
+                addGroups(suffix, searchField, value.getValues(), filterType, groupFields, groupWhere);
                 whereBuilder.group(groupWhere).and();
             } else if (groupFields.length == 1) {
                 value.getValues().forEach(map -> {
@@ -109,7 +109,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
                     if (StringUtils.isNotBlank(suffix)) {
                         field = suffix + field;
                     }
-                    addCondition(map, searchObjectFromDtos, groupWhere, field);
+                    addCondition(map, filterType, groupWhere, field);
                     if (!join.toString().contains(groupWhere.getJoinQuery())) {
                         join.append(groupWhere.getJoinQuery());
                     }
@@ -125,35 +125,62 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
         return whereBuilder;
     }
 
-    private void addGroups(String suffix, String key, FilterDto value,
-                           BiConsumer<Pair<String, Object>, WhereBuilder> searchObjectFromDtos,
+    private void addGroups(String suffix,
+                           String key,
+                           Collection<Map<String, Object>> values,
+                           FindSqlOperator filterType,
                            String[] groupFields,
                            WhereBuilder<E> groupWhere) {
-        value.getValues()
-                .forEach(map -> {
-                    WhereBuilder<E> innerGroup = repository.createGroup();
-                    Stream.of(groupFields)
-                            .forEach(field -> {
-                                WhereBuilder<E> whereAdd = value.getValues().size() > 1 ? innerGroup : groupWhere;
-                                String currentGroupField = field;
-                                if (StringUtils.isNotBlank(suffix)) {
-                                    currentGroupField = suffix + field;
-                                }
-                                addCondition(map, searchObjectFromDtos, whereAdd, currentGroupField);
-                                addDelimiter(key, whereAdd, field);
-                            });
-                    if (value.getValues().size() > 1) {
-                        if (!join.toString().contains(innerGroup.getJoinQuery())) {
-                            join.append(innerGroup.getJoinQuery());
-                        }
-                        groupWhere.group(innerGroup).or();
-                    } else {
-                        if (!join.toString().contains(groupWhere.getJoinQuery())) {
-                            join.append(groupWhere.getJoinQuery());
-                        }
-                    }
-                });
+        List<String> finalFields = getFields(groupFields, filterType);
+        Collection<Map<String, Object>> finalValues = getValues(values, filterType);
+        values.forEach(map -> {
+            WhereBuilder<E> innerGroup = repository.createGroup();
+            finalFields.forEach(field -> {
+                WhereBuilder<E> whereAdd = finalValues.size() > 1 ? innerGroup : groupWhere;
+                String currentGroupField = field;
+                if (StringUtils.isNotBlank(suffix)) {
+                    currentGroupField = suffix + field;
+                }
+                addCondition(map, filterType, whereAdd, currentGroupField);
+                addDelimiter(key, whereAdd, field);
+            });
+            if (finalValues.size() > 1) {
+                if (!join.toString().contains(innerGroup.getJoinQuery())) {
+                    join.append(innerGroup.getJoinQuery());
+                }
+                groupWhere.group(innerGroup).or();
+            } else {
+                if (!join.toString().contains(groupWhere.getJoinQuery())) {
+                    join.append(groupWhere.getJoinQuery());
+                }
+            }
+        });
         groupWhere.cutLastOr();
+    }
+
+    private Collection<Map<String, Object>> getValues(Collection<Map<String, Object>> values,
+                                                      FindSqlOperator filterType) {
+        if (filterType == FindSqlOperator.NEAR_LOCATION) {
+            return values.stream()
+                    .peek(map -> {
+                        Double latitude = (Double) map.remove("latitude");
+                        Double longitude = (Double) map.remove("longitude");
+                        map.put(LAT_LNG, latitude.toString() + "," + longitude.toString());
+                    }).collect(Collectors.toSet());
+        }
+        return values;
+    }
+
+    private List<String> getFields(String[] groupFields, FindSqlOperator filterType) {
+        List<String> fields = Arrays.asList(groupFields);
+        if (filterType == FindSqlOperator.NEAR_LOCATION) {
+            fields = fields.stream()
+                    .filter(groupField -> !groupField.startsWith("longitude"))
+                    .filter(groupField -> !groupField.startsWith("latitude"))
+                    .collect(Collectors.toList());
+            fields.add(LAT_LNG);
+        }
+        return fields;
     }
 
     private void addDelimiter(String key, WhereBuilder<E> groupWhere, String field) {
@@ -168,7 +195,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
     }
 
     private void addCondition(Map<String, Object> value,
-                              BiConsumer<Pair<String, Object>, WhereBuilder> searchObjectFromDtos,
+                              FindSqlOperator filterType,
                               WhereBuilder<E> groupWhere, String field) {
         Object searchObject = value.get(field);
         if (searchObject == null) {
@@ -176,6 +203,6 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
             searchObject = value.get(searchField[searchField.length - 1]);
         }
         Pair<String, Object> searchPair = Pair.of(field, searchObject);
-        searchObjectFromDtos.accept(searchPair, groupWhere);
+        filterType.getSearchObjectFromDtos().accept(searchPair, groupWhere);
     }
 }

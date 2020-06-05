@@ -76,6 +76,9 @@ export const FilterOperator = {
     END_DATE: {
         operator: 'END_DATE'
     },
+    NEAR_LOCATION: {
+        operator: 'NEAR_LOCATION'
+    }
 }
 
 export const getFilterDto = (filterType, values) => {

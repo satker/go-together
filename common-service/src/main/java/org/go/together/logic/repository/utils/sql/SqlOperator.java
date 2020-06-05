@@ -14,7 +14,21 @@ public enum SqlOperator {
     GREATER((field, val) -> field + " > " + val),
     GREATER_OR_EQUAL((field, val) -> field + " >= " + val),
     EMPTY_COLLECTION((field, val) -> field + " is empty "),
-    NOT_EMPTY_COLLECTION((field, val) -> field + " is not empty ");
+    NOT_EMPTY_COLLECTION((field, val) -> field + " is not empty "),
+    NEAR_LOCATION((field, val) -> {
+        val = val.replaceAll("'", "");
+        String[] entityLinkLatLngField = field.split("\\.");
+        String[] latitudeLongitudeValue = val.split(",");
+        String[] latitudeLongitudeField = entityLinkLatLngField[1].split(",");
+        String latitudeField = entityLinkLatLngField[0] + "." + latitudeLongitudeField[0];
+        String latitudeValue = latitudeLongitudeValue[0];
+        String longitudeField = entityLinkLatLngField[0] + "." + latitudeLongitudeField[1];
+        String longitudeValue = latitudeLongitudeValue[1];
+        return " SQRT(POW(69.1 * (" + latitudeField + " - " + latitudeValue +
+                "), 2) + " +
+                "POW(69.1 * (" + longitudeValue + " - " + longitudeField +
+                ") * COS(latitude / 57.3), 2)) < 25 ";
+    });
 
     private final BiFunction<String, String, String> biFunction;
 

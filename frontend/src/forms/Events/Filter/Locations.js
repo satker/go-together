@@ -28,7 +28,7 @@ const Locations = ({updateFilterObject, filterObject}) => {
                     }
                     return value;
                 })
-            updateFilterObject(FilterOperator.EQUAL, newValue, LocationField, true);
+            updateFilterObject(FilterOperator.NEAR_LOCATION, newValue, LocationField, true);
         }
         let lastKey = null;
         const updatedRoutes = {...routes}
@@ -58,7 +58,7 @@ const Locations = ({updateFilterObject, filterObject}) => {
                 filteredLocations = [newElement]
             }
         }
-        updateFilterObject(FilterOperator.EQUAL, filteredLocations, LocationField, true);
+        updateFilterObject(FilterOperator.NEAR_LOCATION, filteredLocations, LocationField, true);
     }
 
     const onAddLocation = () => {

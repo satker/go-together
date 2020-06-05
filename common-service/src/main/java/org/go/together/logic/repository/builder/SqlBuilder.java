@@ -56,7 +56,7 @@ public class SqlBuilder<E extends IdentifiedEntity> {
             query.append(from);
             query.append(joinQuery);
         } else {
-            if (StringUtils.isNotBlank(selectRow)) {
+            if (!selectRow.equals(getEntityLink(clazz))) {
                 query.append("select ")
                         .append(selectRow);
             }
