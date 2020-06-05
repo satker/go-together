@@ -14,11 +14,6 @@ import {AUTOSUGGESTION_OPTIONS_EVENTS, AUTOSUGGESTION_OPTIONS_LOCATIONS} from ".
 const StyledAutocomplete = withStyles({
     inputRoot: {
         backgroundColor: 'white'
-        //flexWrap: 'inherit',
-        //padding: '14px 6px'
-    },
-    input: {
-        //height: '28px'
     }
 })(Autocomplete);
 

@@ -4,20 +4,8 @@ body {
     font-family: sans-serif;
 }
 
-.container-search-events {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-top: 20px;
-}
-
 .form-group {
     margin-top: 5px;
-}
-
-.margin-left-custom {
-    margin-left: 20px;
 }
 
 .simple_user_img {

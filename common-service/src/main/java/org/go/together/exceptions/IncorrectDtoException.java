@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
+@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 public class IncorrectDtoException extends RuntimeException {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(IncorrectDtoException.class);
 

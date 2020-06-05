@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
-import org.go.together.dto.LocationDto;
 import org.go.together.dto.UserDto;
 import org.go.together.logic.Validator;
 import org.go.together.repository.InterestRepository;
@@ -33,9 +32,10 @@ public class UserValidator extends Validator<UserDto> {
     @Override
     public String validateForCreateCustom(UserDto dto) {
         StringBuilder errors = new StringBuilder();
-        LocationDto locationById = locationClient.getLocationById(dto.getLocation().getId());
-        if (locationById == null) {
-            errors.append("Cannot find location");
+
+        String validatedLocation = locationClient.validateLocation(dto.getLocation());
+        if (StringUtils.isNotBlank(validatedLocation)) {
+            errors.append(validatedLocation);
         }
 
         if (dto.getLanguages().isEmpty() || dto.getLanguages()

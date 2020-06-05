@@ -2,9 +2,8 @@ import React, {useEffect, useState} from 'react';
 import CardMedia from "@material-ui/core/CardMedia";
 import {navigate} from 'hookrouter';
 
-import {AutosuggestionLocations} from "forms/utils/components/Autosuggestion";
-import {LOCATION_SERVICE_URL} from 'forms/utils/constants'
 import {connect} from "App/Context";
+import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
 import {getSrcForImg} from "forms/utils/utils";
 import ImageSelector from "forms/utils/components/ImageSelector";
 import CustomReference from "forms/utils/components/CustomReference";
@@ -102,17 +101,18 @@ const FormRegister = ({
     }, [checkUserName, setCheckedUserName, setIsUserNameReadyForRegister]);
 
     const handleSubmit = () => {
-        let body = {};
-        body.login = login;
-        body.mail = mail;
-        body.firstName = firstName;
-        body.lastName = lastName;
-        body.location = location;
-        body.description = description;
-        body.userPhotos = [userPhoto];//
-        body.password = password;
-        body.languages = languages.map(lang => ({id: lang.value, name: lang.label}));
-        body.interests = interests.map(interest => ({id: interest.value, name: interest.label}));
+        let body = {
+            login,
+            mail,
+            firstName,
+            lastName,
+            location,
+            description,
+            userPhotos: [userPhoto],
+            password,
+            languages,
+            interests
+        };
         registerUser(body);
     };
 
@@ -182,13 +182,7 @@ const FormRegister = ({
             />
         </ItemContainer>
         <ItemContainer>
-            <AutosuggestionLocations
-                formId='register_'
-                setResult={(value) => setLocation(value)}
-                placeholder={'Search a location (CITY,COUNTRY)'}
-                url={LOCATION_SERVICE_URL + '/locations'}
-                urlParam={'name'}
-            />
+            <AutocompleteLocation onChangeLocation={setLocation}/>
         </ItemContainer>
         <ItemContainer>
             <LabeledInput
@@ -220,7 +214,9 @@ const FormRegister = ({
             </LoadableContent>
         </ItemContainer>
         <ItemContainer>
-            {userPhoto && <CardMedia img={getSrcForImg(userPhoto)}/>}
+            {userPhoto && <CardMedia style={{height: '255px', width: '350px'}}
+                                     component="img"
+                                     image={getSrcForImg(userPhoto)}/>}
             <ImageSelector photos={userPhoto}
                            setPhotos={photo => {
                                handlePhoto(photo, setCheckedPhoto, setIsPhotoReadyForRegister);

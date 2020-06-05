@@ -1,5 +1,4 @@
-import {get, set} from "lodash";
-import {PHOTO_OBJECT} from "./constants";
+import {get, keys, set} from "lodash";
 
 export const getSrcForImg = (photoObj) => {
     if (!photoObj) {
@@ -21,7 +20,14 @@ export const createFileReaderToParsePhoto = (photo) => new Promise((resolve) => 
 
 export const createPhotoObj = (isUrl, data) => {
 
-    const newPhotoObj = {...PHOTO_OBJECT};
+    const newPhotoObj = {
+        id: null,
+        photoUrl: null,
+        content: {
+            type: null,
+            photoContent: null
+        }
+    };
 
     if (isUrl) {
         newPhotoObj.photoUrl = data;
@@ -54,4 +60,51 @@ export const onChange = (state, setState) => (path, value) => {
     }
 };
 
-export const capitalizeFirstLetter = (str) => str.charAt(0).toLowerCase() + str.slice(1);
+export const FilterOperator = {
+    LIKE: {
+        operator: "LIKE"
+    },
+    EQUAL: {
+        operator: "EQUAL"
+    },
+    IN: {
+        operator: 'IN'
+    },
+    START_DATE: {
+        operator: 'START_DATE'
+    },
+    END_DATE: {
+        operator: 'END_DATE'
+    },
+    NEAR_LOCATION: {
+        operator: 'NEAR_LOCATION'
+    }
+}
+
+export const getFilterDto = (filterType, values) => {
+    return {
+        filterType: filterType.operator,
+        values: values
+    }
+}
+
+export const updateFormDto = (formDto, setFormDto) => (filterType, values, searchField, havingCount = false) => {
+    let resultFilterObject = {...formDto};
+    if (havingCount) {
+        const findValue = keys(resultFilterObject.filters)
+            .find(keyFilter => keyFilter.startsWith(searchField));
+        if (findValue) {
+            values = [...resultFilterObject.filters[findValue].values, ...values];
+            delete resultFilterObject.filters[findValue];
+        }
+        searchField = searchField + ':' + values.length;
+    }
+    if (values) {
+        resultFilterObject.filters[searchField] = getFilterDto(filterType, values);
+    } else if (resultFilterObject.filters.hasOwnProperty(searchField)) {
+        delete resultFilterObject.filters[searchField];
+    } else {
+        return;
+    }
+    setFormDto(resultFilterObject);
+}

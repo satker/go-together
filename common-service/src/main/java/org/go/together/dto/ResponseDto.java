@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.go.together.dto.filter.PageDto;
-import org.go.together.interfaces.Dto;
 
 import java.util.Collection;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseDto<D extends Dto> {
+public class ResponseDto<T> {
     private PageDto page;
-    private Collection<D> result;
+    private Collection<T> result;
 }

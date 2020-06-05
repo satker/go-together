@@ -1,10 +1,12 @@
 package org.go.together.service;
 
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
+import org.go.together.client.UserClient;
 import org.go.together.dto.*;
-import org.go.together.dto.filter.PageDto;
+import org.go.together.dto.filter.FieldMapper;
 import org.go.together.logic.CrudService;
 import org.go.together.mapper.EventMapper;
 import org.go.together.model.Event;
@@ -13,6 +15,7 @@ import org.go.together.validation.EventValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,18 +25,19 @@ public class EventService extends CrudService<EventDto, Event> {
     private final LocationClient locationClient;
     private final ContentClient contentClient;
     private final EventRepository eventRepository;
-    private final EventMapper eventMapper;
+    private final UserClient userClient;
 
     protected EventService(EventRepository eventRepository,
                            EventMapper eventMapper,
                            EventValidator eventValidator,
                            LocationClient locationClient,
-                           ContentClient contentClient) {
+                           ContentClient contentClient,
+                           UserClient userClient) {
         super(eventRepository, eventMapper, eventValidator);
         this.locationClient = locationClient;
         this.contentClient = contentClient;
         this.eventRepository = eventRepository;
-        this.eventMapper = eventMapper;
+        this.userClient = userClient;
     }
 
     @Override
@@ -80,16 +84,30 @@ public class EventService extends CrudService<EventDto, Event> {
                 .collect(Collectors.toSet());
     }
 
-    public ResponseDto<EventDto> find(PageDto page) {
-        Set<EventDto> eventsByPagination = eventRepository.findEventsByPagination(page).stream()
-                .map(eventMapper::entityToDto)
-                .collect(Collectors.toSet());
-        long countEvents = eventRepository.getCountEvents();
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(page.getPage());
-        pageDto.setSize(page.getSize());
-        pageDto.setTotalSize(countEvents);
-        pageDto.setSort(page.getSort());
-        return new ResponseDto<>(pageDto, eventsByPagination);
+    @Override
+    public String getServiceName() {
+        return "event";
+    }
+
+    @Override
+    public Map<String, FieldMapper> getMappingFields() {
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("name", FieldMapper.builder()
+                        .currentServiceField("name").build())
+                .put("author", FieldMapper.builder()
+                        .currentServiceField("authorId")
+                        .remoteServiceClient(userClient)
+                        .remoteServiceName("user")
+                        .remoteServiceFieldGetter("id").build())
+                .put("route", FieldMapper.builder()
+                        .currentServiceField("routes")
+                        .remoteServiceClient(locationClient)
+                        .remoteServiceName("eventLocation")
+                        .remoteServiceFieldGetter("id").build())
+                .put("startDate", FieldMapper.builder()
+                        .currentServiceField("startDate").build())
+                .put("endDate", FieldMapper.builder()
+                        .currentServiceField("endDate").build())
+                .build();
     }
 }

@@ -1,10 +1,12 @@
 package org.go.together.service;
 
+import com.google.common.collect.ImmutableMap;
 import org.go.together.client.ContentClient;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.Role;
 import org.go.together.dto.SimpleUserDto;
 import org.go.together.dto.UserDto;
+import org.go.together.dto.filter.FieldMapper;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.logic.CrudService;
 import org.go.together.mapper.SimpleUserMapper;
@@ -29,17 +31,23 @@ public class UserService extends CrudService<UserDto, SystemUser> {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ContentClient contentClient;
     private final SimpleUserMapper simpleUserMapper;
+    private final LanguageService languageService;
+    private final InterestService interestService;
 
     public UserService(UserRepository userRepository, UserMapper userMapper,
                        UserValidator userValidator, BCryptPasswordEncoder bCryptPasswordEncoder,
                        ContentClient contentClient,
-                       SimpleUserMapper simpleUserMapper) {
+                       SimpleUserMapper simpleUserMapper,
+                       LanguageService languageService,
+                       InterestService interestService) {
         super(userRepository, userMapper, userValidator);
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.contentClient = contentClient;
         this.simpleUserMapper = simpleUserMapper;
+        this.languageService = languageService;
+        this.interestService = interestService;
     }
 
     public UserDto findUserByLogin(String login) {
@@ -168,14 +176,20 @@ public class UserService extends CrudService<UserDto, SystemUser> {
         return simpleUserMapper.entitiesToDtos(allUsersByIds);
     }
 
-/*@Override
-    public ImmutableMap<String, FunctionToGetValue> getFields() {
-        return null;
-    }
-
     @Override
     public String getServiceName() {
         return "user";
-    }*/
+    }
 
+    @Override
+    public Map<String, FieldMapper> getMappingFields() {
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("languages", FieldMapper.builder()
+                        .innerService(languageService)
+                        .currentServiceField("languages").build())
+                .put("interests", FieldMapper.builder()
+                        .innerService(interestService)
+                        .currentServiceField("interests").build())
+                .build();
+    }
 }

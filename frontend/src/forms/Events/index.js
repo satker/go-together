@@ -1,21 +1,23 @@
 import React, {useEffect, useState} from "react";
-import {get, isEqual, set} from "lodash";
 
-import {FORM_DTO, SEARCH_OBJECT_DEFAULT} from 'forms/utils/constants'
+import {FORM_DTO} from 'forms/utils/constants'
 import GroupItems from "forms/utils/components/CardItems";
 import {connect} from "App/Context";
 import Container from "forms/utils/components/Container/ContainerRow";
 import LoadableContent from "forms/utils/components/LoadableContent";
 import {postLikes} from "forms/utils/components/Event/EventLikes/actions";
 import CustomPagination from "forms/utils/components/Pagination";
+import {updateFormDto} from "forms/utils/utils";
+import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
+import LeftContainer from "forms/utils/components/Container/LeftContainer";
+import RightContainer from "forms/utils/components/Container/RightContainer";
 
 import {postFindEvents} from "./actions";
 import Filter from "./Filter";
 
 const Events = ({pageSize, postFindEvents, findEvents, postLikes}) => {
-    const [searchObject, setSearchObject] = useState({...SEARCH_OBJECT_DEFAULT});
     const [page, setPage] = useState(1);
-    const [filterObject, setFilterObject] = useState({...FORM_DTO("apartment.id")});
+    const [filterObject, setFilterObject] = useState({...FORM_DTO("event")});
 
     useEffect(() => {
         filterObject.page.size = pageSize;
@@ -40,40 +42,29 @@ const Events = ({pageSize, postFindEvents, findEvents, postLikes}) => {
 
     const onDelete = () => null;
 
-    const onChangeSearchObject = (field, value) => {
-        const object = {...searchObject};
-        if (!isEqual(get(object, field), value)) {
-            set(object, field, value);
-            setSearchObject(object);
-        }
-    };
-
-    const onClearSearchObject = () => setSearchObject({...SEARCH_OBJECT_DEFAULT});
-
     const pageCount = findEvents.response.page ?
         findEvents.response.page.totalSize / findEvents.response.page.size : 0;
 
     return <Container>
-        <Container className='search-container'>
-            <Filter filterObject={filterObject}
-                    setFilterObject={setFilterObject}
-                    searchObject={searchObject}
-                    onChangeSearchObject={onChangeSearchObject}
-                    onClearSearchObject={onClearSearchObject}
-            />
-        </Container>
-        <Container className='events-container'>
-            <LoadableContent loadableData={findEvents}>
-                <GroupItems
-                    onDelete={onDelete}
-                    items={findEvents.response.result}
-                    isEvents
+        <ContainerColumn>
+            <LeftContainer style={{width: '20%'}}>
+                <Filter updateFilterObject={updateFormDto(filterObject, setFilterObject)}
+                        filterObject={filterObject}
                 />
-            </LoadableContent>
-        </Container>
-        {pageCount <= 1 || <CustomPagination pageCount={pageCount}
-                                             page={page}
-                                             setPage={onClickNextPage}/>}
+            </LeftContainer>
+            <RightContainer style={{width: '80%'}}>
+                <LoadableContent loadableData={findEvents}>
+                    <GroupItems
+                        onDelete={onDelete}
+                        items={findEvents.response.result}
+                        isEvents
+                    />
+                </LoadableContent>
+                {pageCount <= 1 || <CustomPagination pageCount={pageCount}
+                                                     page={page}
+                                                     setPage={onClickNextPage}/>}
+            </RightContainer>
+        </ContainerColumn>
     </Container>;
 };
 

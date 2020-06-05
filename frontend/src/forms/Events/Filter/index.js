@@ -1,175 +1,57 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import PropTypes from "prop-types";
-import Slider from "@material-ui/core/Slider";
-import {isEqual} from "lodash";
 
-import {AutosuggestionLocations} from "forms/utils/components/Autosuggestion";
 import CheckInOutDates from 'forms/utils/components/CheckInOutDates'
-import {FORM_DTO, LOCATION_SERVICE_URL, SEARCH_OBJECT_DEFAULT} from 'forms/utils/constants'
-import {connect} from "App/Context";
+import {FORM_DTO} from 'forms/utils/constants'
 import {SearchObject} from "forms/utils/types";
+import {FilterOperator} from "forms/utils/utils";
 import CustomButton from "forms/utils/components/CustomButton";
+import Container from "forms/utils/components/Container/ContainerRow";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import {connect} from "App/Context";
 
 import {setArrivalDate, setDepartureDate, setPage} from "../actions";
+import AuthorFilters from "./AuthorFilters";
+import Locations from "./Locations";
 
 const Filter = ({
-                    searchObject, onChangeSearchObject, filterObject,
-                    setFilterObject, onClearSearchObject,
-                    setPage, setArrivalDate, setDepartureDate
+                    filterObject, updateFilterObject
                 }) => {
-
-    useEffect(() => {
-        const checkDates = (searchObject.arrivalDate && !searchObject.departureDate) ||
-            (!searchObject.arrivalDate && searchObject.departureDate);
-        if (!isEqual(searchObject, SEARCH_OBJECT_DEFAULT) && !checkDates) {
-            const newFilterObject = {...filterObject};
-            if (searchObject.advancedSearch.parameters && searchObject.advancedSearch.parameters.length !== 0) {
-                newFilterObject.filters["apartment.parameterIds"] = {
-                    filterType: "IN",
-                    values: searchObject.advancedSearch.parameters
-                }
-            }
-            if (searchObject.advancedSearch.languages && searchObject.advancedSearch.languages.length !== 0) {
-                newFilterObject.filters["apartment.ownerLanguages"] = {
-                    filterType: "IN",
-                    values: searchObject.advancedSearch.languages
-                }
-            }
-
-            if (searchObject.advancedSearch.rooms !== 0) {
-                newFilterObject.filters["apartment.rooms"] = {
-                    filterType: "MORE_EQUAL",
-                    values: [{
-                        id: searchObject.advancedSearch.rooms,
-                        name: searchObject.advancedSearch.rooms
-                    }]
-                }
-            }
-
-            if (searchObject.advancedSearch.apartmentTypes && searchObject.advancedSearch.apartmentTypes.length !== 0) {
-                newFilterObject.filters["apartment.apartmentType"] = {
-                    filterType: "IN",
-                    values: searchObject.advancedSearch.apartmentTypes
-                }
-            }
-            if (searchObject.location) {
-                newFilterObject.filters["location-service.apartmentLocation.cityId"] = {
-                    filterType: "EQUAL",
-                    values: [searchObject.location]
-                }
-            }
-            if (searchObject.arrivalDate && searchObject.departureDate) {
-
-                newFilterObject.filters["room-service.room.roomOrderDates"] = {
-                    filterType: "NOT_IN_BETWEEN",
-                    values: [
-                        {
-                            id: searchObject.arrivalDate.format('YYYY-MM-DD, hh:mm:ss'),
-                            name: searchObject.arrivalDate.format('YYYY-MM-DD, hh:mm:ss')
-                        },
-                        {
-                            id: searchObject.departureDate.format('YYYY-MM-DD, hh:mm:ss'),
-                            name: searchObject.departureDate.format('YYYY-MM-DD, hh:mm:ss')
-                        }
-                    ]
-                }
-            }
-
-            if (!(searchObject.minCostNight <= 0 && (searchObject.maxCostNight <= 0 || searchObject.maxCostNight === 100))) {
-                newFilterObject.filters["room-service.room.costNight"] = {
-                    filterType: "BETWEEN",
-                    values: [
-                        {
-                            id: searchObject.minCostNight,
-                            name: searchObject.minCostNight
-                        },
-                        {
-                            id: searchObject.maxCostNight,
-                            name: searchObject.maxCostNight
-                        }
-                    ]
-                }
-            }
-            if (searchObject.adult !== 0) {
-                newFilterObject.filters["room-service.room.adults"] = {
-                    filterType: "MORE_EQUAL",
-                    values: [
-                        {
-                            id: searchObject.adult,
-                            name: searchObject.adult
-                        }
-                    ]
-                }
-            }
-            if (searchObject.children !== 0) {
-                newFilterObject.filters["room-service.room.children"] = {
-                    filterType: "MORE_EQUAL",
-                    values: [
-                        {
-                            id: searchObject.children,
-                            name: searchObject.children
-                        }
-                    ]
-                }
-            }
-
-            // TODO: think about recursion call
-            /*setState(['arrivalDate', 'departureDate'],
-                [searchObject.arrivalDate, searchObject.departureDate]);*/
-
-            newFilterObject.page.page = 0;
-            setPage(0);
-            setFilterObject(newFilterObject);
-        }
-    }, [filterObject, searchObject, setFilterObject, setPage]);
-
-    const onAfterChange = (event, newValue) => {
-        onChangeSearchObject('maxCostNight', newValue);
-    };
-
     const clearFilters = () => {
-        onClearSearchObject();
-        setFilterObject({...FORM_DTO("event.id")});
-        setArrivalDate(null);
-        setDepartureDate(null);
+        updateFilterObject({...FORM_DTO("event")});
         setPage(0);
     };
+    const onChangeDate = (searchField, filterOperation) => (date) => {
+        let values = null;
+        if (date) {
+            values = [{
+                [searchField]: date
+            }]
+        }
+        updateFilterObject(filterOperation, values, searchField);
+    }
 
-    return <div className='container-search-events'>
-        <div className='flex'>
-            <AutosuggestionLocations formId='search_form_'
-                                     setResult={(location) => onChangeSearchObject('location', location)}
-                                     placeholder={'Search a location (CITY,COUNTRY)'}
-                                     url={LOCATION_SERVICE_URL + '/locations'}
-                                     urlParam={'name'}/>
-        </div>
-        <div className='flex margin-left-custom'>
-            <CheckInOutDates startDate={searchObject.arrivalDate}
-                             endDate={searchObject.departureDate}
-                             setStartDate={(startDate) => onChangeSearchObject('arrivalDate', startDate)}
-                             setEndDate={(endDate) => onChangeSearchObject('departureDate', endDate)}/>
-        </div>
-        <div className='flex margin-left-custom' style={{width: '100px'}}>
-            <Slider onChange={onAfterChange}
-                    max={300}
-                    step={1}
-                    value={searchObject.maxCostNight}
-                    valueLabelDisplay="on"/>
-        </div>
-        <div className='flex margin-left-custom'>
+    const startDate = filterObject.filters['startDate'];
+    const endDate = filterObject.filters['endDate'];
+
+    return <Container>
+        <Locations updateFilterObject={updateFilterObject} filterObject={filterObject}/>
+        <ItemContainer>
+            <CheckInOutDates startDate={startDate && startDate.values[0]?.startDate}
+                             endDate={endDate && endDate.values[0]?.endDate}
+                             setStartDate={onChangeDate('startDate', FilterOperator.START_DATE)}
+                             setEndDate={onChangeDate('endDate', FilterOperator.END_DATE)}/>
+        </ItemContainer>
+        <AuthorFilters updateFilterObject={updateFilterObject}/>
+        <ItemContainer>
             <CustomButton onClick={clearFilters} color="primary" text='Clear'/>
-        </div>
-    </div>
+        </ItemContainer>
+    </Container>
 };
 
 Filter.propTypes = {
-    searchObject: SearchObject.isRequired,
-    onChangeSearchObject: PropTypes.func.isRequired,
-    onClearSearchObject: PropTypes.func.isRequired,
-    setFilterObject: PropTypes.func.isRequired,
-    setPage: PropTypes.func.isRequired,
-    setArrivalDate: PropTypes.func.isRequired,
-    setDepartureDate: PropTypes.func.isRequired
+    filterObject: SearchObject.isRequired,
+    updateFilterObject: PropTypes.func.isRequired,
 };
 
 export default connect(null,

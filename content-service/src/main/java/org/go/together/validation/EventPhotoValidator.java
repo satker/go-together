@@ -6,7 +6,7 @@ import org.go.together.dto.EventPhotoDto;
 import org.go.together.logic.Validator;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
+import java.util.Optional;
 
 @Component
 public class EventPhotoValidator extends Validator<EventPhotoDto> {
@@ -18,8 +18,8 @@ public class EventPhotoValidator extends Validator<EventPhotoDto> {
 
     @Override
     public void getMapsForCheck(EventPhotoDto dto) {
-        super.UUID_CORRECT_CHECK = ImmutableMap.<String, UUID>builder()
-                .put("event id", dto.getEventId())
+        super.OBJECT_NULL_CHECK = ImmutableMap.<String, Optional<Object>>builder()
+                .put("event id", Optional.ofNullable(dto.getEventId()))
                 .build();
     }
 

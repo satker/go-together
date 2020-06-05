@@ -3,6 +3,7 @@ package org.go.together.service;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.LocationDto;
 import org.go.together.dto.SimpleDto;
+import org.go.together.dto.filter.FieldMapper;
 import org.go.together.logic.CrudService;
 import org.go.together.mapper.LocationMapper;
 import org.go.together.model.Country;
@@ -12,6 +13,7 @@ import org.go.together.validation.LocationValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -50,6 +52,16 @@ public class LocationService extends CrudService<LocationDto, Location> {
                 .map(loc -> new SimpleDto(loc.getId().toString(), loc.getName() + ", " +
                         loc.getCountry().getName()))
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public String getServiceName() {
+        return "location";
+    }
+
+    @Override
+    public Map<String, FieldMapper> getMappingFields() {
+        return null;
     }
 
     /*@Override

@@ -1,7 +1,7 @@
 package org.go.together.client;
 
 import org.go.together.dto.*;
-import org.go.together.dto.filter.FormDto;
+import org.go.together.interfaces.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,12 +10,9 @@ import java.util.Set;
 import java.util.UUID;
 
 @FeignClient(name = "event-service")
-public interface EventClient {
+public interface EventClient extends FindClient {
     @GetMapping("/events/{eventId}")
     EventDto getEventById(@PathVariable("eventId") UUID eventId);
-
-    @PostMapping("/events/find")
-    ResponseDto<EventDto> find(@RequestBody FormDto formDto);
 
     @PutMapping("/events")
     IdDto createEvent(@RequestBody EventDto eventDto);

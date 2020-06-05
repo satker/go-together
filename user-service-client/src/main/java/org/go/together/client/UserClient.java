@@ -1,13 +1,14 @@
 package org.go.together.client;
 
 import org.go.together.dto.*;
+import org.go.together.interfaces.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @FeignClient(name = "user-service")
-public interface UserClient {
+public interface UserClient extends FindClient {
     @GetMapping("/users")
     UserDto findUserByLogin(@RequestParam("login") String login);
 

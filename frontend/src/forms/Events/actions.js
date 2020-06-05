@@ -1,22 +1,22 @@
-import {EVENT_SERVICE_URL, EVENTS_URL, USER_SERVICE_URL} from "forms/utils/constants";
+import {EVENT_SERVICE_URL, USER_SERVICE_URL} from "forms/utils/constants";
 import {POST} from "App/utils/api/constants";
 import {ARRIVAL_DATE, DEPARTURE_DATE, PAGE} from "App/Context/constants";
 
-import {EVENTS_APARTMENT_TYPES, EVENTS_FIND_EVENTS, EVENTS_LANGUAGES, EVENTS_PARAMETERS} from "./constants";
+import {EVENTS_FIND_EVENTS, EVENTS_INTERESTS, EVENTS_LANGUAGES} from "./constants";
 
 export const postFindEvents = (filterObject) => (dispatch) => {
     dispatch({
         type: EVENTS_FIND_EVENTS,
-        url: EVENTS_URL + '/find',
+        url: EVENT_SERVICE_URL + '/find',
         method: POST,
         data: filterObject
     });
 };
 
-export const getParameters = () => (dispatch) => {
+export const getInterests = () => (dispatch) => {
     dispatch({
-        type: EVENTS_PARAMETERS,
-        url: EVENT_SERVICE_URL + '/parameters'
+        type: EVENTS_INTERESTS,
+        url: USER_SERVICE_URL + '/interests'
     });
 };
 
@@ -24,13 +24,6 @@ export const getLanguages = () => (dispatch) => {
     dispatch({
         type: EVENTS_LANGUAGES,
         url: USER_SERVICE_URL + '/languages'
-    });
-};
-
-export const getApartmentTypes = () => (dispatch) => {
-    dispatch({
-        type: EVENTS_APARTMENT_TYPES,
-        url: EVENT_SERVICE_URL + '/types'
     });
 };
 

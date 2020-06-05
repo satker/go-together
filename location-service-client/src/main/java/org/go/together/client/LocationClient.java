@@ -4,6 +4,7 @@ import org.go.together.dto.EventLocationDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.LocationDto;
 import org.go.together.dto.SimpleDto;
+import org.go.together.interfaces.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @FeignClient(name = "location-service")
-public interface LocationClient {
+public interface LocationClient extends FindClient {
     @GetMapping("/events/{eventId}/routes")
     Set<EventLocationDto> getEventRoute(@PathVariable("eventId") UUID eventId);
 
@@ -25,7 +26,10 @@ public interface LocationClient {
     boolean deleteRoutes(@RequestBody Set<UUID> eventLocationDtos);
 
     @PostMapping("/routes/validate")
-    String validate(@RequestBody EventLocationDto eventLocationDto);
+    String validateRoutes(@RequestBody EventLocationDto eventLocationDto);
+
+    @PostMapping("/locations/validate")
+    String validateLocation(@RequestBody LocationDto locationDto);
 
     @GetMapping("/locations/{locationId}")
     LocationDto getLocationById(@PathVariable("locationId") UUID locationId);
@@ -33,4 +37,6 @@ public interface LocationClient {
     @GetMapping("/locations")
     Set<SimpleDto> autocompleteLocations(@RequestParam("name") String name);
 
+    @PostMapping("/locations")
+    IdDto saveLocation(@RequestBody LocationDto locationDto);
 }

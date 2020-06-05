@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import * as PropTypes from "prop-types";
+import PropTypes from "prop-types";
 import MenuItem from "@material-ui/core/MenuItem";
 import {connect} from "App/Context";
 import {set as setCookie} from "js-cookie";

@@ -9,8 +9,11 @@ public class ObjectStringParser {
         if (val instanceof String) {
             return "'" + val + "'";
         }
-        if (val instanceof Number) {
+        if (val instanceof Double) {
             return Double.toString((Double) val);
+        }
+        if (val instanceof Integer) {
+            return Integer.toString((Integer) val);
         }
         if (val instanceof UUID) {
             return "'" + val.toString() + "'";
@@ -21,7 +24,7 @@ public class ObjectStringParser {
         if (val instanceof Collection) {
             return ((Collection<Object>) val).stream()
                     .map(ObjectStringParser::parseToString)
-                    .collect(Collectors.joining(",", "(", ")")).toString();
+                    .collect(Collectors.joining(",", "(", ")"));
         }
         return "'" + val.toString() + "'";
     }

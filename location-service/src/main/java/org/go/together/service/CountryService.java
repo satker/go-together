@@ -1,6 +1,7 @@
 package org.go.together.service;
 
 import org.go.together.dto.CountryDto;
+import org.go.together.dto.filter.FieldMapper;
 import org.go.together.logic.CrudService;
 import org.go.together.mapper.CountryMapper;
 import org.go.together.model.Country;
@@ -9,6 +10,7 @@ import org.go.together.validation.CountryValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -40,6 +42,16 @@ public class CountryService extends CrudService<CountryDto, Country> {
 
     public Collection<Country> findCountriesLike(String countryName) {
         return countryRepository.findCountriesLike(countryName);
+    }
+
+    @Override
+    public String getServiceName() {
+        return "country";
+    }
+
+    @Override
+    public Map<String, FieldMapper> getMappingFields() {
+        return null;
     }
 
     /*private void getCountries() {

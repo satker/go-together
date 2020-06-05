@@ -2,6 +2,7 @@ package org.go.together.service;
 
 import org.go.together.dto.MessageDto;
 import org.go.together.dto.MessageType;
+import org.go.together.dto.filter.FieldMapper;
 import org.go.together.logic.CrudService;
 import org.go.together.mapper.MessageMapper;
 import org.go.together.model.Message;
@@ -66,5 +67,15 @@ public class MessageService extends CrudService<MessageDto, Message> {
 
     protected void updateEntityForCreate(Message entity, MessageDto dto) {
         entity.setDate(new Date());
+    }
+
+    @Override
+    public String getServiceName() {
+        return "message";
+    }
+
+    @Override
+    public Map<String, FieldMapper> getMappingFields() {
+        return null;
     }
 }

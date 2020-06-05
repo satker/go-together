@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import {connect} from "App/Context";
 import {Event} from "forms/utils/types";
-import FormReference from "forms/utils/components/FormReference";
+import Reference from "forms/utils/components/Reference";
 import ObjectGeoLocation from "forms/utils/components/ObjectGeoLocation";
 import Container from "forms/utils/components/Container/ContainerRow";
 
@@ -18,7 +18,7 @@ const ViewForm = ({event, getUsers, userId}) => {
 
     return <Container>
         {userId === event.author.id &&
-        <FormReference formRef={'/events/' + event.id + '/edit'} description='Edit event'/>}
+        <Reference formRef={'/events/' + event.id + '/edit'} description='Edit event'/>}
 
         <MainInfo/>
         <ObjectGeoLocation

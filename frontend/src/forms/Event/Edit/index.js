@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import * as PropTypes from "prop-types";
+import PropTypes from "prop-types";
 
 import {connect} from "App/Context";
 import LoadableContent from "forms/utils/components/LoadableContent";

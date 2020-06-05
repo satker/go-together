@@ -3,6 +3,7 @@ package org.go.together.client;
 import org.go.together.dto.EventPhotoDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.PhotoDto;
+import org.go.together.interfaces.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @FeignClient(name = "content-service")
-public interface ContentClient {
+public interface ContentClient extends FindClient {
     @PutMapping("/photos")
     Collection<IdDto> savePhotos(@RequestBody Set<PhotoDto> userPhotos);
 
