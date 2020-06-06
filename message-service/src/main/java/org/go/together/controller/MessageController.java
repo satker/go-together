@@ -3,15 +3,13 @@ package org.go.together.controller;
 import org.go.together.client.MessageClient;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.MessageDto;
-import org.go.together.dto.NotificationDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FormDto;
 import org.go.together.logic.find.FindController;
 import org.go.together.service.MessageService;
-import org.go.together.service.NotificationService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -23,19 +21,9 @@ import static org.go.together.dto.MessageType.TO_EVENT;
 public class MessageController extends FindController implements MessageClient {
     private final MessageService messageService;
 
-    public MessageController(MessageService messageService, NotificationService notificationService) {
-        super(Arrays.asList(messageService, notificationService));
+    public MessageController(MessageService messageService) {
+        super(Collections.singletonList(messageService));
         this.messageService = messageService;
-    }
-
-    @Override
-    public Set<NotificationDto> getNotifications(UUID userId) {
-        return null;
-    }
-
-    @Override
-    public Set<NotificationDto> readNotifications(UUID userId) {
-        return null;
     }
 
     @Override
