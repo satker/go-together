@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from "prop-types";
 import {Card, CardActionArea, CardActions, CardContent, CardMedia, Typography} from "@material-ui/core";
-
-import Gallery from "forms/utils/components/Galery";
 import {getSrcForImg} from "forms/utils/utils";
 import {Event} from "forms/utils/types";
 import DeleteIcon from "forms/utils/components/Icon/Delete";
@@ -36,11 +34,7 @@ const ItemEvent = ({event, onDelete, userId, eventIds}) => {
         <CardActions>
             {userId && userId !== event.author.id &&
             <EventLikes eventId={event.id} eventIds={eventIds}/>}
-            {event.eventPhotoDto.photos.length !== 0 &&
-            <Gallery
-                images={event.eventPhotoDto.photos.map(photo => getSrcForImg(photo))}
-                showThumbnails={true}
-            />}
+
         </CardActions>
     </Card>;
 };

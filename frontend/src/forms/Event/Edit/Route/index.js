@@ -33,7 +33,14 @@ const Route = ({eventRoute, updateEvent}) => {
                 }
                 return route;
             });
-        updateEvent('route', newArray);
+        updateEvent('route', newArray.map(route => {
+            if (route.routeNumber === 1) {
+                route.isStart = true;
+            } else if (route.routeNumber === newArray.length + 1) {
+                route.isEnd = true;
+            }
+            return route;
+        }));
         setRouteNumber(routeNumber - 1);
     };
 
@@ -43,9 +50,19 @@ const Route = ({eventRoute, updateEvent}) => {
         newElement.location = {...DEFAULT_LOCATION};
         newElement.location.country = {...DEFAULT_COUNTRY};
         newElement.routeNumber = nextRouteNumber;
+        if (nextRouteNumber === 1) {
+            newElement.isStart = true;
+        } else {
+            newElement.isEnd = true;
+        }
         onChange(newElement, result => newElement = result)(paths, values);
         setRouteNumber(nextRouteNumber);
-        updateEvent('route', [...eventRoute, newElement])
+        updateEvent('route', [...eventRoute.map(route => {
+            if (route.isEnd) {
+                route.isEnd = false;
+            }
+            return route;
+        }), newElement])
     };
 
     return <Container>

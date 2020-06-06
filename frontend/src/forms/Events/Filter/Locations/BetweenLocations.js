@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import PropTypes from "prop-types";
-import {keys, values} from "lodash";
 
 import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
 import CustomButton from "forms/utils/components/CustomButton";
@@ -13,8 +12,8 @@ import Container from "forms/utils/components/Container/ContainerRow";
 const LocationField = 'route?[routeNumber&latitude,longitude]';
 const latLng = "latitude,longitude";
 
-const Locations = ({updateFilterObject, filterObject}) => {
-    const [routes, setRoutes] = useState({});
+const BetweenLocations = ({updateFilterObject, filterObject}) => {
+    const [routes, setRoutes] = useState([]);
 
     let filteredLocations = filterObject.filters[LocationField]?.values;
 
@@ -33,7 +32,7 @@ const Locations = ({updateFilterObject, filterObject}) => {
         }
         let lastKey = null;
         const updatedRoutes = {...routes}
-        keys(routes)
+        routes
             .filter(routeNumber => parseInt(routeNumber) > parseInt(index))
             .forEach(routeNumber => {
                 updatedRoutes[routeNumber - 1] = routes[routeNumber];
@@ -45,32 +44,17 @@ const Locations = ({updateFilterObject, filterObject}) => {
         setRoutes(updatedRoutes);
     }
 
-    const onChangeLocation = (index) => (location) => {
-        const newElement = {
-            routeNumber: index,
-            [latLng]: location.lat + ',' + location.lng
-        };
-        if (location) {
-            if (filteredLocations) {
-                filteredLocations.push(newElement)
-            } else {
-                filteredLocations = [newElement]
-            }
-        }
-        updateFilterObject(FilterOperator.NEAR_LOCATION, filteredLocations, LocationField, true);
-    }
-
     const onAddLocation = () => {
-        const index = keys(routes).length + 1;
-        const newLocation = <ItemContainer>
-            <AutocompleteLocation key={index} setCenter={onChangeLocation(index)}/>
-            <DeleteIcon onDelete={onDeleteLocation(index)}/>
-        </ItemContainer>
-        setRoutes({...routes, [index]: newLocation});
+        const index = routes.length + 1;
+        setRoutes([...routes, index]);
     }
+    console.log('routes', routes)
 
     return <Container>
-        {values(routes)}
+        {routes.map(index => <ItemContainer>
+            <AutocompleteLocation key={index} setCenter={updateFilterObject}/>
+            <DeleteIcon onDelete={onDeleteLocation(index)}/>
+        </ItemContainer>)}
         <ItemContainer>
             <CustomButton onClick={onAddLocation}
                           text='Add location'/>
@@ -78,8 +62,8 @@ const Locations = ({updateFilterObject, filterObject}) => {
     </Container>
 }
 
-Locations.propTypes = {
+BetweenLocations.propTypes = {
     updateFilterObject: PropTypes.func.isRequired,
     filterObject: SearchObject.isRequired
 }
-export default Locations;
+export default BetweenLocations;

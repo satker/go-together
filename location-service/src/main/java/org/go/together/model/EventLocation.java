@@ -18,6 +18,8 @@ public class EventLocation implements IdentifiedEntity {
     private int routeNumber;
     private double longitude;
     private UUID eventId;
+    private Boolean isStart;
+    private Boolean isEnd;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "event_location_id")
