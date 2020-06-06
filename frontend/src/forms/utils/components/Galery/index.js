@@ -13,6 +13,7 @@ const Gallery = ({
     const [currentImage, setCurrentImage] = useState(0);
 
     let imagesToShow = [];
+
     images.map(photo => photo)
         .forEach(photo => imagesToShow.push({src: photo}));
 

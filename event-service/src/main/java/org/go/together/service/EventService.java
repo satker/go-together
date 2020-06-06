@@ -14,10 +14,7 @@ import org.go.together.repository.EventRepository;
 import org.go.together.validation.EventValidator;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +41,7 @@ public class EventService extends CrudService<EventDto, Event> {
     protected void updateEntityForCreate(Event entity, EventDto dto) {
         UUID uuid = UUID.randomUUID();
         entity.setId(uuid);
+        entity.setUsers(Collections.emptySet());
         updateEntity(entity, dto, uuid);
     }
 

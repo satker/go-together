@@ -5,13 +5,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
+import org.go.together.dto.CashCategory;
 import org.go.together.dto.EventDto;
+import org.go.together.dto.EventPaidThingDto;
 import org.go.together.dto.UserDto;
 import org.go.together.dto.validation.DateIntervalDto;
 import org.go.together.logic.Validator;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class EventValidator extends Validator<EventDto> {
@@ -42,6 +48,10 @@ public class EventValidator extends Validator<EventDto> {
         super.DATES_CORRECT_CHECK = ImmutableMap.<String, DateIntervalDto>builder()
                 .put("event dates", new DateIntervalDto(dto.getStartDate(), dto.getEndDate()))
                 .build();
+        super.COLLECTION_CORRECT_CHECK = ImmutableMap.<String, Collection<?>>builder()
+                .put("photos", dto.getEventPhotoDto().getPhotos())
+                .put("routes", dto.getRoute())
+                .build();
     }
 
     @Override
@@ -59,10 +69,18 @@ public class EventValidator extends Validator<EventDto> {
         }
 
 
-        dto.getPaidThings().stream()
-                .map(eventPaidThingValidator::validate)
-                .filter(StringUtils::isNotBlank)
-                .forEach(errors::append);
+        List<CashCategory> cashCategories = dto.getPaidThings().stream()
+                .map(EventPaidThingDto::getCashCategory)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        if (cashCategories.size() != dto.getPaidThings().size()) {
+            errors.append("Collection paid things is incorrect.");
+        } else {
+            dto.getPaidThings().stream()
+                    .map(eventPaidThingValidator::validate)
+                    .filter(StringUtils::isNotBlank)
+                    .forEach(errors::append);
+        }
 
         dto.getEventPhotoDto().getPhotos().stream()
                 .map(contentClient::validate)
