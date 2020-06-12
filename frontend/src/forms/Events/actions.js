@@ -1,8 +1,9 @@
 import {EVENT_SERVICE_URL, USER_SERVICE_URL} from "forms/utils/constants";
 import {POST} from "App/utils/api/constants";
-import {ARRIVAL_DATE, DEPARTURE_DATE, PAGE} from "App/Context/constants";
+import {PAGE} from "App/Context/constants";
 
-import {EVENTS_FIND_EVENTS, EVENTS_INTERESTS, EVENTS_LANGUAGES} from "./constants";
+import {EVENTS_FIND_EVENTS, EVENTS_INTERESTS, EVENTS_LANGUAGES, FILTER} from "./constants";
+import {updateFormDto} from "../utils/utils";
 
 export const postFindEvents = (filterObject) => (dispatch) => {
     dispatch({
@@ -34,16 +35,13 @@ export const setPage = (page) => (dispatch) => {
     });
 };
 
-export const setArrivalDate = (arrivalDate) => (dispatch) => {
-    dispatch({
-        type: ARRIVAL_DATE,
-        value: arrivalDate
-    });
-};
+export const setFilter = (filterOperation, values, searchField, havingCount = false) => (dispatch, state) => {
+    const currentFilter = state.components.forms.events.filter.response;
 
-export const setDepartureDate = (departureDate) => (dispatch) => {
+    const updatedFilterObject = updateFormDto(currentFilter, filterOperation, values, searchField, havingCount);
+    console.log(updatedFilterObject)
     dispatch({
-        type: DEPARTURE_DATE,
-        value: departureDate
+        type: FILTER,
+        value: updatedFilterObject
     });
 };

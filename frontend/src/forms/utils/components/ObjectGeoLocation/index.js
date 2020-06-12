@@ -10,7 +10,7 @@ import Container from "forms/utils/components/Container/ContainerRow";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 
 import Marker from "./Marker";
-import {getAddress, getCity, getCountry, getState, GOOGLE_API_KEY, request} from "./utils";
+import {getAddress, getCity, getCountry, getState, GOOGLE_API_KEY, requestLatLng} from "./utils";
 import RoutesList from "./RoutesList";
 
 const getMapOptions = {
@@ -64,7 +64,7 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd, h
     };
 
     const endDrag = () => {
-        request(currentLat, currentLng, (result) => {
+        requestLatLng(currentLat, currentLng, (result) => {
             const addressObject = result.results[0];
             onChange(currentKey, ['location.name', 'location.country.name', 'location.state', 'address'],
                 [getCity(addressObject), getCountry(addressObject), getState(addressObject), getAddress(addressObject)]);
@@ -129,7 +129,7 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd, h
     };
 
     const onAddMarker = ({lat, lng}) => {
-        request(lat, lng, (result) => {
+        requestLatLng(lat, lng, (result) => {
             const addressObject = result.results[0];
             onAdd(['latitude', 'longitude', 'location.name',
                     'location.country.name', 'location.state', 'address'],

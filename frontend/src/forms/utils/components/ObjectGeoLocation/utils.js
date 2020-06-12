@@ -14,8 +14,17 @@ const resolveJson = (response) => {
     return response.json();
 };
 
-export const request = (lat, lng, resultFunction) => {
+export const requestLatLng = (lat, lng, resultFunction) => {
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_API_KEY}&language=en`;
+
+    fetch(url, {method: GET})
+        .then(resolveStatus)
+        .then(resolveJson)
+        .then(resultFunction);
+};
+
+export const requestPlaceId = (placeId, resultFunction) => {
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?place_id=${placeId}&key=${GOOGLE_API_KEY}&language=en`;
 
     fetch(url, {method: GET})
         .then(resolveStatus)

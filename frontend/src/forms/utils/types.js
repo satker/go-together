@@ -99,6 +99,8 @@ export const Route = PropTypes.exact({
     latitude: PropTypes.number,
     longitude: PropTypes.number,
     location: Location,
+    isStart: PropTypes.bool,
+    isEnd: PropTypes.bool,
     eventId: PropTypes.string
 });
 

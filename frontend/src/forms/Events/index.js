@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from "react";
 
-import {FORM_DTO} from 'forms/utils/constants'
 import GroupItems from "forms/utils/components/CardItems";
 import {connect} from "App/Context";
 import Container from "forms/utils/components/Container/ContainerRow";
 import LoadableContent from "forms/utils/components/LoadableContent";
 import {postLikes} from "forms/utils/components/Event/EventLikes/actions";
 import CustomPagination from "forms/utils/components/Pagination";
-import {updateFormDto} from "forms/utils/utils";
 import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import LeftContainer from "forms/utils/components/Container/LeftContainer";
 import RightContainer from "forms/utils/components/Container/RightContainer";
@@ -15,13 +13,12 @@ import RightContainer from "forms/utils/components/Container/RightContainer";
 import {postFindEvents} from "./actions";
 import Filter from "./Filter";
 
-const Events = ({pageSize, postFindEvents, findEvents, postLikes}) => {
+const Events = ({pageSize, postFindEvents, findEvents, postLikes, filter}) => {
     const [page, setPage] = useState(1);
-    const [filterObject, setFilterObject] = useState({...FORM_DTO("event")});
 
     useEffect(() => {
-        filterObject.page.size = pageSize;
-    }, [filterObject, pageSize]);
+        filter.page.size = pageSize;
+    }, [filter, pageSize]);
 
     useEffect(() => {
         if (findEvents.response.result && findEvents.response.result?.length) {
@@ -31,13 +28,13 @@ const Events = ({pageSize, postFindEvents, findEvents, postLikes}) => {
     }, [findEvents, postLikes]);
 
     useEffect(() => {
-        postFindEvents(filterObject);
-    }, [postFindEvents, filterObject]);
+        postFindEvents(filter);
+    }, [postFindEvents, filter]);
 
     const onClickNextPage = page => {
-        filterObject.page.page = page - 1;
+        filter.page.page = page - 1;
         setPage(page);
-        postFindEvents(filterObject);
+        postFindEvents(filter);
     };
 
     const onDelete = () => null;
@@ -48,9 +45,7 @@ const Events = ({pageSize, postFindEvents, findEvents, postLikes}) => {
     return <Container>
         <ContainerColumn>
             <LeftContainer style={{width: '20%'}}>
-                <Filter updateFilterObject={updateFormDto(filterObject, setFilterObject)}
-                        filterObject={filterObject}
-                />
+                <Filter/>
             </LeftContainer>
             <RightContainer style={{width: '80%'}}>
                 <LoadableContent loadableData={findEvents}>
@@ -71,6 +66,7 @@ const Events = ({pageSize, postFindEvents, findEvents, postLikes}) => {
 const mapStateToProps = () => state => ({
     pageSize: state.pageSize.value,
     findEvents: state.components.forms.events.findEvents,
+    filter: state.components.forms.events.filter.response
 });
 
 export default connect(mapStateToProps,

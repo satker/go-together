@@ -3,57 +3,67 @@ import PropTypes from "prop-types";
 
 import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
 import CustomButton from "forms/utils/components/CustomButton";
-import {FilterOperator} from "forms/utils/utils";
-import {SearchObject} from "forms/utils/types";
 import DeleteIcon from "forms/utils/components/Icon/Delete";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import Container from "forms/utils/components/Container/ContainerRow";
 
-const LocationField = 'route?[routeNumber&latitude,longitude]';
-const latLng = "latitude,longitude";
-
-const BetweenLocations = ({updateFilterObject, filterObject}) => {
+const BetweenLocations = ({onChangeLocation}) => {
     const [routes, setRoutes] = useState([]);
 
-    let filteredLocations = filterObject.filters[LocationField]?.values;
-
     const onDeleteLocation = (index) => () => {
-        console.log('onDeleteLocation', routes, index)
-        if (filteredLocations) {
-            const newValue = filteredLocations
-                .filter(value => value.routeNumber !== index)
-                .map(value => {
-                    if (value.routeNumber > index) {
-                        return {...value, routeNumber: value.routeNumber - 1}
-                    }
-                    return value;
-                })
-            updateFilterObject(FilterOperator.NEAR_LOCATION, newValue, LocationField, true);
-        }
-        let lastKey = null;
-        const updatedRoutes = {...routes}
-        routes
-            .filter(routeNumber => parseInt(routeNumber) > parseInt(index))
-            .forEach(routeNumber => {
-                updatedRoutes[routeNumber - 1] = routes[routeNumber];
-                lastKey = routeNumber;
+        const updatedRoutes = routes
+            .filter(route => parseInt(route.number) !== parseInt(index))
+            .map(route => {
+                if (parseInt(route.number) > parseInt(index)) {
+                    const updatedRoute = {...route};
+                    updatedRoute.number = route.number - 1;
+                    return updatedRoute;
+                }
+                return route;
             });
-        if (lastKey) {
-            delete updatedRoutes[lastKey];
-        }
         setRoutes(updatedRoutes);
+        onChangeLocation(updatedRoutes);
     }
+
+    const updateLocation = (index) => (chooseValue) => {
+        const updatedLocation = routes.map(route => {
+            if (route.number === index) {
+                const updatedLocation = {...route};
+                updatedLocation.value = chooseValue;
+                return updatedLocation;
+            }
+            return route;
+        });
+        setRoutes(updatedLocation);
+    };
+
+    const updateLocationWitLatLng = (index) => ({lat, lng}) => {
+        const updatedLocation = routes.map(route => {
+            if (route.number === index) {
+                return {...route, lat, lng};
+            }
+            return route;
+        });
+        setRoutes(updatedLocation);
+        onChangeLocation(updatedLocation);
+    };
 
     const onAddLocation = () => {
-        const index = routes.length + 1;
-        setRoutes([...routes, index]);
+        const newLocation = {
+            number: routes.length + 1
+        };
+        setRoutes([...routes, newLocation]);
     }
-    console.log('routes', routes)
 
     return <Container>
-        {routes.map(index => <ItemContainer>
-            <AutocompleteLocation key={index} setCenter={updateFilterObject}/>
-            <DeleteIcon onDelete={onDeleteLocation(index)}/>
+        {routes.map(route => <ItemContainer>
+            <AutocompleteLocation key={route.number}
+                                  setCenter={updateLocationWitLatLng(route.number)}
+                                  defaultValue={route.value}
+                                  setChooseValue={updateLocation(route.number)}
+                                  placeholder='Middle location'
+            />
+            <DeleteIcon onDelete={onDeleteLocation(route.number)}/>
         </ItemContainer>)}
         <ItemContainer>
             <CustomButton onClick={onAddLocation}
@@ -63,7 +73,6 @@ const BetweenLocations = ({updateFilterObject, filterObject}) => {
 }
 
 BetweenLocations.propTypes = {
-    updateFilterObject: PropTypes.func.isRequired,
-    filterObject: SearchObject.isRequired
+    onChangeLocation: PropTypes.func.isRequired
 }
 export default BetweenLocations;
