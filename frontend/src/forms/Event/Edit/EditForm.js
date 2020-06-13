@@ -69,7 +69,7 @@ EditForm.propTypes = {
     newEvent: ResponseData.isRequired
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = (state) => ({
     userId: state.userId.value,
     updatedEvent: state.components.forms.event.eventEdit.updatedEvent,
     newEvent: state.components.forms.event.eventEdit.newEvent,

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import PropTypes from "prop-types";
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -8,7 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import {DEFAULT_COUNTRY, DEFAULT_LOCATION, DEFAULT_ROUTE} from "forms/utils/constants";
 import {getCity, getCountry, getState, requestPlaceId} from "forms/utils/components/ObjectGeoLocation/utils";
-import {onChange} from "forms/utils/utils";
+import {SimpleObject} from "forms/utils/types";
 
 const google = window.google;
 
@@ -24,11 +24,9 @@ const options = {
     types: ['(cities)']
 };
 
-const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, defaultValue, setChooseValue}) => {
-    const [value, setValue] = useState('');
+const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, setValue}) => {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
-    const [chooseItem, setChooseItem] = useState(null);
     const [currentOptions, setCurrentOptions] = useState([]);
 
     const getLocation = (paths, values) => {
@@ -39,49 +37,42 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, default
         return newLocation;
     };
 
-    useEffect(() => {
-        if (defaultValue) {
-            setValue(defaultValue)
+    const getLocationByPlaceId = ({results}) => {
+        const result = results[0];
+        if (onChangeLocation) {
+            const newLocation = getLocation(['name', 'country.name', 'state'],
+                [getCity(result), getCountry(result), getState(result)]);
+            onChangeLocation(newLocation);
         }
-    }, [defaultValue])
-
-    useEffect(() => {
-        if (chooseItem) {
-            requestPlaceId(chooseItem.id, ({results}) => {
-                const result = results[0];
-                if (onChangeLocation) {
-                    const newLocation = getLocation(['name', 'country.name', 'state'],
-                        [getCity(result), getCountry(result), getState(result)]);
-                    onChangeLocation(newLocation);
-                }
-                if (setCenter) {
-                    setCenter({lat: result.geometry.location.lat, lng: result.geometry.location.lng});
-                }
-            })
+        if (setCenter) {
+            setCenter({lat: result.geometry.location.lat, lng: result.geometry.location.lng});
         }
-    }, [chooseItem]);
+    };
 
-    useEffect(() => {
-        const setPredictions = (predictions) => {
-            const result = predictions.map(prediction =>
-                ({id: prediction.place_id, name: prediction.description}))
-            const choose = result.filter(option => option.name === value)[0];
-            if (choose) {
-                if (setChooseValue) {
-                    setChooseValue(choose);
-                }
-                setChooseItem(choose);
+    const onChooseItem = (chooseItem) => requestPlaceId(chooseItem.id, getLocationByPlaceId);
+
+    const setPredictions = (value) => (predictions) => {
+        const result = predictions.map(prediction =>
+            ({id: prediction.place_id, name: prediction.description}))
+        const choose = result.filter(option => option.name === value)[0];
+        if (choose) {
+            if (setValue) {
+                setValue(choose);
             }
-            setCurrentOptions(result);
-            setLoading(false);
+            onChooseItem(choose);
         }
-        if (value) {
+        setCurrentOptions(result);
+        setLoading(false);
+    }
+
+    const onChange = (inputValue) => {
+        if (inputValue) {
             setLoading(true);
-            autocomplete.getQueryPredictions({input: value, ...options}, setPredictions);
+            autocomplete.getQueryPredictions({input: inputValue, ...options}, setPredictions(inputValue));
         } else {
             setCurrentOptions([]);
         }
-    }, [value]);
+    };
 
     return (
         <StyledAutocomplete
@@ -92,12 +83,12 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, default
             onClose={() => setOpen(false)}
             getOptionLabel={option => option.name}
             options={currentOptions}
-            onInputChange={(evt, value) => setValue(value)}
+            onInputChange={(evt, value) => onChange(value)}
             renderInput={params => {
                 params = {
                     ...params, inputProps: {
                         ...params.inputProps,
-                        value: defaultValue?.name || params.inputProps.value
+                        value: value?.name || params.inputProps.value
                     }
                 }
                 return <TextField
@@ -126,7 +117,9 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, default
 AutocompleteLocation.propTypes = {
     setCenter: PropTypes.func,
     onChangeLocation: PropTypes.func,
-    setChooseValue: PropTypes.func
+    setValue: PropTypes.func,
+    placeholder: PropTypes.string,
+    value: SimpleObject
 };
 
 AutocompleteLocation.defaultProps = {

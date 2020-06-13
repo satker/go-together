@@ -27,7 +27,7 @@ const Dates = ({filter, setFilter}) => {
                             setEndDate={onChangeDate('endDate', FilterOperator.END_DATE)}/>;
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = state => ({
     filter: state.components.forms.events.filter.response
 });
 

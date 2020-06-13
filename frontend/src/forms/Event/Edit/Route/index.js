@@ -85,7 +85,7 @@ Route.propTypes = {
     updateEvent: PropTypes.func.isRequired
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = (state) => ({
     eventRoute: state.components.forms.event.eventEdit.event.response.route
 });
 

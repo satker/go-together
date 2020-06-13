@@ -64,7 +64,7 @@ PaidThings.propTypes = {
     payedThings: ResponseData.isRequired
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = (state) => ({
     cashCategories: state.components.forms.event.eventEdit.paidThings.cashCategories,
     payedThings: state.components.forms.event.eventEdit.paidThings.payedThings,
     event: state.components.forms.event.eventEdit.event.response

@@ -31,7 +31,7 @@ const Interests = ({interests, getInterests, setFilter}) => {
     </LoadableContent>;
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = state => ({
     interests: state.components.forms.events.interests,
 });
 

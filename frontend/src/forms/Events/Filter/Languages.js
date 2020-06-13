@@ -31,7 +31,7 @@ const Languages = ({languages, getLanguages, setFilter}) => {
     </LoadableContent>;
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = state => ({
     languages: state.components.forms.events.languages
 });
 

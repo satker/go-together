@@ -49,7 +49,7 @@ export const connect = (mapStateToProps, actions, ACTIONS_ID) => (Component) => 
     <Context.Consumer>
         {([state, setState]) =>
             <Component {...props}
-                       {...(mapStateToProps ? mapStateToProps(ACTIONS_ID || state.formId.value)(state) : {})}
+                       {...(mapStateToProps ? mapStateToProps(state) : {})}
                        {...wrapActions(actions, state, setState, ACTIONS_ID)}
             />}
     </Context.Consumer>;

@@ -35,13 +35,14 @@ export const setPage = (page) => (dispatch) => {
     });
 };
 
-export const setFilter = (filterOperation, values, searchField, havingCount = false) => (dispatch, state) => {
-    const currentFilter = state.components.forms.events.filter.response;
+export const setFilter = (filterOperation, values, searchField, havingCount = false) =>
+    (dispatch, state) => {
+        const currentFilter = state.components.forms.events.filter.response;
 
-    const updatedFilterObject = updateFormDto(currentFilter, filterOperation, values, searchField, havingCount);
-    console.log(updatedFilterObject)
-    dispatch({
-        type: FILTER,
-        value: updatedFilterObject
-    });
-};
+        const updatedFilterObject = updateFormDto(currentFilter, filterOperation, values, searchField, havingCount);
+
+        dispatch({
+            type: FILTER,
+            value: updatedFilterObject
+        });
+    };

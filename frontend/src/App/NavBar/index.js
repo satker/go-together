@@ -50,7 +50,7 @@ const NavBar = () => {
     );
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = (state) => ({
     userId: state.userId.value
 });
 

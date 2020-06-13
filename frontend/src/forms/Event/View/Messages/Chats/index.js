@@ -74,7 +74,7 @@ UserChats.propTypes = {
     usersInfo: ResponseData.isRequired
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = state => ({
     userId: state.userId.value,
     messages: state.components.forms.event.eventView.messages.chats,
     usersInfo: state.components.forms.event.eventView.messages.usersInfo,

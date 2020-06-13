@@ -28,7 +28,7 @@ MessagesContainer.propTypes = {
     userId: PropTypes.string
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = state => ({
     userId: state.userId.value,
     event: state.components.forms.event.eventView.event.response
 });

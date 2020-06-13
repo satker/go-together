@@ -59,8 +59,8 @@ const BetweenLocations = ({onChangeLocation}) => {
         {routes.map(route => <ItemContainer>
             <AutocompleteLocation key={route.number}
                                   setCenter={updateLocationWitLatLng(route.number)}
-                                  defaultValue={route.value}
-                                  setChooseValue={updateLocation(route.number)}
+                                  value={route.value}
+                                  setValue={updateLocation(route.number)}
                                   placeholder='Middle location'
             />
             <DeleteIcon onDelete={onDeleteLocation(route.number)}/>

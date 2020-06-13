@@ -277,7 +277,7 @@ const FormRegister = ({
     </Container>;
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = state => ({
     allLanguages: state.components.forms.register.allLanguages,
     allInterests: state.components.forms.register.allInterests,
     checkMail: state.components.forms.register.checkMail,

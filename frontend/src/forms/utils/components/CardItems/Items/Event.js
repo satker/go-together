@@ -34,7 +34,6 @@ const ItemEvent = ({event, onDelete, userId, eventIds}) => {
         <CardActions>
             {userId && userId !== event.author.id &&
             <EventLikes eventId={event.id} eventIds={eventIds}/>}
-
         </CardActions>
     </Card>;
 };
@@ -46,7 +45,7 @@ ItemEvent.propTypes = {
     eventIds: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = (state) => ({
     userId: state.userId.value
 });
 

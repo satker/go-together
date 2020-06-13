@@ -63,7 +63,7 @@ const Events = ({pageSize, postFindEvents, findEvents, postLikes, filter}) => {
     </Container>;
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = state => ({
     pageSize: state.pageSize.value,
     findEvents: state.components.forms.events.findEvents,
     filter: state.components.forms.events.filter.response

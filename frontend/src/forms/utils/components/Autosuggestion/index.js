@@ -92,7 +92,7 @@ IntegrationAutosuggest.propTypes = {
     options: ResponseData.isRequired
 };
 
-const mapStateToProps = (autosuggestionOptions) => () => state => ({
+const mapStateToProps = (autosuggestionOptions) => state => ({
     options: state.components.utils.autosuggestion.options[autosuggestionOptions]
 });
 
