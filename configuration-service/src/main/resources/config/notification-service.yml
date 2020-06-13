@@ -1,0 +1,11 @@
+server:
+  port: 8099
+datasource:
+  url: jdbc:postgresql://localhost:5432/go-together
+  username: postgres
+  password: 13693509
+  continueOnError: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:1111/eureka
