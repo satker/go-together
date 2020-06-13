@@ -75,4 +75,8 @@ const BetweenLocations = ({onChangeLocation}) => {
 BetweenLocations.propTypes = {
     onChangeLocation: PropTypes.func.isRequired
 }
+
+BetweenLocations.propTypes = {
+    onChangeLocation: PropTypes.func.isRequired
+}
 export default BetweenLocations;

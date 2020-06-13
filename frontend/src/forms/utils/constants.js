@@ -80,35 +80,6 @@ export const DEFAULT_EVENT_USER = {
     eventId: null
 };
 
-export const LOCATION_DEFAULT = null;
-export const MIN_COST_DEFAULT = 0;
-export const MAX_COST_DEFAULT = 100;
-export const ADULTS_DEFAULT = 0;
-export const CHILDREN_DEFAULT = 0;
-export const START_DATE_DEFAULT = null;
-export const END_DATE_DEFAULT = null;
-export const BEDS_DEFAULT = 0;
-export const ROOMS_DEFAULT = 0;
-export const EMPTY_ARRAY = [];
-
-export const SEARCH_OBJECT_DEFAULT = {
-    minCostNight: MIN_COST_DEFAULT,
-    maxCostNight: MAX_COST_DEFAULT,
-    location: LOCATION_DEFAULT,
-    arrivalDate: START_DATE_DEFAULT,
-    departureDate: END_DATE_DEFAULT,
-    adult: ADULTS_DEFAULT,
-    children: CHILDREN_DEFAULT,
-    advancedSearch: {
-        beds: BEDS_DEFAULT,
-        rooms: ROOMS_DEFAULT,
-        apartmentTypes: EMPTY_ARRAY,
-        parameters: EMPTY_ARRAY,
-        languages: EMPTY_ARRAY
-    },
-    page: 0
-};
-
 export const FORM_DTO = (mainFieldId) => ({
     page: {
         page: 0,

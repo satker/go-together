@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from "react";
+import PropTypes from "prop-types";
+
+import {connect} from "App/Context";
 
 import GroupItems from "forms/utils/components/CardItems";
-import {connect} from "App/Context";
 import Container from "forms/utils/components/Container/ContainerRow";
 import LoadableContent from "forms/utils/components/LoadableContent";
 import {postLikes} from "forms/utils/components/Event/EventLikes/actions";
@@ -12,6 +14,7 @@ import RightContainer from "forms/utils/components/Container/RightContainer";
 
 import {postFindEvents} from "./actions";
 import Filter from "./Filter";
+import {ResponseData, SearchObject} from "forms/utils/types";
 
 const Events = ({pageSize, postFindEvents, findEvents, postLikes, filter}) => {
     const [page, setPage] = useState(1);
@@ -62,6 +65,14 @@ const Events = ({pageSize, postFindEvents, findEvents, postLikes, filter}) => {
         </ContainerColumn>
     </Container>;
 };
+
+Events.propTypes = {
+    postFindEvents: PropTypes.func.isRequired,
+    postLikes: PropTypes.func.isRequired,
+    filter: SearchObject.isRequired,
+    findEvents: ResponseData,
+    pageSize: PropTypes.number
+}
 
 const mapStateToProps = state => ({
     pageSize: state.pageSize.value,
