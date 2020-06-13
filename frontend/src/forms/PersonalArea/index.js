@@ -73,7 +73,7 @@ const PersonalArea = ({userInfo, getUserInfo, updatedUser, putUpdatedUser}) => {
     );
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = state => ({
     userInfo: state.components.forms.personalArea.userInfo,
     updatedUser: state.components.forms.personalArea.updatedUser,
 });

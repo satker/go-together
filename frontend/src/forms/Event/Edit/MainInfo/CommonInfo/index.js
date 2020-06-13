@@ -68,7 +68,7 @@ CommonInfo.propTypes = {
     getHousingTypes: PropTypes.func.isRequired
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = (state) => ({
     housingTypes: state.components.forms.event.eventEdit.mainInfo.commonInfo.housingTypes,
     event: state.components.forms.event.eventEdit.event.response
 });

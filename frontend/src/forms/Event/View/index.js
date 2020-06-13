@@ -24,7 +24,7 @@ ViewEvent.propTypes = {
     event: ResponseData.isRequired
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = state => ({
     event: state.components.forms.event.eventView.event,
 });
 

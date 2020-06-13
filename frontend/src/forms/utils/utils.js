@@ -88,13 +88,13 @@ export const getFilterDto = (filterType, values) => {
     }
 }
 
-export const updateFormDto = (formDto, setFormDto) => (filterType, values, searchField, havingCount = false) => {
-    let resultFilterObject = {...formDto};
+export const updateFormDto = (currentFilter, filterType, values, searchField,
+                              havingCount) => {
+    let resultFilterObject = {...currentFilter};
     if (havingCount) {
         const findValue = keys(resultFilterObject.filters)
             .find(keyFilter => keyFilter.startsWith(searchField));
         if (findValue) {
-            values = [...resultFilterObject.filters[findValue].values, ...values];
             delete resultFilterObject.filters[findValue];
         }
         searchField = searchField + ':' + values.length;
@@ -106,5 +106,5 @@ export const updateFormDto = (formDto, setFormDto) => (filterType, values, searc
     } else {
         return;
     }
-    setFormDto(resultFilterObject);
+    return resultFilterObject;
 }

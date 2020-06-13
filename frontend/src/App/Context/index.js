@@ -5,24 +5,13 @@ import {fetchAndSetToken} from "App/utils/api/request";
 import {USER_ID} from "forms/utils/constants";
 import {components} from "forms/reducers";
 import {createContextValue} from "App/utils/utils";
-import {
-    ARRIVAL_DATE,
-    CONTEXT_USER_ID,
-    CSRF_TOKEN,
-    DEPARTURE_DATE,
-    EVENT_ID,
-    FORM_ID,
-    PAGE,
-    PAGE_SIZE
-} from "./constants";
+import {CONTEXT_USER_ID, CSRF_TOKEN, EVENT_ID, FORM_ID, PAGE, PAGE_SIZE} from "./constants";
 
 export const context = {
     userId: createContextValue(CONTEXT_USER_ID, getCookie(USER_ID) === 'null' ? null : getCookie(USER_ID)),
     eventId: createContextValue(EVENT_ID),
     formId: createContextValue(FORM_ID),
     csrfToken: createContextValue(CSRF_TOKEN, getCookie(CSRF_TOKEN) === 'null' ? null : getCookie(CSRF_TOKEN)),
-    arrivalDate: createContextValue(ARRIVAL_DATE),
-    departureDate: createContextValue(DEPARTURE_DATE),
     page: createContextValue(PAGE, 0),
     pageSize: createContextValue(PAGE_SIZE, 9),
     components: {...components}
@@ -60,7 +49,7 @@ export const connect = (mapStateToProps, actions, ACTIONS_ID) => (Component) => 
     <Context.Consumer>
         {([state, setState]) =>
             <Component {...props}
-                       {...(mapStateToProps ? mapStateToProps(ACTIONS_ID || state.formId.value)(state) : {})}
+                       {...(mapStateToProps ? mapStateToProps(state) : {})}
                        {...wrapActions(actions, state, setState, ACTIONS_ID)}
             />}
     </Context.Consumer>;

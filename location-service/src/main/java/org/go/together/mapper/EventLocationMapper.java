@@ -22,6 +22,8 @@ public class EventLocationMapper implements Mapper<EventLocationDto, EventLocati
         eventLocationDto.setLocation(locationMapper.entityToDto(eventLocation.getLocation()));
         eventLocationDto.setEventId(eventLocation.getEventId());
         eventLocationDto.setRouteNumber(eventLocation.getRouteNumber());
+        eventLocationDto.setIsEnd(eventLocation.getIsEnd());
+        eventLocationDto.setIsStart(eventLocation.getIsStart());
         return eventLocationDto;
     }
 
@@ -34,6 +36,8 @@ public class EventLocationMapper implements Mapper<EventLocationDto, EventLocati
         eventLocation.setLocation(locationMapper.dtoToEntity(locationDto.getLocation()));
         eventLocation.setEventId(locationDto.getEventId());
         eventLocation.setRouteNumber(locationDto.getRouteNumber());
+        eventLocation.setIsEnd(locationDto.getIsEnd());
+        eventLocation.setIsStart(locationDto.getIsStart());
         return eventLocation;
     }
 }

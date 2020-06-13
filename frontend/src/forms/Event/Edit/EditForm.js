@@ -24,6 +24,20 @@ const EditForm = ({
         saveObj.author = {
             id: userId
         };
+        const maxRouteNumber = saveObj.route.length;
+        saveObj.route = saveObj.route.map(route => {
+            if (route.routeNumber === 1) {
+                route.isStart = true;
+                route.isEnd = false;
+            } else if (route.routeNumber === maxRouteNumber) {
+                route.isStart = false;
+                route.isEnd = true;
+            } else {
+                route.isStart = false;
+                route.isEnd = false;
+            }
+            return route;
+        });
         event.id ? postUpdatedEvent(saveObj) : putNewEvent(saveObj);
     };
 
@@ -55,7 +69,7 @@ EditForm.propTypes = {
     newEvent: ResponseData.isRequired
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = (state) => ({
     userId: state.userId.value,
     updatedEvent: state.components.forms.event.eventEdit.updatedEvent,
     newEvent: state.components.forms.event.eventEdit.newEvent,

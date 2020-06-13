@@ -40,7 +40,7 @@ EventLikes.propTypes = {
 
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = state => ({
     newLike: state.components.utils.eventLikes.newLike,
     likes: state.components.utils.eventLikes.likes,
     userId: state.userId.value

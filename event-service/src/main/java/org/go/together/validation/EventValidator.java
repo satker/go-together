@@ -5,13 +5,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
-import org.go.together.dto.EventDto;
-import org.go.together.dto.UserDto;
+import org.go.together.dto.*;
 import org.go.together.dto.validation.DateIntervalDto;
 import org.go.together.logic.Validator;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 public class EventValidator extends Validator<EventDto> {
@@ -42,6 +43,10 @@ public class EventValidator extends Validator<EventDto> {
         super.DATES_CORRECT_CHECK = ImmutableMap.<String, DateIntervalDto>builder()
                 .put("event dates", new DateIntervalDto(dto.getStartDate(), dto.getEndDate()))
                 .build();
+        super.COLLECTION_CORRECT_CHECK = ImmutableMap.<String, Collection<?>>builder()
+                .put("photos", dto.getEventPhotoDto().getPhotos())
+                .put("routes", dto.getRoute())
+                .build();
     }
 
     @Override
@@ -58,22 +63,56 @@ public class EventValidator extends Validator<EventDto> {
                     .append(". ");
         }
 
-
-        dto.getPaidThings().stream()
-                .map(eventPaidThingValidator::validate)
-                .filter(StringUtils::isNotBlank)
-                .forEach(errors::append);
+        checkCashCategories(dto.getPaidThings(), errors);
 
         dto.getEventPhotoDto().getPhotos().stream()
                 .map(contentClient::validate)
                 .filter(StringUtils::isNotBlank)
                 .forEach(errors::append);
 
-        dto.getRoute().stream()
-                .map(locationClient::validateRoutes)
-                .filter(StringUtils::isNotBlank)
-                .forEach(errors::append);
+        checkRoutes(dto.getRoute(), errors);
 
         return errors.toString();
+    }
+
+    private void checkCashCategories(Collection<EventPaidThingDto> paidThingDtos, StringBuilder errors) {
+        List<CashCategory> cashCategories = paidThingDtos.stream()
+                .map(EventPaidThingDto::getCashCategory)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        if (cashCategories.size() != paidThingDtos.size()) {
+            errors.append("Collection paid things is incorrect.");
+        } else {
+            paidThingDtos.stream()
+                    .map(eventPaidThingValidator::validate)
+                    .filter(StringUtils::isNotBlank)
+                    .forEach(errors::append);
+        }
+    }
+
+    private void checkRoutes(Collection<EventLocationDto> routes, StringBuilder errors) {
+        Set<Integer> numbers = IntStream.rangeClosed(1, routes.size())
+                .boxed()
+                .collect(Collectors.toSet());
+        boolean isRouteNumbersCorrect = routes.stream()
+                .map(EventLocationDto::getRouteNumber)
+                .allMatch(numbers::contains);
+        if (isRouteNumbersCorrect) {
+            routes.stream()
+                    .map(locationClient::validateRoutes)
+                    .filter(StringUtils::isNotBlank)
+                    .forEach(errors::append);
+        } else {
+            errors.append("Incorrect route numbers");
+        }
+
+        boolean presentEndRoute = routes.stream().anyMatch(EventLocationDto::getIsEnd);
+        boolean presentStartRoute = routes.stream().anyMatch(EventLocationDto::getIsStart);
+        if (!presentEndRoute) {
+            errors.append("End route not present");
+        }
+        if (!presentStartRoute) {
+            errors.append("Start route not present");
+        }
     }
 }

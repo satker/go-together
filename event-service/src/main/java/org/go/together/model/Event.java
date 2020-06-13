@@ -3,7 +3,6 @@ package org.go.together.model;
 import lombok.Data;
 import org.go.together.dto.HousingType;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -24,14 +23,13 @@ public class Event implements IdentifiedEntity {
     private Date startDate;
     private Date endDate;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "event_id")
     private Set<EventUser> users;
 
     @ElementCollection
     @CollectionTable(name = "event_route", joinColumns = @JoinColumn(name = "event_id"))
     @Column(name = "route_id")
-    @Type(type = "uuid-char")
     private Set<UUID> routes;
 
     private UUID eventPhotoId;

@@ -27,19 +27,6 @@ public class EventLocationService extends CrudService<EventLocationDto, EventLoc
         this.eventLocationRepository = eventLocationRepository;
     }
 
-    /*@Override
-    public ImmutableMap<String, FunctionToGetValue> getFields() {
-        return ImmutableMap.<String, FunctionToGetValue>builder()
-                .put("apartment.id", new FunctionToGetValue(String.class, ApartmentLocation::getApartmentId))
-                .put("cityId", new FunctionToGetValue(String.class, ApartmentLocation::getCityId))
-                .build();
-    }
-
-    @Override
-    public String getServiceName() {
-        return "apartmentLocation";
-    }*/
-
     public Set<EventLocationDto> getEventRoute(UUID eventId) {
         return eventLocationRepository.findByEventId(eventId).stream()
                 .map(eventLocationMapper::entityToDto)
@@ -93,8 +80,10 @@ public class EventLocationService extends CrudService<EventLocationDto, EventLoc
     @Override
     public Map<String, FieldMapper> getMappingFields() {
         return ImmutableMap.<String, FieldMapper>builder()
-                .put("routeNumber", FieldMapper.builder()
-                        .currentServiceField("routeNumber").build())
+                .put("isStart", FieldMapper.builder()
+                        .currentServiceField("isStart").build())
+                .put("isEnd", FieldMapper.builder()
+                        .currentServiceField("isEnd").build())
                 .put("latitude,longitude", FieldMapper.builder()
                         .currentServiceField("latitude,longitude").build()).build();
     }

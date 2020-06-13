@@ -33,7 +33,7 @@ Profile.props = {
     author: User.isRequired
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = (state) => ({
     author: state.components.forms.event.eventView.event.response.author
 });
 

@@ -68,7 +68,7 @@ Users.propTypes = {
     getStatuses: PropTypes.func.isRequired
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = state => ({
     userId: state.userId.value,
     userStatus: state.components.forms.event.eventView.usersParticipation.userStatus,
     statuses: state.components.forms.event.eventView.statuses,

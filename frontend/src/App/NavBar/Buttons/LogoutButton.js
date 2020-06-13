@@ -37,7 +37,7 @@ LogoutButton.propTypes = {
     menuId: PropTypes.string.isRequired
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = (state) => ({
     userId: state.userId.value
 });
 

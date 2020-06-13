@@ -26,7 +26,7 @@ CreateEvent.propTypes = {
     updateEvent: PropTypes.func.isRequired
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = (state) => ({
     event: state.components.forms.event.eventEdit.event
 });
 

@@ -92,7 +92,7 @@ FormLogin.propTypes = {
     handleMenuClose: PropTypes.func.isRequired
 };
 
-const mapStateToProps = () => (state) => ({
+const mapStateToProps = state => ({
     loginId: state.components.forms.login.loginId,
     loginToken: state.components.forms.login.loginToken,
 });

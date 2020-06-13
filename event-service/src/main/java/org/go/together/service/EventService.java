@@ -14,10 +14,7 @@ import org.go.together.repository.EventRepository;
 import org.go.together.validation.EventValidator;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +41,7 @@ public class EventService extends CrudService<EventDto, Event> {
     protected void updateEntityForCreate(Event entity, EventDto dto) {
         UUID uuid = UUID.randomUUID();
         entity.setId(uuid);
+        entity.setUsers(Collections.emptySet());
         updateEntity(entity, dto, uuid);
     }
 
@@ -99,11 +97,11 @@ public class EventService extends CrudService<EventDto, Event> {
                         .remoteServiceClient(userClient)
                         .remoteServiceName("user")
                         .remoteServiceFieldGetter("id").build())
-                .put("route", FieldMapper.builder()
-                        .currentServiceField("routes")
+                .put("idEventRoutes", FieldMapper.builder()
+                        .currentServiceField("id")
                         .remoteServiceClient(locationClient)
                         .remoteServiceName("eventLocation")
-                        .remoteServiceFieldGetter("id").build())
+                        .remoteServiceFieldGetter("eventId").build())
                 .put("startDate", FieldMapper.builder()
                         .currentServiceField("startDate").build())
                 .put("endDate", FieldMapper.builder()

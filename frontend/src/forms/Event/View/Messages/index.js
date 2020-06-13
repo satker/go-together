@@ -25,7 +25,7 @@ Messages.props = {
     setUserMessageId: PropTypes.func.isRequired
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = state => ({
     userId: state.userId.value,
     eventAuthorId: state.components.forms.event.eventView.event.response.author.id
 

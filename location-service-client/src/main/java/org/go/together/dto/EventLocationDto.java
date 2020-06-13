@@ -14,4 +14,6 @@ public class EventLocationDto implements Dto {
     private Double latitude;
     private Double longitude;
     private UUID eventId;
+    private Boolean isStart;
+    private Boolean isEnd;
 }

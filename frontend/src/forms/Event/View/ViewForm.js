@@ -37,7 +37,7 @@ ViewForm.propTypes = {
     userId: PropTypes.string
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = state => ({
     event: state.components.forms.event.eventView.event.response,
     userId: state.userId.value
 });

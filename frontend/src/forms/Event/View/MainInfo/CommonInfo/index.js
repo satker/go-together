@@ -65,7 +65,7 @@ CommonInfo.propTypes = {
     userId: PropTypes.string
 };
 
-const mapStateToProps = () => state => ({
+const mapStateToProps = state => ({
     event: state.components.forms.event.eventView.event.response,
     users: state.components.forms.event.eventView.users,
     userId: state.userId.value

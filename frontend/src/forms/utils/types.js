@@ -99,6 +99,8 @@ export const Route = PropTypes.exact({
     latitude: PropTypes.number,
     longitude: PropTypes.number,
     location: Location,
+    isStart: PropTypes.bool,
+    isEnd: PropTypes.bool,
     eventId: PropTypes.string
 });
 
@@ -127,17 +129,14 @@ export const Review = PropTypes.exact({
 });
 
 export const SearchObject = PropTypes.exact({
-    location: SimpleObject,
-    startDate: PropTypes.object,
-    endDate: PropTypes.object,
-    advancedSearch: {
-        beds: PropTypes.number,
-        rooms: PropTypes.number,
-        eventTypes: PropTypes.array,
-        parameters: PropTypes.array,
-        languages: PropTypes.array
-    },
-    page: PropTypes.number
+    page: PropTypes.exact({
+        page: PropTypes.number.isRequired,
+        size: PropTypes.number.isRequired,
+        totalSize: PropTypes.number.isRequired,
+        sort: PropTypes.array.isRequired
+    }),
+    mainIdField: PropTypes.string,
+    filters: PropTypes.object
 });
 
 export const CoordinateCenter = PropTypes.exact({
