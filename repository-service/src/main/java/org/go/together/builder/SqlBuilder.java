@@ -1,4 +1,4 @@
-package org.go.together.logic.repository.builder;
+package org.go.together.builder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.interfaces.IdentifiedEntity;
@@ -9,7 +9,7 @@ import javax.persistence.TypedQuery;
 import java.util.Collection;
 import java.util.Optional;
 
-import static org.go.together.logic.repository.builder.utils.BuilderUtils.getEntityLink;
+import static org.go.together.builder.utils.BuilderUtils.getEntityLink;
 
 public class SqlBuilder<E extends IdentifiedEntity> {
     private final String from;

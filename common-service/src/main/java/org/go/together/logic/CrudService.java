@@ -2,6 +2,7 @@ package org.go.together.logic;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.go.together.CustomRepository;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FormDto;
@@ -12,7 +13,6 @@ import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.interfaces.Mapper;
 import org.go.together.logic.find.FindService;
-import org.go.together.logic.repository.CustomRepository;
 
 import java.util.Collection;
 import java.util.Optional;

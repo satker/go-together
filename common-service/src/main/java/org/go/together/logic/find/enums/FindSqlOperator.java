@@ -1,8 +1,8 @@
 package org.go.together.logic.find.enums;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.go.together.logic.repository.builder.WhereBuilder;
-import org.go.together.logic.repository.utils.sql.SqlOperator;
+import org.go.together.builder.WhereBuilder;
+import org.go.together.sql.SqlOperator;
 
 import java.util.function.BiConsumer;
 

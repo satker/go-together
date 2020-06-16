@@ -1,7 +1,7 @@
-package org.go.together.logic.repository.builder;
+package org.go.together.builder;
 
+import org.go.together.builder.utils.BuilderUtils;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.go.together.logic.repository.builder.utils.BuilderUtils;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.ManyToMany;

@@ -1,4 +1,4 @@
-package org.go.together.logic.repository.builder.utils;
+package org.go.together.builder.utils;
 
 import org.go.together.interfaces.IdentifiedEntity;
 

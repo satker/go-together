@@ -1,4 +1,4 @@
-package org.go.together.logic.repository.utils.sql;
+package org.go.together.sql;
 
 import java.util.function.BiFunction;
 

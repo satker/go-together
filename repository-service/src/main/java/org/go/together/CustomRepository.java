@@ -1,8 +1,8 @@
-package org.go.together.logic.repository;
+package org.go.together;
 
+import org.go.together.builder.SqlBuilder;
+import org.go.together.builder.WhereBuilder;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.go.together.logic.repository.builder.SqlBuilder;
-import org.go.together.logic.repository.builder.WhereBuilder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

@@ -25,7 +25,6 @@ dependencies {
 
             'org.apache.commons:commons-lang3:3.9'
     )
-    compile project(":repository-service")
 
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }

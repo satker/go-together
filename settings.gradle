@@ -19,4 +19,5 @@ include 'auth-service'
 include 'auth-service-client'
 include 'notification-service'
 include 'notification-service-client'
+include 'repository-service'
 

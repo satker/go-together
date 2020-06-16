@@ -1,14 +1,14 @@
-package org.go.together.logic.repository.builder;
+package org.go.together.builder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.go.together.logic.repository.utils.sql.SqlOperator;
+import org.go.together.sql.SqlOperator;
 
 import java.util.Map;
 import java.util.Optional;
 
-import static org.go.together.logic.repository.builder.utils.BuilderUtils.getEntityField;
-import static org.go.together.logic.repository.utils.sql.ObjectStringParser.parseToString;
+import static org.go.together.builder.utils.BuilderUtils.getEntityField;
+import static org.go.together.sql.ObjectStringParser.parseToString;
 
 public class WhereBuilder<E extends IdentifiedEntity> {
     private static final String AND = " and ";

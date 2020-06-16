@@ -1,6 +1,7 @@
 package org.go.together.logic.find;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.go.together.CustomRepository;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.dto.filter.FilterDto;
 import org.go.together.dto.filter.FormDto;
@@ -13,7 +14,6 @@ import org.go.together.logic.find.repository.FindRepository;
 import org.go.together.logic.find.repository.FindRepositoryImpl;
 import org.go.together.logic.find.utils.FieldParser;
 import org.go.together.logic.find.validation.CorrectFieldService;
-import org.go.together.logic.repository.CustomRepository;
 
 import java.util.Collection;
 import java.util.Collections;

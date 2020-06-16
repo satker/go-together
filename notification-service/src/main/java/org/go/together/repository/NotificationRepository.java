@@ -1,8 +1,8 @@
 package org.go.together.repository;
 
-import org.go.together.logic.repository.CustomRepository;
-import org.go.together.logic.repository.utils.sql.SqlOperator;
+import org.go.together.CustomRepository;
 import org.go.together.model.Notification;
+import org.go.together.sql.SqlOperator;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
