@@ -1,7 +1,6 @@
 package org.go.together.model;
 
 import lombok.Data;
-import org.go.together.dto.NotificationType;
 import org.go.together.interfaces.IdentifiedEntity;
 
 import javax.persistence.*;
@@ -16,8 +15,6 @@ public class Notification implements IdentifiedEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private UUID producerId;
-    private String producerName;
-    private NotificationType notificationType;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "notification_message_id")

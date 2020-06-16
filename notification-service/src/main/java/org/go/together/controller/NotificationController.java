@@ -1,7 +1,7 @@
 package org.go.together.controller;
 
 import org.go.together.client.NotificationClient;
-import org.go.together.dto.NotificationDto;
+import org.go.together.dto.NotificationMessageDto;
 import org.go.together.service.NotificationService;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +17,7 @@ public class NotificationController implements NotificationClient {
     }
 
     @Override
-    public Set<NotificationDto> getReceiverNotifications(UUID receiverId) {
+    public Set<NotificationMessageDto> getReceiverNotifications(UUID receiverId) {
         return notificationService.getReceiverNotifications(receiverId);
     }
 
@@ -37,7 +37,7 @@ public class NotificationController implements NotificationClient {
     }
 
     @Override
-    public boolean readNotifications(UUID producerId) {
-        return notificationService.readNotifications(producerId);
+    public boolean readNotifications(UUID receiverId) {
+        return notificationService.readNotifications(receiverId);
     }
 }
