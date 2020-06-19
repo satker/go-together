@@ -95,20 +95,26 @@ public class ComparatorUtils {
 
     public static void compareCollectionDtos(Collection<String> result, String fieldName,
                                              Collection<? extends Dto> collectionDtos, Collection<? extends Dto> anotherCollectionDtos) {
-        StringBuilder resultString = new StringBuilder().append("Collection ").append(fieldName).append(": ");
+        StringBuilder resultString = new StringBuilder();
         Set<UUID> collectionIds = collectionDtos.stream().map(Dto::getId).collect(Collectors.toSet());
         Set<UUID> anotherCollectionIds = anotherCollectionDtos.stream().map(Dto::getId).collect(Collectors.toSet());
         if (collectionIds.size() > anotherCollectionIds.size()) {
-            resultString.append("removed elements");
+            resultString.append("removed ")
+                    .append(collectionIds.size() - anotherCollectionIds.size())
+                    .append(" ")
+                    .append(fieldName);
             result.add(resultString.toString());
         } else if (collectionIds.size() < anotherCollectionIds.size()) {
-            resultString.append("added elements");
+            resultString.append("added ")
+                    .append(anotherCollectionIds.size() - collectionIds.size())
+                    .append(" ")
+                    .append(fieldName);
             result.add(resultString.toString());
         } else {
             if (anotherCollectionDtos.stream()
                     .map(Dto::getId)
                     .anyMatch(Objects::isNull)) {
-                resultString.append(CHANGED + " element collections");
+                resultString.append(CHANGED).append(" ").append(fieldName);
                 result.add(resultString.toString());
             }
         }
