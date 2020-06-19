@@ -30,8 +30,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.persistence.EntityManager;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.go.together.logic.find.enums.FindSqlOperator.*;
+import static org.go.together.test.TestUtils.createManyJoinDtos;
 import static org.go.together.test.TestUtils.createTestDto;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -105,6 +107,35 @@ class CrudServiceTest {
         Optional<TestEntity> savedEntity = testRepository.findById(savedId.getId());
         assertTrue(savedEntity.isPresent());
         testDto.setName(newName);
+        IdDto updatedId = testService.update(testDto);
+        Optional<TestEntity> updatedEntity = testRepository.findById(updatedId.getId());
+
+        assertTrue(updatedEntity.isPresent());
+        assertEquals(savedId, updatedId);
+        assertEquals(newName, updatedEntity.get().getName());
+    }
+
+    @Test
+    void updateInnerDtos() {
+        final String newName = "new test name";
+        IdDto savedId = testService.create(testDto);
+        Optional<TestEntity> savedEntity = testRepository.findById(savedId.getId());
+        assertTrue(savedEntity.isPresent());
+        testDto.setName(newName);
+
+        Set<ManyJoinDto> newManyJoinDtos = createManyJoinDtos().stream()
+                .skip(2)
+                .limit(3)
+                .collect(Collectors.toSet());
+        Set<ManyJoinDto> manyJoinDtos = testDto.getManyJoinEntities();
+        manyJoinDtos.addAll(newManyJoinDtos);
+        testDto.setManyJoinEntities(manyJoinDtos);
+
+        testDto.setJoinTestEntities(testDto.getJoinTestEntities().stream()
+                .skip(4)
+                .limit(4)
+                .collect(Collectors.toSet()));
+
         IdDto updatedId = testService.update(testDto);
         Optional<TestEntity> updatedEntity = testRepository.findById(updatedId.getId());
 

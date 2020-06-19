@@ -14,32 +14,11 @@ public class TestUtils {
     public static TestDto createTestDto(UUID idTest, String nameTest, long numberTest, Date dateTest,
                                         Date startDate, Date endDate, long startNumber, long endNumber,
                                         SimpleDto simpleDto, double longitude, double latitude) {
-        Set<JoinTestDto> joinTestDtos = new HashSet<>();
-        for (int i = 1; i < 10; i++) {
-            UUID id = UUID.randomUUID();
-            String name = "join test " + i;
-            JoinTestDto joinTestDto = new JoinTestDto();
-            joinTestDto.setId(id);
-            joinTestDto.setName(name);
-            joinTestDtos.add(joinTestDto);
-        }
+        Set<JoinTestDto> joinTestDtos = createJoinTestDtos();
 
-        Set<ManyJoinDto> manyJoinDtos = new HashSet<>();
-        for (int i = 1; i < 15; i++) {
-            UUID id = UUID.randomUUID();
-            String name = "many join test " + i;
-            ManyJoinDto manyJoinDto = new ManyJoinDto();
-            manyJoinDto.setId(id);
-            manyJoinDto.setName(name);
-            manyJoinDto.setNumber(i);
-            manyJoinDtos.add(manyJoinDto);
-        }
+        Set<ManyJoinDto> manyJoinDtos = createManyJoinDtos();
 
-        Set<String> elementsDto = new HashSet<>();
-        for (int i = 1; i < 20; i++) {
-            UUID id = UUID.randomUUID();
-            elementsDto.add(id.toString());
-        }
+        Set<String> elementsDto = createElementDtos();
 
         TestDto testDtoPrepare = new TestDto();
         testDtoPrepare.setManyJoinEntities(manyJoinDtos);
@@ -58,5 +37,41 @@ public class TestUtils {
         testDtoPrepare.setEndDate(endDate);
 
         return testDtoPrepare;
+    }
+
+    private static Set<String> createElementDtos() {
+        Set<String> elementsDto = new HashSet<>();
+        for (int i = 1; i < 20; i++) {
+            UUID id = UUID.randomUUID();
+            elementsDto.add(id.toString());
+        }
+        return elementsDto;
+    }
+
+    private static Set<JoinTestDto> createJoinTestDtos() {
+        Set<JoinTestDto> joinTestDtos = new HashSet<>();
+        for (int i = 1; i < 10; i++) {
+            UUID id = UUID.randomUUID();
+            String name = "join test " + i;
+            JoinTestDto joinTestDto = new JoinTestDto();
+            joinTestDto.setId(id);
+            joinTestDto.setName(name);
+            joinTestDtos.add(joinTestDto);
+        }
+        return joinTestDtos;
+    }
+
+    public static Set<ManyJoinDto> createManyJoinDtos() {
+        Set<ManyJoinDto> manyJoinDtos = new HashSet<>();
+        for (int i = 1; i < 15; i++) {
+            UUID id = UUID.randomUUID();
+            String name = "many join test " + i;
+            ManyJoinDto manyJoinDto = new ManyJoinDto();
+            manyJoinDto.setId(id);
+            manyJoinDto.setName(name);
+            manyJoinDto.setNumber(i);
+            manyJoinDtos.add(manyJoinDto);
+        }
+        return manyJoinDtos;
     }
 }

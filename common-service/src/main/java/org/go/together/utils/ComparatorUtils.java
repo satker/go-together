@@ -11,12 +11,13 @@ import java.util.stream.Collectors;
 import static org.apache.commons.lang3.StringUtils.joinWith;
 
 public class ComparatorUtils {
-    private static final String FROM = ": ";
+    private static final String CHANGED = "changed";
+    private static final String FROM = " " + CHANGED + ": ";
     private static final String TO = " -> ";
 
     public static void compareObject(Collection<String> result, String fieldName, Object object, Object anotherObject) {
         if (!object.equals(anotherObject)) {
-            String resultString = fieldName + " changed";
+            String resultString = fieldName + " " + CHANGED;
             result.add(resultString);
         }
     }
@@ -73,7 +74,7 @@ public class ComparatorUtils {
                 anotherDto.getComparingMap().get(key).getGetDtoField().get(),
                 value.getIsNeededDeepCompare()));
         if (!strings.isEmpty()) {
-            String resultString = "Changed " + fieldName + ": " + joinWith(". ", strings);
+            String resultString = CHANGED + " " + fieldName + ": " + joinWith(". ", strings);
             result.add(resultString);
         }
     }
@@ -107,7 +108,7 @@ public class ComparatorUtils {
             if (anotherCollectionDtos.stream()
                     .map(Dto::getId)
                     .anyMatch(Objects::isNull)) {
-                resultString.append("changed element collections");
+                resultString.append(CHANGED + " element collections");
                 result.add(resultString.toString());
             }
         }
