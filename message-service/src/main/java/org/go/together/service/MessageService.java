@@ -3,6 +3,7 @@ package org.go.together.service;
 import org.go.together.dto.MessageDto;
 import org.go.together.dto.MessageType;
 import org.go.together.dto.filter.FieldMapper;
+import org.go.together.enums.CrudOperation;
 import org.go.together.logic.CrudService;
 import org.go.together.mapper.MessageMapper;
 import org.go.together.model.Message;
@@ -65,8 +66,11 @@ public class MessageService extends CrudService<MessageDto, Message> {
                                 .max(Comparator.comparing(Message::getDate)).orElse(new Message()))));
     }
 
-    protected void updateEntityForCreate(Message entity, MessageDto dto) {
-        entity.setDate(new Date());
+    @Override
+    protected void updateEntity(Message entity, MessageDto dto, CrudOperation crudOperation) {
+        if (crudOperation == CrudOperation.CREATE) {
+            entity.setDate(new Date());
+        }
     }
 
     @Override

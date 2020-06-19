@@ -8,6 +8,7 @@ import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FormDto;
 import org.go.together.dto.filter.PageDto;
+import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.exceptions.ValidationException;
 import org.go.together.interfaces.Dto;
@@ -32,7 +33,9 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
     @Autowired
     private NotificationClient notificationClient;
 
-    protected CrudService(CustomRepository<E> repository, Mapper<D, E> mapper, Validator<D> validator) {
+    protected CrudService(CustomRepository<E> repository,
+                          Mapper<D, E> mapper,
+                          Validator<D> validator) {
         super(repository);
         this.repository = repository;
         this.mapper = mapper;
@@ -40,12 +43,13 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
     }
 
     public IdDto create(D dto) {
+        CrudOperation crudOperation = CrudOperation.CREATE;
         String validate = validator.validateForCreate(dto);
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
-            updateEntityForCreate(entity, dto);
+            updateEntity(entity, dto, crudOperation);
             E createdEntity = repository.save(entity);
-            notificationClient.notificate(createdEntity.getId(), "Created " + getServiceName());
+            notificate(createdEntity.getId(), null, crudOperation);
             return new IdDto(createdEntity.getId());
         } else {
             throw new ValidationException(validate);
@@ -53,13 +57,14 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
     }
 
     public IdDto update(D dto) {
+        CrudOperation crudOperation = CrudOperation.UPDATE;
         String validate = validator.validateForUpdate(dto);
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
-            updateEntityForUpdate(entity, dto);
+            updateEntity(entity, dto, crudOperation);
             String compareResult = compareFields(dto);
             E createdEntity = repository.save(entity);
-            notificationClient.notificate(dto.getId(), compareResult);
+            notificate(dto.getId(), compareResult, crudOperation);
             return new IdDto(createdEntity.getId());
         } else {
             throw new ValidationException(validate);
@@ -72,12 +77,13 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
     }
 
     public void delete(UUID uuid) {
+        CrudOperation crudOperation = CrudOperation.DELETE;
         Optional<E> entityById = repository.findById(uuid);
         if (entityById.isPresent()) {
             E entity = entityById.get();
-            actionsBeforeDelete(entity);
+            updateEntity(entity, null, crudOperation);
             repository.delete(entity);
-            notificationClient.notificate(uuid, "Deleted " + getServiceName());
+            notificate(uuid, null, crudOperation);
         } else {
             throw new CannotFindEntityException("Cannot find entity by id " + uuid);
         }
@@ -98,6 +104,16 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         return new ResponseDto<>(pageDtoResult.getKey(), values);
     }
 
+    private void notificate(UUID id, String message, CrudOperation crudOperation) {
+        String resultMessage = message;
+        if (crudOperation == CrudOperation.CREATE) {
+            resultMessage = "Created " + getServiceName() + ".";
+        } else if (crudOperation == CrudOperation.DELETE) {
+            resultMessage = "Deleted " + getServiceName() + ".";
+        }
+        notificationClient.notificate(id, resultMessage);
+    }
+
     private String compareFields(D anotherDto) {
         D dto = read(anotherDto.getId());
         Collection<String> result = new HashSet<>();
@@ -109,12 +125,6 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         return validator.validate(dto);
     }
 
-    protected void updateEntityForCreate(E entity, D dto) {
-    }
-
-    protected void updateEntityForUpdate(E entity, D dto) {
-    }
-
-    protected void actionsBeforeDelete(E entity) {
+    protected void updateEntity(E entity, D dto, CrudOperation crudOperation) {
     }
 }

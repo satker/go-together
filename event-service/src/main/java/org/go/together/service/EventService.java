@@ -7,6 +7,7 @@ import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.*;
 import org.go.together.dto.filter.FieldMapper;
+import org.go.together.enums.CrudOperation;
 import org.go.together.logic.CrudService;
 import org.go.together.mapper.EventMapper;
 import org.go.together.model.Event;
@@ -37,14 +38,6 @@ public class EventService extends CrudService<EventDto, Event> {
         this.userClient = userClient;
     }
 
-    @Override
-    protected void updateEntityForCreate(Event entity, EventDto dto) {
-        UUID uuid = UUID.randomUUID();
-        entity.setId(uuid);
-        entity.setUsers(Collections.emptySet());
-        updateEntity(entity, dto, uuid);
-    }
-
     private void updateEntity(Event entity, EventDto dto, UUID uuid) {
         Set<EventLocationDto> newRoute = dto.getRoute().stream()
                 .peek(routeItem -> routeItem.setEventId(uuid))
@@ -60,14 +53,18 @@ public class EventService extends CrudService<EventDto, Event> {
     }
 
     @Override
-    protected void updateEntityForUpdate(Event entity, EventDto dto) {
-        updateEntity(entity, dto, entity.getId());
-    }
-
-    @Override
-    public void actionsBeforeDelete(Event event) {
-        locationClient.deleteRoutes(event.getRoutes());
-        contentClient.delete(event.getEventPhotoId());
+    protected void updateEntity(Event entity, EventDto dto, CrudOperation crudOperation) {
+        if (crudOperation == CrudOperation.UPDATE) {
+            updateEntity(entity, dto, entity.getId());
+        } else if (crudOperation == CrudOperation.CREATE) {
+            UUID uuid = UUID.randomUUID();
+            entity.setId(uuid);
+            entity.setUsers(Collections.emptySet());
+            updateEntity(entity, dto, uuid);
+        } else if (crudOperation == CrudOperation.DELETE) {
+            locationClient.deleteRoutes(entity.getRoutes());
+            contentClient.delete(entity.getEventPhotoId());
+        }
     }
 
     public Set<SimpleDto> autocompleteEvents(String name) {

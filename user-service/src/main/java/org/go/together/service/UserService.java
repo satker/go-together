@@ -7,6 +7,7 @@ import org.go.together.dto.Role;
 import org.go.together.dto.SimpleUserDto;
 import org.go.together.dto.UserDto;
 import org.go.together.dto.filter.FieldMapper;
+import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.logic.CrudService;
 import org.go.together.mapper.SimpleUserMapper;
@@ -101,33 +102,29 @@ public class UserService extends CrudService<UserDto, SystemUser> {
     }
 
     @Override
-    public void updateEntityForCreate(SystemUser entity, UserDto dto) {
-        Collection<IdDto> savedPhoto = contentClient.savePhotos(dto.getUserPhotos());
-        entity.setPhotoIds(savedPhoto.stream()
-                .map(IdDto::getId)
-                .collect(Collectors.toSet()));
-        entity.setPassword(bCryptPasswordEncoder.encode(entity.getPassword()));
-        entity.setRole(Role.ROLE_USER);
-    }
-
-    @Override
-    public void updateEntityForUpdate(SystemUser entity, UserDto dto) {
-        Collection<UUID> previousPhotos = userRepository.findById(entity.getId())
-                .map(SystemUser::getPhotoIds)
-                .orElse(Collections.emptySet());
-        Role role = userRepository.findById(entity.getId()).map(SystemUser::getRole).orElse(Role.ROLE_USER);
-        contentClient.deletePhotoById(previousPhotos);
-        Collection<IdDto> savedPhoto = contentClient.savePhotos(dto.getUserPhotos());
-        entity.setPhotoIds(savedPhoto.stream()
-                .map(IdDto::getId)
-                .collect(Collectors.toSet()));
-        entity.setPassword(bCryptPasswordEncoder.encode(entity.getPassword()));
-        entity.setRole(role);
-    }
-
-    @Override
-    protected void actionsBeforeDelete(SystemUser entity) {
-        contentClient.deletePhotoById(entity.getPhotoIds());
+    protected void updateEntity(SystemUser entity, UserDto dto, CrudOperation crudOperation) {
+        if (crudOperation == CrudOperation.UPDATE) {
+            Collection<UUID> previousPhotos = userRepository.findById(entity.getId())
+                    .map(SystemUser::getPhotoIds)
+                    .orElse(Collections.emptySet());
+            Role role = userRepository.findById(entity.getId()).map(SystemUser::getRole).orElse(Role.ROLE_USER);
+            contentClient.deletePhotoById(previousPhotos);
+            Collection<IdDto> savedPhoto = contentClient.savePhotos(dto.getUserPhotos());
+            entity.setPhotoIds(savedPhoto.stream()
+                    .map(IdDto::getId)
+                    .collect(Collectors.toSet()));
+            entity.setPassword(bCryptPasswordEncoder.encode(entity.getPassword()));
+            entity.setRole(role);
+        } else if (crudOperation == CrudOperation.CREATE) {
+            Collection<IdDto> savedPhoto = contentClient.savePhotos(dto.getUserPhotos());
+            entity.setPhotoIds(savedPhoto.stream()
+                    .map(IdDto::getId)
+                    .collect(Collectors.toSet()));
+            entity.setPassword(bCryptPasswordEncoder.encode(entity.getPassword()));
+            entity.setRole(Role.ROLE_USER);
+        } else if (crudOperation == CrudOperation.DELETE) {
+            contentClient.deletePhotoById(entity.getPhotoIds());
+        }
     }
 
     public Set<UUID> getLikedEventsByUserId(UUID userId) {

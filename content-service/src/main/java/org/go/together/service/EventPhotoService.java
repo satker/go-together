@@ -3,6 +3,7 @@ package org.go.together.service;
 import org.go.together.dto.EventPhotoDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.filter.FieldMapper;
+import org.go.together.enums.CrudOperation;
 import org.go.together.logic.CrudService;
 import org.go.together.mapper.EventPhotoMapper;
 import org.go.together.model.EventPhoto;
@@ -59,9 +60,12 @@ public class EventPhotoService extends CrudService<EventPhotoDto, EventPhoto> {
         return eventPhotoRepository.save(eventPhoto);
     }
 
+
     @Override
-    public void actionsBeforeDelete(EventPhoto eventPhoto) {
-        photoService.deleteContentByRoomId(eventPhoto.getPhotos());
+    protected void updateEntity(EventPhoto entity, EventPhotoDto dto, CrudOperation crudOperation) {
+        if (crudOperation == CrudOperation.DELETE) {
+            photoService.deleteContentByRoomId(entity.getPhotos());
+        }
     }
 
     public EventPhotoDto getEventPhotosById(UUID eventPhotoId) {
