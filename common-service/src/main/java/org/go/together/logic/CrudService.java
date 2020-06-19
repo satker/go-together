@@ -3,6 +3,7 @@ package org.go.together.logic;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.CustomRepository;
+import org.go.together.client.NotificationClient;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FormDto;
@@ -13,16 +14,23 @@ import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.interfaces.Mapper;
 import org.go.together.logic.find.FindService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static org.go.together.utils.ComparatorUtils.compareDtos;
 
 public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> extends FindService<E> {
     private final Mapper<D, E> mapper;
     private final Validator<D> validator;
     private final CustomRepository<E> repository;
+
+    @Autowired
+    private NotificationClient notificationClient;
 
     protected CrudService(CustomRepository<E> repository, Mapper<D, E> mapper, Validator<D> validator) {
         super(repository);
@@ -37,6 +45,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
             E entity = mapper.dtoToEntity(dto);
             updateEntityForCreate(entity, dto);
             E createdEntity = repository.save(entity);
+            notificationClient.notificate(createdEntity.getId(), "Created " + getServiceName());
             return new IdDto(createdEntity.getId());
         } else {
             throw new ValidationException(validate);
@@ -48,7 +57,9 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
             updateEntityForUpdate(entity, dto);
+            String compareResult = compareFields(dto);
             E createdEntity = repository.save(entity);
+            notificationClient.notificate(dto.getId(), compareResult);
             return new IdDto(createdEntity.getId());
         } else {
             throw new ValidationException(validate);
@@ -66,6 +77,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
             E entity = entityById.get();
             actionsBeforeDelete(entity);
             repository.delete(entity);
+            notificationClient.notificate(uuid, "Deleted " + getServiceName());
         } else {
             throw new CannotFindEntityException("Cannot find entity by id " + uuid);
         }
@@ -84,6 +96,13 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
                     .collect(Collectors.toSet());
         }
         return new ResponseDto<>(pageDtoResult.getKey(), values);
+    }
+
+    private String compareFields(D anotherDto) {
+        D dto = read(anotherDto.getId());
+        Collection<String> result = new HashSet<>();
+        compareDtos(result, getServiceName(), dto, anotherDto);
+        return StringUtils.join(result, ".");
     }
 
     public String validate(D dto) {

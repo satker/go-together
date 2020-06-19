@@ -114,6 +114,37 @@ class CrudServiceTest {
     }
 
     @Test
+    void updateMultipleFields() {
+        final String newName = "new test name";
+        IdDto savedId = testService.create(testDto);
+        Optional<TestEntity> savedEntity = testRepository.findById(savedId.getId());
+        assertTrue(savedEntity.isPresent());
+        testDto.setName(newName);
+        testDto.setSimpleDto(new SimpleDto("newId", "new name"));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(testDto.getDate());
+        calendar.add(Calendar.MONTH, 1);
+        Date date = calendar.getTime();
+        testDto.setDate(date);
+
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(testDto.getEndDate());
+        endCalendar.add(Calendar.MONTH, 1);
+        Date endDate = endCalendar.getTime();
+        testDto.setEndDate(endDate);
+
+        testDto.setNumber(2);
+        testDto.setLatitude(3333.3);
+        testDto.setEndNumber(4);
+        IdDto updatedId = testService.update(testDto);
+        Optional<TestEntity> updatedEntity = testRepository.findById(updatedId.getId());
+
+        assertTrue(updatedEntity.isPresent());
+        assertEquals(savedId, updatedId);
+        assertEquals(newName, updatedEntity.get().getName());
+    }
+
+    @Test
     void read() {
         IdDto savedId = testService.create(testDto);
 

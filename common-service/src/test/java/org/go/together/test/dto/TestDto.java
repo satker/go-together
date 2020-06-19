@@ -1,27 +1,48 @@
 package org.go.together.test.dto;
 
+import com.google.common.collect.ImmutableMap;
+import org.go.together.dto.ComparingObject;
 import org.go.together.dto.SimpleDto;
 import org.go.together.interfaces.Dto;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 public class TestDto implements Dto {
     private UUID id;
     private String name;
-    private long number;
+    private Long number;
     private Date date;
     private Date startDate;
     private Date endDate;
-    private long startNumber;
-    private long endNumber;
-    private double latitude;
-    private double longitude;
+    private Long startNumber;
+    private Long endNumber;
+    private Double latitude;
+    private Double longitude;
     private SimpleDto simpleDto;
     private Set<String> elements;
     private Set<JoinTestDto> joinTestEntities;
     private Set<ManyJoinDto> manyJoinEntities;
+
+    @Override
+    public Map<String, ComparingObject> getComparingMap() {
+        return ImmutableMap.<String, ComparingObject>builder()
+                .put("name", ComparingObject.builder().getDtoField(this::getName).build())
+                .put("number", ComparingObject.builder().getDtoField(this::getNumber).build())
+                .put("date", ComparingObject.builder().getDtoField(this::getDate).isNeededDeepCompare(false).build())
+                .put("start date", ComparingObject.builder().getDtoField(this::getStartDate).build())
+                .put("end date", ComparingObject.builder().getDtoField(this::getEndDate).build())
+                .put("start number", ComparingObject.builder().getDtoField(this::getStartDate).build())
+                .put("end number", ComparingObject.builder().getDtoField(this::getEndDate).build())
+                .put("latitude", ComparingObject.builder().getDtoField(this::getLatitude).build())
+                .put("longitude", ComparingObject.builder().getDtoField(this::getLongitude).build())
+                .put("simple dto", ComparingObject.builder().getDtoField(this::getSimpleDto).build())
+                .put("join test entities", ComparingObject.builder().getDtoField(this::getJoinTestEntities).build())
+                .put("many join entities", ComparingObject.builder().getDtoField(this::getManyJoinEntities).build())
+                .build();
+    }
 
     public TestDto() {
     }

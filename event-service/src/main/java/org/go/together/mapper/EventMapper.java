@@ -19,7 +19,6 @@ public class EventMapper implements Mapper<EventDto, Event> {
     private final LocationClient locationClient;
     private final EventPaidThingMapper eventPaidThingMapper;
     private final ContentClient contentClient;
-    private final EventUserMapper eventUserMapper;
 
     public EventMapper(UserClient userClient,
                        LocationClient locationClient,
@@ -30,7 +29,6 @@ public class EventMapper implements Mapper<EventDto, Event> {
         this.locationClient = locationClient;
         this.eventPaidThingMapper = eventPaidThingMapper;
         this.contentClient = contentClient;
-        this.eventUserMapper = eventUserMapper;
     }
 
     @Override

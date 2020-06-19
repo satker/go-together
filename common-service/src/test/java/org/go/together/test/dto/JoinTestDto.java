@@ -1,7 +1,10 @@
 package org.go.together.test.dto;
 
+import com.google.common.collect.ImmutableMap;
+import org.go.together.dto.ComparingObject;
 import org.go.together.interfaces.Dto;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class JoinTestDto implements Dto {
@@ -56,5 +59,12 @@ public class JoinTestDto implements Dto {
 
     public String toString() {
         return "JoinTestDto(id=" + this.getId() + ", name=" + this.getName() + ")";
+    }
+
+    @Override
+    public Map<String, ComparingObject> getComparingMap() {
+        return ImmutableMap.<String, ComparingObject>builder()
+                .put("name", ComparingObject.builder().getDtoField(this::getName).build())
+                .build();
     }
 }
