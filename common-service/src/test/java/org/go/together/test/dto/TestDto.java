@@ -29,7 +29,7 @@ public class TestDto implements Dto {
     @Override
     public Map<String, ComparingObject> getComparingMap() {
         return ImmutableMap.<String, ComparingObject>builder()
-                .put("name", ComparingObject.builder().getDtoField(this::getName).build())
+                .put("name", ComparingObject.builder().getDtoField(this::getName).isMain(true).build())
                 .put("number", ComparingObject.builder().getDtoField(this::getNumber).build())
                 .put("date", ComparingObject.builder().getDtoField(this::getDate).isNeededDeepCompare(false).build())
                 .put("start date", ComparingObject.builder().getDtoField(this::getStartDate).build())

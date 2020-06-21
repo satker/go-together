@@ -13,4 +13,6 @@ public class ComparingObject {
     @Builder.Default
     private Boolean isNeededDeepCompare = true;
     private Supplier<?> getDtoField;
+    @Builder.Default
+    private Boolean isMain = false;
 }

@@ -26,7 +26,7 @@ public class EventDto implements Dto {
     @Override
     public Map<String, ComparingObject> getComparingMap() {
         return ImmutableMap.<String, ComparingObject>builder()
-                .put("event name", ComparingObject.builder().getDtoField(this::getName).build())
+                .put("event name", ComparingObject.builder().getDtoField(this::getName).isMain(true).build())
                 .put("author", ComparingObject.builder().getDtoField(() -> this.getAuthor().getLogin()).build())
                 .put("people count", ComparingObject.builder().getDtoField(this::getPeopleCount).build())
                 .put("housing type", ComparingObject.builder().getDtoField(this::getHousingType).build())

@@ -26,7 +26,7 @@ public class UserDto implements Dto {
     @Override
     public Map<String, ComparingObject> getComparingMap() {
         return ImmutableMap.<String, ComparingObject>builder()
-                .put("login", ComparingObject.builder().getDtoField(this::getLogin).build())
+                .put("login", ComparingObject.builder().getDtoField(this::getLogin).isMain(true).build())
                 .put("mail", ComparingObject.builder().getDtoField(this::getMail).build())
                 .put("first name", ComparingObject.builder().getDtoField(this::getFirstName).build())
                 .put("last name", ComparingObject.builder().getDtoField(this::getLastName).build())

@@ -21,7 +21,7 @@ public class LocationDto implements Dto {
     @Override
     public Map<String, ComparingObject> getComparingMap() {
         return ImmutableMap.<String, ComparingObject>builder()
-                .put("name", ComparingObject.builder().getDtoField(this::getName).build())
+                .put("name", ComparingObject.builder().getDtoField(this::getName).isMain(true).build())
                 .put("state", ComparingObject.builder().getDtoField(this::getState).build())
                 .put("country", ComparingObject.builder().getDtoField(this::getCountry).build())
                 .build();

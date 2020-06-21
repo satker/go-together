@@ -23,7 +23,7 @@ public class EventLocationDto implements Dto {
     public Map<String, ComparingObject> getComparingMap() {
         return ImmutableMap.<String, ComparingObject>builder()
                 .put("location", ComparingObject.builder().getDtoField(this::getLocation).build())
-                .put("route number", ComparingObject.builder().getDtoField(this::getRouteNumber).build())
+                .put("route number", ComparingObject.builder().getDtoField(this::getRouteNumber).isMain(true).build())
                 .put("address", ComparingObject.builder().getDtoField(this::getAddress).build())
                 .put("latitude", ComparingObject.builder().getDtoField(this::getLatitude).build())
                 .put("longitude", ComparingObject.builder().getDtoField(this::getLongitude).build())

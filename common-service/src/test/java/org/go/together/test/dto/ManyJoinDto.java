@@ -77,7 +77,7 @@ public class ManyJoinDto implements Dto {
     public Map<String, ComparingObject> getComparingMap() {
 
         return ImmutableMap.<String, ComparingObject>builder()
-                .put("name", ComparingObject.builder().getDtoField(this::getName).build())
+                .put("name", ComparingObject.builder().getDtoField(this::getName).isMain(true).build())
                 .put("number", ComparingObject.builder().getDtoField(this::getNumber).build())
                 .build();
     }

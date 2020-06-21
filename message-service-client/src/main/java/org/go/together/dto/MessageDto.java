@@ -21,7 +21,7 @@ public class MessageDto implements Dto {
     @Override
     public Map<String, ComparingObject> getComparingMap() {
         return ImmutableMap.<String, ComparingObject>builder()
-                .put("message", ComparingObject.builder().getDtoField(this::getMessage).build())
+                .put("message", ComparingObject.builder().getDtoField(this::getMessage).isMain(true).build())
                 .put("rating", ComparingObject.builder().getDtoField(this::getRating).build())
                 .put("date", ComparingObject.builder().getDtoField(this::getDate).build())
                 .put("messageType", ComparingObject.builder().getDtoField(this::getMessageType).build())

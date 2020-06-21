@@ -15,7 +15,7 @@ public class PaidThingDto implements Dto {
     @Override
     public Map<String, ComparingObject> getComparingMap() {
         return ImmutableMap.<String, ComparingObject>builder()
-                .put("paid thing name", ComparingObject.builder().getDtoField(this::getName).build())
+                .put("paid thing name", ComparingObject.builder().getDtoField(this::getName).isMain(true).build())
                 .build();
     }
 }

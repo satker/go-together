@@ -21,7 +21,7 @@ public class CountryDto implements Dto {
     public Map<String, ComparingObject> getComparingMap() {
         return ImmutableMap.<String, ComparingObject>builder()
                 .put("country code", ComparingObject.builder().getDtoField(this::getCountryCode).build())
-                .put("country name", ComparingObject.builder().getDtoField(this::getName).build())
+                .put("country name", ComparingObject.builder().getDtoField(this::getName).isMain(true).build())
                 .build();
     }
 }

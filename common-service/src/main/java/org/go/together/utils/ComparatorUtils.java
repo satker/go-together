@@ -1,5 +1,7 @@
 package org.go.together.utils;
 
+import org.apache.commons.lang3.StringUtils;
+import org.go.together.dto.ComparingObject;
 import org.go.together.dto.SimpleDto;
 import org.go.together.exceptions.IncorrectDtoException;
 import org.go.together.interfaces.Dto;
@@ -7,7 +9,9 @@ import org.go.together.interfaces.NamedEnum;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.joinWith;
 
 public class ComparatorUtils {
@@ -70,12 +74,31 @@ public class ComparatorUtils {
 
     public static void compareDtos(Collection<String> result, String fieldName, Dto dto, Dto anotherDto) {
         Set<String> strings = new HashSet<>();
-        dto.getComparingMap().forEach((key, value) -> updateResult(strings, key, value.getGetDtoField().get(),
-                anotherDto.getComparingMap().get(key).getGetDtoField().get(),
-                value.getIsNeededDeepCompare()));
+        StringBuilder mainField = new StringBuilder();
+        dto.getComparingMap().forEach((key, value) -> {
+            if (value.getIsMain()) {
+                mainField.append(value.getGetDtoField().get().toString());
+            }
+            ComparingObject comparingField = anotherDto.getComparingMap().get(key);
+            updateResult(strings, key, value.getGetDtoField().get(),
+                    comparingField.getGetDtoField().get(),
+                    value.getIsNeededDeepCompare());
+        });
         if (!strings.isEmpty()) {
-            String resultString = CHANGED + " " + fieldName + ": " + joinWith(". ", strings);
-            result.add(resultString);
+            StringBuilder resultString = new StringBuilder()
+                    .append(CHANGED.replaceFirst("c", "C"))
+                    .append(" ")
+                    .append(fieldName);
+            if (StringUtils.isNotBlank(mainField)) {
+                resultString
+                        .append(" ")
+                        .append("\"")
+                        .append(mainField)
+                        .append("\"");
+            }
+            resultString.append(": ")
+                    .append(join(strings, ", "));
+            result.add(resultString.toString());
         }
     }
 
@@ -96,27 +119,71 @@ public class ComparatorUtils {
     public static void compareCollectionDtos(Collection<String> result, String fieldName,
                                              Collection<? extends Dto> collectionDtos, Collection<? extends Dto> anotherCollectionDtos) {
         StringBuilder resultString = new StringBuilder();
-        Set<UUID> collectionIds = collectionDtos.stream().map(Dto::getId).collect(Collectors.toSet());
-        Set<UUID> anotherCollectionIds = anotherCollectionDtos.stream().map(Dto::getId).collect(Collectors.toSet());
-        if (collectionIds.size() > anotherCollectionIds.size()) {
-            resultString.append("removed ")
-                    .append(collectionIds.size() - anotherCollectionIds.size())
-                    .append(" ")
-                    .append(fieldName);
-            result.add(resultString.toString());
-        } else if (collectionIds.size() < anotherCollectionIds.size()) {
-            resultString.append("added ")
-                    .append(anotherCollectionIds.size() - collectionIds.size())
-                    .append(" ")
-                    .append(fieldName);
-            result.add(resultString.toString());
-        } else {
-            if (anotherCollectionDtos.stream()
-                    .map(Dto::getId)
-                    .anyMatch(Objects::isNull)) {
-                resultString.append(CHANGED).append(" ").append(fieldName);
-                result.add(resultString.toString());
+        Map<UUID, ? extends List<? extends Dto>> collectionIdsMap = collectionDtos.stream()
+                .collect(Collectors.groupingBy(Dto::getId));
+
+        Map<UUID, ? extends List<? extends Dto>> anotherCollectionIdsMap = anotherCollectionDtos.stream()
+                .collect(Collectors.groupingBy(Dto::getId));
+
+        Set<String> removedElements = new HashSet<>();
+        Set<String> addedElements = new HashSet<>();
+        Set<String> changedElements = new HashSet<>();
+
+        anotherCollectionIdsMap.forEach((key, value) -> {
+            Dto anotherDto = value.iterator().next();
+            if (!collectionIdsMap.containsKey(key)) {
+                addedElements.add(getMainField(anotherDto));
+            } else {
+                Set<String> resultComparing = new HashSet<>();
+                Dto dto = collectionIdsMap.get(key).iterator().next();
+                compareDtos(resultComparing, fieldName, dto, anotherDto);
+                if (!resultComparing.isEmpty()) {
+                    changedElements.add(joinWith(",", resultComparing));
+                }
             }
+        });
+
+        collectionIdsMap.keySet().forEach(key -> {
+            if (!anotherCollectionIdsMap.containsKey(key)) {
+                Dto dto = collectionIdsMap.get(key).iterator().next();
+                removedElements.add(getMainField(dto));
+            }
+        });
+
+        if (!removedElements.isEmpty() || !addedElements.isEmpty() || !changedElements.isEmpty()) {
+            resultString.append(CHANGED).append(" ").append(fieldName).append(" (");
+            StringBuilder removedElementsString = new StringBuilder();
+            if (!removedElements.isEmpty()) {
+                removedElementsString
+                        .append(" removed ")
+                        .append(join(removedElements, ", "));
+            }
+            StringBuilder addedElementsString = new StringBuilder();
+            if (!addedElements.isEmpty()) {
+                addedElementsString
+                        .append(" added ")
+                        .append(join(addedElements, ", "));
+            }
+            StringBuilder changedElementsString = new StringBuilder();
+            if (!changedElements.isEmpty()) {
+                addedElementsString
+                        .append(" changed ")
+                        .append(join(changedElements, ", "));
+            }
+            String resultElementsString = Stream.of(removedElementsString, addedElementsString, changedElementsString)
+                    .filter(StringUtils::isNotBlank)
+                    .collect(Collectors.joining("and"));
+            resultString.append(resultElementsString);
+            resultString.append(") ");
+            result.add(resultString.toString());
         }
+    }
+
+    private static String getMainField(Dto dto) {
+        return dto.getComparingMap().entrySet().stream()
+                .filter(entry -> entry.getValue().getIsMain())
+                .map(Map.Entry::getKey)
+                .map(key -> "\"" + key + "\"")
+                .findFirst().orElse(StringUtils.EMPTY);
     }
 }
