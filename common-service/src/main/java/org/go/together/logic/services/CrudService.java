@@ -3,7 +3,6 @@ package org.go.together.logic.services;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.CustomRepository;
-import org.go.together.client.NotificationClient;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FormDto;
@@ -15,28 +14,21 @@ import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.logic.Mapper;
 import org.go.together.logic.Validator;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.go.together.utils.ComparatorUtils.compareDtos;
-
-public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> extends FindService<E> {
+public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> extends NotificationService<D, E> {
     private final Mapper<D, E> mapper;
     private final Validator<D> validator;
     private final CustomRepository<E> repository;
 
-    @Autowired
-    private NotificationClient notificationClient;
-
     protected CrudService(CustomRepository<E> repository,
                           Mapper<D, E> mapper,
                           Validator<D> validator) {
-        super(repository);
+        super(repository, mapper);
         this.repository = repository;
         this.mapper = mapper;
         this.validator = validator;
@@ -71,11 +63,6 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         }
     }
 
-    public D read(UUID uuid) {
-        Optional<E> entityById = repository.findById(uuid);
-        return entityById.map(mapper::entityToDto).orElse(null);
-    }
-
     public void delete(UUID uuid) {
         CrudOperation crudOperation = CrudOperation.DELETE;
         Optional<E> entityById = repository.findById(uuid);
@@ -102,23 +89,6 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
                     .collect(Collectors.toSet());
         }
         return new ResponseDto<>(pageDtoResult.getKey(), values);
-    }
-
-    private void notificate(UUID id, String message, CrudOperation crudOperation) {
-        String resultMessage = message;
-        if (crudOperation == CrudOperation.CREATE) {
-            resultMessage = "Created " + getServiceName() + ".";
-        } else if (crudOperation == CrudOperation.DELETE) {
-            resultMessage = "Deleted " + getServiceName() + ".";
-        }
-        notificationClient.notificate(id, resultMessage);
-    }
-
-    private String compareFields(D anotherDto) {
-        D dto = read(anotherDto.getId());
-        Collection<String> result = new HashSet<>();
-        compareDtos(result, getServiceName(), dto, anotherDto);
-        return StringUtils.join(result, ".");
     }
 
     public String validate(D dto) {
