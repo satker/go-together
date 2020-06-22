@@ -32,7 +32,7 @@ import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.go.together.logic.find.enums.FindSqlOperator.*;
+import static org.go.together.dto.filter.FindSqlOperator.*;
 import static org.go.together.test.TestUtils.createManyJoinDtos;
 import static org.go.together.test.TestUtils.createTestDto;
 import static org.junit.jupiter.api.Assertions.*;

@@ -3,7 +3,7 @@ package org.go.together.service;
 import com.google.common.collect.ImmutableMap;
 import org.go.together.dto.LanguageDto;
 import org.go.together.dto.filter.FieldMapper;
-import org.go.together.logic.CrudService;
+import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.LanguageMapper;
 import org.go.together.model.Language;
 import org.go.together.repository.LanguageRepository;

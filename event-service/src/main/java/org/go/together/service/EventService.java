@@ -8,7 +8,7 @@ import org.go.together.client.UserClient;
 import org.go.together.dto.*;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.enums.CrudOperation;
-import org.go.together.logic.CrudService;
+import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.EventMapper;
 import org.go.together.model.Event;
 import org.go.together.repository.EventRepository;

@@ -1,7 +1,7 @@
 package org.go.together.mapper;
 
 import org.go.together.dto.CountryDto;
-import org.go.together.interfaces.Mapper;
+import org.go.together.logic.Mapper;
 import org.go.together.model.Country;
 import org.go.together.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;

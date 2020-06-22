@@ -1,4 +1,4 @@
-package org.go.together.logic.find.utils;
+package org.go.together.utils;
 
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.exceptions.IncorrectFindObject;
@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class FieldParser {
+public class FindUtils {
     public static final String DELIMITER = "\\?";
     public static final String HAVING_COUNT = ":";
     public static final String GROUP_AND = "&";
@@ -84,7 +84,7 @@ public class FieldParser {
         String[] singleGroupFields = getSingleGroupFields(localEntityField);
         try {
             return Stream.of(singleGroupFields)
-                    .collect(Collectors.toMap(FieldParser::getEntityField,
+                    .collect(Collectors.toMap(FindUtils::getEntityField,
                             field -> getFieldMapper(availableFields, field)));
         } catch (Exception exception) {
             throw new IncorrectFindObject("Field " + searchField + " is unavailable for search.");

@@ -2,7 +2,7 @@ package org.go.together.mapper;
 
 import org.go.together.dto.EventPhotoDto;
 import org.go.together.dto.PhotoDto;
-import org.go.together.interfaces.Mapper;
+import org.go.together.logic.Mapper;
 import org.go.together.model.EventPhoto;
 import org.go.together.model.Photo;
 import org.springframework.stereotype.Component;

@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.LocationDto;
 import org.go.together.dto.SimpleDto;
 import org.go.together.dto.filter.FieldMapper;
-import org.go.together.logic.CrudService;
+import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.LocationMapper;
 import org.go.together.model.Country;
 import org.go.together.model.Location;

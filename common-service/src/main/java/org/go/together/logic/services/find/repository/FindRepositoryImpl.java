@@ -1,4 +1,4 @@
-package org.go.together.logic.find.repository;
+package org.go.together.logic.services.find.repository;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -6,18 +6,18 @@ import org.go.together.CustomRepository;
 import org.go.together.builder.SqlBuilder;
 import org.go.together.builder.WhereBuilder;
 import org.go.together.dto.filter.FilterDto;
+import org.go.together.dto.filter.FindSqlOperator;
 import org.go.together.dto.filter.PageDto;
 import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.go.together.logic.find.enums.FindSqlOperator;
-import org.go.together.logic.find.utils.FieldParser;
+import org.go.together.utils.FindUtils;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.go.together.logic.find.utils.FieldParser.getSingleGroupFields;
-import static org.go.together.logic.find.utils.FieldParser.getSplitHavingCountString;
+import static org.go.together.utils.FindUtils.getSingleGroupFields;
+import static org.go.together.utils.FindUtils.getSplitHavingCountString;
 
 public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepository {
     private final String serviceName;
@@ -90,7 +90,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
         WhereBuilder<E> whereBuilder = repository.createWhere();
         filters.forEach((key, value) -> {
             FindSqlOperator filterType = value.getFilterType();
-            String[] splitByDotString = FieldParser.getPathFields(key);
+            String[] splitByDotString = FindUtils.getPathFields(key);
             String searchField = splitByDotString[splitByDotString.length - 1];
             String[] groupFields = getSingleGroupFields(searchField);
             String suffix = key.replace(searchField, "");
@@ -153,9 +153,9 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
     }
 
     private void addDelimiter(String key, WhereBuilder<E> groupWhere, String field) {
-        String delimiter = FieldParser.getDelimiter(key, field);
+        String delimiter = FindUtils.getDelimiter(key, field);
         if (delimiter != null) {
-            if (delimiter.equals(FieldParser.GROUP_AND)) {
+            if (delimiter.equals(FindUtils.GROUP_AND)) {
                 groupWhere.and();
             } else {
                 groupWhere.or();
@@ -168,7 +168,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
                               WhereBuilder<E> groupWhere, String field) {
         Object searchObject = value.get(field);
         if (searchObject == null) {
-            String[] searchField = FieldParser.getSplitByDotString(field);
+            String[] searchField = FindUtils.getSplitByDotString(field);
             searchObject = value.get(searchField[searchField.length - 1]);
         }
         Pair<String, Object> searchPair = Pair.of(field, searchObject);

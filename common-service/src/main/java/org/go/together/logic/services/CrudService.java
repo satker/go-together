@@ -1,4 +1,4 @@
-package org.go.together.logic;
+package org.go.together.logic.services;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -13,8 +13,8 @@ import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.exceptions.ValidationException;
 import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.go.together.interfaces.Mapper;
-import org.go.together.logic.find.FindService;
+import org.go.together.logic.Mapper;
+import org.go.together.logic.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;

@@ -2,7 +2,7 @@ package org.go.together.service;
 
 import org.go.together.dto.CountryDto;
 import org.go.together.dto.filter.FieldMapper;
-import org.go.together.logic.CrudService;
+import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.CountryMapper;
 import org.go.together.model.Country;
 import org.go.together.repository.CountryRepository;

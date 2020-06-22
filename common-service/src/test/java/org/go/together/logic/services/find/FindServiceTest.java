@@ -1,4 +1,4 @@
-package org.go.together.logic.find;
+package org.go.together.logic.services.find;
 
 import org.junit.jupiter.api.Test;
 

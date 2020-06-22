@@ -3,7 +3,7 @@ package org.go.together.controller;
 import org.go.together.client.EventClient;
 import org.go.together.dto.*;
 import org.go.together.dto.filter.FormDto;
-import org.go.together.logic.find.FindController;
+import org.go.together.logic.controllers.FindController;
 import org.go.together.service.EventService;
 import org.go.together.service.EventUserService;
 import org.go.together.service.PaidThingService;

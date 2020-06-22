@@ -5,7 +5,7 @@ import org.go.together.dto.IdDto;
 import org.go.together.dto.PhotoCategory;
 import org.go.together.dto.PhotoDto;
 import org.go.together.dto.filter.FieldMapper;
-import org.go.together.logic.CrudService;
+import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.PhotoMapper;
 import org.go.together.model.Photo;
 import org.go.together.repository.PhotoRepository;

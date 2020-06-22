@@ -1,4 +1,4 @@
-package org.go.together.logic.find.finders;
+package org.go.together.logic.services.find.finders;
 
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.dto.filter.FilterDto;

@@ -1,7 +1,7 @@
 package org.go.together.mapper;
 
 import org.go.together.dto.EventLocationDto;
-import org.go.together.interfaces.Mapper;
+import org.go.together.logic.Mapper;
 import org.go.together.model.EventLocation;
 import org.springframework.stereotype.Component;
 

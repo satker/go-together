@@ -4,7 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.go.together.dto.ContentDto;
 import org.go.together.dto.PhotoDto;
-import org.go.together.interfaces.Mapper;
+import org.go.together.logic.Mapper;
 import org.go.together.model.Photo;
 import org.springframework.stereotype.Component;
 

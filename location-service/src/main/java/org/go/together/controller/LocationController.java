@@ -3,7 +3,7 @@ package org.go.together.controller;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.*;
 import org.go.together.dto.filter.FormDto;
-import org.go.together.logic.find.FindController;
+import org.go.together.logic.controllers.FindController;
 import org.go.together.service.EventLocationService;
 import org.go.together.service.LocationService;
 import org.springframework.web.bind.annotation.RestController;

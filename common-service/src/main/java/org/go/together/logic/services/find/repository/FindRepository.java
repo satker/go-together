@@ -1,4 +1,4 @@
-package org.go.together.logic.find.repository;
+package org.go.together.logic.services.find.repository;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.dto.filter.FilterDto;

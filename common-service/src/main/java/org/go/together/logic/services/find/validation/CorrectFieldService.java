@@ -1,24 +1,24 @@
-package org.go.together.logic.find.validation;
+package org.go.together.logic.services.find.validation;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.dto.filter.FilterDto;
 import org.go.together.exceptions.IncorrectFindObject;
-import org.go.together.logic.find.utils.FieldParser;
+import org.go.together.utils.FindUtils;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.go.together.logic.find.utils.FieldParser.*;
+import static org.go.together.utils.FindUtils.*;
 
 public class CorrectFieldService {
     public Pair<Map<String, FilterDto>, Map<String, FilterDto>> getRemoteAndCorrectedFilters(Map<String, FilterDto> filters, Map<String, FieldMapper> availableFields) {
         Map<String, FilterDto> localFilters = new HashMap<>();
         Map<String, FilterDto> remoteFilters = new HashMap<>();
         filters.forEach((key, value) -> {
-            Map<String, FieldMapper> fieldMappers = FieldParser.getFieldMappers(availableFields, key);
+            Map<String, FieldMapper> fieldMappers = FindUtils.getFieldMappers(availableFields, key);
             boolean isNotRemote = fieldMappers.values().stream()
                     .allMatch(fieldMapper -> fieldMapper.getRemoteServiceClient() == null);
             Pair<Map<String, String>, String> localFieldForSearch =

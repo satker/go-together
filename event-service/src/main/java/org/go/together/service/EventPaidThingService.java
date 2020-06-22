@@ -2,7 +2,7 @@ package org.go.together.service;
 
 import org.go.together.dto.EventPaidThingDto;
 import org.go.together.dto.filter.FieldMapper;
-import org.go.together.logic.CrudService;
+import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.EventPaidThingMapper;
 import org.go.together.model.EventPaidThing;
 import org.go.together.repository.EventPaidThingRepository;

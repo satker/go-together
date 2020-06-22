@@ -1,4 +1,7 @@
-package org.go.together.interfaces;
+package org.go.together.logic;
+
+import org.go.together.interfaces.Dto;
+import org.go.together.interfaces.IdentifiedEntity;
 
 import java.util.Collection;
 import java.util.stream.Collectors;

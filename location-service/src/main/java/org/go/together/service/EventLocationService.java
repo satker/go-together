@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import org.go.together.dto.EventLocationDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.filter.FieldMapper;
-import org.go.together.logic.CrudService;
+import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.EventLocationMapper;
 import org.go.together.model.EventLocation;
 import org.go.together.repository.EventLocationRepository;

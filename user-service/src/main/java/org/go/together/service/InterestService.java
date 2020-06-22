@@ -3,7 +3,7 @@ package org.go.together.service;
 import com.google.common.collect.ImmutableMap;
 import org.go.together.dto.InterestDto;
 import org.go.together.dto.filter.FieldMapper;
-import org.go.together.logic.CrudService;
+import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.InterestMapper;
 import org.go.together.model.Interest;
 import org.go.together.repository.InterestRepository;

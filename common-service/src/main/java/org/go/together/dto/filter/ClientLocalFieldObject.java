@@ -1,4 +1,4 @@
-package org.go.together.logic.find.utils;
+package org.go.together.dto.filter;
 
 import lombok.Builder;
 import lombok.Getter;

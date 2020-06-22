@@ -1,4 +1,4 @@
-package org.go.together.logic.find.enums;
+package org.go.together.dto.filter;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.builder.WhereBuilder;

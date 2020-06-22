@@ -4,7 +4,7 @@ import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.PhotoDto;
 import org.go.together.dto.UserDto;
-import org.go.together.interfaces.Mapper;
+import org.go.together.logic.Mapper;
 import org.go.together.model.SystemUser;
 import org.springframework.stereotype.Component;
 
