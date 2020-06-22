@@ -3,7 +3,7 @@ package org.go.together.logic.services;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.CustomRepository;
 import org.go.together.client.NotificationClient;
-import org.go.together.enums.CrudOperation;
+import org.go.together.dto.NotificationStatus;
 import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.logic.Mapper;
@@ -17,10 +17,11 @@ import java.util.UUID;
 import static org.go.together.utils.ComparatorUtils.compareDtos;
 
 public abstract class NotificationService<D extends Dto, E extends IdentifiedEntity> extends FindService<E> {
-    private final CustomRepository<E> repository;
-    private final Mapper<D, E> mapper;
     @Autowired
     private NotificationClient notificationClient;
+
+    private final CustomRepository<E> repository;
+    private final Mapper<D, E> mapper;
 
     protected NotificationService(CustomRepository<E> repository,
                                   Mapper<D, E> mapper) {
@@ -29,14 +30,16 @@ public abstract class NotificationService<D extends Dto, E extends IdentifiedEnt
         this.mapper = mapper;
     }
 
-    protected void notificate(UUID id, String message, CrudOperation crudOperation) {
-        String resultMessage = message;
-        if (crudOperation == CrudOperation.CREATE) {
+    protected void notificate(UUID id, D dto, NotificationStatus notificationStatus) {
+        String resultMessage = null;
+        if (notificationStatus == NotificationStatus.CREATED) {
             resultMessage = "Created " + getServiceName() + ".";
-        } else if (crudOperation == CrudOperation.DELETE) {
+        } else if (notificationStatus == NotificationStatus.DELETED) {
             resultMessage = "Deleted " + getServiceName() + ".";
+        } else if (notificationStatus == NotificationStatus.UPDATED) {
+            resultMessage = compareFields(dto);
         }
-        notificationClient.notificate(id, resultMessage);
+        notificationClient.notificate(id, notificationStatus, resultMessage);
     }
 
     protected String compareFields(D anotherDto) {
@@ -44,6 +47,16 @@ public abstract class NotificationService<D extends Dto, E extends IdentifiedEnt
         Collection<String> result = new HashSet<>();
         compareDtos(result, getServiceName(), dto, anotherDto);
         return StringUtils.join(result, ".");
+    }
+
+    protected void addedReceiver(UUID producerId, UUID receiverId) {
+        if (receiverId != null) {
+            notificationClient.addReceiver(producerId, receiverId);
+        }
+    }
+
+    protected void removedReceiver(UUID producerId, UUID receiverId) {
+        notificationClient.removeReceiver(producerId, receiverId);
     }
 
     public D read(UUID uuid) {

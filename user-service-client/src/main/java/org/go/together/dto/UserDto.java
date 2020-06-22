@@ -39,4 +39,9 @@ public class UserDto implements Dto {
                 .put("interests", ComparingObject.builder().getDtoField(this::getInterests).build())
                 .build();
     }
+
+    @Override
+    public UUID getAuthorId() {
+        return getId();
+    }
 }

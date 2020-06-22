@@ -1,6 +1,7 @@
 package org.go.together.client;
 
 import org.go.together.dto.NotificationMessageDto;
+import org.go.together.dto.NotificationStatus;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +21,9 @@ public interface NotificationClient {
     boolean removeReceiver(@PathVariable("producerId") UUID producerId,
                            @PathVariable("receiverId") UUID receiverId);
 
-    @PostMapping("notifications/producers/{producerId}")
+    @PostMapping("notifications/producers/{producerId}/status/{status}")
     boolean notificate(@PathVariable("producerId") UUID producerId,
+                       @PathVariable("status") NotificationStatus status,
                        @RequestBody String notificationMessage);
 
     @PostMapping("notifications/receivers/{receiverId}")

@@ -38,4 +38,9 @@ public class EventDto implements Dto {
                 .put("routes", ComparingObject.builder().getDtoField(this::getRoute).build())
                 .build();
     }
+
+    @Override
+    public UUID getAuthorId() {
+        return author.getAuthorId();
+    }
 }

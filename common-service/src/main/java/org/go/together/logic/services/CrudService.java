@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.CustomRepository;
 import org.go.together.dto.IdDto;
+import org.go.together.dto.NotificationStatus;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FormDto;
 import org.go.together.dto.filter.PageDto;
@@ -41,7 +42,8 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
             E entity = mapper.dtoToEntity(dto);
             updateEntity(entity, dto, crudOperation);
             E createdEntity = repository.save(entity);
-            notificate(createdEntity.getId(), null, crudOperation);
+            notificate(createdEntity.getId(), null, NotificationStatus.CREATED);
+            addedReceiver(createdEntity.getId(), dto.getAuthorId());
             return new IdDto(createdEntity.getId());
         } else {
             throw new ValidationException(validate);
@@ -54,9 +56,8 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
             updateEntity(entity, dto, crudOperation);
-            String compareResult = compareFields(dto);
             E createdEntity = repository.save(entity);
-            notificate(dto.getId(), compareResult, crudOperation);
+            notificate(dto.getId(), dto, NotificationStatus.UPDATED);
             return new IdDto(createdEntity.getId());
         } else {
             throw new ValidationException(validate);
@@ -70,7 +71,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
             E entity = entityById.get();
             updateEntity(entity, null, crudOperation);
             repository.delete(entity);
-            notificate(uuid, null, crudOperation);
+            notificate(uuid, null, NotificationStatus.DELETED);
         } else {
             throw new CannotFindEntityException("Cannot find entity by id " + uuid);
         }

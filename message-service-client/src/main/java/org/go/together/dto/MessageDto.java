@@ -27,4 +27,9 @@ public class MessageDto implements Dto {
                 .put("messageType", ComparingObject.builder().getDtoField(this::getMessageType).build())
                 .build();
     }
+
+    @Override
+    public UUID getAuthorId() {
+        return getAuthorId();
+    }
 }

@@ -1,6 +1,7 @@
 package org.go.together.service;
 
 import org.go.together.dto.NotificationMessageDto;
+import org.go.together.dto.NotificationStatus;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.mapper.NotificationMessageMapper;
 import org.go.together.model.Notification;
@@ -80,10 +81,11 @@ public class NotificationService {
         return true;
     }
 
-    public boolean notificate(UUID producerId, String notificationMessage) {
+    public boolean notificate(UUID producerId, NotificationStatus status, String notificationMessage) {
         Optional<Notification> notificationOptional = notificationRepository.findByProducerId(producerId);
         if (notificationOptional.isPresent()) {
             Notification notification = notificationOptional.get();
+            notification.setStatus(status);
             Set<NotificationMessage> notificationMessages = notification.getNotificationMessages();
             NotificationMessage notificationMessageEntity = new NotificationMessage();
             notificationMessageEntity.setMessage(notificationMessage);
@@ -91,7 +93,19 @@ public class NotificationService {
             notificationMessages.add(notificationMessageEntity);
             notificationRepository.save(notification);
         } else {
-            throw new CannotFindEntityException("Cannot find notification.");
+            Notification notification = new Notification();
+            notification.setProducerId(producerId);
+            notification.setStatus(status);
+
+            Set<NotificationMessage> notificationMessages = new HashSet<>();
+            NotificationMessage notificationMessageEntity = new NotificationMessage();
+            notificationMessageEntity.setMessage(notificationMessage);
+            notificationMessageEntity.setDate(new Date());
+            notificationMessages.add(notificationMessageEntity);
+
+            notification.setNotificationMessages(notificationMessages);
+
+            notificationRepository.save(notification);
         }
         return true;
     }
