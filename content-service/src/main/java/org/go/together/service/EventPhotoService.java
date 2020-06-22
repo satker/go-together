@@ -62,7 +62,7 @@ public class EventPhotoService extends CrudService<EventPhotoDto, EventPhoto> {
 
 
     @Override
-    protected void updateEntity(EventPhoto entity, EventPhotoDto dto, CrudOperation crudOperation) {
+    protected void enrichEntity(EventPhoto entity, EventPhotoDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.DELETE) {
             photoService.deleteContentByRoomId(entity.getPhotos());
         }

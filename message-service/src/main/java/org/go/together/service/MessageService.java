@@ -67,7 +67,7 @@ public class MessageService extends CrudService<MessageDto, Message> {
     }
 
     @Override
-    protected void updateEntity(Message entity, MessageDto dto, CrudOperation crudOperation) {
+    protected void enrichEntity(Message entity, MessageDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE) {
             entity.setDate(new Date());
         }

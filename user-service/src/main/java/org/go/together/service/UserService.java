@@ -102,7 +102,7 @@ public class UserService extends CrudService<UserDto, SystemUser> {
     }
 
     @Override
-    protected void updateEntity(SystemUser entity, UserDto dto, CrudOperation crudOperation) {
+    protected void enrichEntity(SystemUser entity, UserDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE) {
             Collection<UUID> previousPhotos = userRepository.findById(entity.getId())
                     .map(SystemUser::getPhotoIds)

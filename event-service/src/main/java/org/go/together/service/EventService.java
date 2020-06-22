@@ -53,7 +53,7 @@ public class EventService extends CrudService<EventDto, Event> {
     }
 
     @Override
-    protected void updateEntity(Event entity, EventDto dto, CrudOperation crudOperation) {
+    protected void enrichEntity(Event entity, EventDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE) {
             updateEntity(entity, dto, entity.getId());
         } else if (crudOperation == CrudOperation.CREATE) {

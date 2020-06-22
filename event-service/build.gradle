@@ -17,12 +17,6 @@ repositories {
 sourceCompatibility = 13
 targetCompatibility = 13
 
-ext {
-    logstashLogsEncoderVersion = '4.6'
-    zipkinAutoconfigurerVersion= '2.3.1'
-    wait_for_it_script_path = rootProject.file("tools/wait-for").absolutePath
-}
-
 dependencies {
     compile (
             "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",

@@ -40,7 +40,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         String validate = validator.validate(dto, crudOperation);
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
-            updateEntity(entity, dto, crudOperation);
+            enrichEntity(entity, dto, crudOperation);
             E createdEntity = repository.save(entity);
             notificate(createdEntity.getId(), dto, NotificationStatus.CREATED);
             return new IdDto(createdEntity.getId());
@@ -54,7 +54,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         String validate = validator.validate(dto, crudOperation);
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
-            updateEntity(entity, dto, crudOperation);
+            enrichEntity(entity, dto, crudOperation);
             notificate(dto.getId(), dto, NotificationStatus.UPDATED);
             E createdEntity = repository.save(entity);
             return new IdDto(createdEntity.getId());
@@ -68,7 +68,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         Optional<E> entityById = repository.findById(uuid);
         if (entityById.isPresent()) {
             E entity = entityById.get();
-            updateEntity(entity, null, crudOperation);
+            enrichEntity(entity, null, crudOperation);
             repository.delete(entity);
             notificate(uuid, null, NotificationStatus.DELETED);
         } else {
@@ -95,6 +95,6 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         return validator.validate(dto, null);
     }
 
-    protected void updateEntity(E entity, D dto, CrudOperation crudOperation) {
+    protected void enrichEntity(E entity, D dto, CrudOperation crudOperation) {
     }
 }
