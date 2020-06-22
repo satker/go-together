@@ -44,7 +44,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
 
     public IdDto create(D dto) {
         CrudOperation crudOperation = CrudOperation.CREATE;
-        String validate = validator.validateForCreate(dto);
+        String validate = validator.validate(dto, crudOperation);
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
             updateEntity(entity, dto, crudOperation);
@@ -58,7 +58,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
 
     public IdDto update(D dto) {
         CrudOperation crudOperation = CrudOperation.UPDATE;
-        String validate = validator.validateForUpdate(dto);
+        String validate = validator.validate(dto, crudOperation);
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
             updateEntity(entity, dto, crudOperation);
@@ -122,7 +122,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
     }
 
     public String validate(D dto) {
-        return validator.validate(dto);
+        return validator.validate(dto, null);
     }
 
     protected void updateEntity(E entity, D dto, CrudOperation crudOperation) {

@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.UserDto;
+import org.go.together.enums.CrudOperation;
 import org.go.together.logic.Validator;
 import org.go.together.repository.InterestRepository;
 import org.go.together.repository.LanguageRepository;
@@ -30,32 +31,34 @@ public class UserValidator extends Validator<UserDto> {
     }
 
     @Override
-    public String validateForCreateCustom(UserDto dto) {
+    public String commonValidation(UserDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
-        String validatedLocation = locationClient.validateLocation(dto.getLocation());
-        if (StringUtils.isNotBlank(validatedLocation)) {
-            errors.append(validatedLocation);
-        }
+        if (crudOperation == CrudOperation.CREATE) {
+            String validatedLocation = locationClient.validateLocation(dto.getLocation());
+            if (StringUtils.isNotBlank(validatedLocation)) {
+                errors.append(validatedLocation);
+            }
 
-        if (dto.getLanguages().isEmpty() || dto.getLanguages()
-                .stream()
-                .anyMatch(lang -> languageRepository.findById(lang.getId()).isEmpty())) {
-            errors.append("User languages are empty or incorrect");
-        }
+            if (dto.getLanguages().isEmpty() || dto.getLanguages()
+                    .stream()
+                    .anyMatch(lang -> languageRepository.findById(lang.getId()).isEmpty())) {
+                errors.append("User languages are empty or incorrect");
+            }
 
-        if (dto.getInterests().isEmpty() || dto.getInterests()
-                .stream()
-                .anyMatch(lang -> interestRepository.findById(lang.getId()).isEmpty())) {
-            errors.append("User interests are empty or incorrect");
-        }
+            if (dto.getInterests().isEmpty() || dto.getInterests()
+                    .stream()
+                    .anyMatch(lang -> interestRepository.findById(lang.getId()).isEmpty())) {
+                errors.append("User interests are empty or incorrect");
+            }
 
-        String validatePhoto = dto.getUserPhotos().stream()
-                .map(contentClient::validate)
-                .filter(StringUtils::isNotBlank)
-                .collect(Collectors.joining(". "));
-        if (StringUtils.isNotBlank(validatePhoto)) {
-            errors.append(validatePhoto);
+            String validatePhoto = dto.getUserPhotos().stream()
+                    .map(contentClient::validate)
+                    .filter(StringUtils::isNotBlank)
+                    .collect(Collectors.joining(". "));
+            if (StringUtils.isNotBlank(validatePhoto)) {
+                errors.append(validatePhoto);
+            }
         }
 
         return errors.toString();

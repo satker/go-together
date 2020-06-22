@@ -2,6 +2,7 @@ package org.go.together.validation;
 
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventUserDto;
+import org.go.together.enums.CrudOperation;
 import org.go.together.logic.Validator;
 import org.go.together.repository.EventRepository;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ public class EventUserValidator extends Validator<EventUserDto> {
     }
 
     @Override
-    protected String commonValidateCustom(EventUserDto dto) {
+    protected String commonValidation(EventUserDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
         if (!userClient.checkIfUserPresentsById(dto.getUser().getId())) {

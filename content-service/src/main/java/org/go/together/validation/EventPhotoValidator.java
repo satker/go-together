@@ -3,6 +3,7 @@ package org.go.together.validation;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.EventPhotoDto;
+import org.go.together.enums.CrudOperation;
 import org.go.together.logic.Validator;
 import org.springframework.stereotype.Component;
 
@@ -24,11 +25,11 @@ public class EventPhotoValidator extends Validator<EventPhotoDto> {
     }
 
     @Override
-    protected String commonValidateCustom(EventPhotoDto dto) {
+    protected String commonValidation(EventPhotoDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
         dto.getPhotos().stream()
-                .map(photoValidator::validate)
+                .map(photoDto -> photoValidator.validate(photoDto, crudOperation))
                 .filter(StringUtils::isNotBlank)
                 .forEach(errors::append);
 

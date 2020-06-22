@@ -7,6 +7,7 @@ import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.*;
 import org.go.together.dto.validation.DateIntervalDto;
+import org.go.together.enums.CrudOperation;
 import org.go.together.logic.Validator;
 import org.springframework.stereotype.Component;
 
@@ -50,7 +51,7 @@ public class EventValidator extends Validator<EventDto> {
     }
 
     @Override
-    protected String commonValidateCustom(EventDto dto) {
+    protected String commonValidation(EventDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
         if (Optional.ofNullable(dto.getAuthor()).map(UserDto::getId).isEmpty()) {
@@ -63,7 +64,7 @@ public class EventValidator extends Validator<EventDto> {
                     .append(". ");
         }
 
-        checkCashCategories(dto.getPaidThings(), errors);
+        checkCashCategories(dto.getPaidThings(), errors, crudOperation);
 
         dto.getEventPhotoDto().getPhotos().stream()
                 .map(contentClient::validate)
@@ -75,7 +76,8 @@ public class EventValidator extends Validator<EventDto> {
         return errors.toString();
     }
 
-    private void checkCashCategories(Collection<EventPaidThingDto> paidThingDtos, StringBuilder errors) {
+    private void checkCashCategories(Collection<EventPaidThingDto> paidThingDtos, StringBuilder errors,
+                                     CrudOperation crudOperation) {
         List<CashCategory> cashCategories = paidThingDtos.stream()
                 .map(EventPaidThingDto::getCashCategory)
                 .filter(Objects::nonNull)
@@ -84,7 +86,7 @@ public class EventValidator extends Validator<EventDto> {
             errors.append("Collection paid things is incorrect.");
         } else {
             paidThingDtos.stream()
-                    .map(eventPaidThingValidator::validate)
+                    .map(paidThingDto -> eventPaidThingValidator.validate(paidThingDto, crudOperation))
                     .filter(StringUtils::isNotBlank)
                     .forEach(errors::append);
         }

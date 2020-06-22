@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Strings;
 import org.go.together.dto.EventLocationDto;
+import org.go.together.enums.CrudOperation;
 import org.go.together.logic.Validator;
 import org.go.together.mapper.CountryMapper;
 import org.go.together.model.Country;
@@ -35,7 +36,7 @@ public class EventLocationValidator extends Validator<EventLocationDto> {
     }
 
     @Override
-    protected String commonValidateCustom(EventLocationDto eventLocationDto) {
+    protected String commonValidation(EventLocationDto eventLocationDto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
         Country country;
         if (Strings.isNullOrEmpty(eventLocationDto.getLocation().getCountry().getName())) {
@@ -48,7 +49,7 @@ public class EventLocationValidator extends Validator<EventLocationDto> {
             errors.append("Not entered country name ");
         }
 
-        String validateLocation = locationValidator.validate(eventLocationDto.getLocation());
+        String validateLocation = locationValidator.validate(eventLocationDto.getLocation(), crudOperation);
         if (StringUtils.isNotBlank(validateLocation)) {
             errors.append(validateLocation);
         }

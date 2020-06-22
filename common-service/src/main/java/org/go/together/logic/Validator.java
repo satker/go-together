@@ -5,6 +5,7 @@ import org.go.together.dto.SimpleDto;
 import org.go.together.dto.validation.DateIntervalDto;
 import org.go.together.dto.validation.NumberIntervalDto;
 import org.go.together.dto.validation.StringRegexDto;
+import org.go.together.enums.CrudOperation;
 import org.go.together.interfaces.Dto;
 import org.go.together.utils.ValidatorUtils;
 
@@ -23,27 +24,7 @@ public abstract class Validator<CD extends Dto> {
     public Map<String, Optional<Object>> OBJECT_NULL_CHECK = new HashMap<>();
     public Map<String, NumberIntervalDto> NUMBER_INTERVAL_CORRECT_CHECK = new HashMap<>();
 
-    public String validateForCreate(CD dto) {
-        StringBuilder errors = new StringBuilder();
-        errors.append(validate(dto));
-        if (StringUtils.isBlank(errors)) {
-            errors.append(validateForCreateCustom(dto));
-        }
-        return errors.toString();
-    }
-
-    public String validateForUpdate(CD dto) {
-        StringBuilder errors = new StringBuilder();
-
-        errors.append(validate(dto));
-
-        if (StringUtils.isBlank(errors)) {
-            errors.append(validateForUpdateCustom(dto));
-        }
-        return errors.toString();
-    }
-
-    public String validate(CD dto) {
+    public String validate(CD dto, CrudOperation crudOperation) {
         getMapsForCheck(dto);
         StringBuilder errors = new StringBuilder();
 
@@ -56,44 +37,24 @@ public abstract class Validator<CD extends Dto> {
                 .append(ValidatorUtils.checkNullObject(OBJECT_NULL_CHECK))
                 .append(ValidatorUtils.checkNumberIntervalIsCorrect(NUMBER_INTERVAL_CORRECT_CHECK));
         if (StringUtils.isBlank(errors)) {
-            errors.append(commonValidateCustom(dto));
+            errors.append(commonValidation(dto, crudOperation));
         }
         return errors.toString();
     }
 
-    public String validateDtos(Collection<CD> dtos) {
+    public String validateDtos(Collection<CD> dtos, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
         dtos.stream()
-                .map(this::validate)
+                .map(dto -> validate(dto, crudOperation))
                 .forEach(errors::append);
-
-        if (StringUtils.isBlank(errors)) {
-            errors.append(commonValidateDtosCustom(dtos));
-        }
 
         return errors.toString();
     }
 
     public abstract void getMapsForCheck(CD dto);
 
-    // Custom validation for creation
-    protected String validateForCreateCustom(CD dto) {
-        return StringUtils.EMPTY;
-    }
-
-    // Custom validation for update
-    protected String validateForUpdateCustom(CD dto) {
-        return StringUtils.EMPTY;
-    }
-
-    // Custom common validation
-    protected String commonValidateCustom(CD dto) {
-        return StringUtils.EMPTY;
-    }
-
-    // Custom common validation dtos
-    protected String commonValidateDtosCustom(Collection<CD> dto) {
+    protected String commonValidation(CD dto, CrudOperation crudOperation) {
         return StringUtils.EMPTY;
     }
 }

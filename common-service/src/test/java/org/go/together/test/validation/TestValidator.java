@@ -6,6 +6,7 @@ import org.go.together.dto.SimpleDto;
 import org.go.together.dto.validation.DateIntervalDto;
 import org.go.together.dto.validation.NumberIntervalDto;
 import org.go.together.dto.validation.StringRegexDto;
+import org.go.together.enums.CrudOperation;
 import org.go.together.logic.Validator;
 import org.go.together.test.dto.TestDto;
 import org.springframework.stereotype.Component;
@@ -56,16 +57,17 @@ public class TestValidator extends Validator<TestDto> {
                         .build();
     }
 
-    protected String commonValidateCustom(TestDto dto) {
+    @Override
+    protected String commonValidation(TestDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
         dto.getJoinTestEntities().stream()
-                .map(joinTestValidator::validate)
+                .map((joinTestDto) -> joinTestValidator.validate(joinTestDto, crudOperation))
                 .filter(StringUtils::isNotBlank)
                 .forEach(errors::append);
 
         dto.getManyJoinEntities().stream()
-                .map(manyJoinValidator::validate)
+                .map(manyJoinDto -> manyJoinValidator.validate(manyJoinDto, crudOperation))
                 .filter(StringUtils::isNotBlank)
                 .forEach(errors::append);
         return errors.toString();

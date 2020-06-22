@@ -3,6 +3,7 @@ package org.go.together.validation;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.LocationDto;
+import org.go.together.enums.CrudOperation;
 import org.go.together.logic.Validator;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +24,9 @@ public class LocationValidator extends Validator<LocationDto> {
     }
 
     @Override
-    protected String commonValidateCustom(LocationDto dto) {
+    protected String commonValidation(LocationDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
-        String validateCountry = countryValidator.validate(dto.getCountry());
+        String validateCountry = countryValidator.validate(dto.getCountry(), crudOperation);
         if (StringUtils.isNotBlank(validateCountry)) {
             errors.append(validateCountry);
         }

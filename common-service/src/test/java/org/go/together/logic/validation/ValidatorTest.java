@@ -58,7 +58,7 @@ class ValidatorTest {
 
     @Test
     void validateSuccess() {
-        String validate = testValidator.validate(testDto);
+        String validate = testValidator.validate(testDto, null);
 
         assertTrue(StringUtils.isBlank(validate));
     }
@@ -71,7 +71,7 @@ class ValidatorTest {
         Date endDate = endCalendar.getTime();
         testDto.setEndDate(endDate);
 
-        String validate = testValidator.validate(testDto);
+        String validate = testValidator.validate(testDto, null);
 
         assertTrue(validate.contains("test dates"));
     }
@@ -80,7 +80,7 @@ class ValidatorTest {
     void validateWithIncorrectNumber() {
         testDto.setNumber(0);
 
-        String validate = testValidator.validate(testDto);
+        String validate = testValidator.validate(testDto, null);
 
         assertTrue(validate.contains("test number"));
     }
@@ -89,7 +89,7 @@ class ValidatorTest {
     void validateWithIncorrectNumbers() {
         testDto.setEndNumber(0);
 
-        String validate = testValidator.validate(testDto);
+        String validate = testValidator.validate(testDto, null);
 
         assertTrue(validate.contains("test number interval"));
     }
@@ -98,7 +98,7 @@ class ValidatorTest {
     void validateWithNullTestId() {
         testDto.setId(null);
 
-        String validate = testValidator.validate(testDto);
+        String validate = testValidator.validate(testDto, null);
 
         assertTrue(validate.contains("test id"));
     }
@@ -107,7 +107,7 @@ class ValidatorTest {
     void validateWithNullSimpleDtoId() {
         testDto.setSimpleDto(new SimpleDto(null, "string"));
 
-        String validate = testValidator.validate(testDto);
+        String validate = testValidator.validate(testDto, null);
 
         assertTrue(validate.contains("simple dto"));
     }
@@ -116,7 +116,7 @@ class ValidatorTest {
     void validateWithEmptyName() {
         testDto.setName(EMPTY);
 
-        String validate = testValidator.validate(testDto);
+        String validate = testValidator.validate(testDto, null);
 
         assertTrue(validate.contains("test name"));
     }
@@ -125,7 +125,7 @@ class ValidatorTest {
     void validateWithEmptyNameJoinTest() {
         testDto.getJoinTestEntities().forEach(joinTestDto -> joinTestDto.setName(EMPTY));
 
-        String validate = testValidator.validate(testDto);
+        String validate = testValidator.validate(testDto, null);
 
         assertTrue(validate.contains("test name"));
     }
@@ -134,7 +134,7 @@ class ValidatorTest {
     void validateWithEmptyCollection() {
         testDto.setJoinTestEntities(Collections.emptySet());
 
-        String validate = testValidator.validate(testDto);
+        String validate = testValidator.validate(testDto, null);
 
         assertTrue(validate.contains("test join tests"));
     }
@@ -162,7 +162,7 @@ class ValidatorTest {
         TestDto testDtoAnother = createTestDto(id, name, number, date, startDate, endDate,
                 startNumber, endNumber, simpleDto, longitude, latitude);
 
-        String validate = testValidator.validateDtos(Arrays.asList(testDto, testDtoAnother));
+        String validate = testValidator.validateDtos(Arrays.asList(testDto, testDtoAnother), null);
 
         assertTrue(StringUtils.isBlank(validate));
     }
