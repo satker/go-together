@@ -240,4 +240,9 @@ public class TestDto implements Dto {
     public String toString() {
         return "TestDto(id=" + this.getId() + ", name=" + this.getName() + ", number=" + this.getNumber() + ", date=" + this.getDate() + ", startDate=" + this.getStartDate() + ", endDate=" + this.getEndDate() + ", startNumber=" + this.getStartNumber() + ", endNumber=" + this.getEndNumber() + ", latitude=" + this.getLatitude() + ", longitude=" + this.getLongitude() + ", simpleDto=" + this.getSimpleDto() + ", elements=" + this.getElements() + ", joinTestEntities=" + this.getJoinTestEntities() + ", manyJoinEntities=" + this.getManyJoinEntities() + ")";
     }
+
+    @Override
+    public UUID getOwnerId() {
+        return getId();
+    }
 }

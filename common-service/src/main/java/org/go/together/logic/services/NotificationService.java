@@ -39,7 +39,12 @@ public abstract class NotificationService<D extends Dto, E extends IdentifiedEnt
         } else if (notificationStatus == NotificationStatus.UPDATED) {
             resultMessage = compareFields(dto);
         }
-        notificationClient.notificate(id, notificationStatus, resultMessage);
+        if (dto.getOwnerId() != null) {
+            notificationClient.notificate(id, notificationStatus, resultMessage);
+        }
+        if (notificationStatus == NotificationStatus.CREATED) {
+            addedReceiver(id, dto.getOwnerId());
+        }
     }
 
     protected String compareFields(D anotherDto) {

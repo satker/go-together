@@ -42,8 +42,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
             E entity = mapper.dtoToEntity(dto);
             updateEntity(entity, dto, crudOperation);
             E createdEntity = repository.save(entity);
-            notificate(createdEntity.getId(), null, NotificationStatus.CREATED);
-            addedReceiver(createdEntity.getId(), dto.getAuthorId());
+            notificate(createdEntity.getId(), dto, NotificationStatus.CREATED);
             return new IdDto(createdEntity.getId());
         } else {
             throw new ValidationException(validate);
@@ -56,8 +55,8 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
             updateEntity(entity, dto, crudOperation);
-            E createdEntity = repository.save(entity);
             notificate(dto.getId(), dto, NotificationStatus.UPDATED);
+            E createdEntity = repository.save(entity);
             return new IdDto(createdEntity.getId());
         } else {
             throw new ValidationException(validate);

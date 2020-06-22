@@ -41,7 +41,7 @@ public class UserDto implements Dto {
     }
 
     @Override
-    public UUID getAuthorId() {
+    public UUID getOwnerId() {
         return getId();
     }
 }

@@ -40,7 +40,7 @@ public class EventDto implements Dto {
     }
 
     @Override
-    public UUID getAuthorId() {
-        return author.getAuthorId();
+    public UUID getOwnerId() {
+        return author.getOwnerId();
     }
 }

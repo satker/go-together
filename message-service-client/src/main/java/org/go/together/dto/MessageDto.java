@@ -29,7 +29,7 @@ public class MessageDto implements Dto {
     }
 
     @Override
-    public UUID getAuthorId() {
-        return getAuthorId();
+    public UUID getOwnerId() {
+        return this.getOwnerId();
     }
 }

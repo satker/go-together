@@ -8,7 +8,7 @@ import java.util.UUID;
 public interface Comparable {
     Map<String, ComparingObject> getComparingMap();
 
-    default UUID getAuthorId() {
+    default UUID getOwnerId() {
         return null;
     }
 }
