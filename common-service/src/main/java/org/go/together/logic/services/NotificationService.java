@@ -3,16 +3,15 @@ package org.go.together.logic.services;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.CustomRepository;
 import org.go.together.client.NotificationClient;
+import org.go.together.dto.ComparingObject;
 import org.go.together.dto.NotificationStatus;
 import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.logic.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Supplier;
 
 import static org.go.together.utils.ComparatorUtils.compareDtos;
 
@@ -30,20 +29,42 @@ public abstract class NotificationService<D extends Dto, E extends IdentifiedEnt
         this.mapper = mapper;
     }
 
-    protected void notificate(UUID id, D dto, NotificationStatus notificationStatus) {
-        String resultMessage = null;
-        if (notificationStatus == NotificationStatus.CREATED) {
-            resultMessage = "Created " + getServiceName() + ".";
-        } else if (notificationStatus == NotificationStatus.DELETED) {
-            resultMessage = "Deleted " + getServiceName() + ".";
-        } else if (notificationStatus == NotificationStatus.UPDATED) {
-            resultMessage = compareFields(dto);
-        }
-        if (dto.getOwnerId() != null) {
-            notificationClient.notificate(id, notificationStatus, resultMessage);
-        }
-        if (notificationStatus == NotificationStatus.CREATED) {
-            addedReceiver(id, dto.getOwnerId());
+    protected void notificate(UUID id, D dto, String resultMessage, NotificationStatus notificationStatus) {
+        Optional.ofNullable(dto)
+                .map(D::getOwnerId)
+                .ifPresent(ownerId -> {
+                    notificationClient.notificate(id, notificationStatus, resultMessage);
+                    if (notificationStatus == NotificationStatus.CREATED) {
+                        addedReceiver(id, ownerId);
+                    }
+                });
+    }
+
+    protected String getMessage(D dto, NotificationStatus notificationStatus) {
+        String dtoName = Optional.ofNullable(dto)
+                .map(D::getComparingMap)
+                .map(Map::values)
+                .orElse(Collections.emptySet())
+                .stream()
+                .filter(ComparingObject::getIsMain)
+                .findFirst()
+                .map(ComparingObject::getGetDtoField)
+                .map(Supplier::get)
+                .map(Object::toString)
+                .map(string -> " \"" + string + "\"")
+                .orElse(StringUtils.EMPTY);
+        switch (notificationStatus) {
+            case CREATED:
+                return "Created " + getServiceName() + dtoName + ".";
+            case UPDATED:
+                return Optional.ofNullable(dto)
+                        .map(D::getOwnerId)
+                        .map(id -> compareFields(dto))
+                        .orElse(null);
+            case DELETED:
+                return "Deleted " + getServiceName() + dtoName + ".";
+            default:
+                return null;
         }
     }
 

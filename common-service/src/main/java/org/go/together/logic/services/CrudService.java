@@ -41,8 +41,9 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
             enrichEntity(entity, dto, crudOperation);
+            String message = getMessage(dto, NotificationStatus.CREATED);
             E createdEntity = repository.save(entity);
-            notificate(createdEntity.getId(), dto, NotificationStatus.CREATED);
+            notificate(createdEntity.getId(), dto, message, NotificationStatus.CREATED);
             return new IdDto(createdEntity.getId());
         } else {
             throw new ValidationException(validate);
@@ -55,8 +56,9 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
             enrichEntity(entity, dto, crudOperation);
-            notificate(dto.getId(), dto, NotificationStatus.UPDATED);
+            String message = getMessage(dto, NotificationStatus.UPDATED);
             E createdEntity = repository.save(entity);
+            notificate(dto.getId(), dto, message, NotificationStatus.UPDATED);
             return new IdDto(createdEntity.getId());
         } else {
             throw new ValidationException(validate);
@@ -69,8 +71,9 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         if (entityById.isPresent()) {
             E entity = entityById.get();
             enrichEntity(entity, null, crudOperation);
+            String message = getMessage(null, NotificationStatus.DELETED);
             repository.delete(entity);
-            notificate(uuid, null, NotificationStatus.DELETED);
+            notificate(uuid, null, message, NotificationStatus.DELETED);
         } else {
             throw new CannotFindEntityException("Cannot find entity by id " + uuid);
         }
