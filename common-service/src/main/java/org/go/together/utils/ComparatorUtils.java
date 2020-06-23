@@ -31,7 +31,7 @@ public class ComparatorUtils {
                 .map(ComparingObject::getGetDtoField)
                 .map(Supplier::get)
                 .map(Object::toString)
-                .map(string -> " \"" + string + "\"")
+                .map(string -> " '" + string + "'")
                 .orElse(StringUtils.EMPTY);
     }
 
@@ -90,11 +90,8 @@ public class ComparatorUtils {
 
     public static void compareDtos(Collection<String> result, String fieldName, Dto dto, Dto anotherDto) {
         Set<String> strings = new HashSet<>();
-        StringBuilder mainField = new StringBuilder();
+        String mainField = getMainField(anotherDto);
         dto.getComparingMap().forEach((key, value) -> {
-            if (value.getIsMain()) {
-                mainField.append(value.getGetDtoField().get().toString());
-            }
             ComparingObject comparingField = anotherDto.getComparingMap().get(key);
             updateResult(strings, key, value.getGetDtoField().get(),
                     comparingField.getGetDtoField().get(),
@@ -106,11 +103,7 @@ public class ComparatorUtils {
                     .append(" ")
                     .append(fieldName);
             if (StringUtils.isNotBlank(mainField)) {
-                resultString
-                        .append(" ")
-                        .append("\"")
-                        .append(mainField)
-                        .append("\"");
+                resultString.append(mainField);
             }
             resultString.append(": ")
                     .append(join(strings, ", "));
