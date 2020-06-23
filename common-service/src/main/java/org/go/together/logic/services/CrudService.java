@@ -29,7 +29,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
     protected CrudService(CustomRepository<E> repository,
                           Mapper<D, E> mapper,
                           Validator<D> validator) {
-        super(repository, mapper);
+        super(repository);
         this.repository = repository;
         this.mapper = mapper;
         this.validator = validator;
@@ -63,6 +63,12 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         } else {
             throw new ValidationException(validate);
         }
+    }
+
+    @Override
+    public D read(UUID uuid) {
+        Optional<E> entityById = repository.findById(uuid);
+        return entityById.map(mapper::entityToDto).orElse(null);
     }
 
     public void delete(UUID uuid) {

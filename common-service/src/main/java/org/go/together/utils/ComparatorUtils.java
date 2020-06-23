@@ -8,6 +8,7 @@ import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.NamedEnum;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,6 +19,21 @@ public class ComparatorUtils {
     private static final String CHANGED = "changed";
     private static final String FROM = " " + CHANGED + ": ";
     private static final String TO = " -> ";
+
+    public static String getMainField(Dto dto) {
+        return Optional.ofNullable(dto)
+                .map(Dto::getComparingMap)
+                .map(Map::values)
+                .orElse(Collections.emptySet())
+                .stream()
+                .filter(ComparingObject::getIsMain)
+                .findFirst()
+                .map(ComparingObject::getGetDtoField)
+                .map(Supplier::get)
+                .map(Object::toString)
+                .map(string -> " \"" + string + "\"")
+                .orElse(StringUtils.EMPTY);
+    }
 
     public static void compareObject(Collection<String> result, String fieldName, Object object, Object anotherObject) {
         if (!object.equals(anotherObject)) {
@@ -177,13 +193,5 @@ public class ComparatorUtils {
             resultString.append(") ");
             result.add(resultString.toString());
         }
-    }
-
-    private static String getMainField(Dto dto) {
-        return dto.getComparingMap().entrySet().stream()
-                .filter(entry -> entry.getValue().getIsMain())
-                .map(Map.Entry::getKey)
-                .map(key -> "\"" + key + "\"")
-                .findFirst().orElse(StringUtils.EMPTY);
     }
 }
