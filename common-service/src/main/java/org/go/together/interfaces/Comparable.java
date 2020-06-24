@@ -1,5 +1,6 @@
 package org.go.together.interfaces;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.go.together.dto.ComparingObject;
 import org.go.together.exceptions.IncorrectDtoException;
 
@@ -10,6 +11,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 public interface Comparable {
+    @JsonIgnore
     default Map<String, ComparingObject> getComparingMap() {
         HashMap<String, ComparingObject> result = new HashMap<>();
         Stream.of(this.getClass().getDeclaredFields())
@@ -32,6 +34,7 @@ public interface Comparable {
         return result;
     }
 
+    @JsonIgnore
     default UUID getOwnerId() {
         return null;
     }
