@@ -1,18 +1,16 @@
 package org.go.together.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class ComparingObject {
-    @Builder.Default
-    private Boolean isNeededDeepCompare = true;
-    private Object fieldValue;
-    @Builder.Default
-    private Boolean isMain = false;
+    private final Object fieldValue;
+    private final Boolean isDeepCompare;
+    private final Boolean isMain;
+
+    public ComparingObject(Object fieldValue, Boolean isDeepCompare, Boolean isMain) {
+        this.fieldValue = fieldValue;
+        this.isDeepCompare = isDeepCompare;
+        this.isMain = isMain;
+    }
 }

@@ -1,6 +1,7 @@
 package org.go.together.interfaces;
 
 import org.go.together.dto.ComparingObject;
+import org.go.together.exceptions.IncorrectDtoException;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -20,13 +21,11 @@ public interface Comparable {
                         try {
                             Method fieldGetter = this.getClass().getDeclaredMethod(methodName);
                             Object fieldValue = fieldGetter.invoke(this);
-                            result.put(annotation.value(),
-                                    ComparingObject.builder().fieldValue(fieldValue)
-                                            .isMain(annotation.isMain())
-                                            .isNeededDeepCompare(annotation.deepCompare())
-                                            .build());
+                            ComparingObject comparingObject =
+                                    new ComparingObject(fieldValue, annotation.deepCompare(), annotation.isMain());
+                            result.put(annotation.value(), comparingObject);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            throw new IncorrectDtoException("Cannot find field '" + name + "' getter");
                         }
                     }
                 });

@@ -93,7 +93,7 @@ public class ComparatorUtils {
             ComparingObject comparingField = anotherDto.getComparingMap().get(key);
             updateResult(strings, key, value.getFieldValue(),
                     comparingField.getFieldValue(),
-                    value.getIsNeededDeepCompare());
+                    value.getIsDeepCompare());
         });
         if (!strings.isEmpty()) {
             StringBuilder resultString = new StringBuilder()
