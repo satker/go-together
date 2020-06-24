@@ -1,43 +1,36 @@
 package org.go.together.dto;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.Data;
+import org.go.together.interfaces.ComparingField;
 import org.go.together.interfaces.Dto;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 import java.util.UUID;
 
 @Data
 public class EventDto implements Dto {
     private UUID id;
+    @ComparingField(value = "event name", isMain = true)
     private String name;
+    @ComparingField("people count")
     private Integer peopleCount;
+    @ComparingField("author")
     private UserDto author;
+    @ComparingField("housing type")
     private HousingType housingType;
+    @ComparingField("description")
     private String description;
+    @ComparingField("event photo")
     private EventPhotoDto eventPhotoDto;
+    @ComparingField("paid things")
     private Collection<EventPaidThingDto> paidThings;
+    @ComparingField("routes")
     private Collection<EventLocationDto> route;
+    @ComparingField("start date")
     private Date startDate;
+    @ComparingField("end date")
     private Date endDate;
-
-    @Override
-    public Map<String, ComparingObject> getComparingMap() {
-        return ImmutableMap.<String, ComparingObject>builder()
-                .put("event name", ComparingObject.builder().getDtoField(this::getName).isMain(true).build())
-                .put("author", ComparingObject.builder().getDtoField(() -> this.getAuthor().getLogin()).build())
-                .put("people count", ComparingObject.builder().getDtoField(this::getPeopleCount).build())
-                .put("housing type", ComparingObject.builder().getDtoField(this::getHousingType).build())
-                .put("description", ComparingObject.builder().getDtoField(this::getDescription).build())
-                .put("start date", ComparingObject.builder().getDtoField(this::getStartDate).build())
-                .put("end date", ComparingObject.builder().getDtoField(this::getEndDate).build())
-                .put("event photo", ComparingObject.builder().getDtoField(this::getEventPhotoDto).build())
-                .put("paid things", ComparingObject.builder().getDtoField(this::getPaidThings).build())
-                .put("routes", ComparingObject.builder().getDtoField(this::getRoute).build())
-                .build();
-    }
 
     @Override
     public UUID getOwnerId() {

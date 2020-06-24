@@ -1,23 +1,16 @@
 package org.go.together.dto;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.Data;
+import org.go.together.interfaces.ComparingField;
 import org.go.together.interfaces.Dto;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Data
 public class LanguageDto implements Dto {
     private UUID id;
+    @ComparingField(value = "name", isMain = true)
     private String name;
+    @ComparingField("code")
     private String code;
-
-    @Override
-    public Map<String, ComparingObject> getComparingMap() {
-        return ImmutableMap.<String, ComparingObject>builder()
-                .put("name", ComparingObject.builder().getDtoField(this::getName).isMain(true).build())
-                .put("code", ComparingObject.builder().getDtoField(this::getCode).build())
-                .build();
-    }
 }

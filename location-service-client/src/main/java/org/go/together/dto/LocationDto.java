@@ -1,12 +1,11 @@
 package org.go.together.dto;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.go.together.interfaces.ComparingField;
 import org.go.together.interfaces.Dto;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Data
@@ -14,16 +13,10 @@ import java.util.UUID;
 @NoArgsConstructor
 public class LocationDto implements Dto {
     private UUID id;
+    @ComparingField(value = "name", isMain = true)
     private String name;
+    @ComparingField("state")
     private String state;
+    @ComparingField("country")
     private CountryDto country;
-
-    @Override
-    public Map<String, ComparingObject> getComparingMap() {
-        return ImmutableMap.<String, ComparingObject>builder()
-                .put("name", ComparingObject.builder().getDtoField(this::getName).isMain(true).build())
-                .put("state", ComparingObject.builder().getDtoField(this::getState).build())
-                .put("country", ComparingObject.builder().getDtoField(this::getCountry).build())
-                .build();
-    }
 }

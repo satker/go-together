@@ -1,44 +1,48 @@
 package org.go.together.dto;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.Data;
+import org.go.together.interfaces.ComparingField;
 import org.go.together.interfaces.Dto;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 @Data
 public class UserDto implements Dto {
     private UUID id;
-    private String login;
-    private String mail;
-    private String firstName;
-    private String lastName;
-    private LocationDto location;
-    private String description;
-    private String password;
-    private Role role;
-    private Set<PhotoDto> userPhotos;
-    private Set<LanguageDto> languages;
-    private Set<InterestDto> interests;
 
-    @Override
-    public Map<String, ComparingObject> getComparingMap() {
-        return ImmutableMap.<String, ComparingObject>builder()
-                .put("login", ComparingObject.builder().getDtoField(this::getLogin).isMain(true).build())
-                .put("mail", ComparingObject.builder().getDtoField(this::getMail).build())
-                .put("first name", ComparingObject.builder().getDtoField(this::getFirstName).build())
-                .put("last name", ComparingObject.builder().getDtoField(this::getLastName).build())
-                .put("location", ComparingObject.builder().getDtoField(this::getLocation).build())
-                .put("description", ComparingObject.builder().getDtoField(this::getDescription).build())
-                .put("password", ComparingObject.builder().getDtoField(this::getPassword).isNeededDeepCompare(false).build())
-                .put("role", ComparingObject.builder().getDtoField(this::getRole).build())
-                .put("user photos", ComparingObject.builder().getDtoField(this::getUserPhotos).build())
-                .put("languages", ComparingObject.builder().getDtoField(this::getLanguages).build())
-                .put("interests", ComparingObject.builder().getDtoField(this::getInterests).build())
-                .build();
-    }
+    @ComparingField(value = "login", isMain = true)
+    private String login;
+
+    @ComparingField("mail")
+    private String mail;
+
+    @ComparingField("first name")
+    private String firstName;
+
+    @ComparingField("last name")
+    private String lastName;
+
+    @ComparingField("location")
+    private LocationDto location;
+
+    @ComparingField("description")
+    private String description;
+
+    @ComparingField(value = "password", deepCompare = false)
+    private String password;
+
+    @ComparingField("role")
+    private Role role;
+
+    @ComparingField("user photos")
+    private Set<PhotoDto> userPhotos;
+
+    @ComparingField("languages")
+    private Set<LanguageDto> languages;
+
+    @ComparingField("interests")
+    private Set<InterestDto> interests;
 
     @Override
     public UUID getOwnerId() {

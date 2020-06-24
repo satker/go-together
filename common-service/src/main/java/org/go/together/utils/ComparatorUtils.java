@@ -8,7 +8,6 @@ import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.NamedEnum;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,8 +27,7 @@ public class ComparatorUtils {
                 .stream()
                 .filter(ComparingObject::getIsMain)
                 .findFirst()
-                .map(ComparingObject::getGetDtoField)
-                .map(Supplier::get)
+                .map(ComparingObject::getFieldValue)
                 .map(Object::toString)
                 .map(string -> " '" + string + "'")
                 .orElse(StringUtils.EMPTY);
@@ -93,8 +91,8 @@ public class ComparatorUtils {
         String mainField = getMainField(anotherDto);
         dto.getComparingMap().forEach((key, value) -> {
             ComparingObject comparingField = anotherDto.getComparingMap().get(key);
-            updateResult(strings, key, value.getGetDtoField().get(),
-                    comparingField.getGetDtoField().get(),
+            updateResult(strings, key, value.getFieldValue(),
+                    comparingField.getFieldValue(),
                     value.getIsNeededDeepCompare());
         });
         if (!strings.isEmpty()) {

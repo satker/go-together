@@ -3,16 +3,16 @@ package org.go.together.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.function.Supplier;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ComparingObject {
     @Builder.Default
     private Boolean isNeededDeepCompare = true;
-    private Supplier<?> getDtoField;
+    private Object fieldValue;
     @Builder.Default
     private Boolean isMain = false;
 }
