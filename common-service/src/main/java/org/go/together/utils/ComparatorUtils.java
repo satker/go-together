@@ -34,7 +34,7 @@ public class ComparatorUtils {
     }
 
     public static void compareObject(Collection<String> result, String fieldName, Object object, Object anotherObject) {
-        if (!object.equals(anotherObject)) {
+        if (object != anotherObject) {
             String resultString = fieldName + " " + CHANGED;
             result.add(resultString);
         }
@@ -55,33 +55,43 @@ public class ComparatorUtils {
     }
 
     private static void updateResult(Collection<String> result, String fieldName, Object object, Object anotherObject,
-                                     boolean isNeededDeepCompare) {
-        if (!isNeededDeepCompare) {
+                                     boolean isNeededDeepCompare, boolean ignored, boolean idCompare) {
+        if (!isNeededDeepCompare || ignored) {
             compareObject(result, fieldName, object, anotherObject);
-        } else if (object instanceof String) {
+        } else if (object instanceof String && anotherObject instanceof String) {
             compareStrings(result, fieldName, (String) object, (String) anotherObject);
-        } else if (object instanceof Number) {
+        } else if (object instanceof Number && anotherObject instanceof Number) {
             compareNumbers(result, fieldName, (Number) object, (Number) anotherObject);
-        } else if (object instanceof Date) {
+        } else if (object instanceof Date && anotherObject instanceof Date) {
             compareDates(result, fieldName, (Date) object, (Date) anotherObject);
-        } else if (object instanceof NamedEnum) {
+        } else if (object instanceof NamedEnum && anotherObject instanceof NamedEnum) {
             compareEnums(result, fieldName, (NamedEnum) object, (NamedEnum) anotherObject);
-        } else if (object instanceof SimpleDto) {
+        } else if (object instanceof SimpleDto && anotherObject instanceof SimpleDto) {
             compareStrings(result, fieldName + " name", ((SimpleDto) object).getName(), ((SimpleDto) anotherObject).getName());
-        } else if (object instanceof Collection) {
-            Collection collection = (Collection) object;
-            Collection anotherCollection = (Collection) anotherObject;
+        } else if (object instanceof Collection && anotherObject instanceof Collection) {
+            Collection<? extends Dto> collection = (Collection) object;
+            Collection<? extends Dto> anotherCollection = (Collection) anotherObject;
 
-            boolean isNotEmptyCollections = collection.iterator().hasNext() || anotherCollection.iterator().hasNext();
+            Iterator<? extends Dto> iteratorCollection = collection.iterator();
+            Iterator<? extends Dto> iteratorAnotherCollection = anotherCollection.iterator();
+
+            boolean isNotEmptyCollections = iteratorCollection.hasNext() || iteratorAnotherCollection.hasNext();
             if (isNotEmptyCollections) {
-                if ((!collection.iterator().hasNext() || collection.iterator().next() instanceof Dto) &&
-                        (!anotherCollection.iterator().hasNext() || collection.iterator().next() instanceof Dto)) {
+                if ((!iteratorCollection.hasNext() || iteratorCollection.next() != null) &&
+                        (!iteratorAnotherCollection.hasNext() || iteratorAnotherCollection.next() != null)) {
                     compareCollectionDtos(result, fieldName, collection, anotherCollection);
                 }
             }
-        } else if (object instanceof Dto) {
-            compareDtos(result, fieldName, (Dto) object, (Dto) anotherObject);
-        } else {
+        } else if (object instanceof Dto && anotherObject instanceof Dto) {
+            Dto dtoObject = (Dto) object;
+            Dto anotherDtoObject = (Dto) anotherObject;
+
+            if (idCompare) {
+                compareObject(result, fieldName, dtoObject.getId(), anotherDtoObject.getId());
+            } else {
+                compareDtos(result, fieldName, dtoObject, anotherDtoObject);
+            }
+        } else if (object != null && anotherObject != null) {
             throw new IncorrectDtoException("Incorrect field type: " + fieldName);
         }
     }
@@ -91,9 +101,13 @@ public class ComparatorUtils {
         String mainField = getMainField(anotherDto);
         dto.getComparingMap().forEach((key, value) -> {
             ComparingObject comparingField = anotherDto.getComparingMap().get(key);
-            updateResult(strings, key, value.getFieldValue(),
-                    comparingField.getFieldValue(),
-                    value.getIsDeepCompare());
+            if (comparingField.getFieldValue() != null || value.getFieldValue() != null) {
+                updateResult(strings, key, value.getFieldValue(),
+                        comparingField.getFieldValue(),
+                        value.getIsDeepCompare(),
+                        value.getIgnored(),
+                        value.getIdCompare());
+            }
         });
         if (!strings.isEmpty()) {
             StringBuilder resultString = new StringBuilder()
@@ -130,10 +144,15 @@ public class ComparatorUtils {
                 .collect(Collectors.groupingBy(Dto::getId));
 
         Map<UUID, ? extends List<? extends Dto>> anotherCollectionIdsMap = anotherCollectionDtos.stream()
+                .filter(dto -> dto.getId() != null)
                 .collect(Collectors.groupingBy(Dto::getId));
 
         Set<String> removedElements = new HashSet<>();
-        Set<String> addedElements = new HashSet<>();
+        Set<String> addedElements = anotherCollectionDtos.stream()
+                .filter(dto -> dto.getId() == null)
+                .map(ComparatorUtils::getMainField)
+                .collect(Collectors.toSet());
+
         Set<String> changedElements = new HashSet<>();
 
         anotherCollectionIdsMap.forEach((key, value) -> {

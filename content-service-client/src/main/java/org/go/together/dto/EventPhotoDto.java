@@ -15,6 +15,6 @@ import java.util.UUID;
 public class EventPhotoDto implements Dto {
     private UUID id;
     private UUID eventId;
-    @ComparingField("photos")
+    @ComparingField(value = "photos", idCompare = true)
     private Set<PhotoDto> photos;
 }

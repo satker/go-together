@@ -23,8 +23,10 @@ public interface Comparable {
                         try {
                             Method fieldGetter = this.getClass().getDeclaredMethod(methodName);
                             Object fieldValue = fieldGetter.invoke(this);
+                            boolean ignored = field.isAnnotationPresent(JsonIgnore.class);
                             ComparingObject comparingObject =
-                                    new ComparingObject(fieldValue, annotation.deepCompare(), annotation.isMain());
+                                    new ComparingObject(fieldValue, annotation.deepCompare(), annotation.isMain(), ignored,
+                                            annotation.idCompare());
                             result.put(annotation.value(), comparingObject);
                         } catch (Exception e) {
                             throw new IncorrectDtoException("Cannot find field '" + name + "' getter");

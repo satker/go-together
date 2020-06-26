@@ -17,7 +17,7 @@ public interface NotificationClient {
     boolean addReceiver(@PathVariable("producerId") UUID producerId,
                         @PathVariable("receiverId") UUID receiverId);
 
-    @PutMapping("notifications/receivers/{receiverId}/producers/{producerId}")
+    @DeleteMapping("notifications/receivers/{receiverId}/producers/{producerId}")
     boolean removeReceiver(@PathVariable("producerId") UUID producerId,
                            @PathVariable("receiverId") UUID receiverId);
 

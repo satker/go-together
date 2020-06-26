@@ -1,5 +1,6 @@
 package org.go.together.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.go.together.interfaces.ComparingField;
 import org.go.together.interfaces.Dto;
@@ -30,12 +31,13 @@ public class UserDto implements Dto {
     private String description;
 
     @ComparingField(value = "password", deepCompare = false)
+    @JsonIgnore
     private String password;
 
     @ComparingField("role")
     private Role role;
 
-    @ComparingField("user photos")
+    @ComparingField(value = "user photos", idCompare = true)
     private Set<PhotoDto> userPhotos;
 
     @ComparingField("languages")
