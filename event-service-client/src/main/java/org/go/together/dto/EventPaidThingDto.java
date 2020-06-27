@@ -9,8 +9,8 @@ import java.util.UUID;
 @Data
 public class EventPaidThingDto implements Dto {
     private UUID id;
-    @ComparingField(value = "cash category", isMain = true)
+    @ComparingField("cash category")
     private CashCategory cashCategory;
-    @ComparingField("paid thing")
+    @ComparingField(value = "paid thing", isMain = true)
     private PaidThingDto paidThing;
 }

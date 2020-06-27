@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.lang3.StringUtils.joinWith;
 
 public class ComparatorUtils {
     private static final String CHANGED = "changed";
@@ -124,7 +123,7 @@ public class ComparatorUtils {
     }
 
     public static void compareDates(Collection<String> result, String fieldName, Date date, Date anotherDate) {
-        if (!date.equals(anotherDate)) {
+        if (date.compareTo(anotherDate) != 0) {
             String resultString = fieldName + FROM + date.toString() + TO + anotherDate.toString();
             result.add(resultString);
         }
@@ -147,11 +146,11 @@ public class ComparatorUtils {
                 .filter(dto -> dto.getId() != null)
                 .collect(Collectors.groupingBy(Dto::getId));
 
-        Set<String> removedElements = new HashSet<>();
-        Set<String> addedElements = anotherCollectionDtos.stream()
+        List<String> removedElements = new ArrayList<>();
+        List<String> addedElements = anotherCollectionDtos.stream()
                 .filter(dto -> dto.getId() == null)
                 .map(ComparatorUtils::getMainField)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         Set<String> changedElements = new HashSet<>();
 
@@ -164,7 +163,7 @@ public class ComparatorUtils {
                 Dto dto = collectionIdsMap.get(key).iterator().next();
                 compareDtos(resultComparing, fieldName, dto, anotherDto);
                 if (!resultComparing.isEmpty()) {
-                    changedElements.add(joinWith(",", resultComparing));
+                    changedElements.add(join(resultComparing, ","));
                 }
             }
         });
@@ -180,21 +179,25 @@ public class ComparatorUtils {
             resultString.append(CHANGED).append(" ").append(fieldName).append(" (");
             StringBuilder removedElementsString = new StringBuilder();
             if (!removedElements.isEmpty()) {
+                String message = StringUtils.isBlank(removedElements.iterator().next()) ?
+                        removedElements.size() + " elements " :
+                        join(removedElements, ", ");
                 removedElementsString
                         .append(" removed ")
-                        .append(join(removedElements, ", "));
+                        .append(message);
             }
             StringBuilder addedElementsString = new StringBuilder();
             if (!addedElements.isEmpty()) {
+                String message = StringUtils.isBlank(addedElements.iterator().next()) ?
+                        addedElements.size() + " elements " :
+                        join(addedElements, ", ");
                 addedElementsString
                         .append(" added ")
-                        .append(join(addedElements, ", "));
+                        .append(message);
             }
             StringBuilder changedElementsString = new StringBuilder();
             if (!changedElements.isEmpty()) {
-                addedElementsString
-                        .append(" changed ")
-                        .append(join(changedElements, ", "));
+                addedElementsString.append(join(changedElements, ", "));
             }
             String resultElementsString = Stream.of(removedElementsString, addedElementsString, changedElementsString)
                     .filter(StringUtils::isNotBlank)

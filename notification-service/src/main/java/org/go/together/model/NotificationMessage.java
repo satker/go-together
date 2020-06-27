@@ -14,7 +14,7 @@ public class NotificationMessage implements IdentifiedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", length = 2048)
     private String message;
     private Date date;
 }

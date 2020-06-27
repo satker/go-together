@@ -12,4 +12,9 @@ public class PaidThingDto implements Dto {
 
     @ComparingField(value = "paid thing name", isMain = true)
     private String name;
+
+    @Override
+    public String toString() {
+        return this.getName();
+    }
 }

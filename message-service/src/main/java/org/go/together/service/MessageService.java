@@ -46,13 +46,17 @@ public class MessageService extends CrudService<MessageDto, Message> {
     }
 
     public Map<UUID, MessageDto> getAllChatsByEvent(UUID eventId) {
-        Map<UUID, List<Message>> groupAuthorEventId = messageRepository.findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
-                .collect(Collectors.groupingBy(Message::getAuthorId)).get(eventId).stream()
+        List<Message> messagesByAuthorId = messageRepository.findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
+                .collect(Collectors.groupingBy(Message::getAuthorId)).get(eventId);
+        Map<UUID, List<Message>> groupAuthorEventId = Optional.ofNullable(messagesByAuthorId)
+                .orElse(Collections.emptyList()).stream()
                 .filter(message -> message.getRecipientId() != null)
                 .collect(Collectors.groupingBy(Message::getRecipientId));
-        Map<UUID, List<Message>> groupRecipientId = messageRepository.findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
+        List<Message> messagesByRecipientId = messageRepository.findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
                 .filter(message -> message.getRecipientId() != null)
-                .collect(Collectors.groupingBy(Message::getRecipientId)).get(eventId).stream()
+                .collect(Collectors.groupingBy(Message::getRecipientId)).get(eventId);
+        Map<UUID, List<Message>> groupRecipientId = Optional.ofNullable(messagesByRecipientId)
+                .orElse(Collections.emptyList()).stream()
                 .collect(Collectors.groupingBy(Message::getAuthorId));
 
         groupRecipientId.forEach((key, value) -> groupAuthorEventId.merge(key, value, (messages1, messages2) -> {
