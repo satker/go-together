@@ -6,6 +6,8 @@ import org.go.together.client.NotificationClient;
 import org.go.together.dto.NotificationStatus;
 import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.IdentifiedEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
@@ -17,6 +19,8 @@ import static org.go.together.utils.ComparatorUtils.compareDtos;
 import static org.go.together.utils.ComparatorUtils.getMainField;
 
 public abstract class NotificationService<D extends Dto, E extends IdentifiedEntity> extends FindService<E> {
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private NotificationClient notificationClient;
 
@@ -25,6 +29,7 @@ public abstract class NotificationService<D extends Dto, E extends IdentifiedEnt
     }
 
     protected void notificate(UUID id, D dto, String resultMessage, NotificationStatus notificationStatus) {
+        log.info(getServiceName() + " dto with " + id + ": " + resultMessage);
         Optional.ofNullable(dto)
                 .map(D::getOwnerId)
                 .ifPresent(ownerId -> {
@@ -41,7 +46,6 @@ public abstract class NotificationService<D extends Dto, E extends IdentifiedEnt
                 return "Created " + getServiceName() + getMainField(dto) + ".";
             case UPDATED:
                 return Optional.ofNullable(dto)
-                        .map(D::getOwnerId)
                         .map(id -> compareFields(dto))
                         .orElse(null);
             case DELETED:
@@ -61,11 +65,13 @@ public abstract class NotificationService<D extends Dto, E extends IdentifiedEnt
     protected void addedReceiver(UUID producerId, UUID receiverId) {
         if (receiverId != null) {
             notificationClient.addReceiver(producerId, receiverId);
+            log.info(getServiceName() + " dto producer with id " + producerId + ": added receiver " + receiverId);
         }
     }
 
-    protected void removedReceiver(UUID producerId, UUID receiverId) {
+    protected void removedReceiver(String simpleClassName, UUID producerId, UUID receiverId) {
         notificationClient.removeReceiver(producerId, receiverId);
+        log.info(getServiceName() + " dto producer with id " + producerId + ": removed receiver " + receiverId);
     }
 
     abstract D read(UUID uuid);

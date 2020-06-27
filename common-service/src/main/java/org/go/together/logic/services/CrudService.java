@@ -1,5 +1,7 @@
 package org.go.together.logic.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.CustomRepository;
@@ -25,6 +27,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
     private final Mapper<D, E> mapper;
     private final Validator<D> validator;
     private final CustomRepository<E> repository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     protected CrudService(CustomRepository<E> repository,
                           Mapper<D, E> mapper,
@@ -46,6 +49,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
             notificate(createdEntity.getId(), dto, message, NotificationStatus.CREATED);
             return new IdDto(createdEntity.getId());
         } else {
+            log.error(dto.getClass().getSimpleName() + " with id " + dto.getId() + ": " + validate);
             throw new ValidationException(validate);
         }
     }
@@ -61,6 +65,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
             notificate(dto.getId(), dto, message, NotificationStatus.UPDATED);
             return new IdDto(createdEntity.getId());
         } else {
+            log.error(dto.getClass().getSimpleName() + " with id " + dto.getId() + ": " + validate);
             throw new ValidationException(validate);
         }
     }
@@ -68,6 +73,8 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
     @Override
     public D read(UUID uuid) {
         Optional<E> entityById = repository.findById(uuid);
+        log.error("Read " + getServiceName() + " " + (entityById.isPresent() ? "1" : "0") + " row with id: " +
+                uuid.toString());
         return entityById.map(mapper::entityToDto).orElse(null);
     }
 
@@ -81,11 +88,16 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
             repository.delete(entity);
             notificate(uuid, null, message, NotificationStatus.DELETED);
         } else {
-            throw new CannotFindEntityException("Cannot find entity by id " + uuid);
+            String message = getServiceName() + ": " + "Cannot find entity by id " + uuid;
+            log.error(message);
+            throw new CannotFindEntityException(message);
         }
     }
 
+    @SneakyThrows
     public ResponseDto<Object> find(FormDto formDto) {
+        log.info("Started find in '" + getServiceName() + "' with filter: " +
+                objectMapper.writeValueAsString(formDto));
         Pair<PageDto, Collection<Object>> pageDtoResult = super.findByFormDto(formDto);
 
         Collection<Object> values = pageDtoResult.getValue();
@@ -97,6 +109,10 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
                     .map(mapper::entityToDto)
                     .collect(Collectors.toSet());
         }
+        log.info("Find in '" + getServiceName() + "' " + Optional.ofNullable(values)
+                .map(Collection::size)
+                .orElse(0) + " rows with filter: " +
+                objectMapper.writeValueAsString(formDto));
         return new ResponseDto<>(pageDtoResult.getKey(), values);
     }
 
