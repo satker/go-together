@@ -19,10 +19,10 @@ public class Notification implements IdentifiedEntity {
     private NotificationStatus status;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "notification_message_id")
+    @JoinColumn(name = "notification_id")
     private Set<NotificationMessage> notificationMessages;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "notification_receiver_id")
+    @JoinColumn(name = "notification_id")
     private Set<NotificationReceiver> notificationReceivers;
 }
