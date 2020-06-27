@@ -12,8 +12,10 @@ import {FORM_ID as FORM_ID_EVENT_VIEW} from "forms/Event/View/constants";
 import {FORM_ID_CREATE, FORM_ID_EDIT} from "forms/Event/Edit/constants";
 import {FORM_ID as FORM_ID_REGISTER} from "forms/Register/constants";
 import {FORM_ID as FORM_ID_PERSONAL_AREA} from "forms/PersonalArea/constants";
+import {FORM_ID as FORM_ID_NOTIFICATIONS} from "forms/Notifications/constants";
 
 import NavBar from "./NavBar";
+import Notifications from "../forms/Notifications";
 
 const routers = {
     '/events': () => <Events key={FORM_ID_EVENTS}/>,
@@ -21,7 +23,8 @@ const routers = {
     '/events/:id/edit': ({id}) => <Event isView={false} id={id} key={FORM_ID_EDIT}/>,
     '/register': () => <FormRegister key={FORM_ID_REGISTER}/>,
     '/home': () => <PersonalArea key={FORM_ID_PERSONAL_AREA}/>,
-    '/create': () => <Event isView={false} key={FORM_ID_CREATE}/>
+    '/create': () => <Event isView={false} key={FORM_ID_CREATE}/>,
+    '/notifications': () => <Notifications key={FORM_ID_NOTIFICATIONS}/>
 };
 
 const App = () => {

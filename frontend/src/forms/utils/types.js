@@ -16,6 +16,12 @@ export const SimpleObject = PropTypes.exact({
     name: PropTypes.string
 });
 
+export const NotificationObject = PropTypes.exact({
+    id: PropTypes.string,
+    message: PropTypes.string,
+    date: PropTypes.string
+});
+
 export const ResponseData = PropTypes.exact({
     type: PropTypes.string.isRequired,
     headers: PropTypes.string,

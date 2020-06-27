@@ -7,6 +7,7 @@ export const EVENT_SERVICE_URL = GATEWAY_SERVICES_URL + '/event-service';
 export const USER_SERVICE_URL = GATEWAY_SERVICES_URL + '/user-service';
 export const CONTENT_SERVICE_URL = GATEWAY_SERVICES_URL + '/content-service';
 export const MESSAGE_SERVICE_URL = GATEWAY_SERVICES_URL + '/message-service';
+export const NOTIFICATION_SERVICE_URL = GATEWAY_SERVICES_URL + '/notification-service';
 export const LOCATION_SERVICE_URL = GATEWAY_SERVICES_URL + '/location-service';
 export const LOGIN_URL = AUTH_URL + "/auth/";
 
