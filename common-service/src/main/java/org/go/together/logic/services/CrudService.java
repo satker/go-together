@@ -73,7 +73,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
     @Override
     public D read(UUID uuid) {
         Optional<E> entityById = repository.findById(uuid);
-        log.error("Read " + getServiceName() + " " + (entityById.isPresent() ? "1" : "0") + " row with id: " +
+        log.info("Read " + getServiceName() + " " + (entityById.isPresent() ? "1" : "0") + " row with id: " +
                 uuid.toString());
         return entityById.map(mapper::entityToDto).orElse(null);
     }

@@ -12,6 +12,9 @@ public interface UserClient extends FindClient {
     @GetMapping("/users")
     UserDto findUserByLogin(@RequestParam("login") String login);
 
+    @GetMapping("/users/auth")
+    AuthUserDto findAuthUserByLogin(@RequestParam("login") String login);
+
     @PostMapping("/users/simple")
     Collection<SimpleUserDto> findSimpleUserDtosByUserIds(@RequestBody Set<UUID> userIds);
 

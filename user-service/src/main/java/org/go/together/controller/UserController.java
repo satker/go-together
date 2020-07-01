@@ -77,6 +77,11 @@ class UserController extends FindController implements UserClient {
     }
 
     @Override
+    public AuthUserDto findAuthUserByLogin(String login) {
+        return userService.findAuthUserByLogin(login);
+    }
+
+    @Override
     public Collection<SimpleUserDto> findSimpleUserDtosByUserIds(Set<UUID> userIds) {
         return userService.findSimpleUserDtosByUserIds(userIds);
     }

@@ -10,4 +10,5 @@ public class NotificationMessageDto {
     private UUID id;
     private String message;
     private Date date;
+    private Boolean isRead;
 }

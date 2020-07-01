@@ -12,6 +12,9 @@ public class ObjectStringParser {
         if (val instanceof Double) {
             return Double.toString((Double) val);
         }
+        if (val instanceof Boolean) {
+            return ((Boolean) val).toString();
+        }
         if (val instanceof Integer) {
             return Integer.toString((Integer) val);
         }

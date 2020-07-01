@@ -5,7 +5,6 @@ import org.go.together.dto.NotificationStatus;
 import org.go.together.interfaces.IdentifiedEntity;
 
 import javax.persistence.*;
-import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -17,12 +16,4 @@ public class Notification implements IdentifiedEntity {
     private UUID id;
     private UUID producerId;
     private NotificationStatus status;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "notification_id")
-    private Set<NotificationMessage> notificationMessages;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "notification_id")
-    private Set<NotificationReceiver> notificationReceivers;
 }

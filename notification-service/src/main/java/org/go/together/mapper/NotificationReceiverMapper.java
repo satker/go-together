@@ -17,7 +17,7 @@ public class NotificationReceiverMapper {
         NotificationReceiver notificationReceiver = new NotificationReceiver();
         notificationReceiver.setId(dto.getId());
         notificationReceiver.setUserId(dto.getUserId());
-        notificationReceiver.setIsRead(dto.getIsRead());
+        //notificationReceiver.setIsRead(dto.getIsRead());
         return notificationReceiver;
     }
 }

@@ -34,7 +34,9 @@ NotificationButton.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    userNotificationsSize: state.components.forms.notifications.userNotifications.response.length,
+    userNotificationsSize: state.components.forms.notifications.userNotifications.response
+        .filter(notificationMessage => !notificationMessage.isRead)
+        .length,
     userId: state.userId.value
 });
 

@@ -2,10 +2,7 @@ package org.go.together.service;
 
 import com.google.common.collect.ImmutableMap;
 import org.go.together.client.ContentClient;
-import org.go.together.dto.IdDto;
-import org.go.together.dto.Role;
-import org.go.together.dto.SimpleUserDto;
-import org.go.together.dto.UserDto;
+import org.go.together.dto.*;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
@@ -56,6 +53,21 @@ public class UserService extends CrudService<UserDto, SystemUser> {
         Optional<SystemUser> userByLogin = userRepository.findUserByLogin(login);
         if (userByLogin.isPresent()) {
             return userMapper.entityToDto(userByLogin.get());
+        }
+        throw new CannotFindEntityException("Cannot find user by login");
+    }
+
+    public AuthUserDto findAuthUserByLogin(String login) {
+        log.debug("auth user found by login {}", login);
+        Optional<SystemUser> userByLogin = userRepository.findUserByLogin(login);
+        if (userByLogin.isPresent()) {
+            SystemUser systemUser = userByLogin.get();
+            return AuthUserDto.builder()
+                    .id(systemUser.getId())
+                    .login(systemUser.getLogin())
+                    .password(systemUser.getPassword())
+                    .role(systemUser.getRole())
+                    .build();
         }
         throw new CannotFindEntityException("Cannot find user by login");
     }

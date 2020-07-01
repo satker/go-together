@@ -17,4 +17,8 @@ public class NotificationMessage implements IdentifiedEntity {
     @Column(columnDefinition = "TEXT", length = 2048)
     private String message;
     private Date date;
+
+    @ManyToOne
+    @JoinColumn(name = "notification_id", nullable = false)
+    private Notification notification;
 }
