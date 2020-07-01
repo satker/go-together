@@ -104,7 +104,7 @@ public class NotificationService {
         return true;
     }
 
-    public boolean notificate(UUID producerId, NotificationStatus status, String notificationMessage) {
+    public boolean notificate(UUID producerId, NotificationStatus status, NotificationMessageDto notificationMessage) {
         Optional<Notification> notificationOptional = notificationRepository.findByProducerId(producerId);
         if (notificationOptional.isPresent()) {
             Notification notification = notificationOptional.get();
@@ -124,10 +124,8 @@ public class NotificationService {
         return true;
     }
 
-    private void saveNotificationMessage(String notificationMessage, Notification notification) {
-        NotificationMessage notificationMessageEntity = new NotificationMessage();
-        notificationMessageEntity.setMessage(notificationMessage);
-        notificationMessageEntity.setDate(new Date());
+    private void saveNotificationMessage(NotificationMessageDto notificationMessage, Notification notification) {
+        NotificationMessage notificationMessageEntity = notificationMessageMapper.dtoToEntity(notificationMessage);
         notificationMessageEntity.setNotification(notification);
         NotificationMessage saveNotificationMessage = notificationMessageRepository.save(notificationMessageEntity);
 

@@ -33,7 +33,9 @@ public class NotificationController implements NotificationClient {
     }
 
     @Override
-    public boolean notificate(UUID producerId, NotificationStatus status, String notificationMessage) {
+    public boolean notificate(UUID producerId,
+                              NotificationStatus status,
+                              NotificationMessageDto notificationMessage) {
         return notificationService.notificate(producerId, status, notificationMessage);
     }
 

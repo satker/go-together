@@ -24,7 +24,7 @@ public interface NotificationClient {
     @PostMapping("notifications/producers/{producerId}/status/{status}")
     boolean notificate(@PathVariable("producerId") UUID producerId,
                        @PathVariable("status") NotificationStatus status,
-                       @RequestBody String notificationMessage);
+                       @RequestBody NotificationMessageDto notificationMessage);
 
     @PostMapping("notifications/receivers/{receiverId}")
     boolean readNotifications(@PathVariable("receiverId") UUID receiverId);
