@@ -37,7 +37,6 @@ public class SystemUser implements IdentifiedEntity {
     @ElementCollection
     @CollectionTable(name = "user_event_like", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "event_like_id")
-    @Type(type = "uuid-char")
     private Set<UUID> eventLikeIds;
 
     @ManyToMany
