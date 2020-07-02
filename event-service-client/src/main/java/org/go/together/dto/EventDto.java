@@ -1,15 +1,15 @@
 package org.go.together.dto;
 
 import lombok.Data;
+import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
-import org.go.together.interfaces.Dto;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
 @Data
-public class EventDto implements Dto {
+public class EventDto implements ComparableDto {
     private UUID id;
     @ComparingField(value = "event name", isMain = true)
     private String name;
@@ -34,6 +34,6 @@ public class EventDto implements Dto {
 
     @Override
     public UUID getOwnerId() {
-        return author.getOwnerId();
+        return this.author.getId();
     }
 }

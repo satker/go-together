@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-public interface Comparable {
+public interface ComparableDto extends Identified {
     @JsonIgnore
     default Map<String, ComparingObject> getComparingMap() {
         HashMap<String, ComparingObject> result = new HashMap<>();
@@ -39,5 +39,9 @@ public interface Comparable {
     @JsonIgnore
     default UUID getOwnerId() {
         return null;
+    }
+
+    default UUID getParentId() {
+        return getId();
     }
 }

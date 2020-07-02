@@ -6,7 +6,7 @@ import org.go.together.dto.validation.DateIntervalDto;
 import org.go.together.dto.validation.NumberIntervalDto;
 import org.go.together.dto.validation.StringRegexDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.interfaces.Dto;
+import org.go.together.interfaces.ComparableDto;
 import org.go.together.utils.ValidatorUtils;
 
 import java.util.Collection;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class Validator<CD extends Dto> {
+public abstract class Validator<CD extends ComparableDto> {
     public Map<String, String> STRINGS_FOR_BLANK_CHECK = new HashMap<>();
     public Map<String, Collection<SimpleDto>> SIMPLE_DTO_CORRECT_CHECK = new HashMap<>();
     public Map<String, Number> NUMBER_CORRECT_ZERO_OR_NEGATIVE_CHECK = new HashMap<>();

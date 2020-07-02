@@ -45,6 +45,9 @@ public interface UserClient extends FindClient {
     @GetMapping("/users/{userId}")
     UserDto findById(@PathVariable("userId") UUID id);
 
+    @GetMapping("/users/{userId}/login")
+    String findLoginById(@PathVariable("userId") UUID id);
+
     @DeleteMapping("/users/{userId}")
     void deleteUserById(@PathVariable("userId") UUID id);
 

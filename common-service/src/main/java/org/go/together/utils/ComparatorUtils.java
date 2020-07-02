@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.ComparingObject;
 import org.go.together.dto.SimpleDto;
 import org.go.together.exceptions.IncorrectDtoException;
-import org.go.together.interfaces.Dto;
+import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.NamedEnum;
 
 import java.util.*;
@@ -18,9 +18,9 @@ public class ComparatorUtils {
     private static final String FROM = " " + CHANGED + ": ";
     private static final String TO = " -> ";
 
-    public static String getMainField(Dto dto) {
-        return Optional.ofNullable(dto)
-                .map(Dto::getComparingMap)
+    public static String getMainField(ComparableDto comparableDto) {
+        return Optional.ofNullable(comparableDto)
+                .map(ComparableDto::getComparingMap)
                 .map(Map::values)
                 .orElse(Collections.emptySet())
                 .stream()
@@ -68,11 +68,11 @@ public class ComparatorUtils {
         } else if (object instanceof SimpleDto && anotherObject instanceof SimpleDto) {
             compareStrings(result, fieldName + " name", ((SimpleDto) object).getName(), ((SimpleDto) anotherObject).getName());
         } else if (object instanceof Collection && anotherObject instanceof Collection) {
-            Collection<? extends Dto> collection = (Collection) object;
-            Collection<? extends Dto> anotherCollection = (Collection) anotherObject;
+            Collection<? extends ComparableDto> collection = (Collection) object;
+            Collection<? extends ComparableDto> anotherCollection = (Collection) anotherObject;
 
-            Iterator<? extends Dto> iteratorCollection = collection.iterator();
-            Iterator<? extends Dto> iteratorAnotherCollection = anotherCollection.iterator();
+            Iterator<? extends ComparableDto> iteratorCollection = collection.iterator();
+            Iterator<? extends ComparableDto> iteratorAnotherCollection = anotherCollection.iterator();
 
             boolean isNotEmptyCollections = iteratorCollection.hasNext() || iteratorAnotherCollection.hasNext();
             if (isNotEmptyCollections) {
@@ -81,25 +81,25 @@ public class ComparatorUtils {
                     compareCollectionDtos(result, fieldName, collection, anotherCollection);
                 }
             }
-        } else if (object instanceof Dto && anotherObject instanceof Dto) {
-            Dto dtoObject = (Dto) object;
-            Dto anotherDtoObject = (Dto) anotherObject;
+        } else if (object instanceof ComparableDto && anotherObject instanceof ComparableDto) {
+            ComparableDto comparableDtoObject = (ComparableDto) object;
+            ComparableDto anotherComparableDtoObject = (ComparableDto) anotherObject;
 
             if (idCompare) {
-                compareObject(result, fieldName, dtoObject.getId(), anotherDtoObject.getId());
+                compareObject(result, fieldName, comparableDtoObject.getId(), anotherComparableDtoObject.getId());
             } else {
-                compareDtos(result, fieldName, dtoObject, anotherDtoObject);
+                compareDtos(result, fieldName, comparableDtoObject, anotherComparableDtoObject);
             }
         } else if (object != null && anotherObject != null) {
             throw new IncorrectDtoException("Incorrect field type: " + fieldName);
         }
     }
 
-    public static void compareDtos(Collection<String> result, String fieldName, Dto dto, Dto anotherDto) {
+    public static void compareDtos(Collection<String> result, String fieldName, ComparableDto comparableDto, ComparableDto anotherComparableDto) {
         Set<String> strings = new HashSet<>();
-        String mainField = getMainField(anotherDto);
-        dto.getComparingMap().forEach((key, value) -> {
-            ComparingObject comparingField = anotherDto.getComparingMap().get(key);
+        String mainField = getMainField(anotherComparableDto);
+        comparableDto.getComparingMap().forEach((key, value) -> {
+            ComparingObject comparingField = anotherComparableDto.getComparingMap().get(key);
             if (comparingField.getFieldValue() != null || value.getFieldValue() != null) {
                 updateResult(strings, key, value.getFieldValue(),
                         comparingField.getFieldValue(),
@@ -137,14 +137,14 @@ public class ComparatorUtils {
     }
 
     public static void compareCollectionDtos(Collection<String> result, String fieldName,
-                                             Collection<? extends Dto> collectionDtos, Collection<? extends Dto> anotherCollectionDtos) {
+                                             Collection<? extends ComparableDto> collectionDtos, Collection<? extends ComparableDto> anotherCollectionDtos) {
         StringBuilder resultString = new StringBuilder();
-        Map<UUID, ? extends List<? extends Dto>> collectionIdsMap = collectionDtos.stream()
-                .collect(Collectors.groupingBy(Dto::getId));
+        Map<UUID, ? extends List<? extends ComparableDto>> collectionIdsMap = collectionDtos.stream()
+                .collect(Collectors.groupingBy(ComparableDto::getId));
 
-        Map<UUID, ? extends List<? extends Dto>> anotherCollectionIdsMap = anotherCollectionDtos.stream()
+        Map<UUID, ? extends List<? extends ComparableDto>> anotherCollectionIdsMap = anotherCollectionDtos.stream()
                 .filter(dto -> dto.getId() != null)
-                .collect(Collectors.groupingBy(Dto::getId));
+                .collect(Collectors.groupingBy(ComparableDto::getId));
 
         List<String> removedElements = new ArrayList<>();
         List<String> addedElements = anotherCollectionDtos.stream()
@@ -155,13 +155,13 @@ public class ComparatorUtils {
         Set<String> changedElements = new HashSet<>();
 
         anotherCollectionIdsMap.forEach((key, value) -> {
-            Dto anotherDto = value.iterator().next();
+            ComparableDto anotherComparableDto = value.iterator().next();
             if (!collectionIdsMap.containsKey(key)) {
-                addedElements.add(getMainField(anotherDto));
+                addedElements.add(getMainField(anotherComparableDto));
             } else {
                 Set<String> resultComparing = new HashSet<>();
-                Dto dto = collectionIdsMap.get(key).iterator().next();
-                compareDtos(resultComparing, fieldName, dto, anotherDto);
+                ComparableDto comparableDto = collectionIdsMap.get(key).iterator().next();
+                compareDtos(resultComparing, fieldName, comparableDto, anotherComparableDto);
                 if (!resultComparing.isEmpty()) {
                     changedElements.add(join(resultComparing, ","));
                 }
@@ -170,8 +170,8 @@ public class ComparatorUtils {
 
         collectionIdsMap.keySet().forEach(key -> {
             if (!anotherCollectionIdsMap.containsKey(key)) {
-                Dto dto = collectionIdsMap.get(key).iterator().next();
-                removedElements.add(getMainField(dto));
+                ComparableDto comparableDto = collectionIdsMap.get(key).iterator().next();
+                removedElements.add(getMainField(comparableDto));
             }
         });
 

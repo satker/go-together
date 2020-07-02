@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import moment from "moment";
 
 import EventLikes from "forms/utils/components/Event/EventLikes";
-import LoadableContent from "forms/utils/components/LoadableContent";
 import {postLikes} from "forms/utils/components/Event/EventLikes/actions";
 import {Event, ResponseData} from "forms/utils/types";
 import LeftContainer from "forms/utils/components/Container/LeftContainer";
@@ -28,11 +27,9 @@ const CommonInfo = ({event, users, getUsers, userId, postLikes}) => {
         </ItemContainer>
         <ItemContainer>
             {userId && userId !== event.author.id &&
-            <LoadableContent loadableData={users}>
                 <ParticipationButton users={users.response}
                                      getUsers={getUsers}
                                      eventId={event.id}/>
-            </LoadableContent>
             }
         </ItemContainer>
         <ItemContainer>

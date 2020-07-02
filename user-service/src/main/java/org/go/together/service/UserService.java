@@ -201,4 +201,13 @@ public class UserService extends CrudService<UserDto, SystemUser> {
                         .currentServiceField("interests").build())
                 .build();
     }
+
+    public String findLoginById(UUID id) {
+        log.debug("user found by id {}", id);
+        Optional<SystemUser> userById = userRepository.findById(id);
+        if (userById.isPresent()) {
+            return userById.get().getLogin();
+        }
+        throw new CannotFindEntityException("Cannot find user by login");
+    }
 }

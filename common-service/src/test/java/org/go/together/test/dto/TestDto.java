@@ -1,14 +1,14 @@
 package org.go.together.test.dto;
 
 import org.go.together.dto.SimpleDto;
+import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
-import org.go.together.interfaces.Dto;
 
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
-public class TestDto implements Dto {
+public class TestDto implements ComparableDto {
     private UUID id;
 
     @ComparingField(value = "name", isMain = true)

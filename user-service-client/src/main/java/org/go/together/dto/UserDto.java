@@ -2,14 +2,14 @@ package org.go.together.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
-import org.go.together.interfaces.Dto;
 
 import java.util.Set;
 import java.util.UUID;
 
 @Data
-public class UserDto implements Dto {
+public class UserDto implements ComparableDto {
     private UUID id;
 
     @ComparingField(value = "login", isMain = true)

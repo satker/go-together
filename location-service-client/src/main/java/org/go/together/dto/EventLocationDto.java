@@ -1,13 +1,13 @@
 package org.go.together.dto;
 
 import lombok.Data;
+import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
-import org.go.together.interfaces.Dto;
 
 import java.util.UUID;
 
 @Data
-public class EventLocationDto implements Dto {
+public class EventLocationDto implements ComparableDto {
     private UUID id;
 
     @ComparingField("location")

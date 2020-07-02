@@ -24,7 +24,7 @@ public class MessageMapper implements Mapper<MessageDto, Message> {
     public Message dtoToEntity(MessageDto dto) {
         Message message = new Message();
         message.setId(dto.getId());
-        message.setAuthorId(dto.getOwnerId());
+        message.setAuthorId(dto.getAuthorId());
         message.setDate(dto.getDate());
         message.setMessageType(dto.getMessageType());
         message.setMessage(dto.getMessage());

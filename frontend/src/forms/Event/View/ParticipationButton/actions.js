@@ -3,7 +3,7 @@ import {DELETE, POST} from "App/utils/api/constants";
 
 import {PARTICIPATION_BUTTON_FROM_LIST, PARTICIPATION_BUTTON_TO_LIST} from "./constants";
 
-export const postMeToList = (setRefresh, meObject) => (dispatch) => {
+export const postMeToList = (meObject) => (dispatch) => {
     dispatch({
         type: PARTICIPATION_BUTTON_TO_LIST,
         url: EVENT_SERVICE_URL + '/events/users',
@@ -12,7 +12,7 @@ export const postMeToList = (setRefresh, meObject) => (dispatch) => {
     });
 };
 
-export const deleteMeFromList = (setRefresh, meObject) => (dispatch) => {
+export const deleteMeFromList = (meObject) => (dispatch) => {
     dispatch({
         type: PARTICIPATION_BUTTON_FROM_LIST,
         url: EVENT_SERVICE_URL + '/events/users',

@@ -18,6 +18,7 @@ const ParticipationButton = ({
         const meObject = {...DEFAULT_EVENT_USER};
         meObject.user.id = userId;
         meObject.eventId = eventId;
+        console.log(meObject)
         postMeToList(meObject);
         setFlag(true);
     };

@@ -1,12 +1,12 @@
 package org.go.together.logic;
 
-import org.go.together.interfaces.Dto;
+import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.IdentifiedEntity;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public interface Mapper<D extends Dto, E extends IdentifiedEntity> {
+public interface Mapper<D extends ComparableDto, E extends IdentifiedEntity> {
     D entityToDto(E entity);
 
     E dtoToEntity(D dto);

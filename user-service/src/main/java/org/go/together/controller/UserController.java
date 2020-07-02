@@ -92,6 +92,11 @@ class UserController extends FindController implements UserClient {
     }
 
     @Override
+    public String findLoginById(UUID id) {
+        return userService.findLoginById(id);
+    }
+
+    @Override
     public void deleteUserById(UUID id) {
         userService.delete(id);
     }

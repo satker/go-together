@@ -5,7 +5,7 @@ import org.go.together.CustomRepository;
 import org.go.together.client.NotificationClient;
 import org.go.together.dto.NotificationMessageDto;
 import org.go.together.dto.NotificationStatus;
-import org.go.together.interfaces.Dto;
+import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import java.util.*;
 import static org.go.together.utils.ComparatorUtils.compareDtos;
 import static org.go.together.utils.ComparatorUtils.getMainField;
 
-public abstract class NotificationService<D extends Dto, E extends IdentifiedEntity> extends FindService<E> {
+public abstract class NotificationService<D extends ComparableDto, E extends IdentifiedEntity> extends FindService<E> {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -34,9 +34,10 @@ public abstract class NotificationService<D extends Dto, E extends IdentifiedEnt
                     NotificationMessageDto notificationMessageDto = new NotificationMessageDto();
                     notificationMessageDto.setMessage(resultMessage);
                     notificationMessageDto.setDate(new Date());
-                    notificationClient.notificate(id, notificationStatus, notificationMessageDto);
+                    UUID producerId = Optional.ofNullable(dto.getParentId()).orElse(id);
+                    notificationClient.notificate(producerId, notificationStatus, notificationMessageDto);
                     if (notificationStatus == NotificationStatus.CREATED) {
-                        addedReceiver(id, ownerId);
+                        addedReceiver(producerId, ownerId);
                     }
                 });
     }
@@ -70,7 +71,7 @@ public abstract class NotificationService<D extends Dto, E extends IdentifiedEnt
         }
     }
 
-    protected void removedReceiver(String simpleClassName, UUID producerId, UUID receiverId) {
+    protected void removedReceiver(UUID producerId, UUID receiverId) {
         notificationClient.removeReceiver(producerId, receiverId);
         log.info(getServiceName() + " dto producer with id " + producerId + ": removed receiver " + receiverId);
     }

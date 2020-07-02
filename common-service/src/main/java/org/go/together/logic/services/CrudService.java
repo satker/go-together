@@ -13,7 +13,7 @@ import org.go.together.dto.filter.PageDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.exceptions.ValidationException;
-import org.go.together.interfaces.Dto;
+import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.logic.Mapper;
 import org.go.together.logic.Validator;
@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> extends NotificationService<D, E> {
+public abstract class CrudService<D extends ComparableDto, E extends IdentifiedEntity> extends NotificationService<D, E> {
     private final Mapper<D, E> mapper;
     private final Validator<D> validator;
     private final CustomRepository<E> repository;
@@ -44,7 +44,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
             enrichEntity(entity, dto, crudOperation);
-            String message = getMessage(dto, NotificationStatus.CREATED);
+            String message = getNotificationMessage(dto, NotificationStatus.CREATED);
             E createdEntity = repository.save(entity);
             notificate(createdEntity.getId(), dto, message, NotificationStatus.CREATED);
             return new IdDto(createdEntity.getId());
@@ -60,7 +60,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
             enrichEntity(entity, dto, crudOperation);
-            String message = getMessage(dto, NotificationStatus.UPDATED);
+            String message = getNotificationMessage(dto, NotificationStatus.UPDATED);
             E createdEntity = repository.save(entity);
             notificate(dto.getId(), dto, message, NotificationStatus.UPDATED);
             return new IdDto(createdEntity.getId());
@@ -84,7 +84,7 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
         if (entityById.isPresent()) {
             E entity = entityById.get();
             enrichEntity(entity, null, crudOperation);
-            String message = getMessage(null, NotificationStatus.DELETED);
+            String message = getNotificationMessage(null, NotificationStatus.DELETED);
             repository.delete(entity);
             notificate(uuid, null, message, NotificationStatus.DELETED);
         } else {
@@ -121,5 +121,9 @@ public abstract class CrudService<D extends Dto, E extends IdentifiedEntity> ext
     }
 
     protected void enrichEntity(E entity, D dto, CrudOperation crudOperation) {
+    }
+
+    protected String getNotificationMessage(D dto, NotificationStatus notificationStatus) {
+        return getMessage(dto, notificationStatus);
     }
 }
