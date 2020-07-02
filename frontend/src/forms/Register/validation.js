@@ -50,37 +50,38 @@ export const handleMail = (value, setCheckedMail, setIsMailReadyForRegister, get
     getCheckMail(value);
 };
 
-export const handleName = (value, type, setCheckedFirstName, setIsFirstNameReadyForRegister, setCheckedLastName,
-                           setIsLastNameReadyForRegister) => {
+export const handleFirstName = (value, setCheckedFirstName, setIsFirstNameReadyForRegister) => {
     let regexToCheckNonNumericValue = new RegExp(PATTERN_TO_CHECK_NAME);
     let isGood = regexToCheckNonNumericValue.test(value);
-    if (type === 'firstName') {
-        if (isGood) {
-            if (value === '') {
-                setCheckedFirstName(EMPTY_FIRST_NAME);
-                setIsFirstNameReadyForRegister(false);
-            } else {
-                setCheckedFirstName(GOOD_FIRST_NAME);
-                setIsFirstNameReadyForRegister(true);
-            }
-        } else {
-            setCheckedFirstName(NOT_GOOD_FIRST_NAME);
+    if (isGood) {
+        if (value === '') {
+            setCheckedFirstName(EMPTY_FIRST_NAME);
             setIsFirstNameReadyForRegister(false);
+        } else {
+            setCheckedFirstName(GOOD_FIRST_NAME);
+            setIsFirstNameReadyForRegister(true);
         }
     } else {
-        if (isGood) {
-            if (value === '') {
-                setCheckedLastName(EMPTY_LAST_NAME);
-                setIsLastNameReadyForRegister(false);
-            } else {
-                setCheckedLastName(GOOD_LAST_NAME);
-                setIsLastNameReadyForRegister(true);
-            }
+        setCheckedFirstName(NOT_GOOD_FIRST_NAME);
+        setIsFirstNameReadyForRegister(false);
+    }
+};
+
+export const handleLastName = (value, setCheckedLastName, setIsLastNameReadyForRegister) => {
+    let regexToCheckNonNumericValue = new RegExp(PATTERN_TO_CHECK_NAME);
+    let isGood = regexToCheckNonNumericValue.test(value);
+    if (isGood) {
+        if (value === '') {
+            setCheckedLastName(EMPTY_LAST_NAME);
+            setIsLastNameReadyForRegister(false);
         } else {
-            setCheckedLastName(NOT_GOOD_LAST_NAME);
+            setCheckedLastName(GOOD_LAST_NAME);
+            setIsLastNameReadyForRegister(true);
+        }
+    } else {
+        setCheckedLastName(NOT_GOOD_LAST_NAME);
             setIsLastNameReadyForRegister(false);
         }
-    }
 };
 
 export const handlePassword = (value, setCheckedPassword, setIsPasswordReadyForRegister) => {

@@ -1,64 +1,29 @@
 import React, {useEffect, useState} from 'react';
-import CardMedia from "@material-ui/core/CardMedia";
 import {navigate} from 'hookrouter';
 
 import {connect} from "App/Context";
 import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
-import {getSrcForImg} from "forms/utils/utils";
-import ImageSelector from "forms/utils/components/ImageSelector";
 import CustomReference from "forms/utils/components/CustomReference";
 import MultipleSelectBox from "forms/utils/components/MultipleSelectBox";
 import Container from "forms/utils/components/Container/ContainerRow";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
-import ErrorMessage from "forms/utils/components/LoadableContent/ErrorMessage";
 import LoadableContent from "forms/utils/components/LoadableContent";
-import LabeledInput from "forms/utils/components/LabeledInput";
 import CustomButton from "forms/utils/components/CustomButton";
 
-import {getAllInterests, getAllLanguages, getCheckMail, getCheckUserName, registerUser} from "./actions";
-import {
-    EMPTY_FIRST_NAME,
-    EMPTY_LAST_NAME,
-    EMPTY_LOGIN,
-    EMPTY_MAIL,
-    EMPTY_PASSWORD,
-    GOOD_DESCRIPTION,
-    GOOD_LOGIN,
-    GOOD_MAIL,
-    GOOD_PHOTO,
-    NOT_GOOD_LOGIN,
-    NOT_GOOD_MAIL
-} from "./constants";
-import {
-    handleConfirmPassword,
-    handleDescription,
-    handleMail,
-    handleName,
-    handlePassword,
-    handlePhoto,
-    handleUserName,
-} from "./validation";
+import {getAllInterests, getAllLanguages, registerUser} from "./actions";
+import UserNameField from "./fields/UserNameField";
+import MailField from "./fields/MailField";
+import FirstNameField from "./fields/FirstNameField";
+import LastNameField from "./fields/LastNameField";
+import DescriptionField from "./fields/DescriptionField";
+import PhotoField from "./fields/PhotoField";
+import PasswordField from "./fields/PasswordField";
 
 const FormRegister = ({
-                          allLanguages, allInterests, getAllInterests, getAllLanguages, getCheckMail, checkMail,
-                          checkUserName, getCheckUserName, registerUser, registeredUser
+                          allLanguages, allInterests, getAllInterests, getAllLanguages,
+                          registerUser, registeredUser
                       }) => {
-    const [checkedUserName, setCheckedUserName] = useState(EMPTY_LOGIN);
-    const [isUserNameReadyForRegister, setIsUserNameReadyForRegister] = useState(false);
-    const [checkedMail, setCheckedMail] = useState(EMPTY_MAIL);
-    const [isMailReadyForRegister, setIsMailReadyForRegister] = useState(false);
-    const [checkedFirstName, setCheckedFirstName] = useState(EMPTY_FIRST_NAME);
-    const [isFirstNameReadyForRegister, setIsFirstNameReadyForRegister] = useState(false);
-    const [checkedLastName, setCheckedLastName] = useState(EMPTY_LAST_NAME);
-    const [isLastNameReadyForRegister, setIsLastNameReadyForRegister] = useState(false);
-    const [checkedPassword, setCheckedPassword] = useState(EMPTY_PASSWORD);
-    const [isPasswordReadyForRegister, setIsPasswordReadyForRegister] = useState(false);
-    const [checkedConfirmPassword, setCheckedConfirmPassword] = useState(EMPTY_PASSWORD);
-    const [isConfirmPasswordReadyForRegister, setIsConfirmPasswordReadyForRegister] = useState(false);
-    const [checkedDescription, setCheckedDescription] = useState(GOOD_DESCRIPTION);
-    const [isDescriptionReadyForRegister, setIsDescriptionReadyForRegister] = useState(true);
-    const [checkedPhoto, setCheckedPhoto] = useState(GOOD_PHOTO);
-    const [isPhotoReadyForRegister, setIsPhotoReadyForRegister] = useState(true);
+    const [isIncorrectData, setIsIncorrectData] = useState(true);
 
     const [login, setLogin] = useState(null);
     const [mail, setMail] = useState(null);
@@ -71,7 +36,7 @@ const FormRegister = ({
     const [confirmPassword, setConfirmPassword] = useState(null);
     const [languages, setLanguages] = useState([]);
     const [interests, setInterests] = useState([]);
-
+    console.log(location)
     useEffect(() => {
         getAllInterests();
     }, [getAllInterests]);
@@ -80,25 +45,6 @@ const FormRegister = ({
         getAllLanguages();
     }, [getAllLanguages]);
 
-    useEffect(() => {
-        if (checkMail.response === true) {
-            setCheckedMail(NOT_GOOD_MAIL);
-            setIsMailReadyForRegister(false);
-        } else {
-            setCheckedMail(GOOD_MAIL);
-            setIsMailReadyForRegister(true);
-        }
-    }, [checkMail, setCheckedMail, setIsMailReadyForRegister]);
-
-    useEffect(() => {
-        if (checkUserName.response === true) {
-            setCheckedUserName(NOT_GOOD_LOGIN);
-            setIsUserNameReadyForRegister(false);
-        } else {
-            setCheckedUserName(GOOD_LOGIN);
-            setIsUserNameReadyForRegister(true);
-        }
-    }, [checkUserName, setCheckedUserName, setIsUserNameReadyForRegister]);
 
     const handleSubmit = () => {
         let body = {
@@ -126,76 +72,32 @@ const FormRegister = ({
 
     return <Container>
         <ItemContainer>
-            <LabeledInput
-                isError={!isUserNameReadyForRegister}
-                id="login"
-                label="Login"
-                errorText={checkedUserName}
-                value={login}
-                onChange={(value) => {
-                    setLogin(value);
-                    handleUserName(value, setCheckedUserName, setIsUserNameReadyForRegister, getCheckUserName);
-                }
-                }
-            />
+            <UserNameField login={login}
+                           setLogin={setLogin}
+                           setIsIncorrectData={setIsIncorrectData}/>
         </ItemContainer>
         <ItemContainer>
-            <LabeledInput
-                isError={!isMailReadyForRegister}
-                id="Email"
-                label="Email"
-                errorText={checkedMail}
-                value={mail}
-                onChange={(value) => {
-                    setMail(value);
-                    handleMail(value, setCheckedMail, setIsMailReadyForRegister, getCheckMail);
-                }
-                }
-            />
+            <MailField mail={mail}
+                       setMail={setMail}/>
         </ItemContainer>
         <ItemContainer>
-            <LabeledInput
-                isError={!isFirstNameReadyForRegister}
-                id="firstName"
-                label="First name"
-                errorText={checkedFirstName}
-                value={firstName}
-                onChange={(value) => {
-                    setFirstName(value);
-                    handleName(value, 'firstName', setCheckedFirstName, setIsFirstNameReadyForRegister,
-                        setCheckedLastName, setIsLastNameReadyForRegister);
-                }}
-            />
+            <FirstNameField firstName={firstName}
+                            setFirstName={setFirstName}
+                            setIsIncorrectData={setIsIncorrectData}/>
         </ItemContainer>
         <ItemContainer>
-            <LabeledInput
-                isError={!isLastNameReadyForRegister}
-                id="lastName"
-                label="Last name"
-                errorText={checkedLastName}
-                value={lastName}
-                onChange={(value) => {
-                    setLastName(value);
-                    handleName(value, 'lastName', setCheckedFirstName, setIsFirstNameReadyForRegister,
-                        setCheckedLastName, setIsLastNameReadyForRegister);
-                }}
-            />
+            <LastNameField lastName={lastName}
+                           setLastName={setLastName}
+                           setIsIncorrectData={setIsIncorrectData}/>
         </ItemContainer>
         <ItemContainer>
-            <AutocompleteLocation onChangeLocation={setLocation}/>
+            <AutocompleteLocation onChangeLocation={setLocation}
+                                  placeholder='Enter location'/>
         </ItemContainer>
         <ItemContainer>
-            <LabeledInput
-                isError={!isDescriptionReadyForRegister}
-                id="description"
-                label="Description"
-                errorText={checkedDescription}
-                value={description}
-                onChange={(value) => {
-                    setDescription(value);
-                    handleDescription(value, setCheckedDescription, setIsDescriptionReadyForRegister);
-                }}
-            />
+            <DescriptionField description={description}
+                              setDescription={setDescription}
+                              setIsIncorrectData={setIsIncorrectData}/>
         </ItemContainer>
         <ItemContainer>
             <LoadableContent loadableData={allLanguages}>
@@ -213,62 +115,21 @@ const FormRegister = ({
                                    onChange={setInterests}/>
             </LoadableContent>
         </ItemContainer>
-        <ItemContainer>
-            {userPhoto && <CardMedia style={{height: '255px', width: '350px'}}
-                                     component="img"
-                                     image={getSrcForImg(userPhoto)}/>}
-            <ImageSelector photos={userPhoto}
-                           setPhotos={photo => {
-                               handlePhoto(photo, setCheckedPhoto, setIsPhotoReadyForRegister);
-                               setUserPhoto(photo)
-                           }}
-                           multiple={false}
-            />
-            <ErrorMessage error={checkedPhoto}/>
-        </ItemContainer>
-        <ItemContainer>
-            <LabeledInput
-                isError={!isPasswordReadyForRegister}
-                id="password"
-                type='password'
-                label="Password"
-                errorText={checkedPassword}
-                value={password}
-                onChange={(value) => {
-                    setPassword(value);
-                    handlePassword(value, setCheckedPassword, setIsPasswordReadyForRegister);
-                }}
-            />
-        </ItemContainer>
-
-        <ItemContainer>
-            <LabeledInput id="confirmPassword"
-                          type='password'
-                          isError={!isConfirmPasswordReadyForRegister}
-                          label="Reenter password"
-                          errorText={checkedConfirmPassword}
-                          value={confirmPassword}
-                          onChange={(value) => {
-                              setConfirmPassword(value);
-                              handleConfirmPassword(value, setCheckedConfirmPassword,
-                                  setIsConfirmPasswordReadyForRegister, password);
-                          }}/>
-        </ItemContainer>
+        <PhotoField userPhoto={userPhoto}
+                    setUserPhoto={setUserPhoto}
+                    setIsIncorrectData={setIsIncorrectData}/>
+        <PasswordField password={password}
+                       setPassword={setPassword}
+                       confirmPassword={confirmPassword}
+                       setConfirmPassword={setConfirmPassword}
+                       setIsIncorrectData={setIsIncorrectData}/>
         <ItemContainer>
             <CustomReference action={moveToMainPage} description='Already registered?'/>
         </ItemContainer>
         <ItemContainer>
             <CustomButton color="primary"
                           onClick={handleSubmit}
-                          disabled={!(isUserNameReadyForRegister &&
-                              isMailReadyForRegister
-                              && isFirstNameReadyForRegister &&
-                              isLastNameReadyForRegister &&
-                              isPasswordReadyForRegister &&
-                              isConfirmPasswordReadyForRegister &&
-                              isDescriptionReadyForRegister &&
-                              isPhotoReadyForRegister
-                          )}
+                          disabled={!isIncorrectData}
                           text='Register'/>
         </ItemContainer>
         <ItemContainer>
@@ -280,10 +141,8 @@ const FormRegister = ({
 const mapStateToProps = state => ({
     allLanguages: state.components.forms.register.allLanguages,
     allInterests: state.components.forms.register.allInterests,
-    checkMail: state.components.forms.register.checkMail,
-    checkUserName: state.components.forms.register.checkUserName,
     registeredUser: state.components.forms.register.registeredUser
 });
 
 export default connect(mapStateToProps,
-    {getAllLanguages, getAllInterests, getCheckMail, getCheckUserName, registerUser})(FormRegister);
+    {getAllLanguages, getAllInterests, registerUser})(FormRegister);

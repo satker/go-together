@@ -1,6 +1,5 @@
 package org.go.together.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
@@ -31,7 +30,6 @@ public class UserDto implements ComparableDto {
     private String description;
 
     @ComparingField(value = "password", deepCompare = false)
-    @JsonIgnore
     private String password;
 
     @ComparingField("role")

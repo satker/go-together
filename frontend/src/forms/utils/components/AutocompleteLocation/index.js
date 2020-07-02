@@ -6,6 +6,7 @@ import {withStyles} from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import {onChange} from "forms/utils/utils";
 import {DEFAULT_COUNTRY, DEFAULT_LOCATION, DEFAULT_ROUTE} from "forms/utils/constants";
 import {getCity, getCountry, getState, requestPlaceId} from "forms/utils/components/ObjectGeoLocation/utils";
 import {SimpleObject} from "forms/utils/types";
@@ -30,9 +31,11 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
     const [currentOptions, setCurrentOptions] = useState([]);
 
     const getLocation = (paths, values) => {
+
         let newLocation = {...DEFAULT_ROUTE};
         newLocation = {...DEFAULT_LOCATION};
         newLocation.country = {...DEFAULT_COUNTRY};
+        console.log(paths, values)
         onChange(newLocation, result => newLocation = result)(paths, values);
         return newLocation;
     };
@@ -65,7 +68,7 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
         setLoading(false);
     }
 
-    const onChange = (inputValue) => {
+    const onChangeValue = (inputValue) => {
         if (inputValue) {
             setLoading(true);
             autocomplete.getQueryPredictions({input: inputValue, ...options}, setPredictions(inputValue));
@@ -83,7 +86,7 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
             onClose={() => setOpen(false)}
             getOptionLabel={option => option.name}
             options={currentOptions}
-            onInputChange={(evt, value) => onChange(value)}
+            onInputChange={(evt, value) => onChangeValue(value)}
             renderInput={params => {
                 params = {
                     ...params, inputProps: {

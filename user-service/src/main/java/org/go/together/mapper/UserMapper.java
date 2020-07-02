@@ -38,7 +38,6 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
         userDTO.setLocation(locationClient.getLocationById(entity.getLocationId()));
         userDTO.setLogin(entity.getLogin());
         userDTO.setMail(entity.getMail());
-        userDTO.setPassword(entity.getPassword());
         userDTO.setRole(entity.getRole());
         userDTO.setInterests(entity.getInterests().stream()
                 .map(interestMapper::entityToDto)

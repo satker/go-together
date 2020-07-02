@@ -4,7 +4,6 @@ package org.go.together.model;
 import lombok.Data;
 import org.go.together.dto.Role;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -31,7 +30,6 @@ public class SystemUser implements IdentifiedEntity {
     @ElementCollection
     @CollectionTable(name = "user_photo", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "photo_id")
-    @Type(type = "uuid-char")
     private Collection<UUID> photoIds;
 
     @ElementCollection

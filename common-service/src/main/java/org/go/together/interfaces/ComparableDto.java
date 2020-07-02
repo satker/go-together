@@ -41,6 +41,7 @@ public interface ComparableDto extends Identified {
         return null;
     }
 
+    @JsonIgnore
     default UUID getParentId() {
         return getId();
     }
