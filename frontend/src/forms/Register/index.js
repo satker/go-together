@@ -94,10 +94,8 @@ const validation = (fields) => {
         ...compareFieldsValidation(fields, 'password', 'confirmPassword'),
         ...validatePhoto(fields, 'userPhotos'),
         ...isEmptyValidation(fields,
-            ['login', 'mail', 'firstName', 'lastName',
-                'description', 'password', 'confirmPassword',
-                'languages', 'interests', 'location']),
-        ...isEmptyArrayValidation(fields, ['userPhotos'])
+            ['login', 'mail', 'firstName', 'lastName', 'description', 'password', 'confirmPassword', 'location']),
+        ...isEmptyArrayValidation(fields, ['userPhotos', 'languages', 'interests'])
     }
 }
 
