@@ -23,7 +23,7 @@ public class UserRepository extends CustomRepository<SystemUser> {
     @Transactional
     public Collection<SystemUser> findUserByMail(String mail) {
         return createQuery()
-                .where(createWhere().condition("mail", SqlOperator.LIKE, mail))
+                .where(createWhere().condition("mail", SqlOperator.EQUAL, mail))
                 .fetchAll();
     }
 

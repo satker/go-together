@@ -74,7 +74,7 @@ public class UserService extends CrudService<UserDto, SystemUser> {
 
     public boolean checkIsPresentedMail(String mail) {
         log.debug("user found by mail {}", mail);
-        return !getUserByMail(mail.replaceAll("\"", "")).isEmpty();
+        return !userRepository.findUserByMail(mail.replaceAll("\"", "")).isEmpty();
     }
 
     public boolean checkIsPresentedUsername(String username) {
@@ -96,10 +96,6 @@ public class UserService extends CrudService<UserDto, SystemUser> {
         } else {
             return true;
         }
-    }
-
-    private Collection<SystemUser> getUserByMail(String mail) {
-        return userRepository.findUserByMail(mail);
     }
 
     public Set<UUID> getIdLanguagesByOwnerId(UUID userId) {
