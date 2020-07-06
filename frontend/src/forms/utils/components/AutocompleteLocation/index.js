@@ -25,7 +25,7 @@ const options = {
     types: ['(cities)']
 };
 
-const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, setValue}) => {
+const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, setValue, error}) => {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const [currentOptions, setCurrentOptions] = useState([]);
@@ -97,6 +97,8 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
                 return <TextField
                     {...params}
                     label={placeholder}
+                    error={!!error}
+                    helperText={error}
                     fullWidth
                     variant="outlined"
                     InputProps={{

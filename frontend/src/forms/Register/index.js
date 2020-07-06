@@ -1,42 +1,31 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {navigate} from 'hookrouter';
 
 import {connect} from "App/Context";
-import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
-import CustomReference from "forms/utils/components/CustomReference";
-import MultipleSelectBox from "forms/utils/components/MultipleSelectBox";
-import Container from "forms/utils/components/Container/ContainerRow";
-import ItemContainer from "forms/utils/components/Container/ItemContainer";
-import LoadableContent from "forms/utils/components/LoadableContent";
-import CustomButton from "forms/utils/components/CustomButton";
 
-import {getAllInterests, getAllLanguages, registerUser} from "./actions";
-import UserNameField from "./fields/UserNameField";
-import MailField from "./fields/MailField";
-import FirstNameField from "./fields/FirstNameField";
-import LastNameField from "./fields/LastNameField";
-import DescriptionField from "./fields/DescriptionField";
-import PhotoField from "./fields/PhotoField";
-import PasswordField from "./fields/PasswordField";
+import {getAllInterests, getAllLanguages, getCheckMail, getCheckUserName, regUser} from "./actions";
+import PhotoField from "forms/utils/components/Form/fields/PhotoField";
+import {createReduxForm} from "forms/utils/components/Form";
+import {FORM_ID, PATTERN_TO_CHECK_MAIL, PATTERN_TO_CHECK_NAME} from "./constants";
+import TextField from "forms/utils/components/Form/fields/TextField";
+import {
+    compareFieldsValidation,
+    isEmptyArrayValidation,
+    isEmptyValidation,
+    lengthMoreValidation,
+    lengthValidation,
+    regexValidation,
+    validatePhoto
+} from "../utils/validation";
+import SelectBoxLoadableField from "forms/utils/components/Form/fields/SelectBoxLoadableField";
+import AutocompleteLocationField from "forms/utils/components/Form/fields/AutocompleteLocationField";
 
 const FormRegister = ({
                           allLanguages, allInterests, getAllInterests, getAllLanguages,
-                          registerUser, registeredUser
+                          registeredUser, regUser, getCheckUserName, getCheckMail,
+                          checkedMail, checkedUserName
                       }) => {
-    const [isIncorrectData, setIsIncorrectData] = useState(true);
 
-    const [login, setLogin] = useState(null);
-    const [mail, setMail] = useState(null);
-    const [firstName, setFirstName] = useState(null);
-    const [lastName, setLastName] = useState(null);
-    const [location, setLocation] = useState(null);
-    const [description, setDescription] = useState(null);
-    const [userPhoto, setUserPhoto] = useState(null);
-    const [password, setPassword] = useState(null);
-    const [confirmPassword, setConfirmPassword] = useState(null);
-    const [languages, setLanguages] = useState([]);
-    const [interests, setInterests] = useState([]);
-    console.log(location)
     useEffect(() => {
         getAllInterests();
     }, [getAllInterests]);
@@ -46,22 +35,6 @@ const FormRegister = ({
     }, [getAllLanguages]);
 
 
-    const handleSubmit = () => {
-        let body = {
-            login,
-            mail,
-            firstName,
-            lastName,
-            location,
-            description,
-            userPhotos: [userPhoto],
-            password,
-            languages,
-            interests
-        };
-        registerUser(body);
-    };
-
     useEffect(() => {
         if (registeredUser.id) {
             moveToMainPage()
@@ -70,79 +43,71 @@ const FormRegister = ({
 
     const moveToMainPage = () => navigate('/');
 
-    return <Container>
-        <ItemContainer>
-            <UserNameField login={login}
-                           setLogin={setLogin}
-                           setIsIncorrectData={setIsIncorrectData}/>
-        </ItemContainer>
-        <ItemContainer>
-            <MailField mail={mail}
-                       setMail={setMail}/>
-        </ItemContainer>
-        <ItemContainer>
-            <FirstNameField firstName={firstName}
-                            setFirstName={setFirstName}
-                            setIsIncorrectData={setIsIncorrectData}/>
-        </ItemContainer>
-        <ItemContainer>
-            <LastNameField lastName={lastName}
-                           setLastName={setLastName}
-                           setIsIncorrectData={setIsIncorrectData}/>
-        </ItemContainer>
-        <ItemContainer>
-            <AutocompleteLocation onChangeLocation={setLocation}
-                                  placeholder='Enter location'/>
-        </ItemContainer>
-        <ItemContainer>
-            <DescriptionField description={description}
-                              setDescription={setDescription}
-                              setIsIncorrectData={setIsIncorrectData}/>
-        </ItemContainer>
-        <ItemContainer>
-            <LoadableContent loadableData={allLanguages}>
-                <MultipleSelectBox label='Select languages'
-                                   value={languages}
-                                   optionsSimple={allLanguages.response}
-                                   onChange={setLanguages}/>
-            </LoadableContent>
-        </ItemContainer>
-        <ItemContainer>
-            <LoadableContent loadableData={allInterests}>
-                <MultipleSelectBox label='Select interests'
-                                   value={interests}
-                                   optionsSimple={allInterests.response}
-                                   onChange={setInterests}/>
-            </LoadableContent>
-        </ItemContainer>
-        <PhotoField userPhoto={userPhoto}
-                    setUserPhoto={setUserPhoto}
-                    setIsIncorrectData={setIsIncorrectData}/>
-        <PasswordField password={password}
-                       setPassword={setPassword}
-                       confirmPassword={confirmPassword}
-                       setConfirmPassword={setConfirmPassword}
-                       setIsIncorrectData={setIsIncorrectData}/>
-        <ItemContainer>
-            <CustomReference action={moveToMainPage} description='Already registered?'/>
-        </ItemContainer>
-        <ItemContainer>
-            <CustomButton color="primary"
-                          onClick={handleSubmit}
-                          disabled={!isIncorrectData}
-                          text='Register'/>
-        </ItemContainer>
-        <ItemContainer>
-            <CustomButton color="secondary" onClick={moveToMainPage} text='Close'/>
-        </ItemContainer>
-    </Container>;
+    return <RegisterForm onClose={moveToMainPage}
+                         onSubmit={regUser}>
+        <TextField name='login'
+                   checkValue={getCheckUserName}
+                   checked={checkedUserName}
+                   placeholder='Login'/>
+        <TextField name='mail'
+                   checkValue={getCheckMail}
+                   checked={checkedMail}
+                   placeholder='Mail'/>
+        <TextField name='firstName'
+                   placeholder='First name'/>
+        <TextField name='lastName'
+                   placeholder='Last name'/>
+        <AutocompleteLocationField name='location'
+                                   placeholder='Enter location'/>
+        <TextField name='description'
+                   placeholder='Description'/>
+        <SelectBoxLoadableField name='languages'
+                                options={allLanguages}
+                                placeholder='Select languages'/>
+        <SelectBoxLoadableField name='interests'
+                                options={allInterests}
+                                placeholder='Select interests'/>
+        <PhotoField name='userPhotos'/>
+        <TextField name='password'
+                   type='password'
+                   placeholder='Password'/>
+        <TextField name='confirmPassword'
+                   type='password'
+                   placeholder='Confirm password'/>
+    </RegisterForm>
 };
 
 const mapStateToProps = state => ({
     allLanguages: state.components.forms.register.allLanguages,
     allInterests: state.components.forms.register.allInterests,
-    registeredUser: state.components.forms.register.registeredUser
+    registeredUser: state.components.forms.register.registeredUser,
+    checkedMail: state.components.forms.register.checkMail,
+    checkedUserName: state.components.forms.register.checkUserName
 });
 
+const validation = (fields) => {
+    return {
+        ...regexValidation(fields, ['mail'], PATTERN_TO_CHECK_MAIL),
+        ...regexValidation(fields, ['firstName', 'lastName'], PATTERN_TO_CHECK_NAME),
+        ...lengthValidation(fields, ['description'], 255),
+        ...lengthMoreValidation(fields, ['password', 'confirmPassword'], 8),
+        ...compareFieldsValidation(fields, 'password', 'confirmPassword'),
+        ...validatePhoto(fields, 'userPhotos'),
+        ...isEmptyValidation(fields,
+            ['login', 'mail', 'firstName', 'lastName',
+                'description', 'password', 'confirmPassword',
+                'languages', 'interests', 'location']),
+        ...isEmptyArrayValidation(fields, ['userPhotos'])
+    }
+}
+
+const RegisterForm = createReduxForm({FORM_ID, validation});
+
 export default connect(mapStateToProps,
-    {getAllLanguages, getAllInterests, registerUser})(FormRegister);
+    {
+        getAllLanguages,
+        getAllInterests,
+        regUser: regUser(FORM_ID),
+        getCheckUserName,
+        getCheckMail
+    })(FormRegister);

@@ -39,11 +39,11 @@ export const getCheckUserName = (value) => (dispatch) => {
     });
 };
 
-export const registerUser = (body) => (dispatch) => {
+export const regUser = (FORM_ID) => () => (dispatch, state) => {
     dispatch({
         type: CREATED_USER,
         url: USER_SERVICE_URL + "/users",
         method: PUT,
-        data: body
+        data: state.components.utils.input[FORM_ID].value
     });
 };

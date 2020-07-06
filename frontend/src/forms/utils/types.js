@@ -13,7 +13,8 @@ export const Location = PropTypes.exact({
 
 export const SimpleObject = PropTypes.exact({
     id: PropTypes.string,
-    name: PropTypes.string
+    name: PropTypes.string,
+    code: PropTypes.string
 });
 
 export const NotificationObject = PropTypes.exact({

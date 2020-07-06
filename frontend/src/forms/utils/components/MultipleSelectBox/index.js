@@ -7,6 +7,7 @@ import Chip from "@material-ui/core/Chip";
 import {makeStyles} from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 import {SimpleObject} from "forms/utils/types";
 
@@ -34,11 +35,11 @@ const MenuProps = {
     },
 };
 
-const MultipleSelectBox = ({optionsSimple, value, onChange, label}) => {
+const MultipleSelectBox = ({optionsSimple, value, onChange, label, error}) => {
     const handleChange = (event) => onChange(event.target.value);
     const classes = useStyles();
 
-    return <FormControl className={classes.formControl} fullWidth>
+    return <FormControl className={classes.formControl} fullWidth error={!!error}>
         <InputLabel htmlFor="select-multiple-chip">{label}</InputLabel>
         <Select
             multiple
@@ -60,6 +61,7 @@ const MultipleSelectBox = ({optionsSimple, value, onChange, label}) => {
                 </MenuItem>
             ))}
         </Select>
+        {error && <FormHelperText>{error}</FormHelperText>}
     </FormControl>;
 };
 
