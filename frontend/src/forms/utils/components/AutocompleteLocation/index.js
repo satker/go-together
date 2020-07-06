@@ -35,7 +35,6 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
         let newLocation = {...DEFAULT_ROUTE};
         newLocation = {...DEFAULT_LOCATION};
         newLocation.country = {...DEFAULT_COUNTRY};
-        console.log(paths, values)
         onChange(newLocation, result => newLocation = result)(paths, values);
         return newLocation;
     };

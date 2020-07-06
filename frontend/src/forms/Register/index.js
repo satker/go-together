@@ -16,7 +16,7 @@ import {
     lengthValidation,
     regexValidation,
     validatePhoto
-} from "../utils/validation";
+} from "forms/utils/validation";
 import SelectBoxLoadableField from "forms/utils/components/Form/fields/SelectBoxLoadableField";
 import AutocompleteLocationField from "forms/utils/components/Form/fields/AutocompleteLocationField";
 
@@ -58,7 +58,7 @@ const FormRegister = ({
         <TextField name='lastName'
                    placeholder='Last name'/>
         <AutocompleteLocationField name='location'
-                                   placeholder='Enter location'/>
+                                   placeholder='Location'/>
         <TextField name='description'
                    placeholder='Description'/>
         <SelectBoxLoadableField name='languages'

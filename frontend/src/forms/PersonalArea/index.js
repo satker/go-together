@@ -12,7 +12,6 @@ const PersonalArea = ({userInfo, getUserInfo, updatedUser, putUpdatedUser}) => {
     useEffect(() => {
         getUserInfo();
     }, [getUserInfo]);
-    console.log(userInfo)
     return (
         <Container>
             <LoadableContent loadableData={userInfo}>

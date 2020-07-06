@@ -5,7 +5,6 @@ import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import ContainerRow from "forms/utils/components/Container/ContainerRow";
 
 const ViewForm = ({profile}) => {
-    console.log(profile)
     return <ContainerRow>
         <ItemContainer>Login: {profile.login}</ItemContainer>
         <ItemContainer>Mail: {profile.mail}</ItemContainer>

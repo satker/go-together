@@ -1,5 +1,3 @@
-import {isEmpty} from 'lodash';
-
 import {FORM, VALIDATION} from './constants';
 import {onChange} from "forms/utils/utils";
 
@@ -17,12 +15,10 @@ export const updateValue = (FORM_ID) => (path, value) => (dispatch, state) => {
 
 export const updateValidation = (FORM_ID, validation) => (fields) => (dispatch) => {
     const validatedValues = validation(fields)
-    if (!isEmpty(validatedValues)) {
-        dispatch({
-            type: FORM + FORM_ID + VALIDATION,
-            value: validatedValues
-        })
-    }
+    dispatch({
+        type: FORM + FORM_ID + VALIDATION,
+        value: validatedValues
+    })
 };
 
 export const updateValidationMessage = (FORM_ID) => (field, message) => (dispatch, state) => {
