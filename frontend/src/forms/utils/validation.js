@@ -68,7 +68,7 @@ export const compareFieldsValidation = (fields, fieldName1, fieldName2) => {
     if (!fields || !fields[fieldName2]) {
         return result;
     }
-    if (fields[fieldName1] === fields[fieldName2]) {
+    if (fields[fieldName1] !== fields[fieldName2]) {
         result[fieldName2] = '* Don\'t match ' + fieldName1 + '.';
     }
     return result;

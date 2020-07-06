@@ -107,7 +107,7 @@ export default connect(mapStateToProps,
     {
         getAllLanguages,
         getAllInterests,
-        regUser: regUser(FORM_ID),
+        regUser,
         getCheckUserName,
         getCheckMail
     })(FormRegister);

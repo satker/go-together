@@ -5,8 +5,8 @@ import {connect} from "App/Context";
 import {createContextValue} from "App/utils/utils";
 import {utils} from "forms/utils/reducers";
 import Container from "forms/utils/components/Container/ContainerRow";
-import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import CustomButton from "forms/utils/components/CustomButton";
+import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import {updateValidation, updateValidationMessage, updateValue} from './actions';
 import {FORM, VALIDATION} from './constants';
 
@@ -18,26 +18,27 @@ const ContextForm = ({
         updateValidation(value);
     }, [value, updateValidation]);
 
+
     return <Container>
         {React.Children.map(children, child =>
-            <ItemContainer>
-                {React.cloneElement(child, {
-                    ...child.props,
-                    error: errors[child.props.name],
-                    setError: updateValidationMessage,
-                    name: child.props.name,
-                    value: value ? value[child.props.name] : null,
-                    setValue: updateValue
-                })}
-            </ItemContainer>
+            React.cloneElement(child, {
+                ...child.props,
+                error: errors[child.props.name],
+                setError: updateValidationMessage,
+                name: child.props.name,
+                value: value ? value[child.props.name] : null,
+                setValue: updateValue
+            })
         )}
-        <CustomButton color="primary"
-                      onClick={onSubmit}
-                      disabled={!isEmpty(errors)}
-                      text='Submit'/>
-        <CustomButton color="secondary"
-                      onClick={onClose}
-                      text='Close'/>
+        <ContainerColumn>
+            <CustomButton color="primary"
+                          onClick={onSubmit}
+                          disabled={!isEmpty(errors)}
+                          text='Submit'/>
+            <CustomButton color="secondary"
+                          onClick={onClose}
+                          text='Close'/>
+        </ContainerColumn>
     </Container>;
 };
 

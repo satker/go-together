@@ -1,6 +1,7 @@
 import {USER_SERVICE_URL} from "forms/utils/constants";
 import {
     CREATED_USER,
+    FORM_ID,
     REGISTER_ALL_INTERESTS,
     REGISTER_ALL_LANGUAGES,
     REGISTER_CHECK_MAIL,
@@ -39,7 +40,7 @@ export const getCheckUserName = (value) => (dispatch) => {
     });
 };
 
-export const regUser = (FORM_ID) => () => (dispatch, state) => {
+export const regUser = () => (dispatch, state) => {
     dispatch({
         type: CREATED_USER,
         url: USER_SERVICE_URL + "/users",
