@@ -1,6 +1,7 @@
 package org.go.together.service;
 
 import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.dto.*;
 import org.go.together.dto.filter.FieldMapper;
@@ -112,27 +113,39 @@ public class UserService extends CrudService<UserDto, SystemUser> {
     @Override
     protected void enrichEntity(SystemUser entity, UserDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE) {
-            Collection<UUID> previousPhotos = userRepository.findById(entity.getId())
+            Optional<SystemUser> user = updatePassword(entity);
+            Collection<UUID> previousPhotos = user
                     .map(SystemUser::getPhotoIds)
                     .orElse(Collections.emptySet());
-            Role role = userRepository.findById(entity.getId()).map(SystemUser::getRole).orElse(Role.ROLE_USER);
+            Role role = user.map(SystemUser::getRole).orElse(Role.ROLE_USER);
             contentClient.deletePhotoById(previousPhotos);
             Collection<IdDto> savedPhoto = contentClient.savePhotos(dto.getUserPhotos());
             entity.setPhotoIds(savedPhoto.stream()
                     .map(IdDto::getId)
                     .collect(Collectors.toSet()));
-            entity.setPassword(bCryptPasswordEncoder.encode(entity.getPassword()));
             entity.setRole(role);
         } else if (crudOperation == CrudOperation.CREATE) {
+            updatePassword(entity);
             Collection<IdDto> savedPhoto = contentClient.savePhotos(dto.getUserPhotos());
             entity.setPhotoIds(savedPhoto.stream()
                     .map(IdDto::getId)
                     .collect(Collectors.toSet()));
-            entity.setPassword(bCryptPasswordEncoder.encode(entity.getPassword()));
             entity.setRole(Role.ROLE_USER);
         } else if (crudOperation == CrudOperation.DELETE) {
             contentClient.deletePhotoById(entity.getPhotoIds());
         }
+    }
+
+    private Optional<SystemUser> updatePassword(SystemUser entity) {
+        Optional<SystemUser> user = userRepository.findById(entity.getId());
+        String password = entity.getPassword();
+        if (StringUtils.isNotBlank(password)) {
+            entity.setPassword(bCryptPasswordEncoder.encode(password));
+        } else {
+            entity.setPassword(user.map(SystemUser::getPassword)
+                    .orElseThrow(() -> new CannotFindEntityException("Cannot find user in database")));
+        }
+        return user;
     }
 
     public Set<UUID> getLikedEventsByUserId(UUID userId) {

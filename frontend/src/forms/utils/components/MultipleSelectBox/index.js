@@ -38,14 +38,14 @@ const MenuProps = {
 const MultipleSelectBox = ({optionsSimple, value, onChange, label, error}) => {
     const handleChange = (event) => onChange(event.target.value);
     const classes = useStyles();
-
     return <FormControl className={classes.formControl} fullWidth error={!!error}>
-        <InputLabel htmlFor="select-multiple-chip">{label}</InputLabel>
+        <InputLabel htmlFor={"select-multiple-chip-" + label}>{label}</InputLabel>
         <Select
             multiple
             value={value}
             onChange={handleChange}
-            input={<Input id="select-multiple-chip"/>}
+            labelId={"select-multiple-chip-" + label}
+            input={<Input/>}
             renderValue={selected => (
                 <div className={classes.chips}>
                     {selected.map(option => (
@@ -55,11 +55,11 @@ const MultipleSelectBox = ({optionsSimple, value, onChange, label, error}) => {
             )}
             MenuProps={MenuProps}
         >
-            {optionsSimple.map(option => (
-                <MenuItem key={option.id} value={option}>
+            {optionsSimple.map(option => {
+                return <MenuItem key={option.id} value={option}>
                     {option.name}
                 </MenuItem>
-            ))}
+            })}
         </Select>
         {error && <FormHelperText>{error}</FormHelperText>}
     </FormControl>;

@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {isEmpty} from "lodash";
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 import {ResponseData} from 'forms/utils/types';
 
 import Loading from "./Loading";
-import ErrorMessage from "./ErrorMessage";
 
 const LoadableContent = ({children, loadableData, loadingMessage, additionalCheck}) => {
     if (loadableData.inProcess ||
@@ -17,7 +17,7 @@ const LoadableContent = ({children, loadableData, loadingMessage, additionalChec
     }
 
     if (loadableData.error) {
-        return <ErrorMessage error={loadableData.error}/>;
+        return <FormHelperText error>{loadableData.error}</FormHelperText>;
     }
 
     return children;

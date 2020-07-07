@@ -11,10 +11,7 @@ import org.go.together.service.EventPhotoService;
 import org.go.together.service.PhotoService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -37,6 +34,7 @@ public class ContentController extends FindController implements ContentClient {
     public Set<PhotoDto> getPhotosByIds(Collection<UUID> photoIds) {
         return photoIds.stream()
                 .map(photoService::read)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 

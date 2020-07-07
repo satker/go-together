@@ -4,7 +4,9 @@ import lombok.Data;
 import org.go.together.dto.PhotoCategory;
 import org.go.together.interfaces.IdentifiedEntity;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.UUID;
 
 @Data
@@ -12,7 +14,6 @@ import java.util.UUID;
 @Table(name = "photo", schema = "public")
 public class Photo implements IdentifiedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String photoUrl;
     private String contentType;

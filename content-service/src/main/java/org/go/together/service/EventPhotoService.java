@@ -47,7 +47,7 @@ public class EventPhotoService extends CrudService<EventPhotoDto, EventPhoto> {
                 .map(Optional::get)
                 .orElse(null);
 
-        Set<Photo> newPhotos = photoService.saveOfUpdatePhotos(eventPhotoDto.getPhotos(),
+        Set<Photo> newPhotos = photoService.saveOrUpdatePhotos(eventPhotoDto.getPhotos(),
                 Optional.ofNullable(eventPhoto)
                         .map(EventPhoto::getPhotos)
                         .orElse(Collections.emptySet()));
@@ -64,7 +64,7 @@ public class EventPhotoService extends CrudService<EventPhotoDto, EventPhoto> {
     @Override
     protected void enrichEntity(EventPhoto entity, EventPhotoDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.DELETE) {
-            photoService.deleteContentByRoomId(entity.getPhotos());
+            photoService.deletePhotos(entity.getPhotos());
         }
     }
 

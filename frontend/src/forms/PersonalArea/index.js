@@ -4,7 +4,7 @@ import Container from "forms/utils/components/Container/ContainerRow";
 import LoadableContent from "forms/utils/components/LoadableContent";
 import {connect} from "App/Context";
 
-import {getAllInterests, getAllLanguages, getCheckMail, getUserInfo, updatedUser} from "./actions";
+import {getAllInterests, getAllLanguages, getUserInfo, updateUser} from "./actions";
 import TextField from "forms/utils/components/Form/fields/TextField";
 import AutocompleteLocationField from "forms/utils/components/Form/fields/AutocompleteLocationField";
 import SelectBoxLoadableField from "forms/utils/components/Form/fields/SelectBoxLoadableField";
@@ -22,7 +22,7 @@ import {createReduxForm} from "../utils/components/Form";
 import {FORM_ID} from "./constants";
 
 const PersonalArea = ({
-                          userInfo, getUserInfo, updatedUser, putUpdatedUser, getAllLanguages, getAllInterests,
+                          userInfo, getUserInfo, updatedUser, updateUser, getAllLanguages, getAllInterests,
                           allLanguages, allInterests
                       }) => {
     useEffect(() => {
@@ -41,7 +41,7 @@ const PersonalArea = ({
         <Container>
             <LoadableContent loadableData={userInfo}>
                 <RegisterForm onClose={() => console.log('updated')}
-                              onSubmit={putUpdatedUser}
+                              onSubmit={updateUser}
                               defaultValue={userInfo.response}>
                     <TextField name='firstName'
                                placeholder='First name'/>
@@ -93,8 +93,7 @@ const RegisterForm = createReduxForm({FORM_ID, validation});
 
 export default connect(mapStateToProps, {
     getUserInfo,
-    putUpdatedUser: updatedUser,
-    getCheckMail,
+    updateUser,
     getAllLanguages,
     getAllInterests
 })(PersonalArea);

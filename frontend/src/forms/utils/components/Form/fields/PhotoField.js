@@ -1,11 +1,11 @@
 import React from 'react';
 import CardMedia from "@material-ui/core/CardMedia";
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 import {getSrcForImg} from "forms/utils/utils";
-import ErrorMessage from "forms/utils/components/LoadableContent/ErrorMessage";
 import ImageSelector from "forms/utils/components/ImageSelector";
-import ContainerColumn from "../../Container/ContainerColumn";
-import ItemContainer from "../../Container/ItemContainer";
+import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
 
 const PhotoField = ({name, value, setValue, error}) => {
     return <ItemContainer>
@@ -28,7 +28,7 @@ const PhotoField = ({name, value, setValue, error}) => {
             </ItemContainer>
         </ContainerColumn>
         <ItemContainer>
-            {error && <ErrorMessage error={error}/>}
+            {error && <FormHelperText error>{error}</FormHelperText>}
         </ItemContainer>
     </ItemContainer>;
 }

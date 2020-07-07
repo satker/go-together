@@ -4,9 +4,7 @@ import org.go.together.interfaces.NamedEnum;
 
 public enum PhotoCategory implements NamedEnum {
     USER("user photos"),
-    EVENT("event photos"),
-    PARAMETER("parameter photos"),
-    BED_TYPES("bed type photos");
+    EVENT("event photos");
 
     private final String description;
 

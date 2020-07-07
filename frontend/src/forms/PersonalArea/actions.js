@@ -2,6 +2,7 @@ import {USER_SERVICE_URL} from "forms/utils/constants";
 import {POST} from "App/utils/api/constants";
 
 import {
+    FORM_ID,
     PERSONAL_AREA_ALL_INTERESTS,
     PERSONAL_AREA_ALL_LANGUAGES,
     PERSONAL_AREA_CHECK_MAIL,
@@ -22,12 +23,13 @@ export const getUserInfo = () => (dispatch, state) => {
     });
 };
 
-export const updatedUser = (body) => (dispatch, state) => {
+export const updateUser = () => (dispatch, state) => {
+    console.log(state.components.utils.input[FORM_ID].value)
     dispatch({
         type: PERSONAL_AREA_UPDATED_USER,
         url: URL_USER,
         method: POST,
-        data: {...body, id: state.userId.value}
+        data: state.components.utils.input[FORM_ID].value
     });
 };
 
