@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {isEmpty} from 'lodash';
+import {isEmpty, keys} from 'lodash';
 
 import {connect} from "App/Context";
 import {createContextValue} from "App/utils/utils";
@@ -12,12 +12,23 @@ import {FORM, VALIDATION} from './constants';
 
 const ContextForm = ({
                          children, value, updateValue, updateValidation,
-                         errors, onSubmit, onClose, updateValidationMessage
+                         errors, onSubmit, onClose, updateValidationMessage, defaultValue
                      }) => {
     useEffect(() => {
         updateValidation(value);
     }, [value, updateValidation]);
 
+    useEffect(() => {
+        if (defaultValue) {
+            const keysArray = [];
+            const values = [];
+            keys(defaultValue).forEach(key => {
+                keysArray.push(key);
+                values.push(defaultValue[key]);
+            })
+            updateValue(keysArray, values);
+        }
+    }, [defaultValue, updateValue])
 
     return <Container>
         {React.Children.map(children, child =>

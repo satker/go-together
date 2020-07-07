@@ -90,7 +90,8 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
                 params = {
                     ...params, inputProps: {
                         ...params.inputProps,
-                        value: value?.name || params.inputProps.value
+                        value: params.inputProps.value ||
+                            value && value.name + ', ' + value.country?.name
                     }
                 }
                 return <TextField
