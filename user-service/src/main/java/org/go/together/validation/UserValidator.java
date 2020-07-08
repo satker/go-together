@@ -52,7 +52,7 @@ public class UserValidator extends Validator<UserDto> {
                 errors.append("User interests are empty or incorrect");
             }
 
-            String validatePhoto = dto.getUserPhotos().stream()
+            String validatePhoto = dto.getGroupPhoto().getPhotos().stream()
                     .map(contentClient::validate)
                     .filter(StringUtils::isNotBlank)
                     .collect(Collectors.joining(". "));

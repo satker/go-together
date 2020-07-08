@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "event", schema = "public")
+@Table(name = "event", schema = "event_service")
 public class Event implements IdentifiedEntity {
     @Id
     private UUID id;
@@ -32,7 +32,7 @@ public class Event implements IdentifiedEntity {
     @Column(name = "route_id")
     private Set<UUID> routes;
 
-    private UUID eventPhotoId;
+    private UUID groupPhotoId;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "event_id")

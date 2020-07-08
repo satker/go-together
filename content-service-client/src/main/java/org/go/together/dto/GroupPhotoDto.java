@@ -12,9 +12,10 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventPhotoDto implements ComparableDto {
+public class GroupPhotoDto implements ComparableDto {
     private UUID id;
-    private UUID eventId;
+    private UUID groupId;
+    private PhotoCategory category;
     @ComparingField(value = "photos", idCompare = true)
     private Set<PhotoDto> photos;
 }

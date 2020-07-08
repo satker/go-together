@@ -67,7 +67,7 @@ const FormRegister = ({
         <SelectBoxLoadableField name='interests'
                                 options={allInterests}
                                 placeholder='Select interests'/>
-        <PhotoField name='userPhotos'/>
+        <PhotoField name='groupPhoto.photos'/>
         <TextField name='password'
                    type='password'
                    placeholder='Password'/>
@@ -92,10 +92,10 @@ const validation = (fields) => {
         ...lengthValidation(fields, ['description'], 255),
         ...lengthMoreValidation(fields, ['password', 'confirmPassword'], 8),
         ...compareFieldsValidation(fields, 'password', 'confirmPassword'),
-        ...validatePhoto(fields, 'userPhotos'),
+        ...validatePhoto(fields, 'groupPhoto.photos'),
         ...isEmptyValidation(fields,
             ['login', 'mail', 'firstName', 'lastName', 'description', 'password', 'confirmPassword', 'location']),
-        ...isEmptyArrayValidation(fields, ['userPhotos', 'languages', 'interests'])
+        ...isEmptyArrayValidation(fields, ['languages', 'interests'])
     }
 }
 

@@ -1,6 +1,7 @@
 package org.go.together.model;
 
 import lombok.Data;
+import org.go.together.dto.PhotoCategory;
 import org.go.together.interfaces.IdentifiedEntity;
 
 import javax.persistence.*;
@@ -9,14 +10,15 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "event_photo", schema = "public")
-public class EventPhoto implements IdentifiedEntity {
+@Table(name = "group_photo", schema = "content_service")
+public class GroupPhoto implements IdentifiedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    private UUID eventId;
+    private UUID groupId;
+    private PhotoCategory category;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "event_photo_id")
+    @JoinColumn(name = "group_photo_id")
     private Set<Photo> photos;
 }

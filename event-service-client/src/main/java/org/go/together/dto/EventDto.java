@@ -21,8 +21,8 @@ public class EventDto implements ComparableDto {
     private HousingType housingType;
     @ComparingField("description")
     private String description;
-    @ComparingField("event photo")
-    private EventPhotoDto eventPhotoDto;
+    @ComparingField("event group photo")
+    private GroupPhotoDto groupPhoto;
     @ComparingField("paid things")
     private Collection<EventPaidThingDto> paidThings;
     @ComparingField("routes")

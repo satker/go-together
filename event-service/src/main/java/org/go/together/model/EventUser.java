@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "event_user", schema = "public")
+@Table(name = "event_user", schema = "event_service")
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventUser implements IdentifiedEntity {

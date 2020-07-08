@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "notification_receiver_message", schema = "public")
+@Table(name = "notification_receiver_message", schema = "notification_service")
 @NoArgsConstructor
 public class NotificationReceiverMessage implements IdentifiedEntity {
     @Id

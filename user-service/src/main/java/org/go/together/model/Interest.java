@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Data
-@Table(name = "interest", schema = "public")
+@Table(name = "interest", schema = "user_service")
 public class Interest implements IdentifiedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

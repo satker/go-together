@@ -6,8 +6,6 @@ import org.go.together.logic.Mapper;
 import org.go.together.model.SystemUser;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-
 @Component
 public class SimpleUserMapper implements Mapper<SimpleUserDto, SystemUser> {
     private final ContentClient contentClient;
@@ -23,7 +21,7 @@ public class SimpleUserMapper implements Mapper<SimpleUserDto, SystemUser> {
         simpleUserDto.setFirstName(entity.getFirstName());
         simpleUserDto.setLastName(entity.getLastName());
         simpleUserDto.setLogin(entity.getLogin());
-        simpleUserDto.setUserPhoto(contentClient.getPhotosByIds(Collections.singleton(entity.getPhotoIds().iterator().next()))
+        simpleUserDto.setUserPhoto(contentClient.getGroupPhotosById(entity.getGroupPhoto()).getPhotos()
                 .iterator().next());
         return simpleUserDto;
     }

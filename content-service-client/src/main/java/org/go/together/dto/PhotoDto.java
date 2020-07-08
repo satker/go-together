@@ -14,6 +14,5 @@ public class PhotoDto implements ComparableDto {
     private UUID id;
 
     private String photoUrl;
-    private PhotoCategory photoCategory;
     private ContentDto content;
 }

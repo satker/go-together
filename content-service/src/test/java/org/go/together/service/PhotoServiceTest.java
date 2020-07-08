@@ -3,8 +3,6 @@ package org.go.together.service;
 import org.apache.commons.io.FileUtils;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.ContentDto;
-import org.go.together.dto.IdDto;
-import org.go.together.dto.PhotoCategory;
 import org.go.together.dto.PhotoDto;
 import org.go.together.mapper.PhotoMapper;
 import org.go.together.model.Photo;
@@ -48,7 +46,7 @@ class PhotoServiceTest {
 
     @BeforeEach
     public void init() throws IOException {
-        PhotoDto photoDto = getPhotoDto("photos/1.jpg", PhotoCategory.EVENT);
+        PhotoDto photoDto = getPhotoDto("photos/1.jpg");
         Photo photo = photoMapper.dtoToEntity(photoDto);
         photoRepository.save(photo);
     }
@@ -56,32 +54,15 @@ class PhotoServiceTest {
     @AfterEach
     public void clean() throws IOException {
         FileUtils.cleanDirectory(new File(storePath));
-    }
-
-    @Test
-    void savePhotos() throws IOException {
-        PhotoDto photoDto = getPhotoDto("photos/2.jpg", PhotoCategory.EVENT);
-        Collection<IdDto> idDtos = photoService.savePhotos(Collections.singleton(photoDto));
-
-        List<String> files = Arrays.stream(Objects.requireNonNull(new File(storePath).list()))
-                .map(fileName -> fileName.split("\\.")[0])
-                .collect(Collectors.toList());
-        boolean correctPhotoNames = idDtos.stream()
-                .map(IdDto::getId)
-                .map(UUID::toString)
-                .allMatch(files::contains);
-
-        assertTrue(correctPhotoNames);
-        assertEquals(1, idDtos.size());
-        assertEquals(2, files.size());
+        photoRepository.findAll().forEach(photoRepository::delete);
     }
 
     @Test
     void saveOrUpdatePhotosWithOldPhotos() throws IOException {
-        PhotoDto photoDto2 = getPhotoDto("photos/2.jpg", PhotoCategory.EVENT);
-        PhotoDto photoDto3 = getPhotoDto("photos/3.jpg", PhotoCategory.EVENT);
+        PhotoDto photoDto2 = getPhotoDto("photos/2.jpg");
+        PhotoDto photoDto3 = getPhotoDto("photos/3.jpg");
         Set<Photo> photoRepositoryAll = Set.copyOf(photoRepository.findAll());
-        Set<Photo> result = photoService.saveOrUpdatePhotos(Set.of(photoDto2, photoDto3), photoRepositoryAll);
+        Set<Photo> result = photoService.savePhotos(Set.of(photoDto2, photoDto3), photoRepositoryAll);
 
         List<String> files = Arrays.stream(Objects.requireNonNull(new File(storePath).list()))
                 .map(fileName -> fileName.split("\\.")[0])
@@ -98,9 +79,9 @@ class PhotoServiceTest {
 
     @Test
     void saveOrUpdatePhotosWithoutOldPhotos() throws IOException {
-        PhotoDto photoDto2 = getPhotoDto("photos/2.jpg", PhotoCategory.EVENT);
-        PhotoDto photoDto3 = getPhotoDto("photos/3.jpg", PhotoCategory.EVENT);
-        Set<Photo> result = photoService.saveOrUpdatePhotos(Set.of(photoDto2, photoDto3), Collections.emptySet());
+        PhotoDto photoDto2 = getPhotoDto("photos/2.jpg");
+        PhotoDto photoDto3 = getPhotoDto("photos/3.jpg");
+        Set<Photo> result = photoService.savePhotos(Set.of(photoDto2, photoDto3), Collections.emptySet());
 
         List<String> files = Arrays.stream(Objects.requireNonNull(new File(storePath).list()))
                 .map(fileName -> fileName.split("\\.")[0])
@@ -117,7 +98,7 @@ class PhotoServiceTest {
 
     @Test
     void deletePhotos() throws IOException {
-        PhotoDto photoDto = getPhotoDto("photos/2.jpg", PhotoCategory.EVENT);
+        PhotoDto photoDto = getPhotoDto("photos/2.jpg");
         Photo photo = photoMapper.dtoToEntity(photoDto);
         photoRepository.save(photo);
 
@@ -141,13 +122,12 @@ class PhotoServiceTest {
         return new File(Objects.requireNonNull(classLoader.getResource(resourceFilePath)).getFile());
     }
 
-    private PhotoDto getPhotoDto(String filePath, PhotoCategory photoCategory) throws IOException {
+    private PhotoDto getPhotoDto(String filePath) throws IOException {
         ContentDto contentDto = new ContentDto();
         contentDto.setType("data:image/jpeg;base64,");
         byte[] fileArray = Files.readAllBytes(getFileFromResource(filePath).toPath());
         contentDto.setPhotoContent(fileArray);
         PhotoDto photoDto = new PhotoDto();
-        photoDto.setPhotoCategory(photoCategory);
         photoDto.setContent(contentDto);
         return photoDto;
     }

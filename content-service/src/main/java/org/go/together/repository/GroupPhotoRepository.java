@@ -1,7 +1,7 @@
 package org.go.together.repository;
 
 import org.go.together.CustomRepository;
-import org.go.together.model.EventPhoto;
+import org.go.together.model.GroupPhoto;
 import org.go.together.sql.SqlOperator;
 import org.springframework.stereotype.Repository;
 
@@ -10,9 +10,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public class EventPhotoRepository extends CustomRepository<EventPhoto> {
+public class GroupPhotoRepository extends CustomRepository<GroupPhoto> {
     @Transactional
-    public Optional<EventPhoto> findByEventId(UUID eventPhotoId) {
-        return createQuery().where(createWhere().condition("eventId", SqlOperator.EQUAL, eventPhotoId)).fetchOne();
+    public Optional<GroupPhoto> findByEventId(UUID eventPhotoId) {
+        return createQuery().where(createWhere().condition("groupId", SqlOperator.EQUAL, eventPhotoId)).fetchOne();
     }
 }

@@ -2,7 +2,6 @@ package org.go.together.mapper;
 
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
-import org.go.together.dto.PhotoDto;
 import org.go.together.dto.UserDto;
 import org.go.together.logic.Mapper;
 import org.go.together.model.SystemUser;
@@ -42,7 +41,7 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
         userDTO.setInterests(entity.getInterests().stream()
                 .map(interestMapper::entityToDto)
                 .collect(Collectors.toSet()));
-        userDTO.setUserPhotos(contentClient.getPhotosByIds(entity.getPhotoIds()));
+        userDTO.setGroupPhoto(contentClient.getGroupPhotosById(entity.getGroupPhoto()));
         return userDTO;
     }
 
@@ -50,9 +49,6 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
     public SystemUser dtoToEntity(UserDto dto) {
         SystemUser user = new SystemUser();
         user.setId(dto.getId());
-        user.setPhotoIds(dto.getUserPhotos().stream()
-                .map(PhotoDto::getId)
-                .collect(Collectors.toSet()));
         user.setMail(dto.getMail());
         user.setLogin(dto.getLogin());
         user.setLocationId(locationClient.saveLocation(dto.getLocation()).getId());

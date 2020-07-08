@@ -35,8 +35,8 @@ public class UserDto implements ComparableDto {
     @ComparingField("role")
     private Role role;
 
-    @ComparingField(value = "user photos", idCompare = true)
-    private Set<PhotoDto> userPhotos;
+    @ComparingField("user group photo")
+    private GroupPhotoDto groupPhoto;
 
     @ComparingField("languages")
     private Set<LanguageDto> languages;

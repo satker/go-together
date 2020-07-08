@@ -23,7 +23,7 @@ export const DEFAULT_MAIN_INFO = {
     startDate: null,
     endDate: null,
     peopleCount: 0,
-    eventPhotoDto: {
+    groupPhoto: {
         photos: []
     }
 

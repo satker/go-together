@@ -9,10 +9,10 @@ import {connect} from "App/Context";
 const Profile = ({author}) => {
     return <RightContainer>
         <Card style={{align: 'center', width: '350px'}}>
-            {author.userPhotos ?
+            {author.groupPhoto.photos ?
                 <CardMedia style={{height: '255px'}}
                            component="img"
-                           image={getSrcForImg(author.userPhotos[0])}/> : null}
+                           image={getSrcForImg(author.groupPhoto.photos[0])}/> : null}
             <CardContent>
                 <Typography component="h6" variant="h6">
                     {author.firstName + ' ' + author.lastName}

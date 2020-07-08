@@ -113,31 +113,35 @@ public class UserService extends CrudService<UserDto, SystemUser> {
     @Override
     protected void enrichEntity(SystemUser entity, UserDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE) {
-            Optional<SystemUser> user = updatePassword(entity);
-            Collection<UUID> previousPhotos = user
-                    .map(SystemUser::getPhotoIds)
-                    .orElse(Collections.emptySet());
+            Optional<SystemUser> user = updatePassword(entity, entity.getId());
+
             Role role = user.map(SystemUser::getRole).orElse(Role.ROLE_USER);
-            contentClient.deletePhotoById(previousPhotos);
-            Collection<IdDto> savedPhoto = contentClient.savePhotos(dto.getUserPhotos());
-            entity.setPhotoIds(savedPhoto.stream()
-                    .map(IdDto::getId)
-                    .collect(Collectors.toSet()));
+
+            GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
+            groupPhotoDto.setGroupId(entity.getId());
+            groupPhotoDto.setCategory(PhotoCategory.USER);
+            IdDto groupPhotoId = contentClient.saveGroupPhotos(groupPhotoDto);
+            entity.setGroupPhoto(groupPhotoId.getId());
+
             entity.setRole(role);
         } else if (crudOperation == CrudOperation.CREATE) {
-            updatePassword(entity);
-            Collection<IdDto> savedPhoto = contentClient.savePhotos(dto.getUserPhotos());
-            entity.setPhotoIds(savedPhoto.stream()
-                    .map(IdDto::getId)
-                    .collect(Collectors.toSet()));
+            UUID uuid = UUID.randomUUID();
+            updatePassword(entity, uuid);
+
+            GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
+            groupPhotoDto.setGroupId(uuid);
+            groupPhotoDto.setCategory(PhotoCategory.USER);
+            IdDto groupPhotoId = contentClient.saveGroupPhotos(groupPhotoDto);
+            entity.setGroupPhoto(groupPhotoId.getId());
+            entity.setId(uuid);
             entity.setRole(Role.ROLE_USER);
         } else if (crudOperation == CrudOperation.DELETE) {
-            contentClient.deletePhotoById(entity.getPhotoIds());
+            contentClient.delete(entity.getGroupPhoto());
         }
     }
 
-    private Optional<SystemUser> updatePassword(SystemUser entity) {
-        Optional<SystemUser> user = userRepository.findById(entity.getId());
+    private Optional<SystemUser> updatePassword(SystemUser entity, UUID uuid) {
+        Optional<SystemUser> user = userRepository.findById(uuid);
         String password = entity.getPassword();
         if (StringUtils.isNotBlank(password)) {
             entity.setPassword(bCryptPasswordEncoder.encode(password));

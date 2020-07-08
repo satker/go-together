@@ -62,7 +62,7 @@ export const User = PropTypes.exact({
     description: PropTypes.string,
     password: PropTypes.string,
     role: PropTypes.string,
-    userPhotos: PropTypes.arrayOf(PhotoObject),
+    groupPhoto: GroupPhoto,
     languages: PropTypes.arrayOf(Language),
     interests: PropTypes.arrayOf(Interest)
 });
@@ -82,9 +82,9 @@ export const EventUser = PropTypes.exact({
     eventId: PropTypes.string
 });
 
-export const EventPhoto = PropTypes.exact({
+export const GroupPhoto = PropTypes.exact({
     id: PropTypes.string,
-    eventId: PropTypes.string,
+    groupId: PropTypes.string,
     photos: PropTypes.arrayOf(PhotoObject)
 });
 
@@ -118,7 +118,7 @@ export const Event = PropTypes.exact({
     peopleCount: PropTypes.number.isRequired,
     housingType: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    eventPhotoDto: EventPhoto,
+    groupPhoto: GroupPhoto,
     paidThings: PropTypes.arrayOf(CashPaidThing),
     route: PropTypes.arrayOf(Route),
     startDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),

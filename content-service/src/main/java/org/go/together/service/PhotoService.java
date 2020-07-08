@@ -1,7 +1,6 @@
 package org.go.together.service;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.dto.IdDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.logic.services.CrudService;
@@ -13,7 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,14 +48,7 @@ public class PhotoService extends CrudService<PhotoDto, Photo> {
         return photoRepository.save(photoEntity);
     }
 
-    public Collection<IdDto> savePhotos(Set<PhotoDto> photos) {
-        return saveOrUpdatePhotos(photos, Collections.emptySet()).stream()
-                .map(Photo::getId)
-                .map(IdDto::new)
-                .collect(Collectors.toSet());
-    }
-
-    public Set<Photo> saveOrUpdatePhotos(Set<PhotoDto> newPhotosDto, Set<Photo> oldPhotos) {
+    public Set<Photo> savePhotos(Set<PhotoDto> newPhotosDto, Set<Photo> oldPhotos) {
         Set<UUID> presentedPhotos = newPhotosDto.stream()
                 .map(PhotoDto::getId)
                 .filter(Objects::nonNull)

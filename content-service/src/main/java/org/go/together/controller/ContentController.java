@@ -1,56 +1,38 @@
 package org.go.together.controller;
 
 import org.go.together.client.ContentClient;
-import org.go.together.dto.EventPhotoDto;
+import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FormDto;
 import org.go.together.logic.controllers.FindController;
-import org.go.together.service.EventPhotoService;
+import org.go.together.service.GroupPhotoService;
 import org.go.together.service.PhotoService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.UUID;
 
 @RestController
 public class ContentController extends FindController implements ContentClient {
     private final PhotoService photoService;
-    private final EventPhotoService eventPhotoService;
+    private final GroupPhotoService groupPhotoService;
 
-    public ContentController(PhotoService photoService, EventPhotoService eventPhotoService) {
-        super(Arrays.asList(photoService, eventPhotoService));
+    public ContentController(PhotoService photoService, GroupPhotoService groupPhotoService) {
+        super(Arrays.asList(photoService, groupPhotoService));
         this.photoService = photoService;
-        this.eventPhotoService = eventPhotoService;
+        this.groupPhotoService = groupPhotoService;
     }
 
     @Override
-    public Collection<IdDto> savePhotos(Set<PhotoDto> photos) {
-        return photoService.savePhotos(photos);
+    public IdDto saveGroupPhotos(GroupPhotoDto groupPhotoDto) {
+        return groupPhotoService.savePhotosForEvent(groupPhotoDto);
     }
 
     @Override
-    public Set<PhotoDto> getPhotosByIds(Collection<UUID> photoIds) {
-        return photoIds.stream()
-                .map(photoService::read)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public void deletePhotoById(Collection<UUID> photoIds) {
-        photoIds.forEach(photoService::delete);
-    }
-
-    @Override
-    public IdDto savePhotosForEvent(EventPhotoDto eventPhotoDto) {
-        return eventPhotoService.savePhotosForEvent(eventPhotoDto);
-    }
-
-    @Override
-    public EventPhotoDto getEventPhotosById(UUID eventPhotoId) {
-        return eventPhotoService.getEventPhotosById(eventPhotoId);
+    public GroupPhotoDto getGroupPhotosById(UUID groupPhotoId) {
+        return groupPhotoService.getGroupPhotosById(groupPhotoId);
     }
 
     @Override
@@ -60,7 +42,7 @@ public class ContentController extends FindController implements ContentClient {
 
     @Override
     public void delete(UUID eventPhotoId) {
-        eventPhotoService.delete(eventPhotoId);
+        groupPhotoService.delete(eventPhotoId);
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "location", schema = "public")
+@Table(name = "location", schema = "location_service")
 public class Location implements IdentifiedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

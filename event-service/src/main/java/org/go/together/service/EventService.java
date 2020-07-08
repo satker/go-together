@@ -46,10 +46,11 @@ public class EventService extends CrudService<EventDto, Event> {
         entity.setRoutes(routes.stream()
                 .map(IdDto::getId)
                 .collect(Collectors.toSet()));
-        EventPhotoDto eventPhotoDto = dto.getEventPhotoDto();
-        eventPhotoDto.setEventId(uuid);
-        IdDto photoId = contentClient.savePhotosForEvent(eventPhotoDto);
-        entity.setEventPhotoId(photoId.getId());
+        GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
+        groupPhotoDto.setGroupId(uuid);
+        groupPhotoDto.setCategory(PhotoCategory.EVENT);
+        IdDto photoId = contentClient.saveGroupPhotos(groupPhotoDto);
+        entity.setGroupPhotoId(photoId.getId());
     }
 
     @Override
@@ -63,7 +64,7 @@ public class EventService extends CrudService<EventDto, Event> {
             updateEntity(entity, dto, uuid);
         } else if (crudOperation == CrudOperation.DELETE) {
             locationClient.deleteRoutes(entity.getRoutes());
-            contentClient.delete(entity.getEventPhotoId());
+            contentClient.delete(entity.getGroupPhotoId());
         }
     }
 

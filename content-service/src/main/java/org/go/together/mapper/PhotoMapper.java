@@ -38,7 +38,6 @@ public class PhotoMapper implements Mapper<PhotoDto, Photo> {
         UUID id = photoDto.getId() != null ? photoDto.getId() : UUID.randomUUID();
         Photo photo = new Photo();
         photo.setId(id);
-        photo.setCategory(photoDto.getPhotoCategory());
         if (StringUtils.isBlank(photoDto.getPhotoUrl())) {
             String type = photoDto.getContent().getType();
             photo.setContentType(type);

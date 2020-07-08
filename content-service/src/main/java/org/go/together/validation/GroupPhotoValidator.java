@@ -2,7 +2,7 @@ package org.go.together.validation;
 
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.dto.EventPhotoDto;
+import org.go.together.dto.GroupPhotoDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.logic.Validator;
 import org.springframework.stereotype.Component;
@@ -10,22 +10,22 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class EventPhotoValidator extends Validator<EventPhotoDto> {
+public class GroupPhotoValidator extends Validator<GroupPhotoDto> {
     private final PhotoValidator photoValidator;
 
-    public EventPhotoValidator(PhotoValidator photoValidator) {
+    public GroupPhotoValidator(PhotoValidator photoValidator) {
         this.photoValidator = photoValidator;
     }
 
     @Override
-    public void getMapsForCheck(EventPhotoDto dto) {
+    public void getMapsForCheck(GroupPhotoDto dto) {
         super.OBJECT_NULL_CHECK = ImmutableMap.<String, Optional<Object>>builder()
-                .put("event id", Optional.ofNullable(dto.getEventId()))
+                .put("event id", Optional.ofNullable(dto.getGroupId()))
                 .build();
     }
 
     @Override
-    protected String commonValidation(EventPhotoDto dto, CrudOperation crudOperation) {
+    protected String commonValidation(GroupPhotoDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
         dto.getPhotos().stream()

@@ -6,14 +6,13 @@ import org.go.together.dto.Role;
 import org.go.together.interfaces.IdentifiedEntity;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Data
-@Table(name = "system_user", schema = "public")
+@Table(name = "system_user", schema = "user_service")
 public class SystemUser implements IdentifiedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,25 +25,25 @@ public class SystemUser implements IdentifiedEntity {
     private String password;
     private UUID locationId;
     private Role role;
+    private UUID groupPhoto;
 
     @ElementCollection
-    @CollectionTable(name = "user_photo", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "photo_id")
-    private Collection<UUID> photoIds;
-
-    @ElementCollection
-    @CollectionTable(name = "user_event_like", joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(schema = "user_service",
+            name = "user_event_like",
+            joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "event_like_id")
     private Set<UUID> eventLikeIds;
 
     @ManyToMany
-    @JoinTable(name = "system_user_interest",
+    @JoinTable(schema = "user_service",
+            name = "system_user_interest",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "interest_id"))
     private Set<Interest> interests = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "system_user_language",
+    @JoinTable(schema = "user_service",
+            name = "system_user_language",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "language_id"))
     private Set<Language> languages = new HashSet<>();

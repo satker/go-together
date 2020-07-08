@@ -45,7 +45,7 @@ public class EventValidator extends Validator<EventDto> {
                 .put("event dates", new DateIntervalDto(dto.getStartDate(), dto.getEndDate()))
                 .build();
         super.COLLECTION_CORRECT_CHECK = ImmutableMap.<String, Collection<?>>builder()
-                .put("photos", dto.getEventPhotoDto().getPhotos())
+                .put("photos", dto.getGroupPhoto().getPhotos())
                 .put("routes", dto.getRoute())
                 .build();
     }
@@ -66,7 +66,7 @@ public class EventValidator extends Validator<EventDto> {
 
         checkCashCategories(dto.getPaidThings(), errors, crudOperation);
 
-        dto.getEventPhotoDto().getPhotos().stream()
+        dto.getGroupPhoto().getPhotos().stream()
                 .map(contentClient::validate)
                 .filter(StringUtils::isNotBlank)
                 .forEach(errors::append);

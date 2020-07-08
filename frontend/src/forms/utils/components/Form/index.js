@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {isEmpty, keys} from 'lodash';
+import {get, isEmpty, keys} from 'lodash';
 
 import {connect} from "App/Context";
 import {createContextValue} from "App/utils/utils";
@@ -37,7 +37,7 @@ const ContextForm = ({
                 error: errors[child.props.name],
                 setError: updateValidationMessage,
                 name: child.props.name,
-                value: value ? value[child.props.name] : null,
+                value: value ? get(value, child.props.name) : null,
                 setValue: updateValue
             })
         )}
@@ -53,10 +53,13 @@ const ContextForm = ({
     </Container>;
 };
 
-const mapStateToProps = (FORM_ID) => (state) => ({
-    errors: state.components.utils.validation[FORM_ID].value,
-    value: state.components.utils.input[FORM_ID].value
-});
+const mapStateToProps = (FORM_ID) => (state) => {
+    console.log(state.components.utils.input[FORM_ID].value, state.components.utils.validation[FORM_ID].value)
+    return ({
+        errors: state.components.utils.validation[FORM_ID].value,
+        value: state.components.utils.input[FORM_ID].value
+    });
+}
 
 export const createReduxForm = ({FORM_ID, validation}) => {
     utils.input = {

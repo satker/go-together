@@ -1,3 +1,5 @@
+import {get} from 'lodash';
+
 const PATTERN_TO_CHECK_FILE_EXTENSION = "image/(png|jpg|jpeg)";
 const PATTERN_TO_CHECK_URL = "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
 
@@ -79,7 +81,8 @@ export const validatePhoto = (fields, fieldName) => {
     if (!fields) {
         return result;
     }
-    const photo = fields[fieldName];
+    const photo = get(fields, fieldName);
+    console.log(photo)
     if (!photo) {
         return result;
     }

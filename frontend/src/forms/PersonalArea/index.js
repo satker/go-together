@@ -57,7 +57,7 @@ const PersonalArea = ({
                     <SelectBoxLoadableField name='interests'
                                             options={allInterests}
                                             placeholder='Select interests'/>
-                    <PhotoField name='userPhotos'/>
+                    <PhotoField name='groupPhoto.photos'/>
                     <TextField name='password'
                                type='password'
                                placeholder='Password'/>
@@ -82,10 +82,10 @@ const validation = (fields) => {
         ...regexValidation(fields, ['firstName', 'lastName'], PATTERN_TO_CHECK_NAME),
         ...lengthValidation(fields, ['description'], 255),
         ...compareFieldsValidation(fields, 'password', 'confirmPassword'),
-        ...validatePhoto(fields, 'userPhotos'),
+        ...validatePhoto(fields, 'groupPhoto.photos'),
         ...isEmptyValidation(fields,
             ['firstName', 'lastName', 'description', 'location']),
-        ...isEmptyArrayValidation(fields, ['userPhotos', 'languages', 'interests'])
+        ...isEmptyArrayValidation(fields, ['groupPhoto.photos', 'languages', 'interests'])
     }
 }
 

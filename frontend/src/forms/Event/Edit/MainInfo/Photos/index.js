@@ -10,14 +10,14 @@ import {connect} from "App/Context";
 const Photos = ({event, updateEvent}) => {
     return <>
         <ItemContainer>
-            <GroupItems items={event.eventPhotoDto.photos}
+            <GroupItems items={event.groupPhoto.photos}
                         isPhotos
                         onDelete={(id) => console.log('delete: ', id)}/>
         </ItemContainer>
         <ItemContainer>
             <ImageSelector
-                photos={event.eventPhotoDto.photos}
-                setPhotos={(photos) => updateEvent('eventPhotoDto.photos', photos)}
+                photos={event.groupPhoto.photos}
+                setPhotos={(photos) => updateEvent('groupPhoto.photos', photos)}
                 multiple={true}
             /></ItemContainer></>
 };

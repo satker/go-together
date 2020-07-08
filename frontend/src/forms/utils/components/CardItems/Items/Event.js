@@ -15,7 +15,7 @@ const ItemEvent = ({event, onDelete, userId, eventIds}) => {
             <CardMedia
                 component="img"
                 height="250"
-                image={getSrcForImg(event.eventPhotoDto.photos[0] || {...PHOTO_OBJECT})}
+                image={getSrcForImg(event.groupPhoto.photos[0] || {...PHOTO_OBJECT})}
             />
             <CardContent>
                 <Typography>{event.name}</Typography>

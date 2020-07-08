@@ -43,7 +43,7 @@ public class EventMapper implements Mapper<EventDto, Event> {
         eventDto.setRoute(entity.getRoutes().stream()
                 .map(locationClient::getRouteById)
                 .collect(Collectors.toSet()));
-        eventDto.setEventPhotoDto(contentClient.getEventPhotosById(entity.getEventPhotoId()));
+        eventDto.setGroupPhoto(contentClient.getGroupPhotosById(entity.getGroupPhotoId()));
         eventDto.setName(entity.getName());
         eventDto.setStartDate(entity.getStartDate());
         eventDto.setEndDate(entity.getEndDate());

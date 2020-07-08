@@ -6,7 +6,7 @@
   },
   "housingType": "COUCHSERFING",
   "description": "We have a good time together friends)",
-  "eventPhotoDto": {
+  "groupPhoto": {
     "photos": [
       {
         "id": null,

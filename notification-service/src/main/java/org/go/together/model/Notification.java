@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "notification", schema = "public")
+@Table(name = "notification", schema = "notification_service")
 public class Notification implements IdentifiedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
