@@ -3,7 +3,6 @@ package org.go.together.controller;
 import org.go.together.client.ContentClient;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.IdDto;
-import org.go.together.dto.PhotoDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FormDto;
 import org.go.together.logic.controllers.FindController;
@@ -16,33 +15,36 @@ import java.util.UUID;
 
 @RestController
 public class ContentController extends FindController implements ContentClient {
-    private final PhotoService photoService;
     private final GroupPhotoService groupPhotoService;
 
     public ContentController(PhotoService photoService, GroupPhotoService groupPhotoService) {
         super(Arrays.asList(photoService, groupPhotoService));
-        this.photoService = photoService;
         this.groupPhotoService = groupPhotoService;
     }
 
     @Override
-    public IdDto saveGroupPhotos(GroupPhotoDto groupPhotoDto) {
-        return groupPhotoService.saveGroupPhotos(groupPhotoDto);
+    public IdDto createGroup(GroupPhotoDto groupPhotoDto) {
+        return groupPhotoService.create(groupPhotoDto);
     }
 
     @Override
-    public GroupPhotoDto getGroupPhotosById(UUID groupPhotoId) {
-        return groupPhotoService.getGroupPhotosById(groupPhotoId);
+    public IdDto updateGroup(GroupPhotoDto groupPhotoDto) {
+        return groupPhotoService.update(groupPhotoDto);
     }
 
     @Override
-    public String validate(PhotoDto photo) {
-        return photoService.validate(photo);
+    public GroupPhotoDto readGroupPhotosById(UUID groupPhotoId) {
+        return groupPhotoService.read(groupPhotoId);
     }
 
     @Override
-    public void delete(UUID eventPhotoId) {
-        groupPhotoService.delete(eventPhotoId);
+    public String validate(GroupPhotoDto groupPhotoDto) {
+        return groupPhotoService.validate(groupPhotoDto);
+    }
+
+    @Override
+    public void delete(UUID groupId) {
+        groupPhotoService.delete(groupId);
     }
 
     @Override

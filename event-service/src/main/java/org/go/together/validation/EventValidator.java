@@ -66,10 +66,10 @@ public class EventValidator extends Validator<EventDto> {
 
         checkCashCategories(dto.getPaidThings(), errors, crudOperation);
 
-        dto.getGroupPhoto().getPhotos().stream()
-                .map(contentClient::validate)
-                .filter(StringUtils::isNotBlank)
-                .forEach(errors::append);
+        String contentValidation = contentClient.validate(dto.getGroupPhoto());
+        if (StringUtils.isNotBlank(contentValidation)) {
+            errors.append(contentValidation);
+        }
 
         checkRoutes(dto.getRoute(), errors);
 

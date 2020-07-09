@@ -11,8 +11,6 @@ import org.go.together.repository.InterestRepository;
 import org.go.together.repository.LanguageRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.stream.Collectors;
-
 @Service
 public class UserValidator extends Validator<UserDto> {
     private final LocationClient locationClient;
@@ -52,12 +50,9 @@ public class UserValidator extends Validator<UserDto> {
                 errors.append("User interests are empty or incorrect");
             }
 
-            String validatePhoto = dto.getGroupPhoto().getPhotos().stream()
-                    .map(contentClient::validate)
-                    .filter(StringUtils::isNotBlank)
-                    .collect(Collectors.joining(". "));
-            if (StringUtils.isNotBlank(validatePhoto)) {
-                errors.append(validatePhoto);
+            String contentValidation = contentClient.validate(dto.getGroupPhoto());
+            if (StringUtils.isNotBlank(contentValidation)) {
+                errors.append(contentValidation);
             }
         }
 

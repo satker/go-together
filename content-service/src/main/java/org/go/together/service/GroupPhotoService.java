@@ -1,7 +1,6 @@
 package org.go.together.service;
 
 import org.go.together.dto.GroupPhotoDto;
-import org.go.together.dto.IdDto;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.enums.CrudOperation;
 import org.go.together.logic.services.CrudService;
@@ -13,12 +12,14 @@ import org.go.together.validation.GroupPhotoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class GroupPhotoService extends CrudService<GroupPhotoDto, GroupPhoto> {
     private final GroupPhotoRepository groupPhotoRepository;
-    private final GroupPhotoMapper groupPhotoMapper;
     private PhotoService photoService;
 
     public GroupPhotoService(GroupPhotoRepository groupPhotoRepository,
@@ -26,7 +27,6 @@ public class GroupPhotoService extends CrudService<GroupPhotoDto, GroupPhoto> {
                              GroupPhotoValidator groupPhotoValidator) {
         super(groupPhotoRepository, groupPhotoMapper, groupPhotoValidator);
         this.groupPhotoRepository = groupPhotoRepository;
-        this.groupPhotoMapper = groupPhotoMapper;
     }
 
     @Autowired
@@ -34,52 +34,36 @@ public class GroupPhotoService extends CrudService<GroupPhotoDto, GroupPhoto> {
         this.photoService = photoService;
     }
 
-    public IdDto saveGroupPhotos(GroupPhotoDto groupPhotoDto) {
-        GroupPhoto groupPhoto = savePhotos(groupPhotoDto);
-        return new IdDto(groupPhoto.getId());
-
-    }
-
-    private GroupPhoto savePhotos(GroupPhotoDto groupPhotoDto) {
-        GroupPhoto groupPhoto = Optional.ofNullable(groupPhotoDto.getId())
-                .map(groupPhotoRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .orElse(null);
-
-        Set<Photo> oldPhotos = Optional.ofNullable(groupPhoto)
-                .map(GroupPhoto::getPhotos)
-                .orElse(Collections.emptySet());
-
-        Set<Photo> newPhotos = photoService.savePhotos(groupPhotoDto.getPhotos(), oldPhotos);
-
-        if (groupPhoto == null) {
-            groupPhoto = groupPhotoMapper.dtoToEntity(groupPhotoDto);
-            groupPhoto.setPhotos(newPhotos);
-
-        } else {
-            groupPhoto.setPhotos(newPhotos);
-        }
-        return groupPhotoRepository.save(groupPhoto);
-    }
-
-
     @Override
     protected void enrichEntity(GroupPhoto entity, GroupPhotoDto dto, CrudOperation crudOperation) {
-        if (crudOperation == CrudOperation.DELETE) {
+        if (crudOperation == CrudOperation.CREATE || crudOperation == CrudOperation.UPDATE) {
+            GroupPhoto groupPhoto = Optional.ofNullable(dto.getId())
+                    .map(groupPhotoRepository::findById)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .orElse(null);
+
+            Set<Photo> oldPhotos = Optional.ofNullable(groupPhoto)
+                    .map(GroupPhoto::getPhotos)
+                    .orElse(Collections.emptySet());
+
+            Set<Photo> newPhotos = photoService.savePhotos(dto.getPhotos(), oldPhotos);
+
+            if (groupPhoto == null) {
+                entity.setPhotos(newPhotos);
+
+            } else {
+                entity = groupPhoto;
+                entity.setPhotos(newPhotos);
+            }
+        } else if (crudOperation == CrudOperation.DELETE) {
             photoService.deletePhotos(entity.getPhotos());
         }
     }
 
-    public GroupPhotoDto getGroupPhotosById(UUID groupPhotoId) {
-        return groupPhotoRepository.findById(groupPhotoId)
-                .map(groupPhotoMapper::entityToDto)
-                .orElse(null);
-    }
-
     @Override
     public String getServiceName() {
-        return "eventPhoto";
+        return "groupPhotos";
     }
 
     @Override

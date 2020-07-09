@@ -41,7 +41,7 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
         userDTO.setInterests(entity.getInterests().stream()
                 .map(interestMapper::entityToDto)
                 .collect(Collectors.toSet()));
-        userDTO.setGroupPhoto(contentClient.getGroupPhotosById(entity.getGroupPhoto()));
+        userDTO.setGroupPhoto(contentClient.readGroupPhotosById(entity.getGroupPhoto()));
         return userDTO;
     }
 

@@ -49,7 +49,7 @@ class GroupPhotoServiceTest {
     @BeforeEach
     public void init() {
         GroupPhotoDto groupPhotoDto = createGroupPhoto(Set.of("photos/1.jpg", "photos/2.jpg"));
-        IdDto idGroupPhotoDto = groupPhotoService.saveGroupPhotos(groupPhotoDto);
+        IdDto idGroupPhotoDto = groupPhotoService.create(groupPhotoDto);
         Optional<GroupPhoto> groupPhotoOptional = groupPhotoRepository.findById(idGroupPhotoDto.getId());
         if (groupPhotoOptional.isEmpty()) {
             throw new RuntimeException("Cannot find saved group");
@@ -67,7 +67,7 @@ class GroupPhotoServiceTest {
     @Test
     void saveGroupPhotos() {
         GroupPhotoDto groupPhotoDto = createGroupPhoto(Set.of("photos/3.jpg", "photos/4.jpg"));
-        IdDto idGroupPhotoDto = groupPhotoService.saveGroupPhotos(groupPhotoDto);
+        IdDto idGroupPhotoDto = groupPhotoService.create(groupPhotoDto);
         Optional<GroupPhoto> groupPhoto = groupPhotoRepository.findById(idGroupPhotoDto.getId());
 
         assertTrue(groupPhoto.isPresent());
@@ -85,7 +85,7 @@ class GroupPhotoServiceTest {
 
     @Test
     void getGroupPhotosById() {
-        GroupPhotoDto groupPhotosById = groupPhotoService.getGroupPhotosById(groupPhoto.getId());
+        GroupPhotoDto groupPhotosById = groupPhotoService.read(groupPhoto.getId());
 
         Set<UUID> foundPhotosId = groupPhotosById.getPhotos().stream()
                 .map(PhotoDto::getId)

@@ -20,7 +20,7 @@ public class GroupPhotoValidator extends Validator<GroupPhotoDto> {
     @Override
     public void getMapsForCheck(GroupPhotoDto dto) {
         super.OBJECT_NULL_CHECK = ImmutableMap.<String, Optional<Object>>builder()
-                .put("event id", Optional.ofNullable(dto.getGroupId()))
+                .put("group id", Optional.ofNullable(dto.getGroupId()))
                 .build();
     }
 

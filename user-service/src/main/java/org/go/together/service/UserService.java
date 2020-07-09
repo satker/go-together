@@ -120,7 +120,7 @@ public class UserService extends CrudService<UserDto, SystemUser> {
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.USER);
-            IdDto groupPhotoId = contentClient.saveGroupPhotos(groupPhotoDto);
+            IdDto groupPhotoId = contentClient.updateGroup(groupPhotoDto);
             entity.setGroupPhoto(groupPhotoId.getId());
 
             entity.setRole(role);
@@ -131,7 +131,7 @@ public class UserService extends CrudService<UserDto, SystemUser> {
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(uuid);
             groupPhotoDto.setCategory(PhotoCategory.USER);
-            IdDto groupPhotoId = contentClient.saveGroupPhotos(groupPhotoDto);
+            IdDto groupPhotoId = contentClient.createGroup(groupPhotoDto);
             entity.setGroupPhoto(groupPhotoId.getId());
             entity.setId(uuid);
             entity.setRole(Role.ROLE_USER);

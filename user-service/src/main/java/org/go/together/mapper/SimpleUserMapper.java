@@ -21,7 +21,7 @@ public class SimpleUserMapper implements Mapper<SimpleUserDto, SystemUser> {
         simpleUserDto.setFirstName(entity.getFirstName());
         simpleUserDto.setLastName(entity.getLastName());
         simpleUserDto.setLogin(entity.getLogin());
-        simpleUserDto.setUserPhoto(contentClient.getGroupPhotosById(entity.getGroupPhoto()).getPhotos()
+        simpleUserDto.setUserPhoto(contentClient.readGroupPhotosById(entity.getGroupPhoto()).getPhotos()
                 .iterator().next());
         return simpleUserDto;
     }
