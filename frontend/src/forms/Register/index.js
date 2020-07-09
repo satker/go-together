@@ -95,7 +95,7 @@ const validation = (fields) => {
         ...validatePhoto(fields, 'groupPhoto.photos'),
         ...isEmptyValidation(fields,
             ['login', 'mail', 'firstName', 'lastName', 'description', 'password', 'confirmPassword', 'location']),
-        ...isEmptyArrayValidation(fields, ['languages', 'interests'])
+        ...isEmptyArrayValidation(fields, ['groupPhoto.photos', 'languages', 'interests'])
     }
 }
 

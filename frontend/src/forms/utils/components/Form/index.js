@@ -53,13 +53,10 @@ const ContextForm = ({
     </Container>;
 };
 
-const mapStateToProps = (FORM_ID) => (state) => {
-    console.log(state.components.utils.input[FORM_ID].value, state.components.utils.validation[FORM_ID].value)
-    return ({
-        errors: state.components.utils.validation[FORM_ID].value,
-        value: state.components.utils.input[FORM_ID].value
-    });
-}
+const mapStateToProps = (FORM_ID) => (state) => ({
+    errors: state.components.utils.validation[FORM_ID].value,
+    value: state.components.utils.input[FORM_ID].value
+});
 
 export const createReduxForm = ({FORM_ID, validation}) => {
     utils.input = {

@@ -8,7 +8,6 @@ import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 
 const PhotoField = ({name, value, setValue, error}) => {
-    console.log(value)
     return <ItemContainer>
         <ContainerColumn style={{
             width: '350px', border: '1px solid ' +

@@ -10,7 +10,7 @@ export const isEmptyValidation = (fields, pathNames) => {
         return result;
     }
     pathNames
-        .filter(path => !fields[path])
+        .filter(path => !get(fields, path))
         .forEach(emptyPath => result[emptyPath] = '* Field is empty');
     return result;
 }
@@ -22,7 +22,7 @@ export const isEmptyArrayValidation = (fields, pathNames) => {
         return result;
     }
     pathNames
-        .filter(path => !fields[path] || fields[path].length === 0)
+        .filter(path => !get(fields, path) || get(fields, path).length === 0)
         .forEach(emptyPath => result[emptyPath] = '* Field is empty');
     return result;
 }
@@ -34,7 +34,7 @@ export const regexValidation = (fields, pathNames, regex) => {
     }
     let regexChecker = new RegExp(regex);
     pathNames
-        .filter(path => !regexChecker.test(fields[path]))
+        .filter(path => !regexChecker.test(get(fields, path)))
         .forEach(incorrectPath => result[incorrectPath] = '* Incorrect field value');
     return result;
 }
@@ -45,8 +45,8 @@ export const lengthValidation = (fields, pathNames, length) => {
         return result;
     }
     pathNames
-        .filter(path => fields[path])
-        .filter(path => fields[path].length < 0 || fields[path].length > length)
+        .filter(path => get(fields, path))
+        .filter(path => get(fields, path).length < 0 || get(fields, path).length > length)
         .forEach(incorrectPath => result[incorrectPath] =
             '* Shouldn\'t be more than ' + length + ' symbols ');
     return result;
@@ -58,8 +58,8 @@ export const lengthMoreValidation = (fields, pathNames, length) => {
         return result;
     }
     pathNames
-        .filter(path => fields[path])
-        .filter(path => fields[path].length < length)
+        .filter(path => get(fields, path))
+        .filter(path => get(fields, path).length < length)
         .forEach(incorrectPath => result[incorrectPath] =
             '* Should be more than ' + length + ' symbols ');
     return result;
@@ -67,10 +67,10 @@ export const lengthMoreValidation = (fields, pathNames, length) => {
 
 export const compareFieldsValidation = (fields, fieldName1, fieldName2) => {
     const result = {};
-    if (!fields || !fields[fieldName2]) {
+    if (!fields || !get(fields, fieldName2)) {
         return result;
     }
-    if (fields[fieldName1] !== fields[fieldName2]) {
+    if (get(fields, fieldName1) !== get(fields, fieldName2)) {
         result[fieldName2] = '* Don\'t match ' + fieldName1 + '.';
     }
     return result;
@@ -82,7 +82,7 @@ export const validatePhoto = (fields, fieldName) => {
         return result;
     }
     const photo = get(fields, fieldName);
-    console.log(photo)
+
     if (!photo) {
         return result;
     }
