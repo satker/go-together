@@ -4,7 +4,6 @@ import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.logic.Mapper;
 import org.go.together.model.GroupPhoto;
-import org.go.together.model.Photo;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -36,10 +35,6 @@ public class GroupPhotoMapper implements Mapper<GroupPhotoDto, GroupPhoto> {
         GroupPhoto groupPhoto = new GroupPhoto();
         groupPhoto.setId(dto.getId());
         groupPhoto.setGroupId(dto.getGroupId());
-        Set<Photo> photos = dto.getPhotos().stream()
-                .map(photoMapper::dtoToEntity)
-                .collect(Collectors.toSet());
-        groupPhoto.setPhotos(photos);
         groupPhoto.setCategory(dto.getCategory());
         return groupPhoto;
     }

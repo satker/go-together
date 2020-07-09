@@ -27,7 +27,7 @@ public class ContentController extends FindController implements ContentClient {
 
     @Override
     public IdDto saveGroupPhotos(GroupPhotoDto groupPhotoDto) {
-        return groupPhotoService.savePhotosForEvent(groupPhotoDto);
+        return groupPhotoService.saveGroupPhotos(groupPhotoDto);
     }
 
     @Override

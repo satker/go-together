@@ -16,6 +16,7 @@ import java.util.Properties;
 public class H2HibernateConfig {
     private Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
+        hibernateProperties.setProperty("hbm2ddl.import_files", "schema.sql");
         hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create");
         hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         hibernateProperties.setProperty("hibernate.show_sql", "false");

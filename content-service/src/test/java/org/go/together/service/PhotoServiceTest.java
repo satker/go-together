@@ -11,6 +11,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -64,15 +65,7 @@ class PhotoServiceTest {
         Set<Photo> photoRepositoryAll = Set.copyOf(photoRepository.findAll());
         Set<Photo> result = photoService.savePhotos(Set.of(photoDto2, photoDto3), photoRepositoryAll);
 
-        List<String> files = Arrays.stream(Objects.requireNonNull(new File(storePath).list()))
-                .map(fileName -> fileName.split("\\.")[0])
-                .collect(Collectors.toList());
-        boolean correctPhotoNames = result.stream()
-                .map(Photo::getId)
-                .map(UUID::toString)
-                .allMatch(files::contains);
-
-        assertTrue(correctPhotoNames);
+        List<String> files = checkSavedPhotosToDirectory(result);
         assertEquals(2, result.size());
         assertEquals(2, files.size());
     }
@@ -83,17 +76,27 @@ class PhotoServiceTest {
         PhotoDto photoDto3 = getPhotoDto("photos/3.jpg");
         Set<Photo> result = photoService.savePhotos(Set.of(photoDto2, photoDto3), Collections.emptySet());
 
-        List<String> files = Arrays.stream(Objects.requireNonNull(new File(storePath).list()))
-                .map(fileName -> fileName.split("\\.")[0])
-                .collect(Collectors.toList());
-        boolean correctPhotoNames = result.stream()
-                .map(Photo::getId)
-                .map(UUID::toString)
-                .allMatch(files::contains);
-
-        assertTrue(correctPhotoNames);
+        List<String> files = checkSavedPhotosToDirectory(result);
         assertEquals(2, result.size());
         assertEquals(3, files.size());
+    }
+
+    @Test
+    void validationPhoto() throws IOException {
+        PhotoDto photoDto = getPhotoDto("photos/2.jpg");
+        String result = photoService.validate(photoDto);
+
+        assertTrue(StringUtils.isBlank(result));
+    }
+
+    @Test
+    void validationPhotoWithEmptyContent() throws IOException {
+        PhotoDto photoDto = getPhotoDto("photos/2.jpg");
+        photoDto.setContent(new ContentDto());
+
+        String result = photoService.validate(photoDto);
+
+        assertTrue(StringUtils.isNotBlank(result));
     }
 
     @Test
@@ -130,5 +133,18 @@ class PhotoServiceTest {
         PhotoDto photoDto = new PhotoDto();
         photoDto.setContent(contentDto);
         return photoDto;
+    }
+
+    private List<String> checkSavedPhotosToDirectory(Set<Photo> result) {
+        List<String> files = Arrays.stream(Objects.requireNonNull(new File(storePath).list()))
+                .map(fileName -> fileName.split("\\.")[0])
+                .collect(Collectors.toList());
+        boolean correctPhotoNames = result.stream()
+                .map(Photo::getId)
+                .map(UUID::toString)
+                .allMatch(files::contains);
+
+        assertTrue(correctPhotoNames);
+        return files;
     }
 }

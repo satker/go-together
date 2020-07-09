@@ -2,13 +2,11 @@ package org.go.together.service;
 
 import org.apache.commons.io.FileUtils;
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.ContentDto;
-import org.go.together.dto.GroupPhotoDto;
-import org.go.together.dto.PhotoCategory;
-import org.go.together.dto.PhotoDto;
-import org.go.together.mapper.GroupPhotoMapper;
+import org.go.together.dto.*;
 import org.go.together.model.GroupPhoto;
+import org.go.together.model.Photo;
 import org.go.together.repository.GroupPhotoRepository;
+import org.go.together.repository.PhotoRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,9 +21,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -39,34 +39,44 @@ class GroupPhotoServiceTest {
     private GroupPhotoRepository groupPhotoRepository;
 
     @Autowired
-    private GroupPhotoMapper groupPhotoMapper;
+    private GroupPhotoService groupPhotoService;
+
+    @Autowired
+    private PhotoRepository photoRepository;
 
     private GroupPhoto groupPhoto;
 
     @BeforeEach
-    public void init() throws IOException {
-        PhotoDto photoDto1 = getPhotoDto("photos/1.jpg");
-        PhotoDto photoDto2 = getPhotoDto("photos/2.jpg");
-
-        GroupPhotoDto groupPhotoDto = new GroupPhotoDto();
-        groupPhotoDto.setPhotos(Set.of(photoDto1, photoDto2));
-        groupPhotoDto.setGroupId(UUID.randomUUID());
-        groupPhotoDto.setCategory(PhotoCategory.EVENT);
-
-        GroupPhoto groupPhoto = groupPhotoMapper.dtoToEntity(groupPhotoDto);
-
-        groupPhoto = groupPhotoRepository.save(groupPhoto);
+    public void init() {
+        GroupPhotoDto groupPhotoDto = createGroupPhoto(Set.of("photos/1.jpg", "photos/2.jpg"));
+        IdDto idGroupPhotoDto = groupPhotoService.saveGroupPhotos(groupPhotoDto);
+        Optional<GroupPhoto> groupPhotoOptional = groupPhotoRepository.findById(idGroupPhotoDto.getId());
+        if (groupPhotoOptional.isEmpty()) {
+            throw new RuntimeException("Cannot find saved group");
+        }
+        groupPhoto = groupPhotoOptional.get();
     }
 
     @AfterEach
     public void clean() throws IOException {
         FileUtils.cleanDirectory(new File(storePath));
         groupPhotoRepository.findAll().forEach(groupPhotoRepository::delete);
+        photoRepository.findAll().forEach(photoRepository::delete);
     }
 
     @Test
-    void savePhotosForEvent() {
+    void saveGroupPhotos() {
+        GroupPhotoDto groupPhotoDto = createGroupPhoto(Set.of("photos/3.jpg", "photos/4.jpg"));
+        IdDto idGroupPhotoDto = groupPhotoService.saveGroupPhotos(groupPhotoDto);
+        Optional<GroupPhoto> groupPhoto = groupPhotoRepository.findById(idGroupPhotoDto.getId());
 
+        assertTrue(groupPhoto.isPresent());
+
+        Set<Photo> photos = groupPhoto.get().getPhotos();
+        List<String> savedFiles = checkSavedPhotosToDirectory(photos);
+
+        assertEquals(2, photos.size());
+        assertEquals(4, savedFiles.size());
     }
 
     @Test
@@ -74,7 +84,27 @@ class GroupPhotoServiceTest {
     }
 
     @Test
-    void getEventPhotosById() {
+    void getGroupPhotosById() {
+        GroupPhotoDto groupPhotosById = groupPhotoService.getGroupPhotosById(groupPhoto.getId());
+
+        Set<UUID> foundPhotosId = groupPhotosById.getPhotos().stream()
+                .map(PhotoDto::getId)
+                .collect(Collectors.toSet());
+
+        assertEquals(2, groupPhotosById.getPhotos().size());
+        assertTrue(groupPhoto.getPhotos().stream()
+                .map(Photo::getId)
+                .allMatch(foundPhotosId::contains));
+        assertEquals(PhotoCategory.EVENT, groupPhotosById.getCategory());
+    }
+
+    private GroupPhotoDto createGroupPhoto(Set<String> photos) {
+        GroupPhotoDto groupPhotoDto = new GroupPhotoDto();
+        groupPhotoDto.setPhotos(photos.stream().map(this::getPhotoDto).collect(Collectors.toSet()));
+        groupPhotoDto.setGroupId(UUID.randomUUID());
+        groupPhotoDto.setCategory(PhotoCategory.EVENT);
+
+        return groupPhotoDto;
     }
 
     private File getFileFromResource(String resourceFilePath) {
@@ -82,13 +112,31 @@ class GroupPhotoServiceTest {
         return new File(Objects.requireNonNull(classLoader.getResource(resourceFilePath)).getFile());
     }
 
-    private PhotoDto getPhotoDto(String filePath) throws IOException {
+    private PhotoDto getPhotoDto(String filePath) {
         ContentDto contentDto = new ContentDto();
         contentDto.setType("data:image/jpeg;base64,");
-        byte[] fileArray = Files.readAllBytes(getFileFromResource(filePath).toPath());
+        byte[] fileArray;
+        try {
+            fileArray = Files.readAllBytes(getFileFromResource(filePath).toPath());
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot read photo by path" + filePath);
+        }
         contentDto.setPhotoContent(fileArray);
         PhotoDto photoDto = new PhotoDto();
         photoDto.setContent(contentDto);
         return photoDto;
+    }
+
+    private List<String> checkSavedPhotosToDirectory(Set<Photo> result) {
+        List<String> files = Arrays.stream(Objects.requireNonNull(new File(storePath).list()))
+                .map(fileName -> fileName.split("\\.")[0])
+                .collect(Collectors.toList());
+        boolean correctPhotoNames = result.stream()
+                .map(Photo::getId)
+                .map(UUID::toString)
+                .allMatch(files::contains);
+
+        assertTrue(correctPhotoNames);
+        return files;
     }
 }

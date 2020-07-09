@@ -34,15 +34,15 @@ public class GroupPhotoService extends CrudService<GroupPhotoDto, GroupPhoto> {
         this.photoService = photoService;
     }
 
-    public IdDto savePhotosForEvent(GroupPhotoDto groupPhotoDto) {
-        GroupPhoto groupPhoto = savePhotosByEventPhotoDto(groupPhotoDto);
+    public IdDto saveGroupPhotos(GroupPhotoDto groupPhotoDto) {
+        GroupPhoto groupPhoto = savePhotos(groupPhotoDto);
         return new IdDto(groupPhoto.getId());
 
     }
 
-    public GroupPhoto savePhotosByEventPhotoDto(GroupPhotoDto groupPhotoDto) {
-        GroupPhoto groupPhoto = Optional.ofNullable(groupPhotoDto.getGroupId())
-                .map(groupPhotoRepository::findByEventId)
+    private GroupPhoto savePhotos(GroupPhotoDto groupPhotoDto) {
+        GroupPhoto groupPhoto = Optional.ofNullable(groupPhotoDto.getId())
+                .map(groupPhotoRepository::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .orElse(null);
@@ -55,6 +55,8 @@ public class GroupPhotoService extends CrudService<GroupPhotoDto, GroupPhoto> {
 
         if (groupPhoto == null) {
             groupPhoto = groupPhotoMapper.dtoToEntity(groupPhotoDto);
+            groupPhoto.setPhotos(newPhotos);
+
         } else {
             groupPhoto.setPhotos(newPhotos);
         }
