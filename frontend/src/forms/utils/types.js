@@ -34,7 +34,6 @@ export const ResponseData = PropTypes.exact({
 export const PhotoObject = PropTypes.exact({
     id: PropTypes.string,
     photoUrl: PropTypes.string,
-    photoCategory: PropTypes.string,
     content: PropTypes.exact({
         type: PropTypes.string,
         photoContent: PropTypes.string
@@ -85,6 +84,7 @@ export const EventUser = PropTypes.exact({
 export const GroupPhoto = PropTypes.exact({
     id: PropTypes.string,
     groupId: PropTypes.string,
+    category: PropTypes.string,
     photos: PropTypes.arrayOf(PhotoObject)
 });
 

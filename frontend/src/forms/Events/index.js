@@ -6,7 +6,7 @@ import {connect} from "App/Context";
 import GroupItems from "forms/utils/components/CardItems";
 import Container from "forms/utils/components/Container/ContainerRow";
 import LoadableContent from "forms/utils/components/LoadableContent";
-import {postLikes} from "forms/utils/components/Event/EventLikes/actions";
+import {getEventsLikes} from "forms/utils/components/Event/EventLikes/actions";
 import CustomPagination from "forms/utils/components/Pagination";
 import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import LeftContainer from "forms/utils/components/Container/LeftContainer";
@@ -16,7 +16,7 @@ import {postFindEvents} from "./actions";
 import Filter from "./Filter";
 import {ResponseData, SearchObject} from "forms/utils/types";
 
-const Events = ({pageSize, postFindEvents, findEvents, postLikes, filter}) => {
+const Events = ({pageSize, postFindEvents, findEvents, getEventsLikes, filter}) => {
     const [page, setPage] = useState(1);
 
     useEffect(() => {
@@ -26,9 +26,9 @@ const Events = ({pageSize, postFindEvents, findEvents, postLikes, filter}) => {
     useEffect(() => {
         if (findEvents.response.result && findEvents.response.result?.length) {
             const eventIds = findEvents.response.result.map(event => event.id);
-            postLikes(eventIds);
+            getEventsLikes(eventIds);
         }
-    }, [findEvents, postLikes]);
+    }, [findEvents, getEventsLikes]);
 
     useEffect(() => {
         postFindEvents(filter);
@@ -81,5 +81,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps,
-    {postFindEvents, postLikes})
+    {postFindEvents, getEventsLikes})
 (Events);

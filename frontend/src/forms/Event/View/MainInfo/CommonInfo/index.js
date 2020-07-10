@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import moment from "moment";
 
 import EventLikes from "forms/utils/components/Event/EventLikes";
-import {postLikes} from "forms/utils/components/Event/EventLikes/actions";
+import {getEventsLikes} from "forms/utils/components/Event/EventLikes/actions";
 import {Event, ResponseData} from "forms/utils/types";
 import LeftContainer from "forms/utils/components/Container/LeftContainer";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
@@ -13,10 +13,10 @@ import ParticipationButton from "../../ParticipationButton";
 import {getUsers} from "../../actions";
 import Container from "forms/utils/components/Container/ContainerRow";
 
-const CommonInfo = ({event, users, getUsers, userId, postLikes}) => {
+const CommonInfo = ({event, users, getUsers, userId, getEventsLikes}) => {
     useEffect(() => {
-        postLikes([event.id]);
-    }, [event, postLikes]);
+        getEventsLikes([event.id]);
+    }, [event, getEventsLikes]);
 
     return <LeftContainer style={{width: '600px'}}>
         <ItemContainer>
@@ -68,4 +68,4 @@ const mapStateToProps = state => ({
     userId: state.userId.value
 });
 
-export default connect(mapStateToProps, {postLikes, getUsers})(CommonInfo);
+export default connect(mapStateToProps, {getEventsLikes, getUsers})(CommonInfo);

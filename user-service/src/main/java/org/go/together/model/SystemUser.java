@@ -41,11 +41,4 @@ public class SystemUser implements IdentifiedEntity {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "language_id"))
     private Set<Language> languages = new HashSet<>();
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(schema = "user_service",
-            name = "system_user_event_like",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "event_like_id"))
-    private Set<EventLike> likes;
 }

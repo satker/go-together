@@ -60,4 +60,13 @@ public class EventLikeService extends CrudService<EventLikeDto, EventLike> {
                 .map(EventLike::getEventId)
                 .collect(Collectors.toSet());
     }
+
+    public void deleteByUserId(UUID userId) {
+        eventLikeRepository.findByUserId(userId).stream()
+                .peek(eventLike -> {
+                    eventLike.getUsers().removeIf(user -> user.getId().equals(userId));
+                    eventLike.setUsers(eventLike.getUsers());
+                }).map(eventLikeMapper::entityToDto)
+                .forEach(super::update);
+    }
 }

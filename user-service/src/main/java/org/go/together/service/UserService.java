@@ -31,13 +31,17 @@ public class UserService extends CrudService<UserDto, SystemUser> {
     private final SimpleUserMapper simpleUserMapper;
     private final LanguageService languageService;
     private final InterestService interestService;
+    private final EventLikeService eventLikeService;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper,
-                       UserValidator userValidator, BCryptPasswordEncoder bCryptPasswordEncoder,
+    public UserService(UserRepository userRepository,
+                       UserMapper userMapper,
+                       UserValidator userValidator,
+                       BCryptPasswordEncoder bCryptPasswordEncoder,
                        ContentClient contentClient,
                        SimpleUserMapper simpleUserMapper,
                        LanguageService languageService,
-                       InterestService interestService) {
+                       InterestService interestService,
+                       EventLikeService eventLikeService) {
         super(userRepository, userMapper, userValidator);
         this.userRepository = userRepository;
         this.userMapper = userMapper;
@@ -46,6 +50,7 @@ public class UserService extends CrudService<UserDto, SystemUser> {
         this.simpleUserMapper = simpleUserMapper;
         this.languageService = languageService;
         this.interestService = interestService;
+        this.eventLikeService = eventLikeService;
     }
 
     public UserDto findUserByLogin(String login) {
@@ -135,6 +140,7 @@ public class UserService extends CrudService<UserDto, SystemUser> {
             entity.setRole(Role.ROLE_USER);
         } else if (crudOperation == CrudOperation.DELETE) {
             contentClient.delete(entity.getGroupPhoto());
+            eventLikeService.deleteByUserId(entity.getId());
         }
         return entity;
     }
