@@ -12,6 +12,7 @@ import java.util.UUID;
 @Table(name = "event_paid_thing", schema = "event_service")
 public class EventPaidThing implements IdentifiedEntity {
     @Id
+    @GeneratedValue
     private UUID id;
     private CashCategory cashCategory;
 

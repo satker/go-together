@@ -11,6 +11,7 @@ import org.go.together.enums.CrudOperation;
 import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.EventMapper;
 import org.go.together.model.Event;
+import org.go.together.model.EventRoute;
 import org.go.together.repository.EventRepository;
 import org.go.together.validation.EventValidator;
 import org.springframework.stereotype.Service;
@@ -41,20 +42,21 @@ public class EventService extends CrudService<EventDto, Event> {
         this.userClient = userClient;
     }
 
-    private void updateEntity(Event entity, EventDto dto) {
+    private Set<EventRoute> getRoutes(Event entity, EventDto dto) {
         Set<EventLocationDto> newRoute = dto.getRoute().stream()
                 .peek(routeItem -> routeItem.setEventId(entity.getId()))
                 .collect(Collectors.toSet());
         Set<IdDto> routes = locationClient.saveOrUpdateEventRoutes(newRoute);
-        entity.setRoutes(routes.stream()
+        return routes.stream()
                 .map(IdDto::getId)
-                .collect(Collectors.toSet()));
+                .map(EventRoute::new)
+                .collect(Collectors.toSet());
     }
 
     @Override
     protected Event enrichEntity(Event entity, EventDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE) {
-            updateEntity(entity, dto);
+            entity.setRoutes(getRoutes(entity, dto));
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
@@ -63,7 +65,7 @@ public class EventService extends CrudService<EventDto, Event> {
             entity.setGroupPhotoId(photoId.getId());
         } else if (crudOperation == CrudOperation.CREATE) {
             entity.setUsers(Collections.emptySet());
-            updateEntity(entity, dto);
+            entity.setRoutes(getRoutes(entity, dto));
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
@@ -76,7 +78,9 @@ public class EventService extends CrudService<EventDto, Event> {
             eventLikeDto.setUsers(Collections.emptySet());
             userClient.createEventLike(eventLikeDto);
         } else if (crudOperation == CrudOperation.DELETE) {
-            locationClient.deleteRoutes(entity.getRoutes());
+            locationClient.deleteRoutes(entity.getRoutes().stream()
+                    .map(EventRoute::getRouteId)
+                    .collect(Collectors.toSet()));
             contentClient.delete(entity.getGroupPhotoId());
             userClient.deleteEventLike(entity.getId());
         }

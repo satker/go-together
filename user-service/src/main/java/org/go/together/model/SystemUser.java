@@ -16,7 +16,9 @@ import java.util.UUID;
 public class SystemUser implements IdentifiedEntity {
     @Id
     private UUID id;
+    @Column(unique = true)
     private String login;
+    @Column(unique = true)
     private String mail;
     private String firstName;
     private String lastName;
@@ -26,17 +28,24 @@ public class SystemUser implements IdentifiedEntity {
     private Role role;
     private UUID groupPhoto;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(schema = "user_service",
             name = "system_user_interest",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "interest_id"))
     private Set<Interest> interests = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(schema = "user_service",
             name = "system_user_language",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "language_id"))
     private Set<Language> languages = new HashSet<>();
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(schema = "user_service",
+            name = "system_user_event_like",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_like_id"))
+    private Set<EventLike> likes;
 }

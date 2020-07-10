@@ -28,6 +28,6 @@ public class CountryMapper implements Mapper<CountryDto, Country> {
 
     public Country dtoToEntity(CountryDto countryDto) {
         Optional<Country> countryById = Optional.ofNullable(countryService.findByName(countryDto.getName()));
-        return countryById.orElseThrow(() -> new RuntimeException("Such country not present"));
+        return countryById.orElseThrow(() -> new RuntimeException("Such country not present: " + countryDto.getName()));
     }
 }

@@ -12,13 +12,12 @@ import java.util.UUID;
 @Table(name = "event_like", schema = "user_service")
 public class EventLike implements IdentifiedEntity {
     @Id
-    @GeneratedValue
     private UUID id;
 
     @Column(unique = true)
     private UUID eventId;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(schema = "user_service",
             name = "system_user_event_like",
             joinColumns = @JoinColumn(name = "event_like_id"),

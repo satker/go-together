@@ -15,6 +15,7 @@ import java.util.UUID;
 public class Event implements IdentifiedEntity {
     @Id
     private UUID id;
+    @Column(unique = true)
     private String name;
     private int peopleCount;
     private UUID authorId;
@@ -22,19 +23,17 @@ public class Event implements IdentifiedEntity {
     private String description;
     private Date startDate;
     private Date endDate;
+    private UUID groupPhotoId;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "event_id")
     private Set<EventUser> users;
 
-    @ElementCollection
-    @CollectionTable(name = "event_route", joinColumns = @JoinColumn(name = "event_id"))
-    @Column(name = "route_id")
-    private Set<UUID> routes;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "event_id")
+    private Set<EventRoute> routes;
 
-    private UUID groupPhotoId;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "event_id")
     private Set<EventPaidThing> paidThings;
 

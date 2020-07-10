@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 import org.go.together.dto.EventUserStatus;
 import org.go.together.interfaces.IdentifiedEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Data
@@ -19,6 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class EventUser implements IdentifiedEntity {
     @Id
+    @GeneratedValue
     private UUID id;
     private UUID userId;
     private EventUserStatus userStatus;

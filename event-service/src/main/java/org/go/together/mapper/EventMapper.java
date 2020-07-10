@@ -4,10 +4,10 @@ import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventDto;
-import org.go.together.dto.EventLocationDto;
 import org.go.together.logic.Mapper;
 import org.go.together.model.Event;
 import org.go.together.model.EventPaidThing;
+import org.go.together.model.EventRoute;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -23,8 +23,7 @@ public class EventMapper implements Mapper<EventDto, Event> {
     public EventMapper(UserClient userClient,
                        LocationClient locationClient,
                        EventPaidThingMapper eventPaidThingMapper,
-                       ContentClient contentClient,
-                       EventUserMapper eventUserMapper) {
+                       ContentClient contentClient) {
         this.userClient = userClient;
         this.locationClient = locationClient;
         this.eventPaidThingMapper = eventPaidThingMapper;
@@ -41,6 +40,7 @@ public class EventMapper implements Mapper<EventDto, Event> {
         eventDto.setPaidThings(eventPaidThingMapper.entitiesToDtos(entity.getPaidThings()));
         eventDto.setPeopleCount(entity.getPeopleCount());
         eventDto.setRoute(entity.getRoutes().stream()
+                .map(EventRoute::getRouteId)
                 .map(locationClient::getRouteById)
                 .collect(Collectors.toSet()));
         eventDto.setGroupPhoto(contentClient.readGroupPhotosById(entity.getGroupPhotoId()));
@@ -59,9 +59,6 @@ public class EventMapper implements Mapper<EventDto, Event> {
         event.setHousingType(dto.getHousingType());
         event.setPaidThings((Set<EventPaidThing>) eventPaidThingMapper.dtosToEntities(dto.getPaidThings()));
         event.setPeopleCount(dto.getPeopleCount());
-        event.setRoutes(dto.getRoute().stream()
-                .map(EventLocationDto::getId)
-                .collect(Collectors.toSet()));
         event.setName(dto.getName());
         event.setStartDate(dto.getStartDate());
         event.setEndDate(dto.getEndDate());
