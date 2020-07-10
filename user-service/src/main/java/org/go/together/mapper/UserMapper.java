@@ -16,8 +16,10 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
     private final LanguageMapper languageMapper;
     private final InterestMapper interestMapper;
 
-    public UserMapper(LocationClient locationClient, ContentClient contentClient,
-                      LanguageMapper languageMapper, InterestMapper interestMapper) {
+    public UserMapper(LocationClient locationClient,
+                      ContentClient contentClient,
+                      LanguageMapper languageMapper,
+                      InterestMapper interestMapper) {
         this.locationClient = locationClient;
         this.contentClient = contentClient;
         this.languageMapper = languageMapper;

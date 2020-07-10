@@ -11,7 +11,6 @@ import java.util.UUID;
 @Table(name = "event_location", schema = "location_service")
 public class EventLocation implements IdentifiedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String address;
     private double latitude;

@@ -3,6 +3,7 @@ package org.go.together.service;
 import org.apache.commons.io.FileUtils;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
+import org.go.together.mapper.GroupPhotoMapper;
 import org.go.together.model.GroupPhoto;
 import org.go.together.model.Photo;
 import org.go.together.repository.GroupPhotoRepository;
@@ -44,6 +45,9 @@ class GroupPhotoServiceTest {
     @Autowired
     private PhotoRepository photoRepository;
 
+    @Autowired
+    private GroupPhotoMapper groupPhotoMapper;
+
     private GroupPhoto groupPhoto;
 
     @BeforeEach
@@ -65,7 +69,7 @@ class GroupPhotoServiceTest {
     }
 
     @Test
-    void saveGroupPhotos() {
+    void createGroupPhotos() {
         GroupPhotoDto groupPhotoDto = createGroupPhoto(Set.of("photos/3.jpg", "photos/4.jpg"));
         IdDto idGroupPhotoDto = groupPhotoService.create(groupPhotoDto);
         Optional<GroupPhoto> groupPhoto = groupPhotoRepository.findById(idGroupPhotoDto.getId());
@@ -80,7 +84,21 @@ class GroupPhotoServiceTest {
     }
 
     @Test
-    void savePhotosByEventPhotoDto() {
+    void updateGroupPhotos() {
+        GroupPhotoDto groupPhotoDto = groupPhotoMapper.entityToDto(groupPhoto);
+        groupPhotoDto.setPhotos(Set.of("photos/3.jpg", "photos/4.jpg").stream()
+                .map(this::getPhotoDto)
+                .collect(Collectors.toSet()));
+        IdDto idGroupPhotoDto = groupPhotoService.update(groupPhotoDto);
+        Optional<GroupPhoto> groupPhoto = groupPhotoRepository.findById(idGroupPhotoDto.getId());
+
+        assertTrue(groupPhoto.isPresent());
+
+        Set<Photo> photos = groupPhoto.get().getPhotos();
+        List<String> savedFiles = checkSavedPhotosToDirectory(photos);
+
+        assertEquals(2, photos.size());
+        assertEquals(2, savedFiles.size());
     }
 
     @Test

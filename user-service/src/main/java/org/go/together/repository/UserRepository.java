@@ -28,12 +28,6 @@ public class UserRepository extends CustomRepository<SystemUser> {
     }
 
     @Transactional
-    public Collection<SystemUser> findUsersLoginLikedEventId(UUID eventId) {
-        return createQuery().where(createWhere().condition("eventLikeIds", SqlOperator.EQUAL, eventId))
-                .fetchAll();
-    }
-
-    @Transactional
     public Collection<SystemUser> findAllByIds(Set<UUID> userIds) {
         return createQuery().where(createWhere().condition("id", SqlOperator.IN, userIds))
                 .fetchAll();

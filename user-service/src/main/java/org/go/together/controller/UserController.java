@@ -4,6 +4,7 @@ import org.go.together.client.UserClient;
 import org.go.together.dto.*;
 import org.go.together.dto.filter.FormDto;
 import org.go.together.logic.controllers.FindController;
+import org.go.together.service.EventLikeService;
 import org.go.together.service.InterestService;
 import org.go.together.service.LanguageService;
 import org.go.together.service.UserService;
@@ -16,14 +17,17 @@ class UserController extends FindController implements UserClient {
     private final UserService userService;
     private final LanguageService languageService;
     private final InterestService interestService;
+    private final EventLikeService eventLikeService;
 
     public UserController(UserService userService,
                           LanguageService languageService,
-                          InterestService interestService) {
-        super(Arrays.asList(userService, languageService, interestService));
+                          InterestService interestService,
+                          EventLikeService eventLikeService) {
+        super(Arrays.asList(userService, languageService, interestService, eventLikeService));
         this.userService = userService;
         this.languageService = languageService;
         this.interestService = interestService;
+        this.eventLikeService = eventLikeService;
     }
 
     @Override
@@ -107,22 +111,28 @@ class UserController extends FindController implements UserClient {
     }
 
     @Override
-    public boolean saveLikedEventsByUserId(UUID userId, UUID eventId) {
-        return userService.saveLikedEventByUserId(userId, eventId);
+    public IdDto createEventLike(EventLikeDto eventLikeDto) {
+        return eventLikeService.create(eventLikeDto);
+    }
+
+    @Override
+    public IdDto updateEventLike(EventLikeDto eventLikeDto) {
+        return eventLikeService.update(eventLikeDto);
+    }
+
+    @Override
+    public void deleteEventLike(UUID eventId) {
+        eventLikeService.deleteByEventId(eventId);
     }
 
     @Override
     public Set<UUID> getLikedEventsByUserId(UUID userId) {
-        return userService.getLikedEventsByUserId(userId);
+        // FROM USER
+        return eventLikeService.findLikedEventIdsByUserId(userId);
     }
 
     @Override
-    public Set<UUID> deleteLikedEventsByUserId(UUID userId, Set<UUID> eventIds) {
-        return userService.deleteLikedEventsByUserId(userId, eventIds);
-    }
-
-    @Override
-    public Map<UUID, Collection<SimpleUserDto>> getUsersLikedEventIds(Set<UUID> eventIds) {
-        return userService.getUsersLikedEventIds(eventIds);
+    public Set<EventLikeDto> getUsersLikedEventIds(Set<UUID> eventIds) {
+        return eventLikeService.findUsersLikedEventIds(eventIds);
     }
 }

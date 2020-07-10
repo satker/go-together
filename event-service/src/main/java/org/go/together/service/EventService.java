@@ -15,7 +15,10 @@ import org.go.together.repository.EventRepository;
 import org.go.together.validation.EventValidator;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,9 +41,9 @@ public class EventService extends CrudService<EventDto, Event> {
         this.userClient = userClient;
     }
 
-    private void updateEntity(Event entity, EventDto dto, UUID uuid) {
+    private void updateEntity(Event entity, EventDto dto) {
         Set<EventLocationDto> newRoute = dto.getRoute().stream()
-                .peek(routeItem -> routeItem.setEventId(uuid))
+                .peek(routeItem -> routeItem.setEventId(entity.getId()))
                 .collect(Collectors.toSet());
         Set<IdDto> routes = locationClient.saveOrUpdateEventRoutes(newRoute);
         entity.setRoutes(routes.stream()
@@ -49,9 +52,9 @@ public class EventService extends CrudService<EventDto, Event> {
     }
 
     @Override
-    protected void enrichEntity(Event entity, EventDto dto, CrudOperation crudOperation) {
+    protected Event enrichEntity(Event entity, EventDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE) {
-            updateEntity(entity, dto, entity.getId());
+            updateEntity(entity, dto);
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
@@ -59,20 +62,25 @@ public class EventService extends CrudService<EventDto, Event> {
             IdDto photoId = contentClient.updateGroup(groupPhotoDto);
             entity.setGroupPhotoId(photoId.getId());
         } else if (crudOperation == CrudOperation.CREATE) {
-            UUID uuid = UUID.randomUUID();
-            entity.setId(uuid);
             entity.setUsers(Collections.emptySet());
-            updateEntity(entity, dto, uuid);
+            updateEntity(entity, dto);
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
-            groupPhotoDto.setGroupId(uuid);
+            groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.EVENT);
             IdDto photoId = contentClient.createGroup(groupPhotoDto);
             entity.setGroupPhotoId(photoId.getId());
+
+            EventLikeDto eventLikeDto = new EventLikeDto();
+            eventLikeDto.setEventId(entity.getId());
+            eventLikeDto.setUsers(Collections.emptySet());
+            userClient.createEventLike(eventLikeDto);
         } else if (crudOperation == CrudOperation.DELETE) {
             locationClient.deleteRoutes(entity.getRoutes());
             contentClient.delete(entity.getGroupPhotoId());
+            userClient.deleteEventLike(entity.getId());
         }
+        return entity;
     }
 
     public Set<SimpleDto> autocompleteEvents(String name) {

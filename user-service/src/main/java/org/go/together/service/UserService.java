@@ -19,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -111,9 +110,9 @@ public class UserService extends CrudService<UserDto, SystemUser> {
     }
 
     @Override
-    protected void enrichEntity(SystemUser entity, UserDto dto, CrudOperation crudOperation) {
+    protected SystemUser enrichEntity(SystemUser entity, UserDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE) {
-            Optional<SystemUser> user = updatePassword(entity, entity.getId());
+            Optional<SystemUser> user = updatePassword(entity);
 
             Role role = user.map(SystemUser::getRole).orElse(Role.ROLE_USER);
 
@@ -125,72 +124,32 @@ public class UserService extends CrudService<UserDto, SystemUser> {
 
             entity.setRole(role);
         } else if (crudOperation == CrudOperation.CREATE) {
-            UUID uuid = UUID.randomUUID();
-            updatePassword(entity, uuid);
+            updatePassword(entity);
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
-            groupPhotoDto.setGroupId(uuid);
+            groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.USER);
             IdDto groupPhotoId = contentClient.createGroup(groupPhotoDto);
             entity.setGroupPhoto(groupPhotoId.getId());
-            entity.setId(uuid);
+            entity.setId(entity.getId());
             entity.setRole(Role.ROLE_USER);
         } else if (crudOperation == CrudOperation.DELETE) {
             contentClient.delete(entity.getGroupPhoto());
         }
+        return entity;
     }
 
-    private Optional<SystemUser> updatePassword(SystemUser entity, UUID uuid) {
-        Optional<SystemUser> user = userRepository.findById(uuid);
+    private Optional<SystemUser> updatePassword(SystemUser entity) {
+        Optional<SystemUser> user = userRepository.findById(entity.getId());
         String password = entity.getPassword();
         if (StringUtils.isNotBlank(password)) {
             entity.setPassword(bCryptPasswordEncoder.encode(password));
         } else {
-            entity.setPassword(user.map(SystemUser::getPassword)
-                    .orElseThrow(() -> new CannotFindEntityException("Cannot find user in database")));
+            String passwordFromDB = user.map(SystemUser::getPassword)
+                    .orElseThrow(() -> new CannotFindEntityException("Cannot find user in database"));
+            entity.setPassword(passwordFromDB);
         }
         return user;
-    }
-
-    public Set<UUID> getLikedEventsByUserId(UUID userId) {
-        Optional<SystemUser> byId = userRepository.findById(userId);
-        if (byId.isPresent()) {
-            return byId.get().getEventLikeIds();
-        }
-        return Collections.emptySet();
-    }
-
-    public Set<UUID> deleteLikedEventsByUserId(UUID userId, Set<UUID> eventIds) {
-        Optional<SystemUser> byId = userRepository.findById(userId);
-        if (byId.isPresent()) {
-            SystemUser user = byId.get();
-            user.getEventLikeIds().removeAll(eventIds);
-            return userRepository.save(user).getEventLikeIds();
-        }
-        return Collections.emptySet();
-    }
-
-    public Map<UUID, Collection<SimpleUserDto>> getUsersLikedEventIds(Set<UUID> eventIds) {
-        return eventIds.stream().collect(Collectors.toMap(Function.identity(),
-                eventId -> simpleUserMapper.entitiesToDtos(userRepository.findUsersLoginLikedEventId(eventId))));
-    }
-
-    public boolean saveLikedEventByUserId(UUID userId, UUID eventId) {
-        Optional<SystemUser> byId = userRepository.findById(userId);
-        if (byId.isPresent()) {
-            SystemUser user = byId.get();
-            Set<UUID> eventLikeIds = user.getEventLikeIds();
-            if (eventLikeIds.stream().anyMatch(eventLike -> eventLike.equals(eventId))) {
-                eventLikeIds.remove(eventId);
-                Set<UUID> newUserLikes = userRepository.save(user).getEventLikeIds();
-                return newUserLikes.stream().anyMatch(userLikeEvent -> userLikeEvent.equals(eventId));
-            } else {
-                eventLikeIds.add(eventId);
-                Set<UUID> newUserLikes = userRepository.save(user).getEventLikeIds();
-                return newUserLikes.stream().anyMatch(userLikeEvent -> userLikeEvent.equals(eventId));
-            }
-        }
-        return false;
     }
 
     public Collection<SimpleUserDto> findSimpleUserDtosByUserIds(Set<UUID> userIds) {

@@ -13,7 +13,6 @@ import java.util.UUID;
 @Table(name = "group_photo", schema = "content_service")
 public class GroupPhoto implements IdentifiedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private UUID groupId;
     private PhotoCategory category;

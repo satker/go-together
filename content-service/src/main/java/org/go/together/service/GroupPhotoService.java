@@ -35,9 +35,9 @@ public class GroupPhotoService extends CrudService<GroupPhotoDto, GroupPhoto> {
     }
 
     @Override
-    protected void enrichEntity(GroupPhoto entity, GroupPhotoDto dto, CrudOperation crudOperation) {
+    protected GroupPhoto enrichEntity(GroupPhoto entity, GroupPhotoDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE || crudOperation == CrudOperation.UPDATE) {
-            GroupPhoto groupPhoto = Optional.ofNullable(dto.getId())
+            GroupPhoto groupPhoto = Optional.ofNullable(entity.getId())
                     .map(groupPhotoRepository::findById)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
@@ -57,8 +57,11 @@ public class GroupPhotoService extends CrudService<GroupPhotoDto, GroupPhoto> {
                 entity.setPhotos(newPhotos);
             }
         } else if (crudOperation == CrudOperation.DELETE) {
-            photoService.deletePhotos(entity.getPhotos());
+            entity.getPhotos().stream()
+                    .map(Photo::getId)
+                    .forEach(photoService::delete);
         }
+        return entity;
     }
 
     @Override

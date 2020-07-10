@@ -4,7 +4,6 @@ import org.apache.commons.io.FileUtils;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.ContentDto;
 import org.go.together.dto.PhotoDto;
-import org.go.together.mapper.PhotoMapper;
 import org.go.together.model.Photo;
 import org.go.together.repository.PhotoRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -42,14 +41,10 @@ class PhotoServiceTest {
     @Autowired
     private PhotoService photoService;
 
-    @Autowired
-    private PhotoMapper photoMapper;
-
     @BeforeEach
     public void init() throws IOException {
         PhotoDto photoDto = getPhotoDto("photos/1.jpg");
-        Photo photo = photoMapper.dtoToEntity(photoDto);
-        photoRepository.save(photo);
+        photoService.create(photoDto);
     }
 
     @AfterEach
@@ -102,8 +97,7 @@ class PhotoServiceTest {
     @Test
     void deletePhotos() throws IOException {
         PhotoDto photoDto = getPhotoDto("photos/2.jpg");
-        Photo photo = photoMapper.dtoToEntity(photoDto);
-        photoRepository.save(photo);
+        photoService.create(photoDto);
 
         List<String> files = Arrays.stream(Objects.requireNonNull(new File(storePath).list()))
                 .map(fileName -> fileName.split("\\.")[0])
@@ -112,7 +106,7 @@ class PhotoServiceTest {
 
         Set<Photo> repositoryAll = Set.copyOf(photoRepository.findAll());
 
-        photoService.deletePhotos(repositoryAll);
+        repositoryAll.stream().map(Photo::getId).forEach(photoService::delete);
 
         List<String> deletedPhotos = Arrays.stream(Objects.requireNonNull(new File(storePath).list()))
                 .map(fileName -> fileName.split("\\.")[0])

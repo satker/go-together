@@ -4,7 +4,9 @@ import lombok.Data;
 import org.go.together.dto.MessageType;
 import org.go.together.interfaces.IdentifiedEntity;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 import java.util.UUID;
 
@@ -13,7 +15,6 @@ import java.util.UUID;
 @Table(name = "message", schema = "message_service")
 public class Message implements IdentifiedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String message;
     private Date date;

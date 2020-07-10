@@ -15,7 +15,6 @@ import java.util.UUID;
 @Table(name = "system_user", schema = "user_service")
 public class SystemUser implements IdentifiedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String login;
     private String mail;
@@ -26,13 +25,6 @@ public class SystemUser implements IdentifiedEntity {
     private UUID locationId;
     private Role role;
     private UUID groupPhoto;
-
-    @ElementCollection
-    @CollectionTable(schema = "user_service",
-            name = "user_event_like",
-            joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "event_like_id")
-    private Set<UUID> eventLikeIds;
 
     @ManyToMany
     @JoinTable(schema = "user_service",

@@ -5,7 +5,10 @@ import org.go.together.interfaces.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @FeignClient(name = "user-service")
 public interface UserClient extends FindClient {
@@ -54,17 +57,18 @@ public interface UserClient extends FindClient {
     @GetMapping("/users/{userId}/presents")
     boolean checkIfUserPresentsById(@PathVariable("userId") UUID id);
 
-    @PutMapping("/users/{userId}/events/{eventId}")
-    boolean saveLikedEventsByUserId(@PathVariable("userId") UUID userId,
-                                    @PathVariable("eventId") UUID eventId);
+    @PutMapping("/users/likes")
+    IdDto createEventLike(@RequestBody EventLikeDto eventLikeDto);
+
+    @PostMapping("/users/likes")
+    IdDto updateEventLike(@RequestBody EventLikeDto eventLikeDto);
+
+    @DeleteMapping("/users/likes/{eventId}")
+    void deleteEventLike(@PathVariable("eventId") UUID eventId);
 
     @GetMapping("/users/{userId}/events")
     Set<UUID> getLikedEventsByUserId(@PathVariable("userId") UUID userId);
 
-    @DeleteMapping("/users/{userId}/events")
-    Set<UUID> deleteLikedEventsByUserId(@PathVariable("userId") UUID userId,
-                                        @RequestBody Set<UUID> eventIds);
-
     @PostMapping("/events/likes")
-    Map<UUID, Collection<SimpleUserDto>> getUsersLikedEventIds(@RequestBody Set<UUID> eventIds);
+    Set<EventLikeDto> getUsersLikedEventIds(@RequestBody Set<UUID> eventIds);
 }

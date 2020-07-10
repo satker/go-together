@@ -1,8 +1,11 @@
 package org.go.together.service;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.dto.IdDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.dto.filter.FieldMapper;
+import org.go.together.enums.CrudOperation;
 import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.PhotoMapper;
 import org.go.together.model.Photo;
@@ -12,15 +15,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class PhotoService extends CrudService<PhotoDto, Photo> {
-    private final PhotoMapper photoMapper;
     private final PhotoRepository photoRepository;
     private final String photoPath;
 
@@ -29,23 +29,40 @@ public class PhotoService extends CrudService<PhotoDto, Photo> {
                         PhotoValidator photoValidator,
                         @Value("${photo.store.path}") String photoPath) {
         super(photoRepository, photoMapper, photoValidator);
-        this.photoMapper = photoMapper;
         this.photoRepository = photoRepository;
         this.photoPath = photoPath;
     }
 
-    public Photo createPhotoFile(PhotoDto photo) {
-        Photo photoEntity = photoMapper.dtoToEntity(photo);
-        try {
-            photoRepository.save(photoEntity);
-        } catch (Exception e) {
-            String filePath = photoPath + photoEntity.getPathName() + "." + photoEntity.getContentType()
-                    .replaceAll(";base64,", "")
-                    .replaceAll("data:image/", "");
-            new File(filePath).delete();
-            throw new RuntimeException("Cannot create image");
+    @Override
+    protected Photo enrichEntity(Photo entity, PhotoDto dto, CrudOperation crudOperation) {
+        if (crudOperation == CrudOperation.CREATE) {
+            if (StringUtils.isBlank(dto.getPhotoUrl())) {
+                String type = dto.getContent().getType();
+                entity.setContentType(type);
+                String typeFile = type
+                        .replaceAll(";base64,", "")
+                        .replaceAll("data:image/", "");
+                String filePath = photoPath + entity.getId() + "." + typeFile;
+                entity.setPathName(filePath);
+                try {
+                    FileUtils.writeByteArrayToFile(new File(filePath),
+                            dto.getContent().getPhotoContent());
+                } catch (IOException e) {
+                    throw new RuntimeException("Cannot create image");
+                }
+            } else {
+                entity.setPhotoUrl(dto.getPhotoUrl());
+            }
+        } else if (crudOperation == CrudOperation.DELETE) {
+            if (StringUtils.isNotBlank(entity.getPathName()) && StringUtils.isNotBlank(entity.getContentType())) {
+                String filePath = entity.getPathName();
+                boolean delete = new File(filePath).delete();
+                if (!delete) {
+                    throw new RuntimeException("Cannot delete photo");
+                }
+            }
         }
-        return photoRepository.save(photoEntity);
+        return entity;
     }
 
     public Set<Photo> savePhotos(Set<PhotoDto> newPhotosDto, Set<Photo> oldPhotos) {
@@ -64,11 +81,17 @@ public class PhotoService extends CrudService<PhotoDto, Photo> {
 
         Set<Photo> newEventPhotoDtos = newPhotosDto.stream()
                 .filter(photoDto -> photoDto.getId() == null || !presentedPhotoIds.contains(photoDto.getId()))
-                .map(this::createPhotoFile)
+                .map(this::create)
+                .map(IdDto::getId)
+                .map(photoRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(Collectors.toSet());
 
         if (!photosForDeleting.isEmpty()) {
-            deletePhotos(photosForDeleting);
+            photosForDeleting.stream()
+                    .map(Photo::getId)
+                    .forEach(super::delete);
         }
 
         Set<Photo> newPhotos = oldPhotos.stream()
@@ -78,19 +101,6 @@ public class PhotoService extends CrudService<PhotoDto, Photo> {
                 .collect(Collectors.toSet());
         newPhotos.addAll(newEventPhotoDtos);
         return newPhotos;
-    }
-
-    public void deletePhotos(Set<Photo> photos) {
-        photos.stream()
-                .filter(photo -> StringUtils.isNotBlank(photo.getPathName()))
-                .forEach(photo -> {
-                    boolean delete = new File(photo.getPathName()).delete();
-                    if (!delete) {
-                        throw new RuntimeException("Cannot delete photo");
-                    } else {
-                        photoRepository.delete(photo);
-                    }
-                });
     }
 
     @Override

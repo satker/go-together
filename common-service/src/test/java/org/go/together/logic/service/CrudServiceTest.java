@@ -8,6 +8,7 @@ import org.go.together.dto.SimpleDto;
 import org.go.together.dto.filter.FilterDto;
 import org.go.together.dto.filter.FormDto;
 import org.go.together.dto.filter.PageDto;
+import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.dto.ManyJoinDto;
@@ -76,11 +77,17 @@ class CrudServiceTest {
         double longitude = 74.39449363632201;
         SimpleDto simpleDto = new SimpleDto("simpleDto", "simpleDto");
 
-        testDto = createTestDto(id, name, number, date, startDate, endDate,
+        TestDto testDto = createTestDto(id, name, number, date, startDate, endDate,
                 startNumber, endNumber, simpleDto, longitude, latitude);
 
         testDto.getManyJoinEntities().stream().map(manyJoinMapper::dtoToEntity).forEach(entityManager::merge);
         testDto.getJoinTestEntities().stream().map(joinTestMapper::dtoToEntity).forEach(entityManager::merge);
+
+        IdDto idDto = testService.create(testDto);
+
+        TestEntity testEntity = testRepository.findById(idDto.getId())
+                .orElseThrow(() -> new CannotFindEntityException("Cannot find TestDto"));
+        this.testDto = testMapper.entityToDto(testEntity);
     }
 
     @AfterEach
@@ -92,9 +99,7 @@ class CrudServiceTest {
 
     @Test
     void create() {
-        IdDto idDto = testService.create(testDto);
-
-        Optional<TestEntity> savedEntity = testRepository.findById(idDto.getId());
+        Optional<TestEntity> savedEntity = testRepository.findById(testDto.getId());
 
         assertTrue(savedEntity.isPresent());
         assertEquals(testMapper.entityToDto(savedEntity.get()), testDto);
@@ -103,23 +108,21 @@ class CrudServiceTest {
     @Test
     void update() {
         final String newName = "new test name";
-        IdDto savedId = testService.create(testDto);
-        Optional<TestEntity> savedEntity = testRepository.findById(savedId.getId());
+        Optional<TestEntity> savedEntity = testRepository.findById(testDto.getId());
         assertTrue(savedEntity.isPresent());
         testDto.setName(newName);
         IdDto updatedId = testService.update(testDto);
         Optional<TestEntity> updatedEntity = testRepository.findById(updatedId.getId());
 
         assertTrue(updatedEntity.isPresent());
-        assertEquals(savedId, updatedId);
+        assertEquals(testDto.getId(), updatedId.getId());
         assertEquals(newName, updatedEntity.get().getName());
     }
 
     @Test
     void updateInnerDtos() {
         final String newName = "new test name";
-        IdDto savedId = testService.create(testDto);
-        Optional<TestEntity> savedEntity = testRepository.findById(savedId.getId());
+        Optional<TestEntity> savedEntity = testRepository.findById(testDto.getId());
         assertTrue(savedEntity.isPresent());
         testDto.setName(newName);
 
@@ -140,15 +143,14 @@ class CrudServiceTest {
         Optional<TestEntity> updatedEntity = testRepository.findById(updatedId.getId());
 
         assertTrue(updatedEntity.isPresent());
-        assertEquals(savedId, updatedId);
+        assertEquals(testDto.getId(), updatedId.getId());
         assertEquals(newName, updatedEntity.get().getName());
     }
 
     @Test
     void updateMultipleFields() {
         final String newName = "new test name";
-        IdDto savedId = testService.create(testDto);
-        Optional<TestEntity> savedEntity = testRepository.findById(savedId.getId());
+        Optional<TestEntity> savedEntity = testRepository.findById(testDto.getId());
         assertTrue(savedEntity.isPresent());
         testDto.setName(newName);
         testDto.setSimpleDto(new SimpleDto("newId", "new name"));
@@ -171,26 +173,22 @@ class CrudServiceTest {
         Optional<TestEntity> updatedEntity = testRepository.findById(updatedId.getId());
 
         assertTrue(updatedEntity.isPresent());
-        assertEquals(savedId, updatedId);
+        assertEquals(testDto.getId(), updatedId.getId());
         assertEquals(newName, updatedEntity.get().getName());
     }
 
     @Test
     void read() {
-        IdDto savedId = testService.create(testDto);
-
-        TestDto readDto = testService.read(savedId.getId());
+        TestDto readDto = testService.read(testDto.getId());
 
         assertEquals(testDto, readDto);
     }
 
     @Test
     void delete() {
-        IdDto savedId = testService.create(testDto);
+        testService.delete(testDto.getId());
 
-        testService.delete(savedId.getId());
-
-        Optional<TestEntity> deletedEntity = testRepository.findById(savedId.getId());
+        Optional<TestEntity> deletedEntity = testRepository.findById(testDto.getId());
 
         assertTrue(deletedEntity.isEmpty());
     }
@@ -204,8 +202,6 @@ class CrudServiceTest {
 
     @Test
     void find() {
-        testService.create(testDto);
-
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
@@ -229,8 +225,6 @@ class CrudServiceTest {
 
     @Test
     void findWithOneField() {
-        testService.create(testDto);
-
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test.id");
         FilterDto filterDto = new FilterDto();
@@ -255,8 +249,6 @@ class CrudServiceTest {
 
     @Test
     void findByManyToManyTable() {
-        testService.create(testDto);
-
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
@@ -288,8 +280,6 @@ class CrudServiceTest {
         assertThrows(
                 IncorrectFindObject.class,
                 () -> {
-                    testService.create(testDto);
-
                     FormDto formDto = new FormDto();
                     formDto.setMainIdField("test");
                     FilterDto filterDto = new FilterDto();
@@ -312,8 +302,6 @@ class CrudServiceTest {
 
     @Test
     void findFromRemoteServiceToElements() {
-        testService.create(testDto);
-
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
@@ -343,8 +331,6 @@ class CrudServiceTest {
 
     @Test
     void findFromRemoteServiceToJoinTable() {
-        testService.create(testDto);
-
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
@@ -374,8 +360,6 @@ class CrudServiceTest {
 
     @Test
     void findFromRemoteServiceEmptyResult() {
-        testService.create(testDto);
-
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
@@ -397,8 +381,6 @@ class CrudServiceTest {
 
     @Test
     void findWithGroup() {
-        testService.create(testDto);
-
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
@@ -426,8 +408,6 @@ class CrudServiceTest {
 
     @Test
     void findWithMultipleGroup() {
-        testService.create(testDto);
-
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
@@ -458,8 +438,6 @@ class CrudServiceTest {
 
     @Test
     void findWithMultipleGroupAndJoinTable() {
-        testService.create(testDto);
-
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
@@ -494,8 +472,6 @@ class CrudServiceTest {
 
     @Test
     void findWithMultipleGroupAndMaskField() {
-        testService.create(testDto);
-
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
@@ -526,8 +502,6 @@ class CrudServiceTest {
 
     @Test
     void findFromRemoteServiceToElementsWithMaskedFields() {
-        testService.create(testDto);
-
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
@@ -557,8 +531,6 @@ class CrudServiceTest {
 
     @Test
     void findFromRemoteServiceToElementsWithGroupFields() {
-        testService.create(testDto);
-
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
@@ -591,8 +563,6 @@ class CrudServiceTest {
 
     @Test
     void findByManyToManyTableWithGroupValues() {
-        testService.create(testDto);
-
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();
@@ -624,8 +594,6 @@ class CrudServiceTest {
 
     @Test
     void findByManyToManyTableWithGroupHavingValues() {
-        testService.create(testDto);
-
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test.id:2");
         FilterDto filterDto = new FilterDto();
@@ -653,8 +621,6 @@ class CrudServiceTest {
 
     @Test
     void findByManyToManyTableWithRemoteGroupHavingValues() {
-        testService.create(testDto);
-
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();

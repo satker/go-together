@@ -80,7 +80,7 @@ class CustomRepositoryTest {
 
         Optional<TestEntity> foundEntity = testRepository.findById(testEntity.getId());
 
-        assertFalse(foundEntity.isPresent());
+        assertFalse(foundEntity.isEmpty());
     }
 
     @Test

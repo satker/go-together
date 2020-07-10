@@ -3,7 +3,9 @@ package org.go.together.model;
 import lombok.Data;
 import org.go.together.interfaces.IdentifiedEntity;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.UUID;
 
 @Entity
@@ -11,7 +13,6 @@ import java.util.UUID;
 @Table(name = "language", schema = "user_service")
 public class Language implements IdentifiedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String name;
     private String code;

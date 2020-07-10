@@ -11,6 +11,7 @@ import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FormDto;
 import org.go.together.dto.filter.PageDto;
 import org.go.together.enums.CrudOperation;
+import org.go.together.exceptions.ApplicationException;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.exceptions.ValidationException;
 import org.go.together.interfaces.ComparableDto;
@@ -43,9 +44,19 @@ public abstract class CrudService<D extends ComparableDto, E extends IdentifiedE
         String validate = validator.validate(dto, crudOperation);
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
-            enrichEntity(entity, dto, crudOperation);
+            entity.setId(UUID.randomUUID());
+            E createdEntity;
+            try {
+                E enrichedEntity = enrichEntity(entity, dto, crudOperation);
+                createdEntity = repository.save(enrichedEntity);
+            } catch (Exception e) {
+                log.error("Cannot create " + getServiceName() + ": " + e.getMessage());
+                log.error("Try rollback create " + getServiceName() + " id = " + entity.getId());
+                enrichEntity(entity, dto, CrudOperation.DELETE);
+                log.error("Rollback successful  create " + getServiceName() + " id = " + entity.getId());
+                throw new ApplicationException(e);
+            }
             String message = getNotificationMessage(dto, NotificationStatus.CREATED);
-            E createdEntity = repository.save(entity);
             notificate(createdEntity.getId(), dto, message, NotificationStatus.CREATED);
             return new IdDto(createdEntity.getId());
         } else {
@@ -59,9 +70,22 @@ public abstract class CrudService<D extends ComparableDto, E extends IdentifiedE
         String validate = validator.validate(dto, crudOperation);
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
-            enrichEntity(entity, dto, crudOperation);
+            E createdEntity;
+            try {
+                E enrichedEntity = enrichEntity(entity, dto, crudOperation);
+                createdEntity = repository.save(enrichedEntity);
+            } catch (Exception e) {
+                log.error("Cannot update " + getServiceName() + ": " + e.getMessage());
+                E entityById = repository.findById(entity.getId())
+                        .orElseThrow(() -> new CannotFindEntityException("Cannot find " + getServiceName() + " by id " +
+                                entity.getId()));
+                D entityToDto = mapper.entityToDto(entityById);
+                log.error("Try rollback update " + getServiceName() + " id = " + entity.getId());
+                enrichEntity(entityById, entityToDto, crudOperation);
+                log.error("Rollback successful update " + getServiceName() + " id = " + entity.getId());
+                throw new ApplicationException(e);
+            }
             String message = getNotificationMessage(dto, NotificationStatus.UPDATED);
-            E createdEntity = repository.save(entity);
             notificate(dto.getId(), dto, message, NotificationStatus.UPDATED);
             return new IdDto(createdEntity.getId());
         } else {
@@ -83,14 +107,13 @@ public abstract class CrudService<D extends ComparableDto, E extends IdentifiedE
         Optional<E> entityById = repository.findById(uuid);
         if (entityById.isPresent()) {
             E entity = entityById.get();
-            enrichEntity(entity, null, crudOperation);
+            E enrichedEntity = enrichEntity(entity, null, crudOperation);
             String message = getNotificationMessage(null, NotificationStatus.DELETED);
-            repository.delete(entity);
+            repository.delete(enrichedEntity);
             notificate(uuid, null, message, NotificationStatus.DELETED);
         } else {
             String message = getServiceName() + ": " + "Cannot find entity by id " + uuid;
-            log.error(message);
-            throw new CannotFindEntityException(message);
+            log.warn(message);
         }
     }
 
@@ -120,7 +143,8 @@ public abstract class CrudService<D extends ComparableDto, E extends IdentifiedE
         return validator.validate(dto, null);
     }
 
-    protected void enrichEntity(E entity, D dto, CrudOperation crudOperation) {
+    protected E enrichEntity(E entity, D dto, CrudOperation crudOperation) {
+        return entity;
     }
 
     protected String getNotificationMessage(D dto, NotificationStatus notificationStatus) {

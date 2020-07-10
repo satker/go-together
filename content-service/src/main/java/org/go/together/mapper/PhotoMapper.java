@@ -38,23 +38,6 @@ public class PhotoMapper implements Mapper<PhotoDto, Photo> {
         UUID id = photoDto.getId() != null ? photoDto.getId() : UUID.randomUUID();
         Photo photo = new Photo();
         photo.setId(id);
-        if (StringUtils.isBlank(photoDto.getPhotoUrl())) {
-            String type = photoDto.getContent().getType();
-            photo.setContentType(type);
-            String typeFile = type
-                    .replaceAll(";base64,", "")
-                    .replaceAll("data:image/", "");
-            String filePath = photoPath + id + "." + typeFile;
-            photo.setPathName(filePath);
-            try {
-                FileUtils.writeByteArrayToFile(new File(filePath),
-                        photoDto.getContent().getPhotoContent());
-            } catch (IOException e) {
-                throw new RuntimeException("Cannot create image");
-            }
-        } else {
-            photo.setPhotoUrl(photoDto.getPhotoUrl());
-        }
         return photo;
     }
 }

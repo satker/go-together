@@ -11,7 +11,6 @@ import java.util.UUID;
 @Table(name = "location", schema = "location_service")
 public class Location implements IdentifiedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String name;
     private String state;
