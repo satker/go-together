@@ -17,9 +17,14 @@ import java.util.UUID;
 public class EventUser implements IdentifiedEntity {
     @Id
     @GeneratedValue
+    @Column(columnDefinition = "uuid")
     private UUID id;
+
+    @Column(columnDefinition = "uuid")
     private UUID userId;
+
     private EventUserStatus userStatus;
-    @Column(name = "event_id")
+
+    @Column(columnDefinition = "uuid")
     private UUID eventId;
 }

@@ -12,6 +12,7 @@ import java.util.UUID;
 public class Location implements IdentifiedEntity {
     @Id
     @GeneratedValue
+    @Column(columnDefinition = "uuid")
     private UUID id;
     private String name;
     private String state;

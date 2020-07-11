@@ -6,7 +6,6 @@ import org.go.together.dto.ContentDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.logic.Mapper;
 import org.go.together.model.Photo;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -15,9 +14,6 @@ import java.util.UUID;
 
 @Component
 public class PhotoMapper implements Mapper<PhotoDto, Photo> {
-    @Value("${photo.store.path}")
-    private String photoPath;
-
     public PhotoDto entityToDto(Photo photo) {
         PhotoDto photoDto = new PhotoDto();
         if (StringUtils.isNotBlank(photo.getPathName())) {

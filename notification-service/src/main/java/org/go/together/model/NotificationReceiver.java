@@ -14,7 +14,9 @@ import java.util.UUID;
 public class NotificationReceiver implements IdentifiedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid")
     private UUID id;
+    @Column(columnDefinition = "uuid")
     private UUID userId;
 
     @OneToMany(cascade = CascadeType.ALL)

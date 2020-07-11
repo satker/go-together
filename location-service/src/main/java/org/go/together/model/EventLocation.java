@@ -11,12 +11,17 @@ import java.util.UUID;
 @Table(name = "event_location", schema = "location_service")
 public class EventLocation implements IdentifiedEntity {
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
+
     private String address;
     private double latitude;
     private int routeNumber;
     private double longitude;
+
+    @Column(columnDefinition = "uuid")
     private UUID eventId;
+
     private Boolean isStart;
     private Boolean isEnd;
 

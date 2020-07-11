@@ -13,7 +13,9 @@ import java.util.UUID;
 public class Notification implements IdentifiedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid")
     private UUID id;
+    @Column(columnDefinition = "uuid")
     private UUID producerId;
     private NotificationStatus status;
 }

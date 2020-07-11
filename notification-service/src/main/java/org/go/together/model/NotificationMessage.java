@@ -13,6 +13,7 @@ import java.util.UUID;
 public class NotificationMessage implements IdentifiedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid")
     private UUID id;
     @Column(columnDefinition = "TEXT", length = 2048)
     private String message;

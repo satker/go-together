@@ -13,8 +13,12 @@ import java.util.UUID;
 @Table(name = "group_photo", schema = "content_service")
 public class GroupPhoto implements IdentifiedEntity {
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
+
+    @Column(columnDefinition = "uuid")
     private UUID groupId;
+
     private PhotoCategory category;
 
     @OneToMany(cascade = CascadeType.ALL)

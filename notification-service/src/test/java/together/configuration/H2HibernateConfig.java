@@ -1,4 +1,4 @@
-package org.go.together.configuration;
+package together.configuration;
 
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +19,11 @@ public class H2HibernateConfig {
         hibernateProperties.setProperty("hbm2ddl.import_files", "schema.sql");
         hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create");
         hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        hibernateProperties.setProperty("hibernate.show_sql", "false");
+        hibernateProperties.setProperty("hibernate.show_sql", "true");
         hibernateProperties.setProperty("hibernate.format_sql", "true");
+        hibernateProperties.setProperty("spring.jpa.hibernate.ddl-auto", "none");
+        hibernateProperties.setProperty("spring.jpa.properties.hibernate.use_sql_comments", "true");
+        hibernateProperties.setProperty("logging.level.org.hibernate.type", "TRACE");
         return hibernateProperties;
     }
 
@@ -28,7 +31,7 @@ public class H2HibernateConfig {
     public DataSource dataSource() {
         return DataSourceBuilder.create()
                 .driverClassName("org.h2.Driver")
-                .url("jdbc:h2:mem:test;MODE=MYSQL")
+                .url("jdbc:h2:mem:test")
                 .username("SA")
                 .password("")
                 .build();

@@ -137,7 +137,8 @@ public class NotificationService {
                     NotificationReceiverMessage notificationReceiverMessage = new NotificationReceiverMessage(false, saveNotificationMessage);
                     notificationReceiverMessages.add(notificationReceiverMessage);
                     notificationReceiver.setNotificationReceiverMessages(notificationReceiverMessages);
-                }).forEach(notificationReceiverRepository::save);
+                })
+                .forEach(notificationReceiverRepository::save);
     }
 
     public boolean readNotifications(UUID receiverId) {

@@ -14,6 +14,7 @@ import java.util.UUID;
 @Table(name = "language", schema = "user_service")
 public class Language implements IdentifiedEntity {
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
     @Column(unique = true)
     private String name;

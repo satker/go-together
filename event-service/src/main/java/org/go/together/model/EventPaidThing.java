@@ -13,7 +13,9 @@ import java.util.UUID;
 public class EventPaidThing implements IdentifiedEntity {
     @Id
     @GeneratedValue
+    @Column(columnDefinition = "uuid")
     private UUID id;
+
     private CashCategory cashCategory;
 
     @OneToOne(cascade = CascadeType.REFRESH)

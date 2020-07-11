@@ -14,6 +14,7 @@ import java.util.UUID;
 public class NotificationReceiverMessage implements IdentifiedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid")
     private UUID id;
     private Boolean isRead;
 

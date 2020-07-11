@@ -14,15 +14,26 @@ import java.util.UUID;
 @Table(name = "event", schema = "event_service")
 public class Event implements IdentifiedEntity {
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
+
     @Column(unique = true)
     private String name;
+
     private int peopleCount;
+
+    @Column(columnDefinition = "uuid")
     private UUID authorId;
+
     private HousingType housingType;
+
     private String description;
+
     private Date startDate;
+
     private Date endDate;
+
+    @Column(columnDefinition = "uuid")
     private UUID groupPhotoId;
 
     @OneToMany(cascade = CascadeType.ALL)

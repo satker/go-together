@@ -30,3 +30,7 @@ dependencies {
 
     compile project(":notification-service-client")
 }
+
+test {
+    useJUnitPlatform()
+}

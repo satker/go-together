@@ -15,6 +15,7 @@ import java.util.UUID;
 @Table(name = "system_user", schema = "user_service")
 public class SystemUser implements IdentifiedEntity {
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
     @Column(unique = true)
     private String login;
@@ -24,8 +25,12 @@ public class SystemUser implements IdentifiedEntity {
     private String lastName;
     private String description;
     private String password;
+
+    @Column(columnDefinition = "uuid")
     private UUID locationId;
     private Role role;
+
+    @Column(columnDefinition = "uuid")
     private UUID groupPhoto;
 
     @ManyToMany(cascade = CascadeType.REFRESH)
