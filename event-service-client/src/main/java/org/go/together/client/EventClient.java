@@ -41,8 +41,11 @@ public interface EventClient extends FindClient {
     @GetMapping("/events/{eventId}/users")
     Collection<EventUserDto> getEventUsersByEventId(@PathVariable("eventId") UUID eventId);
 
+    @PutMapping("/events/users")
+    IdDto createEventUser(@RequestBody EventUserDto eventUserDto);
+
     @PostMapping("/events/users")
-    IdDto saveEventUserByEventId(@RequestBody EventUserDto eventUserDto);
+    IdDto updateEventUser(@RequestBody EventUserDto eventUserDto);
 
     @DeleteMapping("/events/users")
     boolean deleteEventUserByEventId(@RequestBody EventUserDto eventUserDto);

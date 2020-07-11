@@ -54,14 +54,18 @@ public class EventUserService extends CrudService<EventUserDto, EventUser> {
 
     @Override
     protected String getNotificationMessage(EventUserDto dto, NotificationStatus notificationStatus) {
+        String login = userClient.findLoginById(dto.getUser().getId());
+        String eventName = eventRepository.findById(dto.getEventId())
+                .map(Event::getName)
+                .orElse(StringUtils.EMPTY);
         if (notificationStatus == NotificationStatus.CREATED) {
-            String login = userClient.findLoginById(dto.getUser().getId());
-            String eventName = eventRepository.findById(dto.getEventId())
-                    .map(Event::getName)
-                    .orElse(StringUtils.EMPTY);
+            return "Added user '" + login + "' to event '" + eventName + "'.";
+        } else if (notificationStatus == NotificationStatus.UPDATED) {
             return "Changed user '" + login +
                     "' status to " + dto.getUserStatus().getDescription() +
                     " in event '" + eventName + "'.";
+        } else if (notificationStatus == NotificationStatus.DELETED) {
+            return "Delete user '" + login + "' from event '" + eventName + "'.";
         }
         return super.getNotificationMessage(dto, notificationStatus);
     }

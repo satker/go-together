@@ -108,9 +108,10 @@ public abstract class CrudService<D extends ComparableDto, E extends IdentifiedE
         if (entityById.isPresent()) {
             E entity = entityById.get();
             E enrichedEntity = enrichEntity(entity, null, crudOperation);
-            String message = getNotificationMessage(null, NotificationStatus.DELETED);
+            D dto = mapper.entityToDto(enrichedEntity);
+            String message = getNotificationMessage(dto, NotificationStatus.DELETED);
             repository.delete(enrichedEntity);
-            notificate(uuid, null, message, NotificationStatus.DELETED);
+            notificate(uuid, dto, message, NotificationStatus.DELETED);
         } else {
             String message = getServiceName() + ": " + "Cannot find entity by id " + uuid;
             log.warn(message);

@@ -38,6 +38,8 @@ public abstract class NotificationService<D extends ComparableDto, E extends Ide
                     notificationClient.notificate(producerId, notificationStatus, notificationMessageDto);
                     if (notificationStatus == NotificationStatus.CREATED) {
                         addedReceiver(producerId, ownerId);
+                    } else if (notificationStatus == NotificationStatus.DELETED) {
+                        removedReceiver(producerId, ownerId);
                     }
                 });
     }

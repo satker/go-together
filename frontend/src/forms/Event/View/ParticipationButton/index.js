@@ -6,10 +6,10 @@ import {connect} from "App/Context";
 import {EventUser} from "forms/utils/types";
 import CustomButton from "forms/utils/components/CustomButton";
 
-import {deleteMeFromList, postMeToList} from "./actions";
+import {addMeToList, deleteMeFromList} from "./actions";
 
 const ParticipationButton = ({
-                                 eventId, users, getUsers, userId, postMeToList,
+                                 eventId, users, getUsers, userId, addMeToList,
                                  deleteMeFromList, meToList, meFromList
                              }) => {
     const [flag, setFlag] = useState(false);
@@ -18,7 +18,7 @@ const ParticipationButton = ({
         const meObject = {...DEFAULT_EVENT_USER};
         meObject.user.id = userId;
         meObject.eventId = eventId;
-        postMeToList(meObject);
+        addMeToList(meObject);
         setFlag(true);
     };
 
@@ -51,7 +51,7 @@ ParticipationButton.propTypes = {
     users: PropTypes.arrayOf(EventUser),
     setRefresh: PropTypes.func.isRequired,
     userId: PropTypes.string,
-    postMeToList: PropTypes.func.isRequired,
+    addMeToList: PropTypes.func.isRequired,
     deleteMeFromList: PropTypes.func.isRequired
 };
 
@@ -61,4 +61,4 @@ const mapStateToProps = state => ({
     meFromList: state.components.forms.event.eventView.participationButton.meFromList
 });
 
-export default connect(mapStateToProps, {postMeToList, deleteMeFromList})(ParticipationButton);
+export default connect(mapStateToProps, {addMeToList, deleteMeFromList})(ParticipationButton);

@@ -91,8 +91,13 @@ public class EventController extends FindController implements EventClient {
     }
 
     @Override
-    public IdDto saveEventUserByEventId(EventUserDto eventUserDto) {
+    public IdDto createEventUser(EventUserDto eventUserDto) {
         return eventUserService.create(eventUserDto);
+    }
+
+    @Override
+    public IdDto updateEventUser(EventUserDto eventUserDto) {
+        return eventUserService.update(eventUserDto);
     }
 
     @Override
