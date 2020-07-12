@@ -8,7 +8,6 @@ import org.go.together.service.EventLocationService;
 import org.go.together.service.LocationService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,7 +18,7 @@ public class LocationController extends FindController implements LocationClient
 
     public LocationController(EventLocationService eventLocationService,
                               LocationService locationService) {
-        super(Arrays.asList(eventLocationService, locationService));
+        super(Set.of(eventLocationService, locationService));
         this.eventLocationService = eventLocationService;
         this.locationService = locationService;
     }

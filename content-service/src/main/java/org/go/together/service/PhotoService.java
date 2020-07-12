@@ -43,10 +43,10 @@ public class PhotoService extends CrudService<PhotoDto, Photo> {
                         .replaceAll(";base64,", "")
                         .replaceAll("data:image/", "");
                 String filePath = photoPath + entity.getId() + "." + typeFile;
-                entity.setPathName(filePath);
                 try {
                     FileUtils.writeByteArrayToFile(new File(filePath),
                             dto.getContent().getPhotoContent());
+                    entity.setPathName(filePath);
                 } catch (IOException e) {
                     throw new RuntimeException("Cannot create image");
                 }
@@ -81,7 +81,7 @@ public class PhotoService extends CrudService<PhotoDto, Photo> {
 
         Set<Photo> newEventPhotoDtos = newPhotosDto.stream()
                 .filter(photoDto -> photoDto.getId() == null || !presentedPhotoIds.contains(photoDto.getId()))
-                .map(this::create)
+                .map(super::create)
                 .map(IdDto::getId)
                 .map(photoRepository::findById)
                 .filter(Optional::isPresent)

@@ -162,7 +162,7 @@ class ValidatorTest {
         TestDto testDtoAnother = createTestDto(id, name, number, date, startDate, endDate,
                 startNumber, endNumber, simpleDto, longitude, latitude);
 
-        String validate = testValidator.validateDtos(Arrays.asList(testDto, testDtoAnother), null);
+        String validate = testValidator.validateDtos(Set.of(testDto, testDtoAnother), null);
 
         assertTrue(StringUtils.isBlank(validate));
     }

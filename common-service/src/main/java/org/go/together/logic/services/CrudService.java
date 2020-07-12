@@ -107,8 +107,8 @@ public abstract class CrudService<D extends ComparableDto, E extends IdentifiedE
         Optional<E> entityById = repository.findById(uuid);
         if (entityById.isPresent()) {
             E entity = entityById.get();
+            D dto = mapper.entityToDto(entity);
             E enrichedEntity = enrichEntity(entity, null, crudOperation);
-            D dto = mapper.entityToDto(enrichedEntity);
             String message = getNotificationMessage(dto, NotificationStatus.DELETED);
             repository.delete(enrichedEntity);
             notificate(uuid, dto, message, NotificationStatus.DELETED);

@@ -3,7 +3,6 @@ package org.go.together.utils;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.exceptions.IncorrectFindObject;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -61,7 +60,7 @@ public class FindUtils {
     public static Map<String, FieldMapper> getFieldMapperByRemoteField(Map<String, FieldMapper> availableFields, String searchField) {
         String[] localEntityFullFields = getPathFields(searchField);
         String localEntityField = localEntityFullFields[0];
-        List<String> singleGroupFields = Arrays.asList(getSingleGroupFields(localEntityField));
+        List<String> singleGroupFields = List.of(getSingleGroupFields(localEntityField));
         return availableFields.entrySet().stream()
                 .filter(stringFieldMapperEntry -> singleGroupFields.contains(stringFieldMapperEntry.getValue().getCurrentServiceField()))
                 .collect(Collectors.toMap(entry ->

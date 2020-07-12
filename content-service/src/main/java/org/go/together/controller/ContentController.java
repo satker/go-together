@@ -10,7 +10,7 @@ import org.go.together.service.GroupPhotoService;
 import org.go.together.service.PhotoService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -18,7 +18,7 @@ public class ContentController extends FindController implements ContentClient {
     private final GroupPhotoService groupPhotoService;
 
     public ContentController(PhotoService photoService, GroupPhotoService groupPhotoService) {
-        super(Arrays.asList(photoService, groupPhotoService));
+        super(Set.of(photoService, groupPhotoService));
         this.groupPhotoService = groupPhotoService;
     }
 

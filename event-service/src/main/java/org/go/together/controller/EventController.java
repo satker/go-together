@@ -9,7 +9,6 @@ import org.go.together.service.EventUserService;
 import org.go.together.service.PaidThingService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
@@ -25,7 +24,7 @@ public class EventController extends FindController implements EventClient {
     public EventController(EventService eventService,
                            PaidThingService paidThingService,
                            EventUserService eventUserService) {
-        super(Arrays.asList(eventService, paidThingService, paidThingService));
+        super(Set.of(eventService, paidThingService, paidThingService));
         this.eventService = eventService;
         this.paidThingService = paidThingService;
         this.eventUserService = eventUserService;

@@ -112,7 +112,7 @@ public class CorrectFieldService {
 
     private StringBuilder getCorrectedField(String[] splitByDotString, FieldMapper fieldMapper) {
         StringBuilder changedField = new StringBuilder(fieldMapper.getCurrentServiceField());
-        List<String> fieldsForChange = Arrays.asList(splitByDotString).subList(1, splitByDotString.length);
+        List<String> fieldsForChange = List.of(splitByDotString).subList(1, splitByDotString.length);
         String updatedField = (String) getCorrectedPathAndFields(String.join(".", fieldsForChange),
                 fieldMapper.getInnerService().getMappingFields()).getRight();
         changedField.append(".").append(updatedField);

@@ -14,7 +14,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
+import java.util.List;
 
 @EnableWebSecurity
 public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
@@ -71,7 +71,7 @@ public class SecurityTokenConfig extends WebSecurityConfigurerAdapter {
         config.addAllowedMethod("DELETE");
         config.addAllowedMethod("PATCH");
         config.setAllowCredentials(true);
-        config.setAllowedHeaders(Arrays.asList("Authorization", "content-type"));
+        config.setAllowedHeaders(List.of("Authorization", "content-type"));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }

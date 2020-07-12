@@ -98,8 +98,8 @@ class MapperTest {
         Pair<TestEntity, TestDto> testDtoAndEntity = createTestDtoAndEntity(id, name, number, date, startDate, endDate,
                 startNumber, endNumber, simpleDto, longitude, latitude);
 
-        Collection<TestDto> testDtos = Arrays.asList(testDto, testDtoAndEntity.getRight());
-        Collection<TestEntity> testEntities = Arrays.asList(testEntity, testDtoAndEntity.getLeft());
+        Collection<TestDto> testDtos = Set.of(testDto, testDtoAndEntity.getRight());
+        Collection<TestEntity> testEntities = Set.of(testEntity, testDtoAndEntity.getLeft());
 
         Collection<TestDto> actualTestDtos = testMapper.entitiesToDtos(testEntities);
 
@@ -127,8 +127,8 @@ class MapperTest {
         Pair<TestEntity, TestDto> testDtoAndEntity = createTestDtoAndEntity(id, name, number, date, startDate, endDate,
                 startNumber, endNumber, simpleDto, longitude, latitude);
 
-        Collection<TestDto> testDtos = Arrays.asList(testDto, testDtoAndEntity.getRight());
-        Collection<TestEntity> testEntities = Arrays.asList(testEntity, testDtoAndEntity.getLeft());
+        Collection<TestDto> testDtos = Set.of(testDto, testDtoAndEntity.getRight());
+        Collection<TestEntity> testEntities = Set.of(testEntity, testDtoAndEntity.getLeft());
 
         Collection<TestEntity> actualTestEntites = testMapper.dtosToEntities(testDtos);
 

@@ -5,13 +5,13 @@ import org.go.together.dto.filter.FormDto;
 import org.go.together.logic.services.CrudService;
 import org.go.together.utils.FindUtils;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class FindController {
-    private final List<CrudService> services;
+    private final Set<CrudService> services;
 
-    public FindController(List<CrudService> services) {
+    public FindController(Set<CrudService> services) {
         this.services = services;
     }
 

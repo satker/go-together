@@ -418,7 +418,7 @@ class CrudServiceTest {
         Map<String, Object> values1 = new HashMap<>();
         values1.put("name", "test");
         values1.put("number", 2);
-        filterDto.setValues(Arrays.asList(values, values1));
+        filterDto.setValues(Set.of(values, values1));
         formDto.setFilters(Collections.singletonMap("[name&number]", filterDto));
         PageDto pageDto = new PageDto();
         pageDto.setPage(0);
@@ -452,7 +452,7 @@ class CrudServiceTest {
         Map<String, Object> values1 = new HashMap<>();
         values1.put("name", Collections.singleton("test"));
         values1.put("manyJoinEntities.idw", Collections.emptyList());
-        filterDto.setValues(Arrays.asList(values, values1));
+        filterDto.setValues(Set.of(values, values1));
         formDto.setFilters(Collections.singletonMap("[name&manyJoinEntities.idw]", filterDto));
         PageDto pageDto = new PageDto();
         pageDto.setPage(0);
@@ -482,7 +482,7 @@ class CrudServiceTest {
         Map<String, Object> values1 = new HashMap<>();
         values1.put("names", "test");
         values1.put("numbers", 2);
-        filterDto.setValues(Arrays.asList(values, values1));
+        filterDto.setValues(Set.of(values, values1));
         formDto.setFilters(Collections.singletonMap("[names&numbers]", filterDto));
         PageDto pageDto = new PageDto();
         pageDto.setPage(0);

@@ -10,7 +10,10 @@ import org.go.together.service.LanguageService;
 import org.go.together.service.UserService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @RestController
 class UserController extends FindController implements UserClient {
@@ -23,7 +26,7 @@ class UserController extends FindController implements UserClient {
                           LanguageService languageService,
                           InterestService interestService,
                           EventLikeService eventLikeService) {
-        super(Arrays.asList(userService, languageService, interestService, eventLikeService));
+        super(Set.of(userService, languageService, interestService, eventLikeService));
         this.userService = userService;
         this.languageService = languageService;
         this.interestService = interestService;
