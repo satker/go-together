@@ -6,17 +6,14 @@ import org.go.together.dto.ContentDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.model.Photo;
 import org.go.together.repository.PhotoRepository;
+import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,11 +24,8 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ExtendWith(SpringExtension.class)
-@DataJpaTest
 @ContextConfiguration(classes = RepositoryContext.class)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class PhotoServiceTest {
+class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
     @Autowired
     private PhotoRepository photoRepository;
 
@@ -140,5 +134,13 @@ class PhotoServiceTest {
 
         assertTrue(correctPhotoNames);
         return files;
+    }
+
+    @Override
+    protected PhotoDto createDto() {
+        PhotoDto photoDto = factory.manufacturePojo(PhotoDto.class);
+        photoDto.setPhotoUrl(null);
+        photoDto.getContent().setType("data:image/jpeg;base64,");
+        return photoDto;
     }
 }

@@ -35,7 +35,7 @@ public class PhotoService extends CrudService<PhotoDto, Photo> {
 
     @Override
     protected Photo enrichEntity(Photo entity, PhotoDto dto, CrudOperation crudOperation) {
-        if (crudOperation == CrudOperation.CREATE) {
+        if (crudOperation == CrudOperation.CREATE || crudOperation == CrudOperation.UPDATE) {
             if (StringUtils.isBlank(dto.getPhotoUrl())) {
                 String type = dto.getContent().getType();
                 entity.setContentType(type);

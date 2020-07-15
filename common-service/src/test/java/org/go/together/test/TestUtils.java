@@ -18,7 +18,7 @@ public class TestUtils {
 
         Set<ManyJoinDto> manyJoinDtos = createManyJoinDtos();
 
-        Set<String> elementsDto = createElementDtos();
+        Set<UUID> elementsDto = createElementDtos();
 
         TestDto testDtoPrepare = new TestDto();
         testDtoPrepare.setManyJoinEntities(manyJoinDtos);
@@ -39,11 +39,11 @@ public class TestUtils {
         return testDtoPrepare;
     }
 
-    private static Set<String> createElementDtos() {
-        Set<String> elementsDto = new HashSet<>();
+    private static Set<UUID> createElementDtos() {
+        Set<UUID> elementsDto = new HashSet<>();
         for (int i = 1; i < 20; i++) {
             UUID id = UUID.randomUUID();
-            elementsDto.add(id.toString());
+            elementsDto.add(id);
         }
         return elementsDto;
     }

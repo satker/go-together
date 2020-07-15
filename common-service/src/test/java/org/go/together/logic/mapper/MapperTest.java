@@ -189,10 +189,10 @@ class MapperTest {
         }
 
         Set<UUID> elementsEntity = new HashSet<>();
-        Set<String> elementsDto = new HashSet<>();
+        Set<UUID> elementsDto = new HashSet<>();
         for (int i = 0; i < 20; i++) {
             UUID id = UUID.randomUUID();
-            elementsDto.add(id.toString());
+            elementsDto.add(id);
             elementsEntity.add(id);
         }
 

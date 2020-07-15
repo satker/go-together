@@ -16,20 +16,16 @@ import org.go.together.test.dto.TestDto;
 import org.go.together.test.entities.TestEntity;
 import org.go.together.test.mapper.JoinTestMapper;
 import org.go.together.test.mapper.ManyJoinMapper;
-import org.go.together.test.mapper.TestMapper;
-import org.go.together.test.repository.TestRepository;
+import org.go.together.test.repository.JoinTestRepository;
+import org.go.together.test.repository.ManyJoinRepository;
 import org.go.together.test.service.TestService;
+import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,24 +34,21 @@ import static org.go.together.test.TestUtils.createManyJoinDtos;
 import static org.go.together.test.TestUtils.createTestDto;
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
-@DataJpaTest
 @ContextConfiguration(classes = RepositoryContext.class)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class CrudServiceTest {
+class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
     TestDto testDto;
-    @Autowired
-    private TestService testService;
-    @Autowired
-    private TestRepository testRepository;
-    @Autowired
-    private EntityManager entityManager;
+
     @Autowired
     private JoinTestMapper joinTestMapper;
+
     @Autowired
     private ManyJoinMapper manyJoinMapper;
+
     @Autowired
-    private TestMapper testMapper;
+    private ManyJoinRepository manyJoinRepository;
+
+    @Autowired
+    private JoinTestRepository joinTestRepository;
 
     @BeforeEach
     public void init() {
@@ -80,39 +73,41 @@ class CrudServiceTest {
         TestDto testDto = createTestDto(id, name, number, date, startDate, endDate,
                 startNumber, endNumber, simpleDto, longitude, latitude);
 
-        testDto.getManyJoinEntities().stream().map(manyJoinMapper::dtoToEntity).forEach(entityManager::merge);
-        testDto.getJoinTestEntities().stream().map(joinTestMapper::dtoToEntity).forEach(entityManager::merge);
+        testDto.getManyJoinEntities().stream().map(manyJoinMapper::dtoToEntity).forEach(manyJoinRepository::save);
+        testDto.getJoinTestEntities().stream().map(joinTestMapper::dtoToEntity).forEach(joinTestRepository::save);
 
-        IdDto idDto = testService.create(testDto);
+        IdDto idDto = crudService.create(testDto);
 
-        TestEntity testEntity = testRepository.findById(idDto.getId())
+        TestEntity testEntity = repository.findById(idDto.getId())
                 .orElseThrow(() -> new CannotFindEntityException("Cannot find TestDto"));
-        this.testDto = testMapper.entityToDto(testEntity);
+        this.testDto = mapper.entityToDto(testEntity);
     }
 
     @AfterEach
     public void clean() {
         testDto = null;
-        entityManager.clear();
-        testService.setAnotherClient(null);
+        repository.findAll().forEach(repository::delete);
+        joinTestRepository.findAll().forEach(joinTestRepository::delete);
+        manyJoinRepository.findAll().forEach(manyJoinRepository::delete);
+        ((TestService) crudService).setAnotherClient(null);
     }
 
     @Test
     void create() {
-        Optional<TestEntity> savedEntity = testRepository.findById(testDto.getId());
+        Optional<TestEntity> savedEntity = repository.findById(testDto.getId());
 
         assertTrue(savedEntity.isPresent());
-        assertEquals(testMapper.entityToDto(savedEntity.get()), testDto);
+        assertEquals(mapper.entityToDto(savedEntity.get()), testDto);
     }
 
     @Test
     void update() {
         final String newName = "new test name";
-        Optional<TestEntity> savedEntity = testRepository.findById(testDto.getId());
+        Optional<TestEntity> savedEntity = repository.findById(testDto.getId());
         assertTrue(savedEntity.isPresent());
         testDto.setName(newName);
-        IdDto updatedId = testService.update(testDto);
-        Optional<TestEntity> updatedEntity = testRepository.findById(updatedId.getId());
+        IdDto updatedId = crudService.update(testDto);
+        Optional<TestEntity> updatedEntity = repository.findById(updatedId.getId());
 
         assertTrue(updatedEntity.isPresent());
         assertEquals(testDto.getId(), updatedId.getId());
@@ -122,7 +117,7 @@ class CrudServiceTest {
     @Test
     void updateInnerDtos() {
         final String newName = "new test name";
-        Optional<TestEntity> savedEntity = testRepository.findById(testDto.getId());
+        Optional<TestEntity> savedEntity = repository.findById(testDto.getId());
         assertTrue(savedEntity.isPresent());
         testDto.setName(newName);
 
@@ -139,8 +134,8 @@ class CrudServiceTest {
                 .limit(4)
                 .collect(Collectors.toSet()));
 
-        IdDto updatedId = testService.update(testDto);
-        Optional<TestEntity> updatedEntity = testRepository.findById(updatedId.getId());
+        IdDto updatedId = crudService.update(testDto);
+        Optional<TestEntity> updatedEntity = repository.findById(updatedId.getId());
 
         assertTrue(updatedEntity.isPresent());
         assertEquals(testDto.getId(), updatedId.getId());
@@ -150,7 +145,7 @@ class CrudServiceTest {
     @Test
     void updateMultipleFields() {
         final String newName = "new test name";
-        Optional<TestEntity> savedEntity = testRepository.findById(testDto.getId());
+        Optional<TestEntity> savedEntity = repository.findById(testDto.getId());
         assertTrue(savedEntity.isPresent());
         testDto.setName(newName);
         testDto.setSimpleDto(new SimpleDto("newId", "new name"));
@@ -169,8 +164,8 @@ class CrudServiceTest {
         testDto.setNumber(2);
         testDto.setLatitude(3333.3);
         testDto.setEndNumber(4);
-        IdDto updatedId = testService.update(testDto);
-        Optional<TestEntity> updatedEntity = testRepository.findById(updatedId.getId());
+        IdDto updatedId = crudService.update(testDto);
+        Optional<TestEntity> updatedEntity = repository.findById(updatedId.getId());
 
         assertTrue(updatedEntity.isPresent());
         assertEquals(testDto.getId(), updatedId.getId());
@@ -179,23 +174,23 @@ class CrudServiceTest {
 
     @Test
     void read() {
-        TestDto readDto = testService.read(testDto.getId());
+        TestDto readDto = crudService.read(testDto.getId());
 
         assertEquals(testDto, readDto);
     }
 
     @Test
     void delete() {
-        testService.delete(testDto.getId());
+        crudService.delete(testDto.getId());
 
-        Optional<TestEntity> deletedEntity = testRepository.findById(testDto.getId());
+        Optional<TestEntity> deletedEntity = repository.findById(testDto.getId());
 
         assertTrue(deletedEntity.isEmpty());
     }
 
     @Test
     void validate() {
-        String validate = testService.validate(testDto);
+        String validate = crudService.validate(testDto);
 
         assertTrue(StringUtils.isBlank(validate));
     }
@@ -214,7 +209,7 @@ class CrudServiceTest {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -237,7 +232,7 @@ class CrudServiceTest {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -265,7 +260,7 @@ class CrudServiceTest {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -296,7 +291,7 @@ class CrudServiceTest {
                     pageDto.setSort(Collections.emptyList());
                     pageDto.setTotalSize(0L);
                     formDto.setPage(pageDto);
-                    testService.find(formDto);
+                    crudService.find(formDto);
                 });
     }
 
@@ -307,11 +302,8 @@ class CrudServiceTest {
         FilterDto filterDto = new FilterDto();
         filterDto.setFilterType(IN);
         filterDto.setValues(Collections.singleton(Collections.singletonMap("id", Collections.singleton("filter"))));
-        Collection<Object> uuids = new HashSet<>();
-        for (String uuid : testDto.getElements()) {
-            uuids.add(UUID.fromString(uuid));
-        }
-        testService.setAnotherClient(uuids);
+        Collection<Object> uuids = new HashSet<>(testDto.getElements());
+        ((TestService) crudService).setAnotherClient(uuids);
         formDto.setFilters(Collections.singletonMap("elements?element.id", filterDto));
         PageDto pageDto = new PageDto();
         pageDto.setPage(0);
@@ -319,7 +311,7 @@ class CrudServiceTest {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -340,7 +332,7 @@ class CrudServiceTest {
         for (JoinTestDto joinTestDto : testDto.getJoinTestEntities()) {
             uuids.add(joinTestDto.getId());
         }
-        testService.setAnotherClient(uuids);
+        ((TestService) crudService).setAnotherClient(uuids);
         formDto.setFilters(Collections.singletonMap("joinTestEntities.id?join.id", filterDto));
         PageDto pageDto = new PageDto();
         pageDto.setPage(0);
@@ -348,7 +340,7 @@ class CrudServiceTest {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -365,7 +357,7 @@ class CrudServiceTest {
         FilterDto filterDto = new FilterDto();
         filterDto.setFilterType(IN);
         filterDto.setValues(Collections.singleton(Collections.singletonMap("id", "filter")));
-        testService.setAnotherClient(Collections.emptyList());
+        ((TestService) crudService).setAnotherClient(Collections.emptyList());
         formDto.setFilters(Collections.singletonMap("joinTestEntities.id?join.id", filterDto));
         PageDto pageDto = new PageDto();
         pageDto.setPage(0);
@@ -373,7 +365,7 @@ class CrudServiceTest {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
         assertEquals(0, objectResponseDto.getResult().size());
         assertEquals(0, objectResponseDto.getPage().getTotalSize());
@@ -396,7 +388,7 @@ class CrudServiceTest {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -426,7 +418,7 @@ class CrudServiceTest {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -460,7 +452,7 @@ class CrudServiceTest {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -490,7 +482,7 @@ class CrudServiceTest {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -507,11 +499,8 @@ class CrudServiceTest {
         FilterDto filterDto = new FilterDto();
         filterDto.setFilterType(IN);
         filterDto.setValues(Collections.singleton(Collections.singletonMap("id", Collections.singleton("filter"))));
-        Collection<Object> uuids = new HashSet<>();
-        for (String uuid : testDto.getElements()) {
-            uuids.add(UUID.fromString(uuid));
-        }
-        testService.setAnotherClient(uuids);
+        Collection<Object> uuids = new HashSet<>(testDto.getElements());
+        ((TestService) crudService).setAnotherClient(uuids);
         formDto.setFilters(Collections.singletonMap("elementss?element.id", filterDto));
         PageDto pageDto = new PageDto();
         pageDto.setPage(0);
@@ -519,7 +508,7 @@ class CrudServiceTest {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -539,11 +528,8 @@ class CrudServiceTest {
         objectObjectHashMap.put("id", Collections.singleton("filter"));
         objectObjectHashMap.put("name", Collections.singleton("filtername"));
         filterDto.setValues(Collections.singleton(objectObjectHashMap));
-        Collection<Object> uuids = new HashSet<>();
-        for (String uuid : testDto.getElements()) {
-            uuids.add(UUID.fromString(uuid));
-        }
-        testService.setAnotherClient(uuids);
+        Collection<Object> uuids = new HashSet<>(testDto.getElements());
+        ((TestService) crudService).setAnotherClient(uuids);
         formDto.setFilters(Collections.singletonMap("elements?element.[id|name]", filterDto));
         PageDto pageDto = new PageDto();
         pageDto.setPage(0);
@@ -551,7 +537,7 @@ class CrudServiceTest {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -582,7 +568,7 @@ class CrudServiceTest {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -613,7 +599,7 @@ class CrudServiceTest {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
         assertEquals(0, objectResponseDto.getResult().size());
         assertEquals(0, objectResponseDto.getPage().getTotalSize());
@@ -629,11 +615,8 @@ class CrudServiceTest {
         objectObjectHashMap.put("id", Collections.singleton("filter"));
         objectObjectHashMap.put("name", Collections.singleton("filtername"));
         filterDto.setValues(Collections.singleton(objectObjectHashMap));
-        Collection<Object> uuids = new HashSet<>();
-        for (String uuid : testDto.getElements()) {
-            uuids.add(UUID.fromString(uuid));
-        }
-        testService.setAnotherClient(uuids);
+        Collection<Object> uuids = new HashSet<>(testDto.getElements());
+        ((TestService) crudService).setAnotherClient(uuids);
         formDto.setFilters(Collections.singletonMap("elements?element.[id|name]:2", filterDto));
         PageDto pageDto = new PageDto();
         pageDto.setPage(0);
@@ -641,7 +624,7 @@ class CrudServiceTest {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = testService.find(formDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -649,5 +632,30 @@ class CrudServiceTest {
 
         assertTrue(result instanceof TestDto);
         assertEquals(testDto, result);
+    }
+
+    @Override
+    protected TestDto createDto() {
+        TestDto testDto = factory.manufacturePojo(TestDto.class);
+        testDto.setName("test_" + testDto.getName());
+        testDto.setDate(new Date());
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(testDto.getDate());
+        calendar.add(Calendar.MONTH, rand.nextInt(10) + 1);
+        testDto.setStartDate(calendar.getTime());
+
+        calendar.add(Calendar.MONTH, rand.nextInt(10) + 1);
+        testDto.setEndDate(calendar.getTime());
+
+        testDto.setStartNumber(generateLong(1, Long.MAX_VALUE));
+        testDto.setEndNumber(generateLong(testDto.getStartNumber() + 1, Long.MAX_VALUE));
+
+        testDto.setNumber(generateLong(testDto.getStartNumber(), testDto.getEndNumber()));
+
+        String string = factory.manufacturePojo(String.class);
+        testDto.setSimpleDto(new SimpleDto(string, string));
+
+        return testDto;
     }
 }

@@ -3,21 +3,17 @@ package org.go.together.service;
 import org.apache.commons.io.FileUtils;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
-import org.go.together.mapper.GroupPhotoMapper;
+import org.go.together.enums.CrudOperation;
 import org.go.together.model.GroupPhoto;
 import org.go.together.model.Photo;
-import org.go.together.repository.GroupPhotoRepository;
 import org.go.together.repository.PhotoRepository;
+import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,33 +24,21 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ExtendWith(SpringExtension.class)
-@DataJpaTest
 @ContextConfiguration(classes = RepositoryContext.class)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class GroupPhotoServiceTest {
+class GroupPhotoServiceTest extends CrudServiceCommonTest<GroupPhoto, GroupPhotoDto> {
     @Value("${photo.store.path}")
     private String storePath;
 
     @Autowired
-    private GroupPhotoRepository groupPhotoRepository;
-
-    @Autowired
-    private GroupPhotoService groupPhotoService;
-
-    @Autowired
     private PhotoRepository photoRepository;
-
-    @Autowired
-    private GroupPhotoMapper groupPhotoMapper;
 
     private GroupPhoto groupPhoto;
 
     @BeforeEach
     public void init() {
         GroupPhotoDto groupPhotoDto = createGroupPhoto(Set.of("photos/1.jpg", "photos/2.jpg"));
-        IdDto idGroupPhotoDto = groupPhotoService.create(groupPhotoDto);
-        Optional<GroupPhoto> groupPhotoOptional = groupPhotoRepository.findById(idGroupPhotoDto.getId());
+        IdDto idGroupPhotoDto = crudService.create(groupPhotoDto);
+        Optional<GroupPhoto> groupPhotoOptional = repository.findById(idGroupPhotoDto.getId());
         if (groupPhotoOptional.isEmpty()) {
             throw new RuntimeException("Cannot find saved group");
         }
@@ -64,15 +48,15 @@ class GroupPhotoServiceTest {
     @AfterEach
     public void clean() throws IOException {
         FileUtils.cleanDirectory(new File(storePath));
-        groupPhotoRepository.findAll().forEach(groupPhotoRepository::delete);
+        repository.findAll().forEach(repository::delete);
         photoRepository.findAll().forEach(photoRepository::delete);
     }
 
     @Test
     void createGroupPhotos() {
         GroupPhotoDto groupPhotoDto = createGroupPhoto(Set.of("photos/3.jpg", "photos/4.jpg"));
-        IdDto idGroupPhotoDto = groupPhotoService.create(groupPhotoDto);
-        Optional<GroupPhoto> groupPhoto = groupPhotoRepository.findById(idGroupPhotoDto.getId());
+        IdDto idGroupPhotoDto = crudService.create(groupPhotoDto);
+        Optional<GroupPhoto> groupPhoto = repository.findById(idGroupPhotoDto.getId());
 
         assertTrue(groupPhoto.isPresent());
 
@@ -85,12 +69,12 @@ class GroupPhotoServiceTest {
 
     @Test
     void updateGroupPhotos() {
-        GroupPhotoDto groupPhotoDto = groupPhotoMapper.entityToDto(groupPhoto);
+        GroupPhotoDto groupPhotoDto = mapper.entityToDto(groupPhoto);
         groupPhotoDto.setPhotos(Set.of("photos/3.jpg", "photos/4.jpg").stream()
                 .map(this::getPhotoDto)
                 .collect(Collectors.toSet()));
-        IdDto idGroupPhotoDto = groupPhotoService.update(groupPhotoDto);
-        Optional<GroupPhoto> groupPhoto = groupPhotoRepository.findById(idGroupPhotoDto.getId());
+        IdDto idGroupPhotoDto = crudService.update(groupPhotoDto);
+        Optional<GroupPhoto> groupPhoto = repository.findById(idGroupPhotoDto.getId());
 
         assertTrue(groupPhoto.isPresent());
 
@@ -103,7 +87,7 @@ class GroupPhotoServiceTest {
 
     @Test
     void getGroupPhotosById() {
-        GroupPhotoDto groupPhotosById = groupPhotoService.read(groupPhoto.getId());
+        GroupPhotoDto groupPhotosById = crudService.read(groupPhoto.getId());
 
         Set<UUID> foundPhotosId = groupPhotosById.getPhotos().stream()
                 .map(PhotoDto::getId)
@@ -156,5 +140,32 @@ class GroupPhotoServiceTest {
 
         assertTrue(correctPhotoNames);
         return files;
+    }
+
+    @Override
+    protected GroupPhotoDto createDto() {
+        GroupPhotoDto groupPhotoDto = factory.manufacturePojo(GroupPhotoDto.class);
+        Set<PhotoDto> photoDtos = groupPhotoDto.getPhotos().stream()
+                .peek(photoDto -> {
+                    ContentDto content = photoDto.getContent();
+                    content.setType("data:image/jpeg;base64,");
+                    photoDto.setContent(content);
+
+                })
+                .peek(photoDto -> photoDto.setPhotoUrl(null))
+                .peek(photoDto -> photoDto.setId(null))
+                .collect(Collectors.toSet());
+        groupPhotoDto.setPhotos(photoDtos);
+        return groupPhotoDto;
+    }
+
+    protected void checkDtos(GroupPhotoDto dto, GroupPhotoDto savedObject, CrudOperation operation) {
+        if (operation == CrudOperation.CREATE) {
+            assertEquals(dto.getCategory(), savedObject.getCategory());
+            assertEquals(dto.getGroupId(), savedObject.getGroupId());
+            assertEquals(dto.getPhotos().size(), dto.getPhotos().size());
+        } else if (operation == CrudOperation.UPDATE) {
+            assertEquals(dto.getPhotos().size(), dto.getPhotos().size());
+        }
     }
 }

@@ -41,7 +41,7 @@ public class TestDto implements ComparableDto {
     @ComparingField("simple dto")
     private SimpleDto simpleDto;
 
-    private Set<String> elements;
+    private Set<UUID> elements;
 
     @ComparingField("join test entities")
     private Set<JoinTestDto> joinTestEntities;
@@ -96,7 +96,7 @@ public class TestDto implements ComparableDto {
         return this.endNumber;
     }
 
-    public Set<String> getElements() {
+    public Set<UUID> getElements() {
         return this.elements;
     }
 
@@ -152,7 +152,7 @@ public class TestDto implements ComparableDto {
         this.date = date;
     }
 
-    public void setElements(Set<String> elements) {
+    public void setElements(Set<UUID> elements) {
         this.elements = elements;
     }
 

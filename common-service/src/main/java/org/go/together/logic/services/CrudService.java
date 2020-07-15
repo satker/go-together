@@ -67,6 +67,9 @@ public abstract class CrudService<D extends ComparableDto, E extends IdentifiedE
 
     public IdDto update(D dto) {
         CrudOperation crudOperation = CrudOperation.UPDATE;
+        E entityById = repository.findById(dto.getId())
+                .orElseThrow(() -> new CannotFindEntityException("Cannot find " + getServiceName() + " by id " +
+                        dto.getId()));
         String validate = validator.validate(dto, crudOperation);
         if (StringUtils.isBlank(validate)) {
             E entity = mapper.dtoToEntity(dto);
@@ -76,9 +79,6 @@ public abstract class CrudService<D extends ComparableDto, E extends IdentifiedE
                 createdEntity = repository.save(enrichedEntity);
             } catch (Exception e) {
                 log.error("Cannot update " + getServiceName() + ": " + e.getMessage());
-                E entityById = repository.findById(entity.getId())
-                        .orElseThrow(() -> new CannotFindEntityException("Cannot find " + getServiceName() + " by id " +
-                                entity.getId()));
                 D entityToDto = mapper.entityToDto(entityById);
                 log.error("Try rollback update " + getServiceName() + " id = " + entity.getId());
                 enrichEntity(entityById, entityToDto, crudOperation);
