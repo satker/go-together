@@ -8,6 +8,7 @@ import org.go.together.service.EventLocationService;
 import org.go.together.service.LocationService;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,7 +35,7 @@ public class LocationController extends FindController implements LocationClient
     }
 
     @Override
-    public Set<IdDto> saveOrUpdateEventRoutes(Set<EventLocationDto> eventLocationDtos) {
+    public Set<IdDto> saveOrUpdateEventRoutes(Collection<EventLocationDto> eventLocationDtos) {
         return eventLocationService.saveOrUpdateEventRoutes(eventLocationDtos);
     }
 

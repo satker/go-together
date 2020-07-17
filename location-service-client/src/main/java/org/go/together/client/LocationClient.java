@@ -8,6 +8,7 @@ import org.go.together.interfaces.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ public interface LocationClient extends FindClient {
     EventLocationDto getRouteById(@PathVariable("routeId") UUID routeId);
 
     @PostMapping("/routes")
-    Set<IdDto> saveOrUpdateEventRoutes(@RequestBody Set<EventLocationDto> eventLocationDtos);
+    Set<IdDto> saveOrUpdateEventRoutes(@RequestBody Collection<EventLocationDto> eventLocationDtos);
 
     @DeleteMapping("/routes")
     boolean deleteRoutes(@RequestBody Set<UUID> eventLocationDtos);

@@ -69,7 +69,11 @@ public class EventController extends FindController implements EventClient {
 
     @Override
     public Collection<PaidThingDto> getPaidThings() {
-        return paidThingService.getPaidThings();
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField(paidThingService.getServiceName());
+        return paidThingService.find(formDto).getResult().stream()
+                .map(paidThing -> (PaidThingDto) paidThing)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -6,7 +6,7 @@ group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
 apply plugin: 'java'
-apply plugin: 'jacoco'
+//apply plugin: 'jacoco'
 apply plugin: 'org.springframework.boot'
 //apply plugin: "com.palantir.docker"
 
@@ -36,7 +36,9 @@ dependencies {
     compile project(":user-service-client")
     compile project(":location-service-client")
 }
-
+test {
+    useJUnitPlatform()
+}
 /*
 tasks.getByName("docker").dependsOn("build")
 

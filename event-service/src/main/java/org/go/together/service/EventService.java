@@ -43,10 +43,10 @@ public class EventService extends CrudService<EventDto, Event> {
     }
 
     private Set<EventRoute> getRoutes(Event entity, EventDto dto) {
-        Set<EventLocationDto> newRoute = dto.getRoute().stream()
-                .peek(routeItem -> routeItem.setEventId(entity.getId()))
-                .collect(Collectors.toSet());
-        Set<IdDto> routes = locationClient.saveOrUpdateEventRoutes(newRoute);
+        for (EventLocationDto eventLocationDto : dto.getRoute()) {
+            eventLocationDto.setEventId(entity.getId());
+        }
+        Set<IdDto> routes = locationClient.saveOrUpdateEventRoutes(dto.getRoute());
         return routes.stream()
                 .map(IdDto::getId)
                 .map(EventRoute::new)

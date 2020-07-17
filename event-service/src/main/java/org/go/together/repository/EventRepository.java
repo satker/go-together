@@ -13,7 +13,7 @@ public class EventRepository extends CustomRepository<Event> {
     @Transactional
     public Collection<Event> findEventsByNameLike(String name, int start, int pageSize) {
         return createQuery()
-                .where(createWhere().condition("name", SqlOperator.LIKE, name.toLowerCase()))
+                .where(createWhere().condition("name", SqlOperator.LIKE, name))
                 .fetchWithPageable(start, pageSize);
     }
 }

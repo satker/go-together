@@ -13,6 +13,8 @@ import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.logic.Mapper;
 import org.go.together.logic.services.CrudService;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +46,22 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
     @Autowired
     protected Mapper<D, E> mapper;
 
+    protected D dto;
+    protected D updatedDto;
+
+    @BeforeEach
+    public void init() {
+        dto = createDto();
+        updatedDto = createDto();
+    }
+
+    @AfterEach
+    public void clean() {
+        repository.findAll().forEach(repository::delete);
+    }
+
     @Test
     public void createTest() {
-        D dto = createDto();
         IdDto idDto = crudService.create(dto);
         dto.setId(idDto.getId());
         D savedObject = crudService.read(idDto.getId());
@@ -55,23 +70,20 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
 
     @Test
     public void updateTest() {
-        D dto = createDto();
         IdDto idDto = crudService.create(dto);
-        D updatedObject = createDto();
-        updatedObject.setId(idDto.getId());
-        IdDto update = crudService.update(updatedObject);
+        updatedDto.setId(idDto.getId());
+        IdDto update = crudService.update(updatedDto);
         D savedUpdatedObject = crudService.read(update.getId());
-        checkDtos(updatedObject, savedUpdatedObject, CrudOperation.UPDATE);
+        checkDtos(updatedDto, savedUpdatedObject, CrudOperation.UPDATE);
     }
 
     @Test
     public void updateTestWithNotPresentedId() {
-        assertThrows(CannotFindEntityException.class, () -> crudService.update(createDto()));
+        assertThrows(CannotFindEntityException.class, () -> crudService.update(dto));
     }
 
     @Test
     public void deleteTest() {
-        D dto = createDto();
         IdDto idDto = crudService.create(dto);
         Optional<E> entityById = repository.findById(idDto.getId());
         assertTrue(entityById.isPresent());
@@ -92,7 +104,6 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
 
     @Test
     public void findTest() {
-        D dto = createDto();
         IdDto idDto = crudService.create(dto);
         dto.setId(idDto.getId());
 
@@ -102,39 +113,46 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
 
         Map<String, FieldMapper> mappingFields = crudService.getMappingFields();
         if (mappingFields != null) {
-            Map<String, FilterDto> findMap = mappingFields.entrySet().stream()
-                    .filter(entry -> entry.getValue().getRemoteServiceClient() == null)
-                    .filter(entry -> entry.getValue().getInnerService() == null)
-                    .filter(entry -> entry.getValue().getCurrentServiceField() != null)
-                    .map(entry -> {
-                        String currentServiceField = entry.getValue().getCurrentServiceField();
-                        try {
-                            Field declaredField = savedEntity.getClass().getDeclaredField(currentServiceField);
-                            declaredField.setAccessible(true);
-                            Object value = declaredField.get(savedEntity);
-                            FilterDto filterDto = new FilterDto();
-                            filterDto.setFilterType(FindSqlOperator.EQUAL);
-                            filterDto.setValues(Collections.singleton(Map.of(entry.getKey(), value)));
-                            return Map.entry(entry.getKey(), filterDto);
-                        } catch (IllegalAccessException | NoSuchFieldException e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    })
-                    .filter(Objects::nonNull)
-                    .filter(entry -> entry.getValue() != null)
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            Map<String, FilterDto> findMap = createFilter(savedEntity, mappingFields);
             if (findMap.size() != 0) {
                 FormDto formDto = new FormDto();
                 formDto.setFilters(findMap);
                 formDto.setMainIdField(crudService.getServiceName());
                 ResponseDto<Object> objectResponseDto = crudService.find(formDto);
 
+                assertEquals(1, objectResponseDto.getResult().size());
                 objectResponseDto.getResult().stream()
                         .map(foundDto -> (D) foundDto)
                         .forEach(foundDto -> checkDtos(foundDto, dto, CrudOperation.CREATE));
             }
         }
+    }
+
+    private Map<String, FilterDto> createFilter(E savedEntity, Map<String, FieldMapper> mappingFields) {
+        return mappingFields.entrySet().stream()
+                .filter(entry -> entry.getValue().getRemoteServiceClient() == null)
+                .filter(entry -> entry.getValue().getInnerService() == null)
+                .filter(entry -> entry.getValue().getCurrentServiceField() != null)
+                .map(entry -> fillFilter(savedEntity, entry))
+                .filter(Objects::nonNull)
+                .filter(entry -> entry.getValue() != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private Map.Entry<String, FilterDto> fillFilter(E savedEntity, Map.Entry<String, FieldMapper> entry) {
+        String currentServiceField = entry.getValue().getCurrentServiceField();
+        try {
+            Field declaredField = savedEntity.getClass().getDeclaredField(currentServiceField);
+            declaredField.setAccessible(true);
+            Object value = declaredField.get(savedEntity);
+            FilterDto filterDto = new FilterDto();
+            filterDto.setFilterType(FindSqlOperator.EQUAL);
+            filterDto.setValues(Collections.singleton(Map.of(entry.getKey(), value)));
+            return Map.entry(entry.getKey(), filterDto);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     protected void checkDtos(D dto, D savedObject, CrudOperation operation) {

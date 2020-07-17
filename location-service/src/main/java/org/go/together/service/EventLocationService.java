@@ -42,7 +42,7 @@ public class EventLocationService extends CrudService<EventLocationDto, EventLoc
         }
     }
 
-    public Set<IdDto> saveOrUpdateEventRoutes(Set<EventLocationDto> eventLocationDtos) {
+    public Set<IdDto> saveOrUpdateEventRoutes(Collection<EventLocationDto> eventLocationDtos) {
         Collection<EventLocation> eventLocationsFromRepository = eventLocationDtos.stream()
                 .filter(eventLocationDto -> eventLocationDto.getId() != null)
                 .map(EventLocationDto::getId)
