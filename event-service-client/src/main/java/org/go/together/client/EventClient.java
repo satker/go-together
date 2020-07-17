@@ -30,7 +30,7 @@ public interface EventClient extends FindClient {
     Collection<SimpleDto> getHousingTypes();
 
     @GetMapping("/events/payedThings")
-    Collection<PaidThingDto> getPaidThings();
+    Collection<Object> getPaidThings();
 
     @GetMapping("/events/cashCategories")
     Collection<SimpleDto> getCashCategories();

@@ -37,10 +37,10 @@ public interface UserClient extends FindClient {
     IdDto updateUser(@RequestBody UserDto user);
 
     @GetMapping("/languages")
-    Collection<LanguageDto> getLanguages();
+    Collection<Object> getLanguages();
 
     @GetMapping("/interests")
-    Collection<InterestDto> getInterests();
+    Collection<Object> getInterests();
 
     @GetMapping("/users/{userId}/languages")
     Set<UUID> getLanguagesByOwnerId(@PathVariable("userId") UUID userId);

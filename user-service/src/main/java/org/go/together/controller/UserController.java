@@ -54,13 +54,17 @@ class UserController extends FindController implements UserClient {
     }
 
     @Override
-    public Collection<LanguageDto> getLanguages() {
-        return languageService.getLanguages();
+    public Collection<Object> getLanguages() {
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField(languageService.getServiceName());
+        return languageService.find(formDto).getResult();
     }
 
     @Override
-    public Collection<InterestDto> getInterests() {
-        return interestService.getInterests();
+    public Collection<Object> getInterests() {
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField(interestService.getServiceName());
+        return interestService.find(formDto).getResult();
     }
 
     @Override

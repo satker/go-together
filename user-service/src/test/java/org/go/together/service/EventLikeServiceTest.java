@@ -4,22 +4,26 @@ import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
+import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.mapper.EventLikeMapper;
 import org.go.together.mapper.InterestMapper;
 import org.go.together.mapper.LanguageMapper;
 import org.go.together.model.EventLike;
+import org.go.together.model.SystemUser;
 import org.go.together.repository.EventLikeRepository;
 import org.go.together.repository.InterestRepository;
 import org.go.together.repository.LanguageRepository;
+import org.go.together.repository.UserRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -52,6 +56,9 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
     @Autowired
     private LocationClient locationClient;
 
+    @Autowired
+    private UserRepository userRepository;
+
 
     @BeforeEach
     public void init() {
@@ -59,8 +66,60 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
         updatedDto.setEventId(dto.getEventId());
     }
 
-    @Override
-    public void createTest() {
+    @Test
+    public void findUsersLikedEventIds() {
+        EventLikeDto eventLikeDto = getCreatedEntityId(dto);
+        Set<EventLikeDto> usersLikedEventIds =
+                ((EventLikeService) crudService).findUsersLikedEventIds(Collections.singleton(eventLikeDto.getEventId()));
+
+        assertEquals(1, usersLikedEventIds.size());
+        assertEquals(eventLikeDto, usersLikedEventIds.iterator().next());
+    }
+
+    @Test
+    public void findLikedEventIdsByUserId() {
+        EventLikeDto createdDto = getCreatedEntityId(dto);
+        EventLike eventLike = getEventLikeWithUser(createdDto);
+
+        Set<UUID> likedEvents =
+                ((EventLikeService) crudService).findLikedEventIdsByUserId(eventLike.getUsers().iterator().next().getId());
+
+        assertEquals(1, likedEvents.size());
+        assertEquals(eventLike.getEventId(), likedEvents.iterator().next());
+    }
+
+    private EventLike getEventLikeWithUser(EventLikeDto createdDto) {
+        EventLike eventLike = repository.findById(createdDto.getId())
+                .orElseThrow(() -> new CannotFindEntityException("Cannot find Event Like by id " + createdDto.getId()));
+        SystemUser user = userRepository.findAll().iterator().next();
+        HashSet<SystemUser> users = new HashSet<>();
+        users.add(user);
+        eventLike.setUsers(users);
+        return eventLikeRepository.save(eventLike);
+    }
+
+    @Test
+    public void deleteByEventId() {
+        EventLikeDto eventLikeDto = getCreatedEntityId(dto);
+        ((EventLikeService) crudService).deleteByEventId(eventLikeDto.getEventId());
+
+        assertEquals(1, eventLikeRepository.findAll().size());
+    }
+
+    @Test
+    public void deleteByUserId() {
+        EventLikeDto eventLikeDto = getCreatedEntityId(dto);
+        EventLike eventLike = getEventLikeWithUser(eventLikeDto);
+
+        Optional<EventLike> eventLikeOptional = eventLikeRepository.findById(eventLike.getId());
+        assertTrue(eventLikeOptional.isPresent());
+        assertEquals(1, eventLikeOptional.get().getUsers().size());
+
+        ((EventLikeService) crudService).deleteByUserId(eventLike.getUsers().iterator().next().getId());
+
+        eventLikeOptional = eventLikeRepository.findById(eventLike.getId());
+        assertTrue(eventLikeOptional.isPresent());
+        assertEquals(0, eventLikeOptional.get().getUsers().size());
     }
 
     @Override
