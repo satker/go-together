@@ -2,6 +2,8 @@ package org.go.together.service;
 
 import org.go.together.dto.EventLikeDto;
 import org.go.together.dto.filter.FieldMapper;
+import org.go.together.enums.CrudOperation;
+import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.EventLikeMapper;
 import org.go.together.model.EventLike;
@@ -36,6 +38,17 @@ public class EventLikeService extends CrudService<EventLikeDto, EventLike> {
     @Override
     public Map<String, FieldMapper> getMappingFields() {
         return null;
+    }
+
+    @Override
+    protected EventLike enrichEntity(EventLike entity, EventLikeDto dto, CrudOperation crudOperation) {
+        if (crudOperation == CrudOperation.UPDATE) {
+            EventLike eventLike = eventLikeRepository.findById(dto.getId())
+                    .orElseThrow(() -> new CannotFindEntityException("Cannot find EventLike for event " + dto.getEventId()));
+            eventLike.setUsers(entity.getUsers());
+            return eventLike;
+        }
+        return entity;
     }
 
     public Set<EventLikeDto> findUsersLikedEventIds(Set<UUID> eventIds) {

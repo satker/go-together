@@ -1,6 +1,7 @@
 package org.go.together.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
 
@@ -8,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
+@EqualsAndHashCode(exclude = {"password"})
 public class UserDto implements ComparableDto {
     private UUID id;
 

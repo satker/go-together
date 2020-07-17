@@ -10,9 +10,8 @@ import org.go.together.repository.LanguageRepository;
 import org.go.together.validation.LanguageValidator;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class LanguageService extends CrudService<LanguageDto, Language> {
@@ -26,10 +25,8 @@ public class LanguageService extends CrudService<LanguageDto, Language> {
         this.languageRepository = languageRepository;
     }
 
-    public Set<LanguageDto> getLanguages() {
-        return languageRepository.findAll().stream()
-                .map(languageMapper::entityToDto)
-                .collect(Collectors.toSet());
+    public Collection<LanguageDto> getLanguages() {
+        return languageMapper.entitiesToDtos(languageRepository.findAll());
 
     }
 

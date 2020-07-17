@@ -29,3 +29,7 @@ dependencies {
     compile project(":content-service-client")
     compile project(":location-service-client")
 }
+
+test {
+    useJUnitPlatform()
+}

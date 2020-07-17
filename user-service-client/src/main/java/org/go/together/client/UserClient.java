@@ -37,7 +37,7 @@ public interface UserClient extends FindClient {
     IdDto updateUser(@RequestBody UserDto user);
 
     @GetMapping("/languages")
-    Set<LanguageDto> getLanguages();
+    Collection<LanguageDto> getLanguages();
 
     @GetMapping("/interests")
     Collection<InterestDto> getInterests();

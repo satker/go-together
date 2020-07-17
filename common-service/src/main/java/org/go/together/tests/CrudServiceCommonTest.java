@@ -62,16 +62,15 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
 
     @Test
     public void createTest() {
-        IdDto idDto = crudService.create(dto);
-        dto.setId(idDto.getId());
-        D savedObject = crudService.read(idDto.getId());
+        D createdDto = getCreatedEntityId(dto);
+        D savedObject = crudService.read(createdDto.getId());
         checkDtos(dto, savedObject, CrudOperation.CREATE);
     }
 
     @Test
     public void updateTest() {
-        IdDto idDto = crudService.create(dto);
-        updatedDto.setId(idDto.getId());
+        D createdDto = getCreatedEntityId(dto);
+        updatedDto.setId(createdDto.getId());
         IdDto update = crudService.update(updatedDto);
         D savedUpdatedObject = crudService.read(update.getId());
         checkDtos(updatedDto, savedUpdatedObject, CrudOperation.UPDATE);
@@ -84,11 +83,11 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
 
     @Test
     public void deleteTest() {
-        IdDto idDto = crudService.create(dto);
-        Optional<E> entityById = repository.findById(idDto.getId());
+        D createdDto = getCreatedEntityId(dto);
+        Optional<E> entityById = repository.findById(createdDto.getId());
         assertTrue(entityById.isPresent());
-        crudService.delete(idDto.getId());
-        Optional<E> deletedEntityById = repository.findById(idDto.getId());
+        crudService.delete(createdDto.getId());
+        Optional<E> deletedEntityById = repository.findById(createdDto.getId());
         assertTrue(deletedEntityById.isEmpty());
     }
 
@@ -104,10 +103,9 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
 
     @Test
     public void findTest() {
-        IdDto idDto = crudService.create(dto);
-        dto.setId(idDto.getId());
+        D createdDto = getCreatedEntityId(dto);
 
-        E savedEntity = repository.findById(idDto.getId())
+        E savedEntity = repository.findById(createdDto.getId())
                 .orElseThrow(() -> new CannotFindEntityException("Cannot find saved entity"));
 
 
@@ -126,6 +124,12 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
                         .forEach(foundDto -> checkDtos(foundDto, dto, CrudOperation.CREATE));
             }
         }
+    }
+
+    protected D getCreatedEntityId(D dto) {
+        UUID id = crudService.create(dto).getId();
+        dto.setId(id);
+        return dto;
     }
 
     private Map<String, FilterDto> createFilter(E savedEntity, Map<String, FieldMapper> mappingFields) {

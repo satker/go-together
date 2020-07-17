@@ -54,7 +54,7 @@ class UserController extends FindController implements UserClient {
     }
 
     @Override
-    public Set<LanguageDto> getLanguages() {
+    public Collection<LanguageDto> getLanguages() {
         return languageService.getLanguages();
     }
 

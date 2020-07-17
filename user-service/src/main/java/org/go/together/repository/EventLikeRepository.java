@@ -20,7 +20,7 @@ public class EventLikeRepository extends CustomRepository<EventLike> {
 
     @Transactional
     public Collection<EventLike> findByUserId(UUID userId) {
-        return createQuery().where(createWhere().condition("users.id", SqlOperator.IN, userId))
+        return createQuery().where(createWhere().condition("users.id", SqlOperator.EQUAL, userId))
                 .fetchAll();
     }
 }

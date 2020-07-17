@@ -138,6 +138,10 @@ public class UserService extends CrudService<UserDto, SystemUser> {
             entity.setGroupPhoto(groupPhotoId.getId());
             entity.setId(entity.getId());
             entity.setRole(Role.ROLE_USER);
+            EventLikeDto eventLikeDto = new EventLikeDto();
+            eventLikeDto.setEventId(entity.getId());
+            eventLikeDto.setUsers(Collections.emptySet());
+            eventLikeService.create(eventLikeDto);
         } else if (crudOperation == CrudOperation.DELETE) {
             contentClient.delete(entity.getGroupPhoto());
             eventLikeService.deleteByUserId(entity.getId());
