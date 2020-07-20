@@ -26,7 +26,7 @@ public class LocationMapper implements Mapper<LocationDto, Location> {
     public Location dtoToEntity(LocationDto locationDto) {
         Location location = new Location();
         Country country = countryMapper.dtoToEntity(locationDto.getCountry());
-        location.setId(location.getId());
+        location.setId(locationDto.getId());
         location.setCountry(country);
         location.setName(locationDto.getName());
         location.setState(locationDto.getState());

@@ -25,6 +25,9 @@ public class Message implements IdentifiedEntity {
 
     @Column(columnDefinition = "uuid")
     private UUID authorId;
+
     private MessageType messageType;
+
+    @Column(columnDefinition = "uuid")
     private UUID recipientId;
 }

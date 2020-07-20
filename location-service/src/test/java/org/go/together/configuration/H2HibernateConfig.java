@@ -1,4 +1,4 @@
-package together.configuration;
+package org.go.together.configuration;
 
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;

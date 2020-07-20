@@ -36,14 +36,24 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
     private PhotoService photoService;
 
     @BeforeEach
-    public void init() throws IOException {
-        PhotoDto photoDto = getPhotoDto("photos/1.jpg");
+    public void init() {
+        super.init();
+        PhotoDto photoDto = null;
+        try {
+            photoDto = getPhotoDto("photos/1.jpg");
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot get file in content-service");
+        }
         photoService.create(photoDto);
     }
 
     @AfterEach
-    public void clean() throws IOException {
-        FileUtils.cleanDirectory(new File(storePath));
+    public void clean() {
+        try {
+            FileUtils.cleanDirectory(new File(storePath));
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot get file in content-service");
+        }
         photoRepository.findAll().forEach(photoRepository::delete);
     }
 

@@ -11,7 +11,6 @@ import java.util.UUID;
 @Table(name = "location", schema = "location_service")
 public class Location implements IdentifiedEntity {
     @Id
-    @GeneratedValue
     @Column(columnDefinition = "uuid")
     private UUID id;
     private String name;

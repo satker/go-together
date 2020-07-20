@@ -19,7 +19,6 @@ public class LocationValidator extends Validator<LocationDto> {
     public void getMapsForCheck(LocationDto dto) {
         super.STRINGS_FOR_BLANK_CHECK = ImmutableMap.<String, String>builder()
                 .put("location code", dto.getName())
-                //.put("location state", dto.getState())
                 .build();
     }
 

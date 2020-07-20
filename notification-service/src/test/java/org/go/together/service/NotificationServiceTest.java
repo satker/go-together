@@ -1,5 +1,6 @@
-package together.service;
+package org.go.together.service;
 
+import org.go.together.context.RepositoryContext;
 import org.go.together.dto.NotificationMessageDto;
 import org.go.together.dto.NotificationStatus;
 import org.go.together.model.Notification;
@@ -10,7 +11,6 @@ import org.go.together.repository.NotificationMessageRepository;
 import org.go.together.repository.NotificationReceiverMessageRepository;
 import org.go.together.repository.NotificationReceiverRepository;
 import org.go.together.repository.NotificationRepository;
-import org.go.together.service.NotificationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import together.context.RepositoryContext;
 
 import java.util.*;
 

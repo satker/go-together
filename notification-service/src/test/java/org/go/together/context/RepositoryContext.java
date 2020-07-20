@@ -1,10 +1,10 @@
-package together.context;
+package org.go.together.context;
 
+import org.go.together.configuration.H2HibernateConfig;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import together.configuration.H2HibernateConfig;
 
 @EnableAutoConfiguration
 @Configuration

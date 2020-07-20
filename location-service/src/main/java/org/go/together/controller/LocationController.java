@@ -35,13 +35,13 @@ public class LocationController extends FindController implements LocationClient
     }
 
     @Override
-    public Set<IdDto> saveOrUpdateEventRoutes(Collection<EventLocationDto> eventLocationDtos) {
-        return eventLocationService.saveOrUpdateEventRoutes(eventLocationDtos);
+    public Set<IdDto> saveOrUpdateEventRoutes(Collection<EventLocationDto> eventLocationDtos, UUID eventId) {
+        return eventLocationService.saveOrUpdateEventRoutes(eventLocationDtos, eventId);
     }
 
     @Override
-    public boolean deleteRoutes(Set<UUID> eventLocationDtos) {
-        return eventLocationService.deleteByEventId(eventLocationDtos);
+    public void deleteRoute(UUID eventRouteId) {
+        eventLocationService.delete(eventRouteId);
     }
 
     @Override

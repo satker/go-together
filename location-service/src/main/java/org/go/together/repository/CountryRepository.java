@@ -21,7 +21,7 @@ public class CountryRepository extends CustomRepository<Country> {
     @Transactional
     public Collection<Country> findCountriesLike(String countryName) {
         return createQuery()
-                .where(createWhere().condition("name", SqlOperator.EQUAL, countryName.toUpperCase()))
+                .where(createWhere().condition("name", SqlOperator.LIKE, countryName.toUpperCase()))
                 .fetchAll();
     }
 }

@@ -46,7 +46,7 @@ public class EventService extends CrudService<EventDto, Event> {
         for (EventLocationDto eventLocationDto : dto.getRoute()) {
             eventLocationDto.setEventId(entity.getId());
         }
-        Set<IdDto> routes = locationClient.saveOrUpdateEventRoutes(dto.getRoute());
+        Set<IdDto> routes = locationClient.saveOrUpdateEventRoutes(dto.getRoute(), entity.getId());
         return routes.stream()
                 .map(IdDto::getId)
                 .map(EventRoute::new)
@@ -78,9 +78,9 @@ public class EventService extends CrudService<EventDto, Event> {
             eventLikeDto.setUsers(Collections.emptySet());
             userClient.createEventLike(eventLikeDto);
         } else if (crudOperation == CrudOperation.DELETE) {
-            locationClient.deleteRoutes(entity.getRoutes().stream()
+            entity.getRoutes().stream()
                     .map(EventRoute::getRouteId)
-                    .collect(Collectors.toSet()));
+                    .forEach(locationClient::deleteRoute);
             contentClient.delete(entity.getGroupPhotoId());
             userClient.deleteEventLike(entity.getId());
         }

@@ -52,6 +52,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @BeforeEach
     public void init() {
+        super.init();
         UUID id = UUID.randomUUID();
         String name = "test name";
         long number = 1;

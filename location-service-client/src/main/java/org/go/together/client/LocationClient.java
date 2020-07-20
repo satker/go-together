@@ -20,11 +20,12 @@ public interface LocationClient extends FindClient {
     @GetMapping("/routes/{routeId}")
     EventLocationDto getRouteById(@PathVariable("routeId") UUID routeId);
 
-    @PostMapping("/routes")
-    Set<IdDto> saveOrUpdateEventRoutes(@RequestBody Collection<EventLocationDto> eventLocationDtos);
+    @PostMapping("/events/{eventId}/routes")
+    Set<IdDto> saveOrUpdateEventRoutes(@RequestBody Collection<EventLocationDto> eventLocationDtos,
+                                       @PathVariable("eventId") UUID eventId);
 
-    @DeleteMapping("/routes")
-    boolean deleteRoutes(@RequestBody Set<UUID> eventLocationDtos);
+    @DeleteMapping("/routes/{routeId}")
+    void deleteRoute(@PathVariable("routeId") UUID routeId);
 
     @PostMapping("/routes/validate")
     String validateRoutes(@RequestBody EventLocationDto eventLocationDto);

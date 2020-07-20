@@ -39,7 +39,7 @@ public class LocationService extends CrudService<LocationDto, Location> {
         if (split.length == 1 && StringUtils.isNotBlank(splitedLocation)) {
             locations = locationRepository.findLocationByName(splitedLocation, 0, 5);
         } else if (split.length == 2) {
-            String country = split[1].split(" ")[0];
+            String country = split[1].trim();
             Set<UUID> countryIds = countryService.findCountriesLike(country.trim()).stream()
                     .map(Country::getId)
                     .collect(Collectors.toSet());
@@ -63,54 +63,4 @@ public class LocationService extends CrudService<LocationDto, Location> {
     public Map<String, FieldMapper> getMappingFields() {
         return null;
     }
-
-    /*@Override
-    public ImmutableMap<String, FunctionToGetValue> getFields() {
-        return ImmutableMap.<String, FunctionToGetValue>builder()
-                .build();
-    }
-
-    @Override
-    public String getServiceName() {
-        return "city";
-    }
-
-     private void getCitiesBuffer() {
-        List<City> inputList = new ArrayList<>();
-        try {
-            File inputF = new File("/Users/kunats-ay/IdeaProjects/housing-searcher-inc/location-service/src/main/resources/GEODATASOURCE-CITIES-FREE.TXT");
-            InputStream inputFS = new FileInputStream(inputF);
-            BufferedReader br = new BufferedReader(new InputStreamReader(inputFS));
-            Map<String, String> countryIdMap = new HashMap<>();
-            countryRepository.findAll().forEach(country -> countryIdMap.put(country.getCountryCode(), country.getId()));
-            AtomicInteger count = new AtomicInteger();
-            // skip the header of the csv
-            inputList = br.lines().skip(1)
-                    .map(city -> city.split("\t"))
-                    .filter(ci -> ci.length == 3)
-                    .map(city -> new City(city[2], countryIdMap.get(city[1])))
-                    .peek(city -> {
-                        int c = count.getAndIncrement();
-                        if (c % 1000 == 0) {
-                            System.out.println(c);
-                        }
-                    })
-                    .collect(Collectors.toList());
-            br.close();
-        } catch (IOException e) {
-        }
-
-        List<City> cities = new ArrayList<>();
-        for (int i = 0; i < inputList.size(); i++) {
-            cities.add(inputList.get(i));
-            if (i % 4000 == 0) {
-                cityRepository.saveAll(cities);
-                cities.clear();
-                System.out.println("saving city" + i);
-            }
-        }
-        if (!cities.isEmpty()) {
-            cityRepository.saveAll(cities);
-        }
-    }*/
 }

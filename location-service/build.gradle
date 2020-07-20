@@ -30,3 +30,6 @@ dependencies {
     compile project(":location-service-client")
 }
 
+test {
+    useJUnitPlatform()
+}

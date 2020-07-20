@@ -53,14 +53,15 @@ public class MessageRepository extends CustomRepository<Message> {
 
     @Transactional
     public Collection<Message> findMessagesBetweenUsers(UUID myId, UUID otherUser) {
-        WhereBuilder<Message> whereMyIdPresented = createWhere().condition("authorId", SqlOperator.EQUAL, myId)
+        WhereBuilder<Message> whereMyIdPresented = createGroup().condition("authorId", SqlOperator.EQUAL, myId)
                 .or()
                 .condition("recipientId", SqlOperator.EQUAL, myId);
-        WhereBuilder<Message> whereUserIdPresented = createWhere().condition("authorId", SqlOperator.EQUAL, otherUser)
+        WhereBuilder<Message> whereUserIdPresented = createGroup().condition("authorId", SqlOperator.EQUAL, otherUser)
                 .or()
                 .condition("recipientId", SqlOperator.EQUAL, otherUser);
         return createQuery()
                 .where(createWhere().condition("messageType", SqlOperator.EQUAL, TO_USER)
+                        .and()
                         .group(whereMyIdPresented)
                         .and()
                         .group(whereUserIdPresented))

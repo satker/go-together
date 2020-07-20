@@ -33,39 +33,24 @@ public class EventLocationService extends CrudService<EventLocationDto, EventLoc
                 .collect(Collectors.toSet());
     }
 
-    public boolean deleteByEventId(Set<UUID> eventLocationDtos) {
-        try {
-            eventLocationDtos.forEach(super::delete);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public Set<IdDto> saveOrUpdateEventRoutes(Collection<EventLocationDto> eventLocationDtos) {
-        Collection<EventLocation> eventLocationsFromRepository = eventLocationDtos.stream()
-                .filter(eventLocationDto -> eventLocationDto.getId() != null)
-                .map(EventLocationDto::getId)
-                .filter(Objects::nonNull)
-                .map(eventLocationRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+    public Set<IdDto> saveOrUpdateEventRoutes(Collection<EventLocationDto> eventLocationDtos, UUID eventId) {
+        Set<UUID> presentedEventLocations = eventLocationRepository.findByEventId(eventId).stream()
+                .map(EventLocation::getId)
                 .collect(Collectors.toSet());
         Set<IdDto> result = new HashSet<>();
 
-        eventLocationsFromRepository.stream()
-                .filter(eventLocation -> eventLocationDtos.stream()
-                        .noneMatch(eventLocationDto -> eventLocationDto.getId().equals(eventLocation.getId())))
-                .map(EventLocation::getId)
+        presentedEventLocations.stream()
+                .filter(eventLocationId -> eventLocationDtos.stream()
+                        .noneMatch(eventLocationDto -> eventLocationId.equals(eventLocationDto.getId())))
                 .forEach(super::delete);
 
-        eventLocationDtos.stream()
-                .filter(eventLocation -> eventLocation.getId() == null)
+        eventLocationDtos
                 .forEach(eventLocationDtoEntry -> {
-                    if (eventLocationDtoEntry.getId() == null) {
-                        result.add(super.create(eventLocationDtoEntry));
-                    } else {
+                    if (eventLocationDtoEntry.getId() != null
+                            && presentedEventLocations.contains(eventLocationDtoEntry.getId())) {
                         result.add(super.update(eventLocationDtoEntry));
+                    } else if (eventLocationDtoEntry.getId() == null) {
+                        result.add(super.create(eventLocationDtoEntry));
                     }
                 });
 

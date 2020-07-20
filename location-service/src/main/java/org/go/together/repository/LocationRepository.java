@@ -14,7 +14,7 @@ public class LocationRepository extends CustomRepository<Location> {
     @Transactional
     public Collection<Location> findLocationByName(String location, int start, int pageSize) {
         return createQuery()
-                .where(createWhere().condition("name", SqlOperator.LIKE, location.toLowerCase()))
+                .where(createWhere().condition("name", SqlOperator.LIKE_LOWER_CASE, location))
                 .fetchWithPageable(start, pageSize);
     }
 
@@ -22,8 +22,8 @@ public class LocationRepository extends CustomRepository<Location> {
     public Collection<Location> findLocationByNameAndByCountryId(String location, Collection<UUID> countryIds,
                                                                  int start, int pageSize) {
         return createQuery()
-                .where(createWhere().condition("name", SqlOperator.LIKE, location.toLowerCase())
-                        .and().condition("country_id", SqlOperator.IN, countryIds))
+                .where(createWhere().condition("name", SqlOperator.LIKE_LOWER_CASE, location)
+                        .and().condition("country.id", SqlOperator.IN, countryIds))
                 .fetchWithPageable(start, pageSize);
     }
 }

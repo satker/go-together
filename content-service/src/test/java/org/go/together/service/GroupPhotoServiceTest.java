@@ -36,6 +36,7 @@ class GroupPhotoServiceTest extends CrudServiceCommonTest<GroupPhoto, GroupPhoto
 
     @BeforeEach
     public void init() {
+        super.init();
         GroupPhotoDto groupPhotoDto = createGroupPhoto(Set.of("photos/1.jpg", "photos/2.jpg"));
         IdDto idGroupPhotoDto = crudService.create(groupPhotoDto);
         Optional<GroupPhoto> groupPhotoOptional = repository.findById(idGroupPhotoDto.getId());
@@ -46,8 +47,12 @@ class GroupPhotoServiceTest extends CrudServiceCommonTest<GroupPhoto, GroupPhoto
     }
 
     @AfterEach
-    public void clean() throws IOException {
-        FileUtils.cleanDirectory(new File(storePath));
+    public void clean() {
+        try {
+            FileUtils.cleanDirectory(new File(storePath));
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot get file in content-service");
+        }
         repository.findAll().forEach(repository::delete);
         photoRepository.findAll().forEach(photoRepository::delete);
     }
