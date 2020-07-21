@@ -38,7 +38,7 @@ const CommonInfo = ({event, updateEvent, getHousingTypes, housingTypes}) => {
                 id="description"
                 label="Description"
                 value={event.description}
-                defaultValue="Home, dear home..."
+                placeholder="Go together..."
                 onChange={(value) => updateEvent('description', value)}
             />
         </ItemContainer>

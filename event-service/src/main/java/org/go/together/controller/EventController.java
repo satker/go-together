@@ -24,7 +24,7 @@ public class EventController extends FindController implements EventClient {
     public EventController(EventService eventService,
                            PaidThingService paidThingService,
                            EventUserService eventUserService) {
-        super(Set.of(eventService, paidThingService, paidThingService));
+        super(Set.of(eventService, paidThingService, eventUserService));
         this.eventService = eventService;
         this.paidThingService = paidThingService;
         this.eventUserService = eventUserService;

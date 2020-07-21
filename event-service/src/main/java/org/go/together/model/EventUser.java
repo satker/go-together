@@ -25,6 +25,6 @@ public class EventUser implements IdentifiedEntity {
 
     private EventUserStatus userStatus;
 
-    @Column(columnDefinition = "uuid")
+    @Column(columnDefinition = "uuid", name = "event_id")
     private UUID eventId;
 }

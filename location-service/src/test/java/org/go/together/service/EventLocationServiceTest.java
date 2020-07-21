@@ -92,6 +92,7 @@ class EventLocationServiceTest extends CrudServiceCommonTest<EventLocation, Even
         country.setName(locationDto.getCountry().getName().toUpperCase());
         Country savedCountry = countryRepository.save(country);
         CountryDto countryDto = countryMapper.entityToDto(savedCountry);
+        locationDto.setId(null);
         locationDto.setCountry(countryDto);
 
         return eventLocationDto;

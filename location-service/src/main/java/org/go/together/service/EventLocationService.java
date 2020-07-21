@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import org.go.together.dto.EventLocationDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.filter.FieldMapper;
+import org.go.together.enums.CrudOperation;
 import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.EventLocationMapper;
 import org.go.together.model.EventLocation;
@@ -18,13 +19,16 @@ import java.util.stream.Collectors;
 public class EventLocationService extends CrudService<EventLocationDto, EventLocation> {
     private final EventLocationMapper eventLocationMapper;
     private final EventLocationRepository eventLocationRepository;
+    private final LocationService locationService;
 
     public EventLocationService(EventLocationRepository eventLocationRepository,
                                 EventLocationMapper eventLocationMapper,
-                                EventLocationValidator eventLocationValidator) {
+                                EventLocationValidator eventLocationValidator,
+                                LocationService locationService) {
         super(eventLocationRepository, eventLocationMapper, eventLocationValidator);
         this.eventLocationMapper = eventLocationMapper;
         this.eventLocationRepository = eventLocationRepository;
+        this.locationService = locationService;
     }
 
     public Set<EventLocationDto> getEventRoute(UUID eventId) {
@@ -55,6 +59,17 @@ public class EventLocationService extends CrudService<EventLocationDto, EventLoc
                 });
 
         return result;
+    }
+
+    @Override
+    protected EventLocation enrichEntity(EventLocation entity, EventLocationDto dto, CrudOperation crudOperation) {
+        if (crudOperation == CrudOperation.UPDATE || crudOperation == CrudOperation.CREATE) {
+            if (entity.getLocation().getId() == null) {
+                IdDto idDto = locationService.create(dto.getLocation());
+                entity.getLocation().setId(idDto.getId());
+            }
+        }
+        return entity;
     }
 
     @Override

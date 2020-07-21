@@ -11,10 +11,7 @@ import org.go.together.logic.services.find.repository.FindRepositoryImpl;
 import org.go.together.logic.services.find.validation.CorrectFieldService;
 import org.go.together.utils.FindUtils;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.go.together.utils.FindUtils.getParsedString;
 
@@ -35,7 +32,7 @@ public abstract class FindService<E extends IdentifiedEntity> {
 
     public Pair<PageDto, Collection<Object>> findByFormDto(FormDto formDto) {
         FindRepository findRepository = new FindRepositoryImpl<>(getServiceName(), repository);
-        if (formDto.getFilters().isEmpty()) {
+        if (Optional.ofNullable(formDto.getFilters()).map(Map::isEmpty).orElse(true)) {
             return findRepository.getResult(formDto.getMainIdField(), null, formDto.getPage());
         }
         Map<String, FilterDto> commonService = getFilters(formDto);

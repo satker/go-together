@@ -25,7 +25,7 @@ public class EventLocation implements IdentifiedEntity {
     private Boolean isStart;
     private Boolean isEnd;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "event_location_id")
     private Location location;
 }

@@ -40,7 +40,7 @@ public class ComparatorUtils {
     }
 
     public static void compareStrings(Collection<String> result, String fieldName, String string, String anotherString) {
-        if (!string.equals(anotherString)) {
+        if (!string.equalsIgnoreCase(anotherString)) {
             String resultString = fieldName + FROM + string + TO + anotherString;
             result.add(resultString);
         }
