@@ -1,4 +1,5 @@
 import {get, keys, set} from "lodash";
+import moment from "moment";
 
 export const getSrcForImg = (photoObj) => {
     if (!photoObj) {
@@ -11,6 +12,8 @@ export const getSrcForImg = (photoObj) => {
         return 'https://sisterhoodofstyle.com/wp-content/uploads/2018/02/no-image-1.jpg';
     }
 };
+
+export const getCorrectDateFromString = (date) => moment(date).format('LLL');
 
 export const createFileReaderToParsePhoto = (photo) => new Promise((resolve) => {
     const fileReader = new FileReader();

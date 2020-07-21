@@ -1,1 +1,1 @@
-create schema notification_service;
+create schema if not exists notification_service;

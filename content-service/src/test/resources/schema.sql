@@ -1,1 +1,1 @@
-create schema content_service;
+create schema if not exists content_service;

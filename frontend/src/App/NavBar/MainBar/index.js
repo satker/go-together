@@ -79,7 +79,10 @@ const MainBar = ({menuId, handleMenuClose, mobileMenuId, handleMobileMenuOpen}) 
 
     return <AppBar position="sticky">
         <Toolbar>
-            <Typography className={classes.title} variant="h6" noWrap>
+            <Typography className={classes.title}
+                        variant="h6"
+                        noWrap
+                        onClick={() => navigate('/events')}>
                 Events
             </Typography>
             <div className={classes.search}>

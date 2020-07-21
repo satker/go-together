@@ -1,6 +1,5 @@
 import React, {useEffect} from "react";
 import PropTypes from "prop-types";
-import moment from "moment";
 
 import EventLikes from "forms/utils/components/Event/EventLikes";
 import {getEventsLikes} from "forms/utils/components/Event/EventLikes/actions";
@@ -12,6 +11,7 @@ import {connect} from "App/Context";
 import ParticipationButton from "../../ParticipationButton";
 import {getUsers} from "../../actions";
 import Container from "forms/utils/components/Container/ContainerRow";
+import {getCorrectDateFromString} from "forms/utils/utils";
 
 const CommonInfo = ({event, users, getUsers, userId, getEventsLikes}) => {
     useEffect(() => {
@@ -50,7 +50,7 @@ const CommonInfo = ({event, users, getUsers, userId, getEventsLikes}) => {
             </Container>
         </ItemContainer>
         <ItemContainer>
-            Trip dates: {moment(event.startDate).format('LLL')} -> {moment(event.endDate).format('LLL')}
+            Trip dates: {getCorrectDateFromString(event.startDate)} -> {getCorrectDateFromString(event.endDate)}
         </ItemContainer>
     </LeftContainer>
 };
