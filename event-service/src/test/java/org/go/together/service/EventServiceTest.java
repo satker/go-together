@@ -22,6 +22,8 @@ import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
@@ -105,11 +107,12 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
             when(locationClient.getRouteById(eventLocationDto.getId())).thenReturn(eventLocationDto);
         }
         when(contentClient.readGroupPhotosById(eventDto.getGroupPhoto().getId())).thenReturn(eventDto.getGroupPhoto());
-        when(locationClient.saveOrUpdateEventRoutes(eventDto.getRoute())).thenReturn(eventDto.getRoute().stream()
-                .map(EventLocationDto::getId)
-                .map(IdDto::new)
-                .collect(Collectors.toSet())
-        );
+        when(locationClient.saveOrUpdateEventRoutes(eq(eventDto.getRoute()), any()))
+                .thenReturn(eventDto.getRoute().stream()
+                        .map(EventLocationDto::getId)
+                        .map(IdDto::new)
+                        .collect(Collectors.toSet())
+                );
         when(contentClient.updateGroup(eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
         when(contentClient.createGroup(eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
     }
