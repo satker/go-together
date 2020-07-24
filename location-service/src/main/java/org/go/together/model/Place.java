@@ -16,7 +16,7 @@ public class Place implements IdentifiedEntity {
     private String name;
     private String state;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "country_id")
     private Country country;
 }

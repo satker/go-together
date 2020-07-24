@@ -84,7 +84,8 @@ public class FindUtils {
         try {
             return Stream.of(singleGroupFields)
                     .collect(Collectors.toMap(FindUtils::getEntityField,
-                            field -> getFieldMapper(availableFields, field)));
+                            field -> getFieldMapper(availableFields, field),
+                            (fieldMapper, fieldMapper2) -> fieldMapper));
         } catch (Exception exception) {
             throw new IncorrectFindObject("Field " + searchField + " is unavailable for search.");
         }

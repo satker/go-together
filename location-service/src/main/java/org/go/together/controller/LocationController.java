@@ -21,7 +21,7 @@ public class LocationController extends FindController implements LocationClient
     public LocationController(LocationService locationService,
                               PlaceService placeService,
                               GroupLocationService groupLocationService) {
-        super(Set.of(locationService, placeService));
+        super(Set.of(locationService, placeService, groupLocationService));
         this.locationService = locationService;
         this.placeService = placeService;
         this.groupLocationService = groupLocationService;

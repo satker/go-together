@@ -13,7 +13,7 @@ import Container from "forms/utils/components/Container/ContainerRow";
 import BetweenLocations from "./BetweenLocations";
 import {setFilter} from "../../actions";
 
-export const LocationField = 'idEventRoutes?[isStart&isEnd&latitude,longitude]';
+export const LocationField = 'idEventRoutes?locations.[isStart&isEnd&latitude,longitude]';
 export const latLng = "latitude,longitude";
 
 const Locations = ({setFilter, filter}) => {

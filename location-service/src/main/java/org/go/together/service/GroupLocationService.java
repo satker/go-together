@@ -1,5 +1,6 @@
 package org.go.together.service;
 
+import com.google.common.collect.ImmutableMap;
 import org.go.together.dto.GroupLocationDto;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.enums.CrudOperation;
@@ -58,6 +59,9 @@ public class GroupLocationService extends CrudService<GroupLocationDto, GroupLoc
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return null;
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("locations", FieldMapper.builder()
+                        .innerService(locationService)
+                        .currentServiceField("locations").build()).build();
     }
 }
