@@ -7,11 +7,9 @@ import org.go.together.dto.EventDto;
 import org.go.together.logic.Mapper;
 import org.go.together.model.Event;
 import org.go.together.model.EventPaidThing;
-import org.go.together.model.EventRoute;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class EventMapper implements Mapper<EventDto, Event> {
@@ -39,10 +37,7 @@ public class EventMapper implements Mapper<EventDto, Event> {
         eventDto.setHousingType(entity.getHousingType());
         eventDto.setPaidThings(eventPaidThingMapper.entitiesToDtos(entity.getPaidThings()));
         eventDto.setPeopleCount(entity.getPeopleCount());
-        eventDto.setRoute(entity.getRoutes().stream()
-                .map(EventRoute::getRouteId)
-                .map(locationClient::getRouteById)
-                .collect(Collectors.toSet()));
+        eventDto.setRoute(locationClient.getRouteById(entity.getRouteId()));
         eventDto.setGroupPhoto(contentClient.readGroupPhotosById(entity.getGroupPhotoId()));
         eventDto.setName(entity.getName());
         eventDto.setStartDate(entity.getStartDate());

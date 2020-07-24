@@ -26,7 +26,7 @@ public class UserDto implements ComparableDto {
     private String lastName;
 
     @ComparingField("location")
-    private LocationDto location;
+    private GroupLocationDto location;
 
     @ComparingField("description")
     private String description;

@@ -7,7 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import {onChange} from "forms/utils/utils";
-import {DEFAULT_COUNTRY, DEFAULT_LOCATION, DEFAULT_ROUTE} from "forms/utils/constants";
+import {DEFAULT_COUNTRY, DEFAULT_ROUTE, PLACE} from "forms/utils/constants";
 import {getCity, getCountry, getState, requestPlaceId} from "forms/utils/components/ObjectGeoLocation/utils";
 import {SimpleObject} from "forms/utils/types";
 
@@ -31,9 +31,8 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
     const [currentOptions, setCurrentOptions] = useState([]);
 
     const getLocation = (paths, values) => {
-
         let newLocation = {...DEFAULT_ROUTE};
-        newLocation = {...DEFAULT_LOCATION};
+        newLocation = {...PLACE};
         newLocation.country = {...DEFAULT_COUNTRY};
         onChange(newLocation, result => newLocation = result)(paths, values);
         return newLocation;
@@ -44,7 +43,7 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
         if (onChangeLocation) {
             const newLocation = getLocation(['name', 'country.name', 'state'],
                 [getCity(result), getCountry(result), getState(result)]);
-            onChangeLocation(newLocation);
+            onChangeLocation(newLocation, {lat: result.geometry.location.lat, lng: result.geometry.location.lng});
         }
         if (setCenter) {
             setCenter({lat: result.geometry.location.lat, lng: result.geometry.location.lng});

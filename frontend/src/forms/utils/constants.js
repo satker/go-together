@@ -35,7 +35,7 @@ export const DEFAULT_COUNTRY = {
     name: null
 };
 
-export const DEFAULT_LOCATION = {
+export const PLACE = {
     id: null,
     name: null,
     state: null,
@@ -48,13 +48,17 @@ export const DEFAULT_ROUTE = {
     address: null,
     latitude: 18.5204,
     longitude: 73.8567,
-    location: {...DEFAULT_LOCATION}
+    place: {...PLACE}
 };
 
 export const DEFAULT_CREATE_EVENT = {
     ...DEFAULT_MAIN_INFO,
     paidThings: [],
-    route: []
+    route: {
+        groupId: null,
+        locations: [],
+        category: 'EVENT'
+    }
 };
 
 export const DEFAULT_PAID_THING = {

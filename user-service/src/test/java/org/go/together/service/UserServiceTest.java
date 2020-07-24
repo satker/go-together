@@ -200,12 +200,13 @@ class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
     }
 
     private void prepareDto(UserDto userDto) {
-        when(locationClient.validateLocation(userDto.getLocation())).thenReturn(EMPTY);
+        when(locationClient.validateRoute(userDto.getLocation())).thenReturn(EMPTY);
         when(contentClient.validate(userDto.getGroupPhoto())).thenReturn(EMPTY);
         when(contentClient.updateGroup(userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
         when(contentClient.createGroup(userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
-        when(locationClient.saveLocation(userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
-        when(locationClient.getLocationById(userDto.getLocation().getId())).thenReturn(userDto.getLocation());
+        when(locationClient.createRoute(userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
+        when(locationClient.updateRoute(userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
+        when(locationClient.getRouteById(userDto.getLocation().getId())).thenReturn(userDto.getLocation());
         when(contentClient.readGroupPhotosById(userDto.getGroupPhoto().getId())).thenReturn(userDto.getGroupPhoto());
     }
 }

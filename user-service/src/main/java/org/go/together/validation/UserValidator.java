@@ -33,7 +33,7 @@ public class UserValidator extends Validator<UserDto> {
         StringBuilder errors = new StringBuilder();
 
         if (crudOperation == CrudOperation.CREATE) {
-            String validatedLocation = locationClient.validateLocation(dto.getLocation());
+            String validatedLocation = locationClient.validateRoute(dto.getLocation());
             if (StringUtils.isNotBlank(validatedLocation)) {
                 errors.append(validatedLocation);
             }

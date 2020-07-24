@@ -24,7 +24,6 @@ export const getUserInfo = () => (dispatch, state) => {
 };
 
 export const updateUser = () => (dispatch, state) => {
-    console.log(state.components.utils.input[FORM_ID].value)
     dispatch({
         type: PERSONAL_AREA_UPDATED_USER,
         url: URL_USER,

@@ -23,6 +23,7 @@ const UserChats = ({
         if (!messages.inProcess &&
             !usersInfo.inProcess &&
             messages.response.length !== 0) {
+            console.log(usersInfo, messages)
             let notFoundUserIds = [];
             const userIds = keys(messages.response) || [];
             const cachedUserIds = usersInfo.response.map(user => user.id);

@@ -1,24 +1,32 @@
 package org.go.together.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
 
 import java.util.UUID;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @EqualsAndHashCode(exclude = {"id"})
 public class LocationDto implements ComparableDto {
     private UUID id;
-    @ComparingField(value = "name", isMain = true)
-    private String name;
-    @ComparingField("state")
-    private String state;
-    @ComparingField("country")
-    private CountryDto country;
+
+    @ComparingField("place")
+    private PlaceDto place;
+
+    @ComparingField(value = "route number", isMain = true)
+    private Integer routeNumber;
+
+    @ComparingField("address")
+    private String address;
+
+    @ComparingField("latitude")
+    private Double latitude;
+
+    @ComparingField("longitude")
+    private Double longitude;
+
+    private Boolean isStart;
+    private Boolean isEnd;
 }

@@ -13,10 +13,16 @@ public class Location implements IdentifiedEntity {
     @Id
     @Column(columnDefinition = "uuid")
     private UUID id;
-    private String name;
-    private String state;
 
-    @OneToOne
-    @JoinColumn(name = "country_id")
-    private Country country;
+    private String address;
+    private double latitude;
+    private int routeNumber;
+    private double longitude;
+
+    private Boolean isStart;
+    private Boolean isEnd;
+
+    @ManyToOne
+    @JoinColumn(columnDefinition = "uuid", name = "place_id")
+    private Place place;
 }

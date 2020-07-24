@@ -4,7 +4,10 @@ import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.*;
+import org.go.together.dto.EventDto;
+import org.go.together.dto.EventPaidThingDto;
+import org.go.together.dto.IdDto;
+import org.go.together.dto.SimpleDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.mapper.PaidThingMapper;
 import org.go.together.model.Event;
@@ -16,14 +19,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
@@ -70,27 +72,6 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
 
         calendar.add(Calendar.MONTH, rand.nextInt(10) + 1);
         eventDto.setEndDate(calendar.getTime());
-
-        Collection<EventLocationDto> routes = eventDto.getRoute();
-        Set<Integer> numbers = IntStream.rangeClosed(1, routes.size())
-                .boxed()
-                .collect(Collectors.toSet());
-        Iterator<EventLocationDto> iterator = routes.iterator();
-        for (Integer number : numbers) {
-            EventLocationDto eventLocationDto = iterator.next();
-            eventLocationDto.setRouteNumber(number);
-            if (number == 1) {
-                eventLocationDto.setIsStart(true);
-                eventLocationDto.setIsEnd(false);
-            } else if (number == routes.size()) {
-                eventLocationDto.setIsStart(false);
-                eventLocationDto.setIsEnd(true);
-            } else {
-                eventLocationDto.setIsStart(false);
-                eventLocationDto.setIsEnd(false);
-            }
-        }
-
         for (EventPaidThingDto paidThingDto : eventDto.getPaidThings()) {
             PaidThing paidThing = paidThingMapper.dtoToEntity(paidThingDto.getPaidThing());
             PaidThing savedPaidThing = paidThingRepository.save(paidThing);
@@ -103,16 +84,10 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
     private void prepareDto(EventDto eventDto) {
         when(userClient.checkIfUserPresentsById(eventDto.getAuthor().getId())).thenReturn(true);
         when(userClient.findById(eventDto.getAuthor().getId())).thenReturn(eventDto.getAuthor());
-        for (EventLocationDto eventLocationDto : eventDto.getRoute()) {
-            when(locationClient.getRouteById(eventLocationDto.getId())).thenReturn(eventLocationDto);
-        }
+        when(locationClient.getRouteById(eventDto.getRoute().getId())).thenReturn(eventDto.getRoute());
         when(contentClient.readGroupPhotosById(eventDto.getGroupPhoto().getId())).thenReturn(eventDto.getGroupPhoto());
-        when(locationClient.saveOrUpdateEventRoutes(eq(eventDto.getRoute()), any()))
-                .thenReturn(eventDto.getRoute().stream()
-                        .map(EventLocationDto::getId)
-                        .map(IdDto::new)
-                        .collect(Collectors.toSet())
-                );
+        when(locationClient.createRoute(eventDto.getRoute())).thenReturn(new IdDto(eventDto.getRoute().getId()));
+        when(locationClient.updateRoute(eventDto.getRoute())).thenReturn(new IdDto(eventDto.getRoute().getId()));
         when(contentClient.updateGroup(eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
         when(contentClient.createGroup(eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
     }
@@ -120,7 +95,8 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
     @Override
     protected void checkDtos(EventDto dto, EventDto savedObject, CrudOperation operation) {
         assertEquals(dto.getAuthor(), savedObject.getAuthor());
-        assertTrue(dto.getRoute().stream().allMatch(route -> savedObject.getRoute().stream().anyMatch(route::equals)));
+        assertTrue(dto.getRoute().getLocations().stream()
+                .allMatch(route -> savedObject.getRoute().getLocations().stream().anyMatch(route::equals)));
         assertEquals(dto.getDescription(), savedObject.getDescription());
         assertEquals(dto.getName(), savedObject.getName());
         assertEquals(dto.getEndDate(), savedObject.getEndDate());

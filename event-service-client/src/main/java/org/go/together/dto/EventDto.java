@@ -26,7 +26,7 @@ public class EventDto implements ComparableDto {
     @ComparingField("paid things")
     private Collection<EventPaidThingDto> paidThings;
     @ComparingField("routes")
-    private Collection<EventLocationDto> route;
+    private GroupLocationDto route;
     @ComparingField("start date")
     private Date startDate;
     @ComparingField("end date")

@@ -17,7 +17,7 @@ const ContextForm = ({
     useEffect(() => {
         updateValidation(value);
     }, [value, updateValidation]);
-
+    console.log(value)
     useEffect(() => {
         if (defaultValue) {
             const keysArray = [];

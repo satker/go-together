@@ -3,6 +3,7 @@ package org.go.together.service;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
+import org.go.together.client.LocationClient;
 import org.go.together.dto.*;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.enums.CrudOperation;
@@ -32,6 +33,7 @@ public class UserService extends CrudService<UserDto, SystemUser> {
     private final LanguageService languageService;
     private final InterestService interestService;
     private final EventLikeService eventLikeService;
+    private final LocationClient locationClient;
 
     public UserService(UserRepository userRepository,
                        UserMapper userMapper,
@@ -41,7 +43,8 @@ public class UserService extends CrudService<UserDto, SystemUser> {
                        SimpleUserMapper simpleUserMapper,
                        LanguageService languageService,
                        InterestService interestService,
-                       EventLikeService eventLikeService) {
+                       EventLikeService eventLikeService,
+                       LocationClient locationClient) {
         super(userRepository, userMapper, userValidator);
         this.userRepository = userRepository;
         this.userMapper = userMapper;
@@ -51,6 +54,7 @@ public class UserService extends CrudService<UserDto, SystemUser> {
         this.languageService = languageService;
         this.interestService = interestService;
         this.eventLikeService = eventLikeService;
+        this.locationClient = locationClient;
     }
 
     public UserDto findUserByLogin(String login) {
@@ -121,6 +125,12 @@ public class UserService extends CrudService<UserDto, SystemUser> {
 
             Role role = user.map(SystemUser::getRole).orElse(Role.ROLE_USER);
 
+            GroupLocationDto locationDto = dto.getLocation();
+            locationDto.setGroupId(entity.getId());
+            locationDto.setCategory(LocationCategory.USER);
+            IdDto route = locationClient.updateRoute(locationDto);
+            entity.setLocationId(route.getId());
+
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.USER);
@@ -130,6 +140,12 @@ public class UserService extends CrudService<UserDto, SystemUser> {
             entity.setRole(role);
         } else if (crudOperation == CrudOperation.CREATE) {
             updatePassword(entity);
+
+            GroupLocationDto locationDto = dto.getLocation();
+            locationDto.setGroupId(entity.getId());
+            locationDto.setCategory(LocationCategory.USER);
+            IdDto route = locationClient.createRoute(locationDto);
+            entity.setLocationId(route.getId());
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
@@ -143,6 +159,7 @@ public class UserService extends CrudService<UserDto, SystemUser> {
             eventLikeDto.setUsers(Collections.emptySet());
             eventLikeService.create(eventLikeDto);
         } else if (crudOperation == CrudOperation.DELETE) {
+            locationClient.deleteRoute(entity.getLocationId());
             contentClient.delete(entity.getGroupPhoto());
             eventLikeService.deleteByUserId(entity.getId());
         }

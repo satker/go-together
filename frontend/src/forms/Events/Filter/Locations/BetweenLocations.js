@@ -61,13 +61,13 @@ const BetweenLocations = ({onChangeLocation}) => {
                                   setCenter={updateLocationWitLatLng(route.number)}
                                   value={route.value}
                                   setValue={updateLocation(route.number)}
-                                  placeholder='Middle location'
+                                  placeholder='Middle place'
             />
             <DeleteIcon onDelete={onDeleteLocation(route.number)}/>
         </ItemContainer>)}
         <ItemContainer>
             <CustomButton onClick={onAddLocation}
-                          text='Add location'/>
+                          text='Add place'/>
         </ItemContainer>
     </Container>
 }

@@ -26,7 +26,7 @@ const Locations = ({setFilter, filter}) => {
                 [latLng]: value.lat + ',' + value.lng
             }))
         filteredLocations = filteredLocations
-            .filter(location => location.isStart || location.isEnd);
+            .filter(place => place.isStart || place.isEnd);
         filteredLocations = [...filteredLocations, ...updatedBetweenLocations];
         return filteredLocations;
     }
@@ -47,7 +47,7 @@ const Locations = ({setFilter, filter}) => {
             };
             if (filteredLocations) {
                 filteredLocations = filteredLocations
-                    .filter(location => !(location.isStart === isStart && location.isEnd === isEnd));
+                    .filter(place => !(place.isStart === isStart && place.isEnd === isEnd));
             }
             filteredLocations.push(newElement)
         }
@@ -59,13 +59,13 @@ const Locations = ({setFilter, filter}) => {
         <ItemContainer>
             <AutocompleteLocation
                 setCenter={onChangeLocation(true, false)}
-                placeholder='Start location'/>
+                placeholder='Start place'/>
         </ItemContainer>
         <BetweenLocations onChangeLocation={onChangeLocation(false, false)}/>
         <ItemContainer>
             <AutocompleteLocation
                 setCenter={onChangeLocation(false, true)}
-                placeholder='End location'/>
+                placeholder='End place'/>
         </ItemContainer>
     </Container>
 }

@@ -36,7 +36,7 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
                 .map(languageMapper::entityToDto)
                 .collect(Collectors.toSet()));
         userDTO.setLastName(entity.getLastName());
-        userDTO.setLocation(locationClient.getLocationById(entity.getLocationId()));
+        userDTO.setLocation(locationClient.getRouteById(entity.getLocationId()));
         userDTO.setLogin(entity.getLogin());
         userDTO.setMail(entity.getMail());
         userDTO.setRole(entity.getRole());
@@ -53,7 +53,7 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
         user.setId(dto.getId());
         user.setMail(dto.getMail());
         user.setLogin(dto.getLogin());
-        user.setLocationId(locationClient.saveLocation(dto.getLocation()).getId());
+        //user.setLocationId(locationClient.saveLocation(dto.getLocation()).getId());
         user.setLastName(dto.getLastName());
         user.setFirstName(dto.getFirstName());
         user.setDescription(dto.getDescription());

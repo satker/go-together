@@ -40,9 +40,8 @@ public class Event implements IdentifiedEntity {
     @JoinColumn(name = "event_id")
     private Set<EventUser> users;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "event_id")
-    private Set<EventRoute> routes;
+    @Column(columnDefinition = "uuid")
+    private UUID routeId;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "event_id")

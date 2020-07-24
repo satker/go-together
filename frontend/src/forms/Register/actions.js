@@ -41,10 +41,21 @@ export const getCheckUserName = (value) => (dispatch) => {
 };
 
 export const regUser = () => (dispatch, state) => {
+    const location = {
+        ...state.components.utils.input[FORM_ID].value.location,
+        category: 'USER',
+        locations: [{
+            ...state.components.utils.input[FORM_ID].value.location[0].locations,
+            routeNumber: 1,
+            isStart: true,
+            isEnd: false
+        }]
+    }
+
     dispatch({
         type: CREATED_USER,
         url: USER_SERVICE_URL + "/users",
         method: PUT,
-        data: state.components.utils.input[FORM_ID].value
+        data: {...state.components.utils.input[FORM_ID].value, location}
     });
 };
