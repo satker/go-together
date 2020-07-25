@@ -14,7 +14,7 @@ const Route = ({eventRoute, updateEvent}) => {
     const [routeNumber, setRouteNumber] = useState(eventRoute.length || 1);
 
     const onChangeLocation = (updatedRouteNumber, path, value) => {
-        const newArray = [...eventRoute].map(route => {
+        const newArray = [...eventRoute.locations].map(route => {
             if (route.routeNumber === updatedRouteNumber) {
                 onChange(route, newRoute => route = newRoute)(path, value);
                 return route;
@@ -25,7 +25,7 @@ const Route = ({eventRoute, updateEvent}) => {
     };
 
     const onDelete = (deletedRouteNumber) => {
-        const newArray = [...eventRoute]
+        const newArray = [...eventRoute.locations]
             .filter(route => route.routeNumber !== deletedRouteNumber)
             .map(route => {
                 if (route.routeNumber > deletedRouteNumber) {
@@ -45,10 +45,10 @@ const Route = ({eventRoute, updateEvent}) => {
     };
 
     const addLocation = (paths, values) => {
-        const nextRouteNumber = eventRoute.length + 1;
+        const nextRouteNumber = eventRoute.locations.length + 1;
         let newElement = {...DEFAULT_ROUTE};
-        newElement.location = {...PLACE};
-        newElement.location.country = {...DEFAULT_COUNTRY};
+        newElement.place = {...PLACE};
+        newElement.place.country = {...DEFAULT_COUNTRY};
         newElement.routeNumber = nextRouteNumber;
         if (nextRouteNumber === 1) {
             newElement.isStart = true;
@@ -57,14 +57,19 @@ const Route = ({eventRoute, updateEvent}) => {
         }
         onChange(newElement, result => newElement = result)(paths, values);
         setRouteNumber(nextRouteNumber);
-        updateEvent('route.locations', [...eventRoute.map(route => {
+        console.log(paths, values, [...eventRoute.locations.map(route => {
+            if (route.isEnd) {
+                route.isEnd = false;
+            }
+            return route;
+        }), newElement])
+        updateEvent('route.locations', [...eventRoute.locations.map(route => {
             if (route.isEnd) {
                 route.isEnd = false;
             }
             return route;
         }), newElement])
     };
-
     return <Container>
         <ItemContainer>
             Add {routeNumber} route point (left click to add location):
@@ -73,7 +78,7 @@ const Route = ({eventRoute, updateEvent}) => {
                 onAdd={addLocation}
                 onDelete={onDelete}
                 editable={true}
-                routes={eventRoute}
+                routes={eventRoute.locations}
                 onChange={onChangeLocation}
                 height={400}
             />

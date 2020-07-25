@@ -24,8 +24,8 @@ const EditForm = ({
         saveObj.author = {
             id: userId
         };
-        const maxRouteNumber = saveObj.route.length;
-        saveObj.route = saveObj.route.map(route => {
+        const maxRouteNumber = saveObj.route.locations.length;
+        saveObj.route.locations = saveObj.route.locations.map(route => {
             if (route.routeNumber === 1) {
                 route.isStart = true;
                 route.isEnd = false;

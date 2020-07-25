@@ -16,7 +16,7 @@ const RouteItem = ({center, setCenter, route, onDelete}) => {
                 {route.routeNumber}
             </ListItemIcon>
             <ListItemText id={"switch-list-label-" + route.routeNumber}
-                          primary={route.location.name + ', ' + route.location.country.name}/>
+                          primary={route.place.name + ', ' + route.place.country.name}/>
             {onDelete && <ListItemIcon>
                 <Delete onDelete={() => onDelete(route.routeNumber)}/>
             </ListItemIcon>}

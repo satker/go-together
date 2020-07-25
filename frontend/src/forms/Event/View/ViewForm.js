@@ -24,7 +24,7 @@ const ViewForm = ({event, getUsers, userId}) => {
         <ObjectGeoLocation
             editable={false}
             setCurrentCenter={() => null}
-            routes={event.route}
+            routes={event.route.locations}
             height={400}
         />
         <Users/>

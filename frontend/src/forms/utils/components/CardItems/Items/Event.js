@@ -19,17 +19,18 @@ const ItemEvent = ({event, onDelete, userId, eventIds}) => <Card>
         <CardContent>
             <Typography>{event.name}</Typography>
             <Typography>{event.description}</Typography>
-                <Typography>I {event.author.firstName}, {event.author.lastName}</Typography>
-                <Typography>From {event.author.location.name}, {event.author.location.country.name}</Typography>
-                <Typography>Languages: {event.author.languages.map(lang => lang.name).join(', ')}</Typography>
+            <Typography>I {event.author.firstName}, {event.author.lastName}</Typography>
+            <Typography>From {event.author.location.locations[0].place.name},
+                {event.author.location.locations[0].place.country.name}</Typography>
+            <Typography>Languages: {event.author.languages.map(lang => lang.name).join(', ')}</Typography>
             <Typography>My
                 interests: {event.author.interests.map(interest => interest.name).join(', ')}</Typography>
             <Typography>Dates: {getCorrectDateFromString(event.startDate)} -> {getCorrectDateFromString(event.endDate)}</Typography>
-            <Typography>Going to travel through {event.route.map(location => location.location.name + ", " +
-                location.location.country.name).join(" -> ")}</Typography>
-                <Typography>With {event.peopleCount} friends</Typography>
-                <Typography>Live by {event.housingType}</Typography>
-            </CardContent>
+            <Typography>Going to travel through {event.route.locations.map(location => location.place.name + ", " +
+                location.place.country.name).join(" -> ")}</Typography>
+            <Typography>With {event.peopleCount} friends</Typography>
+            <Typography>Live by {event.housingType}</Typography>
+        </CardContent>
         </CardActionArea>
         <CardActions>
             {userId && userId !== event.author.id &&
