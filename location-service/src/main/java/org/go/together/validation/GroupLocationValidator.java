@@ -2,7 +2,6 @@ package org.go.together.validation;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.GroupLocationDto;
-import org.go.together.dto.LocationCategory;
 import org.go.together.dto.LocationDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.logic.Validator;
@@ -30,16 +29,6 @@ public class GroupLocationValidator extends Validator<GroupLocationDto> {
     protected String commonValidation(GroupLocationDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
         checkRoutes(dto.getLocations(), errors, crudOperation);
-        if (dto.getCategory().equals(LocationCategory.EVENT)) {
-            boolean presentEndRoute = dto.getLocations().stream().anyMatch(LocationDto::getIsEnd);
-            boolean presentStartRoute = dto.getLocations().stream().anyMatch(LocationDto::getIsStart);
-            if (!presentEndRoute) {
-                errors.append("End route not present");
-            }
-            if (!presentStartRoute) {
-                errors.append("Start route not present");
-            }
-        }
         return errors.toString();
     }
 

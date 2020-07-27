@@ -53,8 +53,10 @@ public class GroupPhotoService extends CrudService<GroupPhotoDto, GroupPhoto> {
                 entity.setPhotos(newPhotos);
 
             } else {
-                entity = groupPhoto;
-                entity.setPhotos(newPhotos);
+                groupPhoto.setCategory(entity.getCategory());
+                groupPhoto.setGroupId(entity.getGroupId());
+                groupPhoto.setPhotos(newPhotos);
+                return groupPhoto;
             }
         } else if (crudOperation == CrudOperation.DELETE) {
             entity.getPhotos().stream()

@@ -7,6 +7,7 @@ import org.go.together.interfaces.IdentifiedEntity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -18,6 +19,18 @@ public abstract class CustomRepository<E extends IdentifiedEntity> {
     private EntityManager entityManager;
 
     private final Class<E> clazz = getEntityClass();
+
+    @Transactional
+    public E create() {
+        E entity;
+        try {
+            entity = clazz.getConstructor().newInstance();
+        } catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+            throw new RuntimeException("Cannot create instance entity");
+        }
+        entity.setId(UUID.randomUUID());
+        return entityManager.merge(entity);
+    }
 
     @Transactional
     public E save(E entity) {

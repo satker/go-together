@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.Collections;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -60,6 +61,8 @@ class PlaceServiceTest extends CrudServiceCommonTest<Place, PlaceDto> {
         Country savedCountry = countryRepository.save(country);
         CountryDto countryDto = countryMapper.entityToDto(savedCountry);
         placeDto.setCountry(countryDto);
+
+        placeDto.setLocations(Collections.emptySet());
 
         return placeDto;
     }

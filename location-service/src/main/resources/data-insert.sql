@@ -247,24 +247,3 @@ INSERT INTO location_service.country (id, country_code, name) VALUES ('33dfb49c-
 INSERT INTO location_service.country (id, country_code, name) VALUES ('b95d88af-37c3-4479-91a2-15d829b54e1b', 'YE', 'YEMEN');
 INSERT INTO location_service.country (id, country_code, name) VALUES ('64e1419e-00bc-4d7e-b459-959f7266dc63', 'ZM', 'ZAMBIA');
 INSERT INTO location_service.country (id, country_code, name) VALUES ('a099d5ce-78fe-462c-9211-44f88c53de4a', 'ZW', 'ZIMBABWE');
-
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('19800899-2a73-47c2-8bf0-671be086cf83', 'Aixas', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('6c860652-7138-4e82-8b94-25c9542022d0', 'Aixirivall', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('49492f28-24c8-4ade-9b2a-7d50d765c466', 'Aixovall', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('035d3ce5-96f7-40e5-825f-222dcf5692c1', 'Ansalonga', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('8f59b354-ba62-4cdb-b1ff-02f4c798c3ec', 'Anyos', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('9198d376-bad3-422f-88a8-4b0561b8756e', 'Arans', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('95e07220-416c-488c-b431-5b003711e5b2', 'Arinsal', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('a210a4ed-61df-45a7-be60-6833c58ba3c3', 'Aubinya', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('5df4bb97-975e-40b2-859f-e5b93c64469b', 'Bixessarri', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('f0d69916-ec99-45c0-8230-da13a2954238', 'Bordes d''Envalira', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('fac90fd8-d1bd-4bf0-8afc-b4cbc96c9779', 'Certers', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('76fc326d-c247-49a3-8300-20c1eb16a4c8', 'El Serrat', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('831982fb-bbef-4273-b061-5e3e2f187c0e', 'El Tarter', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('d544c59d-83ce-4eac-8432-d938affae880', 'El Vilar', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('beaff871-44fb-44ce-9fe2-b510f9d2b52a', 'Els Plans', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('a5046f63-132f-4345-9c5d-b38eab262dd9', 'Els Vilars', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('4b803be0-9caf-4361-9ccd-ca4d7f658075', 'Engordany', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('49e60681-d469-4eb4-b7e8-14c0287384ad', 'Erts', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('e1dab28b-01fc-4fc9-9b2b-6ac790af855a', 'Escas', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');
-INSERT INTO location_service.place (id, name, state, country_id) VALUES ('d056b5fb-64c1-4aa7-ab62-e0f274c4c227', 'Fontaneda', null, 'd5c96f27-942f-40d9-bafc-e151d1e7db91');

@@ -12,6 +12,8 @@ import org.go.together.tests.CrudServiceCommonTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.Collections;
+
 @ContextConfiguration(classes = RepositoryContext.class)
 class LocationServiceTest extends CrudServiceCommonTest<Location, LocationDto> {
     @Autowired
@@ -32,6 +34,7 @@ class LocationServiceTest extends CrudServiceCommonTest<Location, LocationDto> {
         CountryDto countryDto = countryMapper.entityToDto(savedCountry);
         placeDto.setId(null);
         placeDto.setCountry(countryDto);
+        placeDto.setLocations(Collections.emptySet());
 
         return locationDto;
     }

@@ -8,6 +8,7 @@ import org.go.together.dto.filter.FieldMapper;
 import org.go.together.enums.CrudOperation;
 import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.LocationMapper;
+import org.go.together.mapper.PlaceMapper;
 import org.go.together.model.Location;
 import org.go.together.model.Place;
 import org.go.together.repository.LocationRepository;
@@ -22,15 +23,18 @@ public class LocationService extends CrudService<LocationDto, Location> {
     private final LocationMapper locationMapper;
     private final LocationRepository locationRepository;
     private final PlaceService placeService;
+    private final PlaceMapper placeMapper;
 
     public LocationService(LocationRepository locationRepository,
                            LocationMapper locationMapper,
                            LocationValidator locationValidator,
-                           PlaceService placeService) {
+                           PlaceService placeService,
+                           PlaceMapper placeMapper) {
         super(locationRepository, locationMapper, locationValidator);
         this.locationMapper = locationMapper;
         this.locationRepository = locationRepository;
         this.placeService = placeService;
+        this.placeMapper = placeMapper;
     }
 
     public Set<LocationDto> getEventRoute(UUID eventId) {
@@ -70,19 +74,28 @@ public class LocationService extends CrudService<LocationDto, Location> {
     @Override
     protected Location enrichEntity(Location entity, LocationDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE || crudOperation == CrudOperation.CREATE) {
-            PlaceDto location = dto.getPlace();
-            Optional<Place> locationEquals = placeService.getLocationEquals(location);
-            if (locationEquals.isEmpty()) {
-                IdDto idDto = placeService.create(location);
-                entity.setPlace(placeService.getPlaceById(idDto.getId()));
+            PlaceDto placeDto = dto.getPlace();
+            Optional<Place> placeEquals = placeService.getLocationEquals(placeDto);
+            if (placeEquals.isEmpty()) {
+                placeDto.setLocations(Collections.singleton(entity.getId()));
+                placeService.create(placeDto);
             } else {
-                entity.setPlace(locationEquals.get());
+                Place place = placeEquals.get();
+                Set<Location> locations = place.getLocations();
+                locations.add(entity);
+                PlaceDto placeUpdated = placeMapper.entityToDto(place);
+                placeService.update(placeUpdated);
             }
         } else if (crudOperation == CrudOperation.DELETE) {
-            Place place = entity.getPlace();
-            Number countPlaceIdRows = locationRepository.getCountPlaceIdRows(place.getId());
-            if (countPlaceIdRows.intValue() - 1 == 0) {
+            Place place = placeService.getPlaceByLocationId(entity.getId());
+            if (place.getLocations().stream().allMatch(location -> location.getId().equals(entity.getId()))) {
                 placeService.delete(place.getId());
+            } else {
+                place.setLocations(place.getLocations().stream()
+                        .filter(location -> !location.getId().equals(entity.getId()))
+                        .collect(Collectors.toSet()));
+                PlaceDto placeUpdated = placeMapper.entityToDto(place);
+                placeService.update(placeUpdated);
             }
         }
         return entity;
@@ -90,7 +103,7 @@ public class LocationService extends CrudService<LocationDto, Location> {
 
     @Override
     public String getServiceName() {
-        return "eventLocation";
+        return "location";
     }
 
     @Override

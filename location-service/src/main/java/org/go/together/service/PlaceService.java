@@ -4,8 +4,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.PlaceDto;
 import org.go.together.dto.SimpleDto;
 import org.go.together.dto.filter.FieldMapper;
+import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.logic.services.CrudService;
+import org.go.together.mapper.CountryMapper;
 import org.go.together.mapper.PlaceMapper;
 import org.go.together.model.Country;
 import org.go.together.model.Place;
@@ -19,29 +21,29 @@ import java.util.stream.Collectors;
 @Service
 public class PlaceService extends CrudService<PlaceDto, Place> {
     private final CountryService countryService;
+    private final CountryMapper countryMapper;
     private final PlaceRepository placeRepository;
-    private final PlaceMapper placeMapper;
 
     public PlaceService(PlaceRepository placeRepository,
                         PlaceMapper placeMapper,
                         PlaceValidator placeValidator,
-                        CountryService countryService) {
+                        CountryService countryService,
+                        CountryMapper countryMapper) {
         super(placeRepository, placeMapper, placeValidator);
         this.placeRepository = placeRepository;
         this.countryService = countryService;
-        this.placeMapper = placeMapper;
+        this.countryMapper = countryMapper;
     }
 
     public Optional<Place> getLocationEquals(PlaceDto anotherPlaceDto) {
-        Place anotherPlace = placeMapper.dtoToEntity(anotherPlaceDto);
-        return placeRepository.findLocationByNameAndStateAndByCountryId(anotherPlace.getName(),
-                anotherPlace.getState(),
-                anotherPlace.getCountry().getId());
+        return placeRepository.findLocationByNameAndStateAndByCountryId(anotherPlaceDto.getName(),
+                anotherPlaceDto.getState(),
+                countryMapper.dtoToEntity(anotherPlaceDto.getCountry()).getId());
     }
 
-    public Place getPlaceById(UUID placeId) {
-        return placeRepository.findById(placeId)
-                .orElseThrow(() -> new CannotFindEntityException("Cannot find place by id: " + placeId));
+    public Place getPlaceByLocationId(UUID locationId) {
+        return placeRepository.findByLocationId(locationId)
+                .orElseThrow(() -> new CannotFindEntityException("Cannot find place by id: " + locationId));
     }
 
     public Set<SimpleDto> getLocationsByName(String location) {
@@ -64,6 +66,14 @@ public class PlaceService extends CrudService<PlaceDto, Place> {
                 .map(loc -> new SimpleDto(loc.getId().toString(), loc.getName() + ", " +
                         loc.getCountry().getName()))
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    protected Place enrichEntity(Place entity, PlaceDto dto, CrudOperation crudOperation) {
+        if (crudOperation == CrudOperation.CREATE || crudOperation == CrudOperation.UPDATE) {
+
+        }
+        return entity;
     }
 
     @Override

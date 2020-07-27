@@ -43,8 +43,9 @@ public abstract class CrudService<D extends ComparableDto, E extends IdentifiedE
         CrudOperation crudOperation = CrudOperation.CREATE;
         String validate = validator.validate(dto, crudOperation);
         if (StringUtils.isBlank(validate)) {
+            UUID id = repository.create().getId();
             E entity = mapper.dtoToEntity(dto);
-            entity.setId(UUID.randomUUID());
+            entity.setId(id);
             E createdEntity;
             try {
                 E enrichedEntity = enrichEntity(entity, dto, crudOperation);

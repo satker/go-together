@@ -3,7 +3,10 @@ package org.go.together.model;
 import lombok.Data;
 import org.go.together.interfaces.IdentifiedEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.UUID;
 
 @Data
@@ -18,11 +21,6 @@ public class Location implements IdentifiedEntity {
     private double latitude;
     private int routeNumber;
     private double longitude;
-
     private Boolean isStart;
     private Boolean isEnd;
-
-    @ManyToOne
-    @JoinColumn(columnDefinition = "uuid", name = "place_id")
-    private Place place;
 }

@@ -9,7 +9,7 @@ const AutocompleteLocationField = ({name, placeholder, setValue, error, value}) 
         let location = {
             ...value,
             locations: [{
-                ...value.locations[0],
+                ...value?.locations[0],
                 id: null,
                 place: loc,
                 address: loc.name,

@@ -6,10 +6,9 @@ import org.go.together.client.UserClient;
 import org.go.together.dto.EventDto;
 import org.go.together.logic.Mapper;
 import org.go.together.model.Event;
-import org.go.together.model.EventPaidThing;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
+import java.util.HashSet;
 
 @Component
 public class EventMapper implements Mapper<EventDto, Event> {
@@ -52,7 +51,7 @@ public class EventMapper implements Mapper<EventDto, Event> {
         event.setAuthorId(dto.getAuthor().getId());
         event.setDescription(dto.getDescription());
         event.setHousingType(dto.getHousingType());
-        event.setPaidThings((Set<EventPaidThing>) eventPaidThingMapper.dtosToEntities(dto.getPaidThings()));
+        event.setPaidThings(new HashSet<>(eventPaidThingMapper.dtosToEntities(dto.getPaidThings())));
         event.setPeopleCount(dto.getPeopleCount());
         event.setName(dto.getName());
         event.setStartDate(dto.getStartDate());

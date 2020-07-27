@@ -4,6 +4,7 @@ import lombok.Data;
 import org.go.together.interfaces.IdentifiedEntity;
 
 import javax.persistence.*;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -19,4 +20,8 @@ public class Place implements IdentifiedEntity {
     @OneToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "country_id")
     private Country country;
+
+    @OneToMany
+    @JoinColumn(name = "place_id")
+    private Set<Location> locations;
 }

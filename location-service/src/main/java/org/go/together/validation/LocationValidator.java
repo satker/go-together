@@ -30,6 +30,7 @@ public class LocationValidator extends Validator<LocationDto> {
                 .put("city name", locationDto.getPlace().getName())
                 .build();
         super.OBJECT_NULL_CHECK = ImmutableMap.<String, Optional<Object>>builder()
+                .put("place", Optional.ofNullable(locationDto.getPlace()))
                 .put("end location", Optional.ofNullable(locationDto.getIsEnd()))
                 .put("start location", Optional.ofNullable(locationDto.getIsStart()))
                 .build();

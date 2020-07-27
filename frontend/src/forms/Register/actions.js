@@ -45,7 +45,7 @@ export const regUser = () => (dispatch, state) => {
         ...state.components.utils.input[FORM_ID].value.location,
         category: 'USER',
         locations: [{
-            ...state.components.utils.input[FORM_ID].value.location[0].locations,
+            ...state.components.utils.input[FORM_ID].value.location.locations[0],
             routeNumber: 1,
             isStart: true,
             isEnd: false
