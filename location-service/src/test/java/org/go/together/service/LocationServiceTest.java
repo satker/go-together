@@ -4,15 +4,19 @@ import org.go.together.context.RepositoryContext;
 import org.go.together.dto.CountryDto;
 import org.go.together.dto.LocationDto;
 import org.go.together.dto.PlaceDto;
+import org.go.together.enums.CrudOperation;
 import org.go.together.mapper.CountryMapper;
 import org.go.together.model.Country;
 import org.go.together.model.Location;
 import org.go.together.repository.CountryRepository;
+import org.go.together.repository.PlaceRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collections;
+
+import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 class LocationServiceTest extends CrudServiceCommonTest<Location, LocationDto> {
@@ -21,6 +25,9 @@ class LocationServiceTest extends CrudServiceCommonTest<Location, LocationDto> {
 
     @Autowired
     private CountryMapper countryMapper;
+
+    @Autowired
+    private PlaceRepository placeRepository;
 
     @Override
     protected LocationDto createDto() {
@@ -37,5 +44,11 @@ class LocationServiceTest extends CrudServiceCommonTest<Location, LocationDto> {
         placeDto.setLocations(Collections.emptySet());
 
         return locationDto;
+    }
+
+    @Override
+    protected void checkDtos(LocationDto dto, LocationDto savedObject, CrudOperation operation) {
+        super.checkDtos(dto, savedObject, operation);
+        assertEquals(repository.findAll().size(), placeRepository.findAll().size());
     }
 }

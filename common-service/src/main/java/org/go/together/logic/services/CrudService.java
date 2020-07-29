@@ -54,6 +54,7 @@ public abstract class CrudService<D extends ComparableDto, E extends IdentifiedE
                 log.error("Cannot create " + getServiceName() + ": " + e.getMessage());
                 log.error("Try rollback create " + getServiceName() + " id = " + entity.getId());
                 enrichEntity(entity, dto, CrudOperation.DELETE);
+                repository.findById(id).ifPresent(repository::delete);
                 log.error("Rollback successful  create " + getServiceName() + " id = " + entity.getId());
                 throw new ApplicationException(e);
             }

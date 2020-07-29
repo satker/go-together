@@ -6,6 +6,7 @@ import org.go.together.dto.LocationDto;
 import org.go.together.dto.PlaceDto;
 import org.go.together.dto.filter.FieldMapper;
 import org.go.together.enums.CrudOperation;
+import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.LocationMapper;
 import org.go.together.mapper.PlaceMapper;
@@ -75,7 +76,14 @@ public class LocationService extends CrudService<LocationDto, Location> {
     protected Location enrichEntity(Location entity, LocationDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE || crudOperation == CrudOperation.CREATE) {
             PlaceDto placeDto = dto.getPlace();
-            Optional<Place> placeEquals = placeService.getLocationEquals(placeDto);
+            Optional<Place> placeEquals = placeService.getPlaceEquals(placeDto);
+
+            Optional<Place> placeByLocationId = placeService.getPlaceByLocationId(entity.getId());
+            if (placeByLocationId.isPresent() && (placeEquals.isEmpty()
+                    || placeByLocationId.get().getId().equals(placeEquals.get().getId()))) {
+                removePlaceByLocationId(entity);
+            }
+
             if (placeEquals.isEmpty()) {
                 placeDto.setLocations(Collections.singleton(entity.getId()));
                 placeService.create(placeDto);
@@ -87,18 +95,24 @@ public class LocationService extends CrudService<LocationDto, Location> {
                 placeService.update(placeUpdated);
             }
         } else if (crudOperation == CrudOperation.DELETE) {
-            Place place = placeService.getPlaceByLocationId(entity.getId());
-            if (place.getLocations().stream().allMatch(location -> location.getId().equals(entity.getId()))) {
-                placeService.delete(place.getId());
-            } else {
-                place.setLocations(place.getLocations().stream()
-                        .filter(location -> !location.getId().equals(entity.getId()))
-                        .collect(Collectors.toSet()));
-                PlaceDto placeUpdated = placeMapper.entityToDto(place);
-                placeService.update(placeUpdated);
-            }
+            removePlaceByLocationId(entity);
         }
         return entity;
+    }
+
+    private void removePlaceByLocationId(Location entity) {
+        Place place = placeService.getPlaceByLocationId(entity.getId())
+                .orElseThrow(() -> new CannotFindEntityException("Cannot find place by id: " + entity.getId()));
+        if (place.getLocations().stream()
+                .allMatch(location -> location.getId().equals(entity.getId()))) {
+            placeService.delete(place.getId());
+        } else {
+            place.setLocations(place.getLocations().stream()
+                    .filter(location -> !location.getId().equals(entity.getId()))
+                    .collect(Collectors.toSet()));
+            PlaceDto placeUpdated = placeMapper.entityToDto(place);
+            placeService.update(placeUpdated);
+        }
     }
 
     @Override

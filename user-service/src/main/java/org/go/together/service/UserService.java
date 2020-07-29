@@ -152,7 +152,6 @@ public class UserService extends CrudService<UserDto, SystemUser> {
             groupPhotoDto.setCategory(PhotoCategory.USER);
             IdDto groupPhotoId = contentClient.createGroup(groupPhotoDto);
             entity.setGroupPhoto(groupPhotoId.getId());
-            entity.setId(entity.getId());
             entity.setRole(Role.ROLE_USER);
             EventLikeDto eventLikeDto = new EventLikeDto();
             eventLikeDto.setEventId(entity.getId());

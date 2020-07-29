@@ -4,8 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.PlaceDto;
 import org.go.together.dto.SimpleDto;
 import org.go.together.dto.filter.FieldMapper;
-import org.go.together.enums.CrudOperation;
-import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.CountryMapper;
 import org.go.together.mapper.PlaceMapper;
@@ -35,15 +33,14 @@ public class PlaceService extends CrudService<PlaceDto, Place> {
         this.countryMapper = countryMapper;
     }
 
-    public Optional<Place> getLocationEquals(PlaceDto anotherPlaceDto) {
+    public Optional<Place> getPlaceEquals(PlaceDto anotherPlaceDto) {
         return placeRepository.findLocationByNameAndStateAndByCountryId(anotherPlaceDto.getName(),
                 anotherPlaceDto.getState(),
                 countryMapper.dtoToEntity(anotherPlaceDto.getCountry()).getId());
     }
 
-    public Place getPlaceByLocationId(UUID locationId) {
-        return placeRepository.findByLocationId(locationId)
-                .orElseThrow(() -> new CannotFindEntityException("Cannot find place by id: " + locationId));
+    public Optional<Place> getPlaceByLocationId(UUID locationId) {
+        return placeRepository.findByLocationId(locationId);
     }
 
     public Set<SimpleDto> getLocationsByName(String location) {
@@ -66,14 +63,6 @@ public class PlaceService extends CrudService<PlaceDto, Place> {
                 .map(loc -> new SimpleDto(loc.getId().toString(), loc.getName() + ", " +
                         loc.getCountry().getName()))
                 .collect(Collectors.toSet());
-    }
-
-    @Override
-    protected Place enrichEntity(Place entity, PlaceDto dto, CrudOperation crudOperation) {
-        if (crudOperation == CrudOperation.CREATE || crudOperation == CrudOperation.UPDATE) {
-
-        }
-        return entity;
     }
 
     @Override
