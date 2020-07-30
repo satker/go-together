@@ -2,7 +2,7 @@ package org.go.together.test.service;
 
 import com.google.common.collect.ImmutableMap;
 import org.go.together.dto.filter.FieldMapper;
-import org.go.together.logic.CrudService;
+import org.go.together.logic.services.CrudService;
 import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.entities.ManyJoinEntity;
 import org.go.together.test.mapper.ManyJoinMapper;

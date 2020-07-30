@@ -32,3 +32,6 @@ dependencies {
     compile project(":message-service-client")
 }
 
+test {
+    useJUnitPlatform()
+}

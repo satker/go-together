@@ -98,8 +98,8 @@ class MapperTest {
         Pair<TestEntity, TestDto> testDtoAndEntity = createTestDtoAndEntity(id, name, number, date, startDate, endDate,
                 startNumber, endNumber, simpleDto, longitude, latitude);
 
-        Collection<TestDto> testDtos = Arrays.asList(testDto, testDtoAndEntity.getRight());
-        Collection<TestEntity> testEntities = Arrays.asList(testEntity, testDtoAndEntity.getLeft());
+        Collection<TestDto> testDtos = Set.of(testDto, testDtoAndEntity.getRight());
+        Collection<TestEntity> testEntities = Set.of(testEntity, testDtoAndEntity.getLeft());
 
         Collection<TestDto> actualTestDtos = testMapper.entitiesToDtos(testEntities);
 
@@ -127,8 +127,8 @@ class MapperTest {
         Pair<TestEntity, TestDto> testDtoAndEntity = createTestDtoAndEntity(id, name, number, date, startDate, endDate,
                 startNumber, endNumber, simpleDto, longitude, latitude);
 
-        Collection<TestDto> testDtos = Arrays.asList(testDto, testDtoAndEntity.getRight());
-        Collection<TestEntity> testEntities = Arrays.asList(testEntity, testDtoAndEntity.getLeft());
+        Collection<TestDto> testDtos = Set.of(testDto, testDtoAndEntity.getRight());
+        Collection<TestEntity> testEntities = Set.of(testEntity, testDtoAndEntity.getLeft());
 
         Collection<TestEntity> actualTestEntites = testMapper.dtosToEntities(testDtos);
 
@@ -189,10 +189,10 @@ class MapperTest {
         }
 
         Set<UUID> elementsEntity = new HashSet<>();
-        Set<String> elementsDto = new HashSet<>();
+        Set<UUID> elementsDto = new HashSet<>();
         for (int i = 0; i < 20; i++) {
             UUID id = UUID.randomUUID();
-            elementsDto.add(id.toString());
+            elementsDto.add(id);
             elementsEntity.add(id);
         }
 

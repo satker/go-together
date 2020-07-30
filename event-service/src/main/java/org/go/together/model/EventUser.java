@@ -11,15 +11,20 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "event_user", schema = "public")
+@Table(name = "event_user", schema = "event_service")
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventUser implements IdentifiedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
+    @Column(columnDefinition = "uuid")
     private UUID id;
+
+    @Column(columnDefinition = "uuid")
     private UUID userId;
+
     private EventUserStatus userStatus;
-    @Column(name = "event_id")
+
+    @Column(columnDefinition = "uuid", name = "event_id")
     private UUID eventId;
 }

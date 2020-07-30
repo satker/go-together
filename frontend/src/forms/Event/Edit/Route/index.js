@@ -5,7 +5,7 @@ import ObjectGeoLocation from "forms/utils/components/ObjectGeoLocation";
 import {onChange} from "forms/utils/utils";
 import Container from "forms/utils/components/Container/ContainerRow";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
-import {DEFAULT_COUNTRY, DEFAULT_LOCATION, DEFAULT_ROUTE} from "forms/utils/constants";
+import {DEFAULT_COUNTRY, DEFAULT_ROUTE, PLACE} from "forms/utils/constants";
 import {connect} from "App/Context";
 
 import {updateEvent} from "../actions";
@@ -14,18 +14,18 @@ const Route = ({eventRoute, updateEvent}) => {
     const [routeNumber, setRouteNumber] = useState(eventRoute.length || 1);
 
     const onChangeLocation = (updatedRouteNumber, path, value) => {
-        const newArray = [...eventRoute].map(route => {
+        const newArray = [...eventRoute.locations].map(route => {
             if (route.routeNumber === updatedRouteNumber) {
                 onChange(route, newRoute => route = newRoute)(path, value);
                 return route;
             }
             return route;
         });
-        updateEvent('route', newArray);
+        updateEvent('route.locations', newArray);
     };
 
     const onDelete = (deletedRouteNumber) => {
-        const newArray = [...eventRoute]
+        const newArray = [...eventRoute.locations]
             .filter(route => route.routeNumber !== deletedRouteNumber)
             .map(route => {
                 if (route.routeNumber > deletedRouteNumber) {
@@ -33,7 +33,7 @@ const Route = ({eventRoute, updateEvent}) => {
                 }
                 return route;
             });
-        updateEvent('route', newArray.map(route => {
+        updateEvent('route.locations', newArray.map(route => {
             if (route.routeNumber === 1) {
                 route.isStart = true;
             } else if (route.routeNumber === newArray.length + 1) {
@@ -45,10 +45,10 @@ const Route = ({eventRoute, updateEvent}) => {
     };
 
     const addLocation = (paths, values) => {
-        const nextRouteNumber = eventRoute.length + 1;
+        const nextRouteNumber = eventRoute.locations.length + 1;
         let newElement = {...DEFAULT_ROUTE};
-        newElement.location = {...DEFAULT_LOCATION};
-        newElement.location.country = {...DEFAULT_COUNTRY};
+        newElement.place = {...PLACE};
+        newElement.place.country = {...DEFAULT_COUNTRY};
         newElement.routeNumber = nextRouteNumber;
         if (nextRouteNumber === 1) {
             newElement.isStart = true;
@@ -57,14 +57,19 @@ const Route = ({eventRoute, updateEvent}) => {
         }
         onChange(newElement, result => newElement = result)(paths, values);
         setRouteNumber(nextRouteNumber);
-        updateEvent('route', [...eventRoute.map(route => {
+        console.log(paths, values, [...eventRoute.locations.map(route => {
+            if (route.isEnd) {
+                route.isEnd = false;
+            }
+            return route;
+        }), newElement])
+        updateEvent('route.locations', [...eventRoute.locations.map(route => {
             if (route.isEnd) {
                 route.isEnd = false;
             }
             return route;
         }), newElement])
     };
-
     return <Container>
         <ItemContainer>
             Add {routeNumber} route point (left click to add location):
@@ -73,7 +78,7 @@ const Route = ({eventRoute, updateEvent}) => {
                 onAdd={addLocation}
                 onDelete={onDelete}
                 editable={true}
-                routes={eventRoute}
+                routes={eventRoute.locations}
                 onChange={onChangeLocation}
                 height={400}
             />

@@ -1,12 +1,11 @@
 package org.go.together.test.mapper;
 
 import org.go.together.dto.SimpleDto;
-import org.go.together.interfaces.Mapper;
+import org.go.together.logic.Mapper;
 import org.go.together.test.dto.TestDto;
 import org.go.together.test.entities.TestEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -34,7 +33,7 @@ public class TestMapper implements Mapper<TestDto, TestEntity> {
         testDto.setDate(entity.getDate());
         testDto.setName(entity.getName());
         testDto.setNumber(entity.getNumber());
-        testDto.setElements(entity.getElements().stream().map(UUID::toString).collect(Collectors.toSet()));
+        testDto.setElements(entity.getElements());
         testDto.setJoinTestEntities(entity.getJoinTestEntities().stream().map(joinTestMapper::entityToDto).collect(Collectors.toSet()));
         testDto.setManyJoinEntities(entity.getManyJoinEntities().stream().map(manyJoinMapper::entityToDto).collect(Collectors.toSet()));
         return testDto;
@@ -47,7 +46,7 @@ public class TestMapper implements Mapper<TestDto, TestEntity> {
         testEntity.setDate(dto.getDate());
         testEntity.setName(dto.getName());
         testEntity.setNumber(dto.getNumber());
-        testEntity.setElements(dto.getElements().stream().map(UUID::fromString).collect(Collectors.toSet()));
+        testEntity.setElements(dto.getElements());
         testEntity.setJoinTestEntities(dto.getJoinTestEntities().stream().map(joinTestMapper::dtoToEntity).collect(Collectors.toSet()));
         testEntity.setManyJoinEntities(dto.getManyJoinEntities().stream().map(manyJoinMapper::dtoToEntity).collect(Collectors.toSet()));
         testEntity.setEndDate(dto.getEndDate());

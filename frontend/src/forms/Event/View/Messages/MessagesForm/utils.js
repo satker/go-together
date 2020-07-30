@@ -39,7 +39,6 @@ export const setOnMessageConn = (conn, peerConnection, userId, userRecipientId, 
     conn.onmessage = (msg) => {
         const content = JSON.parse(msg.data);
         const data = content.data;
-        console.log('got message', content);
         switch (content.event) {
             // when somebody wants to call us
             case "offer":

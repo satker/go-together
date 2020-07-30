@@ -1,74 +1,71 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 
 import Container from "forms/utils/components/Container/ContainerRow";
-import {onChange} from "forms/utils/utils";
-import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import LoadableContent from "forms/utils/components/LoadableContent";
-import CustomButton from "forms/utils/components/CustomButton";
 import {connect} from "App/Context";
 
-import {getCheckMail, getUserInfo, putUpdatedUser} from "./actions";
-import EditForm from "./EditForm";
-import ViewForm from "./ViewForm";
+import {getAllInterests, getAllLanguages, getUserInfo, updateUser} from "./actions";
+import TextField from "forms/utils/components/Form/fields/TextField";
+import AutocompleteLocationField from "forms/utils/components/Form/fields/AutocompleteLocationField";
+import SelectBoxLoadableField from "forms/utils/components/Form/fields/SelectBoxLoadableField";
+import PhotoField from "forms/utils/components/Form/fields/PhotoField";
+import {
+    compareFieldsValidation,
+    isEmptyArrayValidation,
+    isEmptyValidation,
+    lengthValidation,
+    regexValidation,
+    validatePhoto
+} from "../utils/validation";
+import {PATTERN_TO_CHECK_NAME} from "../Register/constants";
+import {createReduxForm} from "../utils/components/Form";
+import {FORM_ID} from "./constants";
 
-const PersonalArea = ({userInfo, getUserInfo, updatedUser, putUpdatedUser}) => {
-    const [isEdited, setIsEdited] = useState(false);
-    const [profile, setProfile] = useState({
-        firstName: '',
-        lastName: '',
-        mail: '',
-        login: ''
-    });
+const PersonalArea = ({
+                          userInfo, getUserInfo, updatedUser, updateUser, getAllLanguages, getAllInterests,
+                          allLanguages, allInterests
+                      }) => {
+    useEffect(() => {
+        getAllInterests();
+    }, [getAllInterests]);
+
+    useEffect(() => {
+        getAllLanguages();
+    }, [getAllLanguages]);
 
     useEffect(() => {
         getUserInfo();
     }, [getUserInfo]);
 
-    useEffect(() => {
-        if (userInfo) {
-            const newProfile = {
-                firstName: userInfo.response.firstName,
-                lastName: userInfo.response.lastName,
-                mail: userInfo.response.mail,
-                login: userInfo.response.login
-            };
-
-            setProfile(newProfile)
-        }
-    }, [setProfile, userInfo]);
-
-    useEffect(() => {
-        if (updatedUser) {
-            const newProfile = {
-                firstName: updatedUser.firstName,
-                lastName: updatedUser.lastName,
-                mail: updatedUser.mail,
-                login: updatedUser.login
-            };
-
-            setProfile(newProfile)
-        }
-    }, [setProfile, updatedUser]);
-
-    const onSubmit = () => {
-        putUpdatedUser(profile);
-    };
-
     return (
         <Container>
-            <ItemContainer>
-                <h3>Welcome, {profile.firstName}</h3>
-            </ItemContainer>
             <LoadableContent loadableData={userInfo}>
-                <ViewForm profile={profile}/>
+                <RegisterForm onClose={() => console.log('updated')}
+                              onSubmit={updateUser}
+                              defaultValue={userInfo.response}>
+                    <TextField name='firstName'
+                               placeholder='First name'/>
+                    <TextField name='lastName'
+                               placeholder='Last name'/>
+                    <AutocompleteLocationField name='location'
+                                               placeholder='Location'/>
+                    <TextField name='description'
+                               placeholder='Description'/>
+                    <SelectBoxLoadableField name='languages'
+                                            options={allLanguages}
+                                            placeholder='Select languages'/>
+                    <SelectBoxLoadableField name='interests'
+                                            options={allInterests}
+                                            placeholder='Select interests'/>
+                    <PhotoField name='groupPhoto.photos'/>
+                    <TextField name='password'
+                               type='password'
+                               placeholder='Password'/>
+                    <TextField name='confirmPassword'
+                               type='password'
+                               placeholder='Confirm password'/>
+                </RegisterForm>
             </LoadableContent>
-            <ItemContainer>
-                <CustomButton text='Edit profile'
-                              onClick={() => setIsEdited(true)}/>
-            </ItemContainer>
-            {isEdited && <EditForm onChange={onChange(profile, setProfile)}
-                                   onSubmit={onSubmit}
-                                   profile={profile}/>}
         </Container>
     );
 };
@@ -76,6 +73,27 @@ const PersonalArea = ({userInfo, getUserInfo, updatedUser, putUpdatedUser}) => {
 const mapStateToProps = state => ({
     userInfo: state.components.forms.personalArea.userInfo,
     updatedUser: state.components.forms.personalArea.updatedUser,
+    allLanguages: state.components.forms.personalArea.allLanguages,
+    allInterests: state.components.forms.personalArea.allInterests
 });
 
-export default connect(mapStateToProps, {getUserInfo, putUpdatedUser, getCheckMail})(PersonalArea);
+const validation = (fields) => {
+    return {
+        ...regexValidation(fields, ['firstName', 'lastName'], PATTERN_TO_CHECK_NAME),
+        ...lengthValidation(fields, ['description'], 255),
+        ...compareFieldsValidation(fields, 'password', 'confirmPassword'),
+        ...validatePhoto(fields, 'groupPhoto.photos'),
+        ...isEmptyValidation(fields,
+            ['firstName', 'lastName', 'description', 'location']),
+        ...isEmptyArrayValidation(fields, ['groupPhoto.photos', 'languages', 'interests'])
+    }
+}
+
+const RegisterForm = createReduxForm({FORM_ID, validation});
+
+export default connect(mapStateToProps, {
+    getUserInfo,
+    updateUser,
+    getAllLanguages,
+    getAllInterests
+})(PersonalArea);

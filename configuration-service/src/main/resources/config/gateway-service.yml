@@ -17,6 +17,8 @@ zuul:
       url: http://localhost:8064
     user-service:
       url: http://localhost:8085
+    notification-service:
+      url: http://localhost:8097
   prefix: /services
 eureka:
   client:

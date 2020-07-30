@@ -1,8 +1,8 @@
 package org.go.together.repository;
 
-import org.go.together.logic.repository.CustomRepository;
-import org.go.together.logic.repository.utils.sql.SqlOperator;
+import org.go.together.CustomRepository;
 import org.go.together.model.SystemUser;
+import org.go.together.sql.SqlOperator;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -23,13 +23,7 @@ public class UserRepository extends CustomRepository<SystemUser> {
     @Transactional
     public Collection<SystemUser> findUserByMail(String mail) {
         return createQuery()
-                .where(createWhere().condition("mail", SqlOperator.LIKE, mail))
-                .fetchAll();
-    }
-
-    @Transactional
-    public Collection<SystemUser> findUsersLoginLikedEventId(UUID eventId) {
-        return createQuery().where(createWhere().condition("eventLikeIds", SqlOperator.EQUAL, eventId))
+                .where(createWhere().condition("mail", SqlOperator.EQUAL, mail))
                 .fetchAll();
     }
 

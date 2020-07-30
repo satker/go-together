@@ -6,31 +6,39 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import {connect} from "App/Context";
 import LoadableContent from "forms/utils/components/LoadableContent";
 
-import {postLikes, putNewLike} from "./actions";
+import {getEventsLikes, updateEventLike} from "./actions";
 
-const EventLikes = ({eventId, putNewLike, newLike, postLikes, likes, userId, eventIds}) => {
+const EventLikes = ({eventId, updateEventLike, newLike, getEventsLikes, likes, userId, eventIds}) => {
     const [flag, setFlag] = useState(false);
+
     useEffect(() => {
         if (newLike && flag) {
-            postLikes(eventIds);
+            getEventsLikes(eventIds);
             setFlag(false)
         }
-    }, [newLike, postLikes, eventIds, flag, setFlag]);
+    }, [newLike, getEventsLikes, eventIds, flag, setFlag]);
 
-    const saveLike = () => {
-        putNewLike(eventId);
+    const currentLikes = likes.response.find(eventLike => eventLike.eventId === eventId) || [];
+    const currentLikeUsers = currentLikes?.users || [];
+    const likeType = !!currentLikeUsers.find(user => user.id === userId);
+
+    const saveLike = (isSave) => () => {
+        let eventLikeObject;
+        if (isSave) {
+            eventLikeObject = {...currentLikes, users: [...currentLikes.users, {id: userId}]};
+        } else {
+            eventLikeObject = {
+                ...currentLikes, users: currentLikes.users
+                    .filter(eventLikeUser => eventLikeUser.id !== userId)
+            }
+        }
+        updateEventLike(eventLikeObject);
         setFlag(true);
     };
-
-    const currentLikes = likes.response[eventId] || [];
-    const likeType = !!currentLikes
-        .map(likedUser => likedUser.id)
-        .filter(userIdNew => userIdNew === userId)[0];
-
     return <LoadableContent loadableData={likes}>
-        {likeType ? <FavoriteBorderIcon color='error' onClick={saveLike}/> :
-            <FavoriteIcon color='error' onClick={saveLike}/>}
-        {currentLikes.length} likes this
+        {likeType ? <FavoriteBorderIcon color='error' onClick={saveLike(false)}/> :
+            <FavoriteIcon color='error' onClick={saveLike(true)}/>}
+        {currentLikeUsers.length} likes this
     </LoadableContent>;
 };
 
@@ -46,4 +54,4 @@ const mapStateToProps = state => ({
     userId: state.userId.value
 });
 
-export default connect(mapStateToProps, {putNewLike, postLikes})(EventLikes);
+export default connect(mapStateToProps, {updateEventLike, getEventsLikes})(EventLikes);

@@ -6,7 +6,8 @@ import {withStyles} from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import {DEFAULT_COUNTRY, DEFAULT_LOCATION, DEFAULT_ROUTE} from "forms/utils/constants";
+import {onChange} from "forms/utils/utils";
+import {DEFAULT_COUNTRY, DEFAULT_ROUTE, PLACE} from "forms/utils/constants";
 import {getCity, getCountry, getState, requestPlaceId} from "forms/utils/components/ObjectGeoLocation/utils";
 import {SimpleObject} from "forms/utils/types";
 
@@ -24,14 +25,14 @@ const options = {
     types: ['(cities)']
 };
 
-const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, setValue}) => {
+const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, setValue, error}) => {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const [currentOptions, setCurrentOptions] = useState([]);
 
     const getLocation = (paths, values) => {
         let newLocation = {...DEFAULT_ROUTE};
-        newLocation = {...DEFAULT_LOCATION};
+        newLocation = {...PLACE};
         newLocation.country = {...DEFAULT_COUNTRY};
         onChange(newLocation, result => newLocation = result)(paths, values);
         return newLocation;
@@ -42,7 +43,7 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
         if (onChangeLocation) {
             const newLocation = getLocation(['name', 'country.name', 'state'],
                 [getCity(result), getCountry(result), getState(result)]);
-            onChangeLocation(newLocation);
+            onChangeLocation(newLocation, {lat: result.geometry.location.lat, lng: result.geometry.location.lng});
         }
         if (setCenter) {
             setCenter({lat: result.geometry.location.lat, lng: result.geometry.location.lng});
@@ -65,7 +66,7 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
         setLoading(false);
     }
 
-    const onChange = (inputValue) => {
+    const onChangeValue = (inputValue) => {
         if (inputValue) {
             setLoading(true);
             autocomplete.getQueryPredictions({input: inputValue, ...options}, setPredictions(inputValue));
@@ -83,17 +84,20 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
             onClose={() => setOpen(false)}
             getOptionLabel={option => option.name}
             options={currentOptions}
-            onInputChange={(evt, value) => onChange(value)}
+            onInputChange={(evt, value) => onChangeValue(value)}
             renderInput={params => {
                 params = {
                     ...params, inputProps: {
                         ...params.inputProps,
-                        value: value?.name || params.inputProps.value
+                        value: params.inputProps.value ||
+                            value && value.name + ', ' + value.country?.name
                     }
                 }
                 return <TextField
                     {...params}
                     label={placeholder}
+                    error={!!error}
+                    helperText={error}
                     fullWidth
                     variant="outlined"
                     InputProps={{

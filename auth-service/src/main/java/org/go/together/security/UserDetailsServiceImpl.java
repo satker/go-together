@@ -1,7 +1,7 @@
 package org.go.together.security;
 
 import org.go.together.client.UserClient;
-import org.go.together.dto.UserDto;
+import org.go.together.dto.AuthUserDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -23,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        UserDto user = userClient.findUserByLogin(username);
+        AuthUserDto user = userClient.findAuthUserByLogin(username);
         if (user != null) {
             GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().name());
             return new User(user.getLogin(),

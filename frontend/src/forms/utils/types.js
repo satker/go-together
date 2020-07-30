@@ -13,7 +13,14 @@ export const Location = PropTypes.exact({
 
 export const SimpleObject = PropTypes.exact({
     id: PropTypes.string,
-    name: PropTypes.string
+    name: PropTypes.string,
+    code: PropTypes.string
+});
+
+export const NotificationObject = PropTypes.exact({
+    id: PropTypes.string,
+    message: PropTypes.string,
+    date: PropTypes.string
 });
 
 export const ResponseData = PropTypes.exact({
@@ -27,7 +34,6 @@ export const ResponseData = PropTypes.exact({
 export const PhotoObject = PropTypes.exact({
     id: PropTypes.string,
     photoUrl: PropTypes.string,
-    photoCategory: PropTypes.string,
     content: PropTypes.exact({
         type: PropTypes.string,
         photoContent: PropTypes.string
@@ -55,7 +61,7 @@ export const User = PropTypes.exact({
     description: PropTypes.string,
     password: PropTypes.string,
     role: PropTypes.string,
-    userPhotos: PropTypes.arrayOf(PhotoObject),
+    groupPhoto: GroupPhoto,
     languages: PropTypes.arrayOf(Language),
     interests: PropTypes.arrayOf(Interest)
 });
@@ -75,9 +81,10 @@ export const EventUser = PropTypes.exact({
     eventId: PropTypes.string
 });
 
-export const EventPhoto = PropTypes.exact({
+export const GroupPhoto = PropTypes.exact({
     id: PropTypes.string,
-    eventId: PropTypes.string,
+    groupId: PropTypes.string,
+    category: PropTypes.string,
     photos: PropTypes.arrayOf(PhotoObject)
 });
 
@@ -111,7 +118,7 @@ export const Event = PropTypes.exact({
     peopleCount: PropTypes.number.isRequired,
     housingType: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    eventPhotoDto: EventPhoto,
+    groupPhoto: GroupPhoto,
     paidThings: PropTypes.arrayOf(CashPaidThing),
     route: PropTypes.arrayOf(Route),
     startDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),

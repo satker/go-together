@@ -1,16 +1,19 @@
 package org.go.together.dto;
 
-public enum HousingType {
+import org.go.together.interfaces.NamedEnum;
+
+public enum HousingType implements NamedEnum {
     COUCHSERFING("Couchserfing"),
     BOOKING("Booking"),
     LOCAL_HOUSING("Local housing");
 
-    private String description;
+    private final String description;
 
     HousingType(String description) {
         this.description = description;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }

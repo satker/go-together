@@ -1,8 +1,8 @@
 package org.go.together.test.entities;
 
 import org.go.together.interfaces.IdentifiedEntity;
-import org.hibernate.annotations.Type;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.UUID;
@@ -10,7 +10,7 @@ import java.util.UUID;
 @Entity
 public class ManyJoinEntity implements IdentifiedEntity {
     @Id
-    @Type(type = "uuid-char")
+    @Column(columnDefinition = "uuid")
     private UUID id;
     private String name;
     private long number;

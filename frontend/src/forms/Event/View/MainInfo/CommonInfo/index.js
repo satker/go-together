@@ -1,10 +1,8 @@
 import React, {useEffect} from "react";
 import PropTypes from "prop-types";
-import moment from "moment";
 
 import EventLikes from "forms/utils/components/Event/EventLikes";
-import LoadableContent from "forms/utils/components/LoadableContent";
-import {postLikes} from "forms/utils/components/Event/EventLikes/actions";
+import {getEventsLikes} from "forms/utils/components/Event/EventLikes/actions";
 import {Event, ResponseData} from "forms/utils/types";
 import LeftContainer from "forms/utils/components/Container/LeftContainer";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
@@ -13,11 +11,12 @@ import {connect} from "App/Context";
 import ParticipationButton from "../../ParticipationButton";
 import {getUsers} from "../../actions";
 import Container from "forms/utils/components/Container/ContainerRow";
+import {getCorrectDateFromString} from "forms/utils/utils";
 
-const CommonInfo = ({event, users, getUsers, userId, postLikes}) => {
+const CommonInfo = ({event, users, getUsers, userId, getEventsLikes}) => {
     useEffect(() => {
-        postLikes([event.id]);
-    }, [event, postLikes]);
+        getEventsLikes([event.id]);
+    }, [event, getEventsLikes]);
 
     return <LeftContainer style={{width: '600px'}}>
         <ItemContainer>
@@ -28,11 +27,9 @@ const CommonInfo = ({event, users, getUsers, userId, postLikes}) => {
         </ItemContainer>
         <ItemContainer>
             {userId && userId !== event.author.id &&
-            <LoadableContent loadableData={users}>
                 <ParticipationButton users={users.response}
                                      getUsers={getUsers}
                                      eventId={event.id}/>
-            </LoadableContent>
             }
         </ItemContainer>
         <ItemContainer>
@@ -53,7 +50,7 @@ const CommonInfo = ({event, users, getUsers, userId, postLikes}) => {
             </Container>
         </ItemContainer>
         <ItemContainer>
-            Trip dates: {moment(event.startDate).format('LLL')} -> {moment(event.endDate).format('LLL')}
+            Trip dates: {getCorrectDateFromString(event.startDate)} -> {getCorrectDateFromString(event.endDate)}
         </ItemContainer>
     </LeftContainer>
 };
@@ -71,4 +68,4 @@ const mapStateToProps = state => ({
     userId: state.userId.value
 });
 
-export default connect(mapStateToProps, {postLikes, getUsers})(CommonInfo);
+export default connect(mapStateToProps, {getEventsLikes, getUsers})(CommonInfo);

@@ -1,21 +1,18 @@
 package org.go.together.mapper;
 
 import org.go.together.dto.CountryDto;
-import org.go.together.interfaces.Mapper;
+import org.go.together.exceptions.CannotFindEntityException;
+import org.go.together.logic.Mapper;
 import org.go.together.model.Country;
-import org.go.together.service.CountryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.go.together.repository.CountryRepository;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class CountryMapper implements Mapper<CountryDto, Country> {
-    private CountryService countryService;
+    private final CountryRepository countryRepository;
 
-    @Autowired
-    public void setCountryService(CountryService countryService) {
-        this.countryService = countryService;
+    public CountryMapper(CountryRepository countryRepository) {
+        this.countryRepository = countryRepository;
     }
 
     public CountryDto entityToDto(Country country) {
@@ -27,7 +24,7 @@ public class CountryMapper implements Mapper<CountryDto, Country> {
     }
 
     public Country dtoToEntity(CountryDto countryDto) {
-        Optional<Country> countryById = Optional.ofNullable(countryService.findByName(countryDto.getName()));
-        return countryById.orElseThrow(() -> new RuntimeException("Such country not present"));
+        return countryRepository.findByName(countryDto.getName()).orElseThrow(() ->
+                new CannotFindEntityException("Such country not present: " + countryDto.getName()));
     }
 }

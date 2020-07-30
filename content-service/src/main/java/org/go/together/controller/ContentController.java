@@ -1,68 +1,50 @@
 package org.go.together.controller;
 
 import org.go.together.client.ContentClient;
-import org.go.together.dto.EventPhotoDto;
+import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.IdDto;
-import org.go.together.dto.PhotoDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FormDto;
-import org.go.together.logic.find.FindController;
-import org.go.together.service.EventPhotoService;
+import org.go.together.logic.controllers.FindController;
+import org.go.together.service.GroupPhotoService;
 import org.go.together.service.PhotoService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 public class ContentController extends FindController implements ContentClient {
-    private final PhotoService photoService;
-    private final EventPhotoService eventPhotoService;
+    private final GroupPhotoService groupPhotoService;
 
-    public ContentController(PhotoService photoService, EventPhotoService eventPhotoService) {
-        super(Arrays.asList(photoService, eventPhotoService));
-        this.photoService = photoService;
-        this.eventPhotoService = eventPhotoService;
+    public ContentController(PhotoService photoService, GroupPhotoService groupPhotoService) {
+        super(Set.of(photoService, groupPhotoService));
+        this.groupPhotoService = groupPhotoService;
     }
 
     @Override
-    public Collection<IdDto> savePhotos(Set<PhotoDto> photos) {
-        return photoService.savePhotos(photos);
+    public IdDto createGroup(GroupPhotoDto groupPhotoDto) {
+        return groupPhotoService.create(groupPhotoDto);
     }
 
     @Override
-    public Set<PhotoDto> getPhotosByIds(Collection<UUID> photoIds) {
-        return photoIds.stream()
-                .map(photoService::read)
-                .collect(Collectors.toSet());
+    public IdDto updateGroup(GroupPhotoDto groupPhotoDto) {
+        return groupPhotoService.update(groupPhotoDto);
     }
 
     @Override
-    public void deletePhotoById(Collection<UUID> photoIds) {
-        photoIds.forEach(photoService::delete);
+    public GroupPhotoDto readGroupPhotosById(UUID groupPhotoId) {
+        return groupPhotoService.read(groupPhotoId);
     }
 
     @Override
-    public IdDto savePhotosForEvent(EventPhotoDto eventPhotoDto) {
-        return eventPhotoService.savePhotosForEvent(eventPhotoDto);
+    public String validate(GroupPhotoDto groupPhotoDto) {
+        return groupPhotoService.validate(groupPhotoDto);
     }
 
     @Override
-    public EventPhotoDto getEventPhotosById(UUID eventPhotoId) {
-        return eventPhotoService.getEventPhotosById(eventPhotoId);
-    }
-
-    @Override
-    public String validate(PhotoDto photo) {
-        return photoService.validate(photo);
-    }
-
-    @Override
-    public void delete(UUID eventPhotoId) {
-        eventPhotoService.delete(eventPhotoId);
+    public void delete(UUID groupId) {
+        groupPhotoService.delete(groupId);
     }
 
     @Override

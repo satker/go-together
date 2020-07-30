@@ -1,6 +1,7 @@
 import {USER_SERVICE_URL} from "forms/utils/constants";
 import {
     CREATED_USER,
+    FORM_ID,
     REGISTER_ALL_INTERESTS,
     REGISTER_ALL_LANGUAGES,
     REGISTER_CHECK_MAIL,
@@ -39,11 +40,22 @@ export const getCheckUserName = (value) => (dispatch) => {
     });
 };
 
-export const registerUser = (body) => (dispatch) => {
+export const regUser = () => (dispatch, state) => {
+    const location = {
+        ...state.components.utils.input[FORM_ID].value.location,
+        category: 'USER',
+        locations: [{
+            ...state.components.utils.input[FORM_ID].value.location.locations[0],
+            routeNumber: 1,
+            isStart: true,
+            isEnd: false
+        }]
+    }
+
     dispatch({
         type: CREATED_USER,
         url: USER_SERVICE_URL + "/users",
         method: PUT,
-        data: body
+        data: {...state.components.utils.input[FORM_ID].value, location}
     });
 };

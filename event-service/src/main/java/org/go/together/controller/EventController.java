@@ -3,13 +3,12 @@ package org.go.together.controller;
 import org.go.together.client.EventClient;
 import org.go.together.dto.*;
 import org.go.together.dto.filter.FormDto;
-import org.go.together.logic.find.FindController;
+import org.go.together.logic.controllers.FindController;
 import org.go.together.service.EventService;
 import org.go.together.service.EventUserService;
 import org.go.together.service.PaidThingService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
@@ -25,7 +24,7 @@ public class EventController extends FindController implements EventClient {
     public EventController(EventService eventService,
                            PaidThingService paidThingService,
                            EventUserService eventUserService) {
-        super(Arrays.asList(eventService, paidThingService, paidThingService));
+        super(Set.of(eventService, paidThingService, eventUserService));
         this.eventService = eventService;
         this.paidThingService = paidThingService;
         this.eventUserService = eventUserService;
@@ -69,8 +68,10 @@ public class EventController extends FindController implements EventClient {
     }
 
     @Override
-    public Collection<PaidThingDto> getPaidThings() {
-        return paidThingService.getPaidThings();
+    public Collection<Object> getPaidThings() {
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField(paidThingService.getServiceName());
+        return paidThingService.find(formDto).getResult();
     }
 
     @Override
@@ -91,8 +92,13 @@ public class EventController extends FindController implements EventClient {
     }
 
     @Override
-    public IdDto saveEventUserByEventId(EventUserDto eventUserDto) {
+    public IdDto createEventUser(EventUserDto eventUserDto) {
         return eventUserService.create(eventUserDto);
+    }
+
+    @Override
+    public IdDto updateEventUser(EventUserDto eventUserDto) {
+        return eventUserService.update(eventUserDto);
     }
 
     @Override

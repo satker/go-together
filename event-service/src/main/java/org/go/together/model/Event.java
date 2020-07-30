@@ -11,30 +11,39 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "event", schema = "public")
+@Table(name = "event", schema = "event_service")
 public class Event implements IdentifiedEntity {
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
+
+    @Column(unique = true)
     private String name;
+
     private int peopleCount;
+
+    @Column(columnDefinition = "uuid")
     private UUID authorId;
+
     private HousingType housingType;
+
     private String description;
+
     private Date startDate;
+
     private Date endDate;
+
+    @Column(columnDefinition = "uuid")
+    private UUID groupPhotoId;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "event_id")
     private Set<EventUser> users;
 
-    @ElementCollection
-    @CollectionTable(name = "event_route", joinColumns = @JoinColumn(name = "event_id"))
-    @Column(name = "route_id")
-    private Set<UUID> routes;
+    @Column(columnDefinition = "uuid")
+    private UUID routeId;
 
-    private UUID eventPhotoId;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "event_id")
     private Set<EventPaidThing> paidThings;
 

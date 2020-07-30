@@ -2,9 +2,8 @@ package org.go.together.mapper;
 
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
-import org.go.together.dto.PhotoDto;
 import org.go.together.dto.UserDto;
-import org.go.together.interfaces.Mapper;
+import org.go.together.logic.Mapper;
 import org.go.together.model.SystemUser;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +16,10 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
     private final LanguageMapper languageMapper;
     private final InterestMapper interestMapper;
 
-    public UserMapper(LocationClient locationClient, ContentClient contentClient,
-                      LanguageMapper languageMapper, InterestMapper interestMapper) {
+    public UserMapper(LocationClient locationClient,
+                      ContentClient contentClient,
+                      LanguageMapper languageMapper,
+                      InterestMapper interestMapper) {
         this.locationClient = locationClient;
         this.contentClient = contentClient;
         this.languageMapper = languageMapper;
@@ -35,15 +36,14 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
                 .map(languageMapper::entityToDto)
                 .collect(Collectors.toSet()));
         userDTO.setLastName(entity.getLastName());
-        userDTO.setLocation(locationClient.getLocationById(entity.getLocationId()));
+        userDTO.setLocation(locationClient.getRouteById(entity.getLocationId()));
         userDTO.setLogin(entity.getLogin());
         userDTO.setMail(entity.getMail());
-        userDTO.setPassword(entity.getPassword());
         userDTO.setRole(entity.getRole());
         userDTO.setInterests(entity.getInterests().stream()
                 .map(interestMapper::entityToDto)
                 .collect(Collectors.toSet()));
-        userDTO.setUserPhotos(contentClient.getPhotosByIds(entity.getPhotoIds()));
+        userDTO.setGroupPhoto(contentClient.readGroupPhotosById(entity.getGroupPhoto()));
         return userDTO;
     }
 
@@ -51,12 +51,9 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
     public SystemUser dtoToEntity(UserDto dto) {
         SystemUser user = new SystemUser();
         user.setId(dto.getId());
-        user.setPhotoIds(dto.getUserPhotos().stream()
-                .map(PhotoDto::getId)
-                .collect(Collectors.toSet()));
         user.setMail(dto.getMail());
         user.setLogin(dto.getLogin());
-        user.setLocationId(locationClient.saveLocation(dto.getLocation()).getId());
+        //user.setLocationId(locationClient.saveLocation(dto.getLocation()).getId());
         user.setLastName(dto.getLastName());
         user.setFirstName(dto.getFirstName());
         user.setDescription(dto.getDescription());

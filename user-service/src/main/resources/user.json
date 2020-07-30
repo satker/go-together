@@ -15,14 +15,16 @@
   },
   "description": "good lifefull man",
   "password": "13693509",
-  "userPhotos": [
-    {
-      "id": null,
-      "photoUrl": "https://img.icons8.com/officel/2x/user.png",
-      "photoCategory": "USER",
-      "content": null
-    }
-  ],
+  "groupPhoto": {
+    "photos": [
+      {
+        "id": null,
+        "photoUrl": "https://img.icons8.com/officel/2x/user.png",
+        "photoCategory": "USER",
+        "content": null
+      }
+    ]
+  },
   "languages": [
     {
       "id": "b96c2579-f0a8-4a20-b267-b80dc1a24221",

@@ -7,6 +7,7 @@ export const EVENT_SERVICE_URL = GATEWAY_SERVICES_URL + '/event-service';
 export const USER_SERVICE_URL = GATEWAY_SERVICES_URL + '/user-service';
 export const CONTENT_SERVICE_URL = GATEWAY_SERVICES_URL + '/content-service';
 export const MESSAGE_SERVICE_URL = GATEWAY_SERVICES_URL + '/message-service';
+export const NOTIFICATION_SERVICE_URL = GATEWAY_SERVICES_URL + '/notification-service';
 export const LOCATION_SERVICE_URL = GATEWAY_SERVICES_URL + '/location-service';
 export const LOGIN_URL = AUTH_URL + "/auth/";
 
@@ -22,7 +23,7 @@ export const DEFAULT_MAIN_INFO = {
     startDate: null,
     endDate: null,
     peopleCount: 0,
-    eventPhotoDto: {
+    groupPhoto: {
         photos: []
     }
 
@@ -34,7 +35,7 @@ export const DEFAULT_COUNTRY = {
     name: null
 };
 
-export const DEFAULT_LOCATION = {
+export const PLACE = {
     id: null,
     name: null,
     state: null,
@@ -47,13 +48,17 @@ export const DEFAULT_ROUTE = {
     address: null,
     latitude: 18.5204,
     longitude: 73.8567,
-    location: {...DEFAULT_LOCATION}
+    place: {...PLACE}
 };
 
 export const DEFAULT_CREATE_EVENT = {
     ...DEFAULT_MAIN_INFO,
     paidThings: [],
-    route: []
+    route: {
+        groupId: null,
+        locations: [],
+        category: 'EVENT'
+    }
 };
 
 export const DEFAULT_PAID_THING = {

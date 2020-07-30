@@ -15,7 +15,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
+import java.util.List;
 
 @EnableWebSecurity    // Enable security config. This annotation denotes config for spring security.
 public class SecurityCredentialsConfig extends WebSecurityConfigurerAdapter {
@@ -87,7 +87,7 @@ public class SecurityCredentialsConfig extends WebSecurityConfigurerAdapter {
         config.addAllowedMethod("OPTIONS");
         config.addAllowedMethod("HEAD");
         config.addAllowedMethod("GET");
-        config.setExposedHeaders(Arrays.asList("Authorization", "content-type"));
+        config.setExposedHeaders(List.of("Authorization", "content-type"));
         config.addAllowedMethod("PUT");
         config.addAllowedMethod("POST");
         config.addAllowedMethod("DELETE");

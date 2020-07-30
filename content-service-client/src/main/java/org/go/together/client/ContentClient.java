@@ -1,35 +1,26 @@
 package org.go.together.client;
 
-import org.go.together.dto.EventPhotoDto;
+import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.IdDto;
-import org.go.together.dto.PhotoDto;
 import org.go.together.interfaces.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.Set;
 import java.util.UUID;
 
 @FeignClient(name = "content-service")
 public interface ContentClient extends FindClient {
-    @PutMapping("/photos")
-    Collection<IdDto> savePhotos(@RequestBody Set<PhotoDto> userPhotos);
+    @PutMapping("/groups")
+    IdDto createGroup(@RequestBody GroupPhotoDto groupPhotoDto);
 
-    @PostMapping("/photos")
-    Set<PhotoDto> getPhotosByIds(@RequestBody Collection<UUID> photoIds);
+    @PostMapping("/groups")
+    IdDto updateGroup(@RequestBody GroupPhotoDto groupPhotoDto);
 
-    @DeleteMapping("/photos")
-    void deletePhotoById(@RequestBody Collection<UUID> photoIds);
-
-    @PostMapping("/events/photos")
-    IdDto savePhotosForEvent(@RequestBody EventPhotoDto eventPhotoDto);
-
-    @GetMapping("events/photos/{eventPhotoId}")
-    EventPhotoDto getEventPhotosById(@PathVariable("eventPhotoId") UUID eventPhotoId);
+    @GetMapping("events/photos/{groupPhotoId}")
+    GroupPhotoDto readGroupPhotosById(@PathVariable("groupPhotoId") UUID groupPhotoId);
 
     @PostMapping("/validate")
-    String validate(@RequestBody PhotoDto photo);
+    String validate(@RequestBody GroupPhotoDto groupPhotoDto);
 
     @DeleteMapping("/events/photos/{eventPhotoId}")
     void delete(@PathVariable("eventPhotoId") UUID eventPhotoId);

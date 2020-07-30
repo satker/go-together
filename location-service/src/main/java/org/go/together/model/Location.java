@@ -3,20 +3,24 @@ package org.go.together.model;
 import lombok.Data;
 import org.go.together.interfaces.IdentifiedEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "location", schema = "public")
+@Table(name = "location", schema = "location_service")
 public class Location implements IdentifiedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid")
     private UUID id;
-    private String name;
-    private String state;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "country_id")
-    private Country country;
+    private String address;
+    private double latitude;
+    private int routeNumber;
+    private double longitude;
+    private Boolean isStart;
+    private Boolean isEnd;
 }

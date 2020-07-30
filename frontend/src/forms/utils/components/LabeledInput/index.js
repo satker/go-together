@@ -4,7 +4,7 @@ import TextField from "@material-ui/core/TextField";
 
 const LabeledInput = ({
                           value, onChange, isError, errorText, id, label,
-                          defaultValue, multiline, rowsMax, type, inputRef
+                          defaultValue, multiline, rowsMax, type, inputRef, placeholder
                       }) => {
     const onChangeValue = (evt) => {
         onChange(evt.target.value)
@@ -30,6 +30,7 @@ const LabeledInput = ({
     }
 
     return <TextField style={{background: 'white'}}
+                      placeholder={placeholder}
                       label={label}
                       fullWidth
                       variant="outlined"
@@ -47,7 +48,8 @@ LabeledInput.propTypes = {
     defaultValue: PropTypes.string,
     multiline: PropTypes.bool,
     rowsMax: PropTypes.number,
-    type: PropTypes.string
+    type: PropTypes.string,
+    placeholder: PropTypes.string
 };
 
 LabeledInput.defaultProps = {

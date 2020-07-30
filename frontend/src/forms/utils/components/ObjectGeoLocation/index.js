@@ -66,7 +66,7 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd, h
     const endDrag = () => {
         requestLatLng(currentLat, currentLng, (result) => {
             const addressObject = result.results[0];
-            onChange(currentKey, ['location.name', 'location.country.name', 'location.state', 'address'],
+            onChange(currentKey, ['place.name', 'place.country.name', 'place.state', 'address'],
                 [getCity(addressObject), getCountry(addressObject), getState(addressObject), getAddress(addressObject)]);
         });
     };
@@ -131,8 +131,8 @@ const ObjectGeoLocation = ({routes, editable, onChange, zoom, onDelete, onAdd, h
     const onAddMarker = ({lat, lng}) => {
         requestLatLng(lat, lng, (result) => {
             const addressObject = result.results[0];
-            onAdd(['latitude', 'longitude', 'location.name',
-                    'location.country.name', 'location.state', 'address'],
+            onAdd(['latitude', 'longitude', 'place.name',
+                    'place.country.name', 'place.state', 'address'],
                 [lat, lng, getCity(addressObject), getCountry(addressObject), getState(addressObject), getAddress(addressObject)]);
         });
     };

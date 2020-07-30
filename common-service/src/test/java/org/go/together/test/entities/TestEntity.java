@@ -1,7 +1,6 @@
 package org.go.together.test.entities;
 
 import org.go.together.interfaces.IdentifiedEntity;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,6 +10,7 @@ import java.util.UUID;
 @Entity
 public class TestEntity implements IdentifiedEntity {
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
     private String name;
     private long number;
@@ -25,8 +25,7 @@ public class TestEntity implements IdentifiedEntity {
 
     @ElementCollection
     @CollectionTable(name = "test_elements", joinColumns = @JoinColumn(name = "test_id"))
-    @Column(name = "element_id")
-    @Type(type = "uuid-char")
+    @Column(name = "element_id", columnDefinition = "uuid")
     private Set<UUID> elements;
 
     @OneToMany(cascade = CascadeType.ALL,

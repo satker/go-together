@@ -2,6 +2,7 @@ package org.go.together.validation;
 
 import org.assertj.core.util.Strings;
 import org.go.together.dto.PhotoDto;
+import org.go.together.enums.CrudOperation;
 import org.go.together.logic.Validator;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ public class PhotoValidator extends Validator<PhotoDto> {
     }
 
     @Override
-    protected String commonValidateCustom(PhotoDto photo) {
+    protected String commonValidation(PhotoDto photo, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
         boolean contentIsNull = photo.getContent() == null || (Strings.isNullOrEmpty(photo.getContent().getType()) &&
                 (photo.getContent().getPhotoContent() == null ||

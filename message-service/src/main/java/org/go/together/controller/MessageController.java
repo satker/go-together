@@ -5,11 +5,10 @@ import org.go.together.dto.IdDto;
 import org.go.together.dto.MessageDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.filter.FormDto;
-import org.go.together.logic.find.FindController;
+import org.go.together.logic.controllers.FindController;
 import org.go.together.service.MessageService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -22,7 +21,7 @@ public class MessageController extends FindController implements MessageClient {
     private final MessageService messageService;
 
     public MessageController(MessageService messageService) {
-        super(Collections.singletonList(messageService));
+        super(Set.of(messageService));
         this.messageService = messageService;
     }
 

@@ -3,7 +3,7 @@ package org.go.together.dto.filter;
 import lombok.Builder;
 import lombok.Getter;
 import org.go.together.interfaces.FindClient;
-import org.go.together.logic.CrudService;
+import org.go.together.logic.services.CrudService;
 
 @Builder
 @Getter

@@ -20,6 +20,7 @@ const InputMessage = ({
     useEffect(() => {
         createOffer();
     }, [createOffer]);
+
     const sendMessage = () => {
         const date = moment();
         setMessage('');
@@ -32,10 +33,6 @@ const InputMessage = ({
         setMessages([...messages, newMessage]);
         setMessage('');
         sentRtcMessage(newMessage);
-        putMessage(newMessage);
-    };
-
-    const putMessage = (newMessage) => {
         putNewMessage(eventId, newMessage);
     };
 
@@ -51,7 +48,7 @@ const InputMessage = ({
             onChange={setMessage}
         />
         <SendIcon className='send-message-icon'
-                  onClick={readOnly ? () => null : sendMessage}/>
+                  onClick={sendMessage}/>
     </div>
 };
 

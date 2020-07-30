@@ -1,12 +1,17 @@
 package org.go.together.test.dto;
 
-import org.go.together.interfaces.Dto;
+import org.go.together.interfaces.ComparableDto;
+import org.go.together.interfaces.ComparingField;
 
 import java.util.UUID;
 
-public class ManyJoinDto implements Dto {
+public class ManyJoinDto implements ComparableDto {
     private UUID id;
+
+    @ComparingField(value = "name", isMain = true)
     private String name;
+
+    @ComparingField("number")
     private long number;
 
     public ManyJoinDto() {

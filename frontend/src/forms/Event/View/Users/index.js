@@ -42,7 +42,6 @@ const Users = ({event, users, statuses, userId, postUserStatus, userStatus, getU
 
     return <>
         <LoadableContent loadableData={statuses}>
-            <LoadableContent loadableData={users}>
                 {userId === event.author.id && <ElementTabs elements={users.response}
                                                             onClick={updateUserStatus('APPROVED')}
                                                             onDelete={updateUserStatus('REJECTED')}
@@ -50,7 +49,6 @@ const Users = ({event, users, statuses, userId, postUserStatus, userStatus, getU
                                                             isUsers={true}
                                                             elementsFieldTab={"userStatus"}
                                                             tabs={statuses.response}/>}
-            </LoadableContent>
         </LoadableContent>
         <Messages userMessageId={userMessageId}
                   setUserMessageId={setUserMessageId}/>

@@ -7,14 +7,18 @@ import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.*;
 import org.go.together.dto.filter.FieldMapper;
-import org.go.together.logic.CrudService;
+import org.go.together.enums.CrudOperation;
+import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.EventMapper;
 import org.go.together.model.Event;
 import org.go.together.repository.EventRepository;
 import org.go.together.validation.EventValidator;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,36 +42,44 @@ public class EventService extends CrudService<EventDto, Event> {
     }
 
     @Override
-    protected void updateEntityForCreate(Event entity, EventDto dto) {
-        UUID uuid = UUID.randomUUID();
-        entity.setId(uuid);
-        entity.setUsers(Collections.emptySet());
-        updateEntity(entity, dto, uuid);
-    }
+    protected Event enrichEntity(Event entity, EventDto dto, CrudOperation crudOperation) {
+        if (crudOperation == CrudOperation.UPDATE) {
+            GroupLocationDto locationDto = dto.getRoute();
+            locationDto.setGroupId(entity.getId());
+            locationDto.setCategory(LocationCategory.EVENT);
+            IdDto route = locationClient.updateRoute(locationDto);
+            entity.setRouteId(route.getId());
 
-    private void updateEntity(Event entity, EventDto dto, UUID uuid) {
-        Set<EventLocationDto> newRoute = dto.getRoute().stream()
-                .peek(routeItem -> routeItem.setEventId(uuid))
-                .collect(Collectors.toSet());
-        Set<IdDto> routes = locationClient.saveOrUpdateEventRoutes(newRoute);
-        entity.setRoutes(routes.stream()
-                .map(IdDto::getId)
-                .collect(Collectors.toSet()));
-        EventPhotoDto eventPhotoDto = dto.getEventPhotoDto();
-        eventPhotoDto.setEventId(uuid);
-        IdDto photoId = contentClient.savePhotosForEvent(eventPhotoDto);
-        entity.setEventPhotoId(photoId.getId());
-    }
+            GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
+            groupPhotoDto.setGroupId(entity.getId());
+            groupPhotoDto.setCategory(PhotoCategory.EVENT);
+            IdDto photoId = contentClient.updateGroup(groupPhotoDto);
+            entity.setGroupPhotoId(photoId.getId());
+        } else if (crudOperation == CrudOperation.CREATE) {
+            entity.setUsers(Collections.emptySet());
 
-    @Override
-    protected void updateEntityForUpdate(Event entity, EventDto dto) {
-        updateEntity(entity, dto, entity.getId());
-    }
+            GroupLocationDto locationDto = dto.getRoute();
+            locationDto.setGroupId(entity.getId());
+            locationDto.setCategory(LocationCategory.EVENT);
+            IdDto route = locationClient.createRoute(dto.getRoute());
+            entity.setRouteId(route.getId());
 
-    @Override
-    public void actionsBeforeDelete(Event event) {
-        locationClient.deleteRoutes(event.getRoutes());
-        contentClient.delete(event.getEventPhotoId());
+            GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
+            groupPhotoDto.setGroupId(entity.getId());
+            groupPhotoDto.setCategory(PhotoCategory.EVENT);
+            IdDto photoId = contentClient.createGroup(groupPhotoDto);
+            entity.setGroupPhotoId(photoId.getId());
+
+            EventLikeDto eventLikeDto = new EventLikeDto();
+            eventLikeDto.setEventId(entity.getId());
+            eventLikeDto.setUsers(Collections.emptySet());
+            userClient.createEventLike(eventLikeDto);
+        } else if (crudOperation == CrudOperation.DELETE) {
+            locationClient.deleteRoute(entity.getRouteId());
+            contentClient.delete(entity.getGroupPhotoId());
+            userClient.deleteEventLike(entity.getId());
+        }
+        return entity;
     }
 
     public Set<SimpleDto> autocompleteEvents(String name) {
@@ -100,8 +112,8 @@ public class EventService extends CrudService<EventDto, Event> {
                 .put("idEventRoutes", FieldMapper.builder()
                         .currentServiceField("id")
                         .remoteServiceClient(locationClient)
-                        .remoteServiceName("eventLocation")
-                        .remoteServiceFieldGetter("eventId").build())
+                        .remoteServiceName("groupLocation")
+                        .remoteServiceFieldGetter("groupId").build())
                 .put("startDate", FieldMapper.builder()
                         .currentServiceField("startDate").build())
                 .put("endDate", FieldMapper.builder()

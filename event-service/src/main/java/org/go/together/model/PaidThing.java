@@ -3,15 +3,19 @@ package org.go.together.model;
 import lombok.Data;
 import org.go.together.interfaces.IdentifiedEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "paid_thing", schema = "public")
+@Table(name = "paid_thing", schema = "event_service")
 public class PaidThing implements IdentifiedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid")
     private UUID id;
+    @Column(unique = true)
     private String name;
 }

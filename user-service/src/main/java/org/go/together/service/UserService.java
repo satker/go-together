@@ -1,14 +1,14 @@
 package org.go.together.service;
 
 import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
-import org.go.together.dto.IdDto;
-import org.go.together.dto.Role;
-import org.go.together.dto.SimpleUserDto;
-import org.go.together.dto.UserDto;
+import org.go.together.client.LocationClient;
+import org.go.together.dto.*;
 import org.go.together.dto.filter.FieldMapper;
+import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.logic.CrudService;
+import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.SimpleUserMapper;
 import org.go.together.mapper.UserMapper;
 import org.go.together.model.Language;
@@ -20,7 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,13 +32,19 @@ public class UserService extends CrudService<UserDto, SystemUser> {
     private final SimpleUserMapper simpleUserMapper;
     private final LanguageService languageService;
     private final InterestService interestService;
+    private final EventLikeService eventLikeService;
+    private final LocationClient locationClient;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper,
-                       UserValidator userValidator, BCryptPasswordEncoder bCryptPasswordEncoder,
+    public UserService(UserRepository userRepository,
+                       UserMapper userMapper,
+                       UserValidator userValidator,
+                       BCryptPasswordEncoder bCryptPasswordEncoder,
                        ContentClient contentClient,
                        SimpleUserMapper simpleUserMapper,
                        LanguageService languageService,
-                       InterestService interestService) {
+                       InterestService interestService,
+                       EventLikeService eventLikeService,
+                       LocationClient locationClient) {
         super(userRepository, userMapper, userValidator);
         this.userRepository = userRepository;
         this.userMapper = userMapper;
@@ -48,6 +53,8 @@ public class UserService extends CrudService<UserDto, SystemUser> {
         this.simpleUserMapper = simpleUserMapper;
         this.languageService = languageService;
         this.interestService = interestService;
+        this.eventLikeService = eventLikeService;
+        this.locationClient = locationClient;
     }
 
     public UserDto findUserByLogin(String login) {
@@ -59,9 +66,24 @@ public class UserService extends CrudService<UserDto, SystemUser> {
         throw new CannotFindEntityException("Cannot find user by login");
     }
 
+    public AuthUserDto findAuthUserByLogin(String login) {
+        log.debug("auth user found by login {}", login);
+        Optional<SystemUser> userByLogin = userRepository.findUserByLogin(login);
+        if (userByLogin.isPresent()) {
+            SystemUser systemUser = userByLogin.get();
+            return AuthUserDto.builder()
+                    .id(systemUser.getId())
+                    .login(systemUser.getLogin())
+                    .password(systemUser.getPassword())
+                    .role(systemUser.getRole())
+                    .build();
+        }
+        throw new CannotFindEntityException("Cannot find user by login");
+    }
+
     public boolean checkIsPresentedMail(String mail) {
         log.debug("user found by mail {}", mail);
-        return !getUserByMail(mail.replaceAll("\"", "")).isEmpty();
+        return !userRepository.findUserByMail(mail.replaceAll("\"", "")).isEmpty();
     }
 
     public boolean checkIsPresentedUsername(String username) {
@@ -85,10 +107,6 @@ public class UserService extends CrudService<UserDto, SystemUser> {
         }
     }
 
-    private Collection<SystemUser> getUserByMail(String mail) {
-        return userRepository.findUserByMail(mail);
-    }
-
     public Set<UUID> getIdLanguagesByOwnerId(UUID userId) {
         Optional<SystemUser> user = userRepository.findById(userId);
         return user.map(systemUser -> systemUser.getLanguages().stream()
@@ -101,74 +119,63 @@ public class UserService extends CrudService<UserDto, SystemUser> {
     }
 
     @Override
-    public void updateEntityForCreate(SystemUser entity, UserDto dto) {
-        Collection<IdDto> savedPhoto = contentClient.savePhotos(dto.getUserPhotos());
-        entity.setPhotoIds(savedPhoto.stream()
-                .map(IdDto::getId)
-                .collect(Collectors.toSet()));
-        entity.setPassword(bCryptPasswordEncoder.encode(entity.getPassword()));
-        entity.setRole(Role.ROLE_USER);
-    }
+    protected SystemUser enrichEntity(SystemUser entity, UserDto dto, CrudOperation crudOperation) {
+        if (crudOperation == CrudOperation.UPDATE) {
+            Optional<SystemUser> user = updatePassword(entity);
 
-    @Override
-    public void updateEntityForUpdate(SystemUser entity, UserDto dto) {
-        Collection<UUID> previousPhotos = userRepository.findById(entity.getId())
-                .map(SystemUser::getPhotoIds)
-                .orElse(Collections.emptySet());
-        Role role = userRepository.findById(entity.getId()).map(SystemUser::getRole).orElse(Role.ROLE_USER);
-        contentClient.deletePhotoById(previousPhotos);
-        Collection<IdDto> savedPhoto = contentClient.savePhotos(dto.getUserPhotos());
-        entity.setPhotoIds(savedPhoto.stream()
-                .map(IdDto::getId)
-                .collect(Collectors.toSet()));
-        entity.setPassword(bCryptPasswordEncoder.encode(entity.getPassword()));
-        entity.setRole(role);
-    }
+            Role role = user.map(SystemUser::getRole).orElse(Role.ROLE_USER);
 
-    @Override
-    protected void actionsBeforeDelete(SystemUser entity) {
-        contentClient.deletePhotoById(entity.getPhotoIds());
-    }
+            GroupLocationDto locationDto = dto.getLocation();
+            locationDto.setGroupId(entity.getId());
+            locationDto.setCategory(LocationCategory.USER);
+            IdDto route = locationClient.updateRoute(locationDto);
+            entity.setLocationId(route.getId());
 
-    public Set<UUID> getLikedEventsByUserId(UUID userId) {
-        Optional<SystemUser> byId = userRepository.findById(userId);
-        if (byId.isPresent()) {
-            return byId.get().getEventLikeIds();
+            GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
+            groupPhotoDto.setGroupId(entity.getId());
+            groupPhotoDto.setCategory(PhotoCategory.USER);
+            IdDto groupPhotoId = contentClient.updateGroup(groupPhotoDto);
+            entity.setGroupPhoto(groupPhotoId.getId());
+
+            entity.setRole(role);
+        } else if (crudOperation == CrudOperation.CREATE) {
+            updatePassword(entity);
+
+            GroupLocationDto locationDto = dto.getLocation();
+            locationDto.setGroupId(entity.getId());
+            locationDto.setCategory(LocationCategory.USER);
+            IdDto route = locationClient.createRoute(locationDto);
+            entity.setLocationId(route.getId());
+
+            GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
+            groupPhotoDto.setGroupId(entity.getId());
+            groupPhotoDto.setCategory(PhotoCategory.USER);
+            IdDto groupPhotoId = contentClient.createGroup(groupPhotoDto);
+            entity.setGroupPhoto(groupPhotoId.getId());
+            entity.setRole(Role.ROLE_USER);
+            EventLikeDto eventLikeDto = new EventLikeDto();
+            eventLikeDto.setEventId(entity.getId());
+            eventLikeDto.setUsers(Collections.emptySet());
+            eventLikeService.create(eventLikeDto);
+        } else if (crudOperation == CrudOperation.DELETE) {
+            locationClient.deleteRoute(entity.getLocationId());
+            contentClient.delete(entity.getGroupPhoto());
+            eventLikeService.deleteByUserId(entity.getId());
         }
-        return Collections.emptySet();
+        return entity;
     }
 
-    public Set<UUID> deleteLikedEventsByUserId(UUID userId, Set<UUID> eventIds) {
-        Optional<SystemUser> byId = userRepository.findById(userId);
-        if (byId.isPresent()) {
-            SystemUser user = byId.get();
-            user.getEventLikeIds().removeAll(eventIds);
-            return userRepository.save(user).getEventLikeIds();
+    private Optional<SystemUser> updatePassword(SystemUser entity) {
+        Optional<SystemUser> user = userRepository.findById(entity.getId());
+        String password = entity.getPassword();
+        if (StringUtils.isNotBlank(password)) {
+            entity.setPassword(bCryptPasswordEncoder.encode(password));
+        } else {
+            String passwordFromDB = user.map(SystemUser::getPassword)
+                    .orElseThrow(() -> new CannotFindEntityException("Cannot find user in database"));
+            entity.setPassword(passwordFromDB);
         }
-        return Collections.emptySet();
-    }
-
-    public Map<UUID, Collection<SimpleUserDto>> getUsersLikedEventIds(Set<UUID> eventIds) {
-        return eventIds.stream().collect(Collectors.toMap(Function.identity(),
-                eventId -> simpleUserMapper.entitiesToDtos(userRepository.findUsersLoginLikedEventId(eventId))));
-    }
-
-    public boolean saveLikedEventByUserId(UUID userId, UUID eventId) {
-        Optional<SystemUser> byId = userRepository.findById(userId);
-        if (byId.isPresent()) {
-            SystemUser user = byId.get();
-            Set<UUID> eventLikeIds = user.getEventLikeIds();
-            if (eventLikeIds.stream().anyMatch(eventLike -> eventLike.equals(eventId))) {
-                eventLikeIds.remove(eventId);
-                Set<UUID> newUserLikes = userRepository.save(user).getEventLikeIds();
-                return newUserLikes.stream().anyMatch(userLikeEvent -> userLikeEvent.equals(eventId));
-            } else {
-                eventLikeIds.add(eventId);
-                Set<UUID> newUserLikes = userRepository.save(user).getEventLikeIds();
-                return newUserLikes.stream().anyMatch(userLikeEvent -> userLikeEvent.equals(eventId));
-            }
-        }
-        return false;
+        return user;
     }
 
     public Collection<SimpleUserDto> findSimpleUserDtosByUserIds(Set<UUID> userIds) {
@@ -191,5 +198,14 @@ public class UserService extends CrudService<UserDto, SystemUser> {
                         .innerService(interestService)
                         .currentServiceField("interests").build())
                 .build();
+    }
+
+    public String findLoginById(UUID id) {
+        log.debug("user found by id {}", id);
+        Optional<SystemUser> userById = userRepository.findById(id);
+        if (userById.isPresent()) {
+            return userById.get().getLogin();
+        }
+        throw new CannotFindEntityException("Cannot find user by login");
     }
 }

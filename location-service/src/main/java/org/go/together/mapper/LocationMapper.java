@@ -1,35 +1,52 @@
 package org.go.together.mapper;
 
 import org.go.together.dto.LocationDto;
-import org.go.together.interfaces.Mapper;
-import org.go.together.model.Country;
+import org.go.together.exceptions.CannotFindEntityException;
+import org.go.together.logic.Mapper;
 import org.go.together.model.Location;
+import org.go.together.model.Place;
+import org.go.together.repository.PlaceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class LocationMapper implements Mapper<LocationDto, Location> {
-    private final CountryMapper countryMapper;
+    private final PlaceRepository placeRepository;
+    private PlaceMapper placeMapper;
 
-    public LocationMapper(CountryMapper countryMapper) {
-        this.countryMapper = countryMapper;
+    public LocationMapper(PlaceRepository placeRepository) {
+        this.placeRepository = placeRepository;
+    }
+
+    @Autowired
+    public void setPlaceMapper(PlaceMapper placeMapper) {
+        this.placeMapper = placeMapper;
     }
 
     public LocationDto entityToDto(Location location) {
+        Place place = placeRepository.findByLocationId(location.getId())
+                .orElseThrow(() -> new CannotFindEntityException("Cannot find place by location id " + location.getId()));
         LocationDto locationDto = new LocationDto();
-        locationDto.setCountry(countryMapper.entityToDto(location.getCountry()));
         locationDto.setId(location.getId());
-        locationDto.setState(location.getState());
-        locationDto.setName(location.getName());
+        locationDto.setAddress(location.getAddress());
+        locationDto.setLatitude(location.getLatitude());
+        locationDto.setLongitude(location.getLongitude());
+        locationDto.setPlace(placeMapper.entityToDto(place));
+        locationDto.setRouteNumber(location.getRouteNumber());
+        locationDto.setIsEnd(location.getIsEnd());
+        locationDto.setIsStart(location.getIsStart());
         return locationDto;
     }
 
     public Location dtoToEntity(LocationDto locationDto) {
         Location location = new Location();
-        Country country = countryMapper.dtoToEntity(locationDto.getCountry());
-        location.setId(location.getId());
-        location.setCountry(country);
-        location.setName(locationDto.getName());
-        location.setState(locationDto.getState());
+        location.setId(locationDto.getId());
+        location.setAddress(locationDto.getAddress());
+        location.setLatitude(locationDto.getLatitude());
+        location.setLongitude(locationDto.getLongitude());
+        location.setRouteNumber(locationDto.getRouteNumber());
+        location.setIsEnd(locationDto.getIsEnd());
+        location.setIsStart(locationDto.getIsStart());
         return location;
     }
 }
