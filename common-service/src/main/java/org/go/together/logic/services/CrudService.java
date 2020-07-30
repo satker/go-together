@@ -24,7 +24,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public abstract class CrudService<D extends ComparableDto, E extends IdentifiedEntity> extends NotificationService<D, E> {
+public abstract class CrudService<D extends ComparableDto, E extends IdentifiedEntity>
+        extends NotificationService<D, E> {
     private final Mapper<D, E> mapper;
     private final Validator<D> validator;
     private final CustomRepository<E> repository;

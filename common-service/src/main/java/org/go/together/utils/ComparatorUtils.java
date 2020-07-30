@@ -201,7 +201,7 @@ public class ComparatorUtils {
             }
             String resultElementsString = Stream.of(removedElementsString, addedElementsString, changedElementsString)
                     .filter(StringUtils::isNotBlank)
-                    .collect(Collectors.joining("and"));
+                    .collect(Collectors.joining(" and"));
             resultString.append(resultElementsString);
             resultString.append(") ");
             result.add(resultString.toString());
