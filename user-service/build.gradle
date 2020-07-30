@@ -3,8 +3,8 @@ apply plugin: 'java'
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
-sourceCompatibility = 13
-targetCompatibility = 13
+sourceCompatibility = 14
+targetCompatibility = 14
 
 repositories {
     mavenCentral()
