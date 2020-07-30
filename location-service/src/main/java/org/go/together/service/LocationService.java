@@ -74,7 +74,7 @@ public class LocationService extends CrudService<LocationDto, Location> {
 
     @Override
     protected Location enrichEntity(Location entity, LocationDto dto, CrudOperation crudOperation) {
-        if (crudOperation == CrudOperation.UPDATE || crudOperation == CrudOperation.CREATE) {
+        if (crudOperation == CrudOperation.CREATE) {
             PlaceDto placeDto = dto.getPlace();
             Optional<Place> placeEquals = placeService.getPlaceEquals(placeDto);
 

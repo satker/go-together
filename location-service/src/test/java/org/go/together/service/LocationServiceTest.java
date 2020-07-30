@@ -11,6 +11,7 @@ import org.go.together.model.Location;
 import org.go.together.repository.CountryRepository;
 import org.go.together.repository.PlaceRepository;
 import org.go.together.tests.CrudServiceCommonTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -28,6 +29,13 @@ class LocationServiceTest extends CrudServiceCommonTest<Location, LocationDto> {
 
     @Autowired
     private PlaceRepository placeRepository;
+
+    @Override
+    @BeforeEach
+    public void init() {
+        super.init();
+        updatedDto.setPlace(dto.getPlace());
+    }
 
     @Override
     protected LocationDto createDto() {

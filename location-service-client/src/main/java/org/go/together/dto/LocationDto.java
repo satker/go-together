@@ -15,10 +15,10 @@ public class LocationDto implements ComparableDto {
     @ComparingField("place")
     private PlaceDto place;
 
-    @ComparingField(value = "route number", isMain = true)
+    @ComparingField(value = "route number")
     private Integer routeNumber;
 
-    @ComparingField("address")
+    @ComparingField(value = "address", isMain = true)
     private String address;
 
     @ComparingField("latitude")

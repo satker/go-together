@@ -81,8 +81,8 @@ public abstract class CrudService<D extends ComparableDto, E extends IdentifiedE
                 createdEntity = repository.save(enrichedEntity);
             } catch (Exception e) {
                 log.error("Cannot update " + getServiceName() + ": " + e.getMessage());
-                D entityToDto = mapper.entityToDto(entityById);
                 log.error("Try rollback update " + getServiceName() + " id = " + entity.getId());
+                D entityToDto = mapper.entityToDto(entityById);
                 enrichEntity(entityById, entityToDto, crudOperation);
                 log.error("Rollback successful update " + getServiceName() + " id = " + entity.getId());
                 throw new ApplicationException(e);

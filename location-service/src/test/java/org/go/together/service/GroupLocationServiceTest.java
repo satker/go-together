@@ -56,6 +56,15 @@ class GroupLocationServiceTest extends CrudServiceCommonTest<GroupLocation, Grou
         Set<LocationDto> locations = updatedDto.getLocations().stream()
                 .limit(2)
                 .collect(Collectors.toSet());
+        Set<Integer> numbers = IntStream.rangeClosed(1, locations.size())
+                .boxed()
+                .collect(Collectors.toSet());
+        Iterator<LocationDto> iterator = locations.iterator();
+        for (Integer number : numbers) {
+            LocationDto eventLocationDto = iterator.next();
+            eventLocationDto.setRouteNumber(number);
+            enrichWithCorrectEndStartRoute(locations.size(), number, eventLocationDto);
+        }
         updatedDto.setLocations(locations);
         IdDto update = crudService.update(updatedDto);
         GroupLocationDto savedUpdatedObject = crudService.read(update.getId());
@@ -81,19 +90,23 @@ class GroupLocationServiceTest extends CrudServiceCommonTest<GroupLocation, Grou
             CountryDto countryDto = countryMapper.entityToDto(savedCountry);
             placeDto.setId(null);
             placeDto.setCountry(countryDto);
-            if (number == 1) {
-                eventLocationDto.setIsStart(true);
-                eventLocationDto.setIsEnd(false);
-            } else if (number == locations.size()) {
-                eventLocationDto.setIsStart(false);
-                eventLocationDto.setIsEnd(true);
-            } else {
-                eventLocationDto.setIsStart(false);
-                eventLocationDto.setIsEnd(false);
-            }
+            enrichWithCorrectEndStartRoute(locations.size(), number, eventLocationDto);
         }
 
         return locationDto;
+    }
+
+    private void enrichWithCorrectEndStartRoute(int locationsSize, Integer number, LocationDto eventLocationDto) {
+        if (number == 1) {
+            eventLocationDto.setIsStart(true);
+            eventLocationDto.setIsEnd(false);
+        } else if (number == locationsSize) {
+            eventLocationDto.setIsStart(false);
+            eventLocationDto.setIsEnd(true);
+        } else {
+            eventLocationDto.setIsStart(false);
+            eventLocationDto.setIsEnd(false);
+        }
     }
 
     @Override
