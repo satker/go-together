@@ -30,6 +30,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     compile project(":message-service-client")
+    compile project(":common-service:notification-service")
 }
 
 test {

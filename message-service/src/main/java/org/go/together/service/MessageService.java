@@ -1,10 +1,10 @@
 package org.go.together.service;
 
+import org.go.together.CrudServiceImpl;
+import org.go.together.dto.FieldMapper;
 import org.go.together.dto.MessageDto;
 import org.go.together.dto.MessageType;
-import org.go.together.dto.filter.FieldMapper;
 import org.go.together.enums.CrudOperation;
-import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.MessageMapper;
 import org.go.together.model.Message;
 import org.go.together.repository.MessageRepository;
@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class MessageService extends CrudService<MessageDto, Message> {
+public class MessageService extends CrudServiceImpl<MessageDto, Message> {
     private final MessageRepository messageRepository;
     private final MessageMapper messageMapper;
 

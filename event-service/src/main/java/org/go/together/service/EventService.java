@@ -2,13 +2,12 @@ package org.go.together.service;
 
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.CrudServiceImpl;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.*;
-import org.go.together.dto.filter.FieldMapper;
 import org.go.together.enums.CrudOperation;
-import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.EventMapper;
 import org.go.together.model.Event;
 import org.go.together.repository.EventRepository;
@@ -22,7 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class EventService extends CrudService<EventDto, Event> {
+public class EventService extends CrudServiceImpl<EventDto, Event> {
     private final LocationClient locationClient;
     private final ContentClient contentClient;
     private final EventRepository eventRepository;

@@ -1,7 +1,7 @@
 package org.go.together.service;
 
 import org.go.together.dto.NotificationMessageDto;
-import org.go.together.dto.NotificationStatus;
+import org.go.together.enums.NotificationStatus;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.mapper.NotificationMessageMapper;
 import org.go.together.model.Notification;

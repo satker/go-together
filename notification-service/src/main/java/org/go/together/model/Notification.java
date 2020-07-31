@@ -1,7 +1,7 @@
 package org.go.together.model;
 
 import lombok.Data;
-import org.go.together.dto.NotificationStatus;
+import org.go.together.enums.NotificationStatus;
 import org.go.together.interfaces.IdentifiedEntity;
 
 import javax.persistence.*;

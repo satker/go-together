@@ -1,7 +1,7 @@
 package org.go.together.client;
 
 import org.go.together.dto.NotificationMessageDto;
-import org.go.together.dto.NotificationStatus;
+import org.go.together.enums.NotificationStatus;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 

@@ -2,7 +2,7 @@ package org.go.together.controller;
 
 import org.go.together.client.NotificationClient;
 import org.go.together.dto.NotificationMessageDto;
-import org.go.together.dto.NotificationStatus;
+import org.go.together.enums.NotificationStatus;
 import org.go.together.service.NotificationService;
 import org.springframework.web.bind.annotation.RestController;
 

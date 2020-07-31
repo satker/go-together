@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
+import org.go.together.interfaces.Dto;
 
 import java.util.Set;
 import java.util.UUID;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = {"id"})
-public class PlaceDto implements ComparableDto {
+public class PlaceDto implements Dto {
     private UUID id;
     @ComparingField(value = "name", isMain = true)
     private String name;

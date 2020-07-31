@@ -1,12 +1,12 @@
 package org.go.together.service;
 
 import com.google.common.collect.ImmutableMap;
+import org.go.together.CrudServiceImpl;
+import org.go.together.dto.FieldMapper;
 import org.go.together.dto.GroupLocationDto;
 import org.go.together.dto.LocationDto;
-import org.go.together.dto.filter.FieldMapper;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.GroupLocationMapper;
 import org.go.together.model.GroupLocation;
 import org.go.together.model.Location;
@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class GroupLocationService extends CrudService<GroupLocationDto, GroupLocation> {
+public class GroupLocationService extends CrudServiceImpl<GroupLocationDto, GroupLocation> {
     private final LocationService locationService;
     private final GroupLocationRepository groupLocationRepository;
 

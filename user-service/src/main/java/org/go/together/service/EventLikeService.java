@@ -1,10 +1,10 @@
 package org.go.together.service;
 
+import org.go.together.CrudServiceImpl;
 import org.go.together.dto.EventLikeDto;
-import org.go.together.dto.filter.FieldMapper;
+import org.go.together.dto.FieldMapper;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.EventLikeMapper;
 import org.go.together.model.EventLike;
 import org.go.together.repository.EventLikeRepository;
@@ -18,7 +18,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class EventLikeService extends CrudService<EventLikeDto, EventLike> {
+public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
     private final EventLikeRepository eventLikeRepository;
     private final EventLikeMapper eventLikeMapper;
 

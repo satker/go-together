@@ -3,12 +3,13 @@ package org.go.together.dto;
 import lombok.Data;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
+import org.go.together.interfaces.Dto;
 
 import java.util.Date;
 import java.util.UUID;
 
 @Data
-public class MessageDto implements ComparableDto {
+public class MessageDto implements ComparableDto, Dto {
     private UUID id;
 
     @ComparingField(value = "message", isMain = true)
@@ -29,5 +30,10 @@ public class MessageDto implements ComparableDto {
     @Override
     public UUID getOwnerId() {
         return this.getAuthorId();
+    }
+
+    @Override
+    public UUID getParentId() {
+        return getId();
     }
 }

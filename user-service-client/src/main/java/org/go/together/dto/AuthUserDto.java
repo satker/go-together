@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.go.together.interfaces.ComparableDto;
+import org.go.together.interfaces.Dto;
 
 import java.util.UUID;
 
@@ -12,7 +12,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthUserDto implements ComparableDto {
+public class AuthUserDto implements Dto {
     private UUID id;
     private String login;
     private String password;

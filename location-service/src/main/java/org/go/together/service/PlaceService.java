@@ -1,10 +1,10 @@
 package org.go.together.service;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.CrudServiceImpl;
+import org.go.together.dto.FieldMapper;
 import org.go.together.dto.PlaceDto;
 import org.go.together.dto.SimpleDto;
-import org.go.together.dto.filter.FieldMapper;
-import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.CountryMapper;
 import org.go.together.mapper.PlaceMapper;
 import org.go.together.model.Country;
@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class PlaceService extends CrudService<PlaceDto, Place> {
+public class PlaceService extends CrudServiceImpl<PlaceDto, Place> {
     private final CountryService countryService;
     private final CountryMapper countryMapper;
     private final PlaceRepository placeRepository;

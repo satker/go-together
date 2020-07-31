@@ -2,14 +2,14 @@ package org.go.together.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
+import org.go.together.interfaces.Dto;
 
 import java.util.UUID;
 
 @Data
 @EqualsAndHashCode(exclude = {"id"})
-public class LocationDto implements ComparableDto {
+public class LocationDto implements Dto {
     private UUID id;
 
     @ComparingField("place")
