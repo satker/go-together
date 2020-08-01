@@ -3,14 +3,13 @@ package org.go.together.dto;
 import lombok.Data;
 import org.go.together.interfaces.Dto;
 
-import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
-public class NotificationMessageDto implements Dto {
+public class NotificationReceiverDto implements Dto {
     private UUID id;
-    private String message;
-    private Date date;
-    private Boolean isRead;
+    private UUID userId;
     private NotificationDto notification;
+    private Set<NotificationReceiverMessageDto> notificationReceiverMessages;
 }

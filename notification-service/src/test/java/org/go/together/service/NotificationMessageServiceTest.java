@@ -28,12 +28,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DataJpaTest
 @ContextConfiguration(classes = RepositoryContext.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class NotificationServiceTest {
+public class NotificationMessageServiceTest {
     @Autowired
-    private NotificationService notificationService;
+    private NotificationMessageService notificationMessageService;
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private NotificationReceiverService notificationReceiverService;
 
     @Autowired
     private NotificationMessageRepository notificationMessageRepository;
@@ -153,7 +156,7 @@ public class NotificationServiceTest {
         createNotification(producerId, created, NotificationStatus.CREATED);
         addReceiver(producerId, receiverId);
 
-        Collection<NotificationMessageDto> receiverNotifications = notificationService.getReceiverNotifications(receiverId);
+        Collection<NotificationMessageDto> receiverNotifications = notificationMessageService.getReceiverNotifications(receiverId);
 
         assertEquals(1, receiverNotifications.size());
         assertEquals(created, receiverNotifications.iterator().next().getMessage());
@@ -168,11 +171,11 @@ public class NotificationServiceTest {
         createNotification(producerId, created, NotificationStatus.CREATED);
         addReceiver(producerId, receiverId);
 
-        boolean readResult = notificationService.readNotifications(receiverId);
+        boolean readResult = notificationReceiverService.readNotifications(receiverId);
         assertTrue(readResult);
 
         Collection<NotificationMessageDto> receiverNotifications =
-                notificationService.getReceiverNotifications(receiverId);
+                notificationMessageService.getReceiverNotifications(receiverId);
 
         assertEquals(1, receiverNotifications.size());
         assertEquals(created, receiverNotifications.iterator().next().getMessage());
@@ -191,13 +194,13 @@ public class NotificationServiceTest {
         NotificationMessageDto notificationMessageDto = new NotificationMessageDto();
         notificationMessageDto.setMessage(message);
         notificationMessageDto.setDate(new Date());
-        boolean notificate = notificationService.notificate(producerId, status, notificationMessageDto);
+        boolean notificate = notificationMessageService.notificate(producerId, status, notificationMessageDto);
         assertTrue(notificate);
         return notificationRepository.findByProducerId(producerId);
     }
 
     private Collection<NotificationReceiver> addReceiver(UUID producerId, UUID receiverId) {
-        boolean result = notificationService.addReceiver(producerId, receiverId);
+        boolean result = notificationReceiverService.addReceiver(producerId, receiverId);
         assertTrue(result);
 
         Optional<Notification> notificationOptional = notificationRepository.findByProducerId(producerId);
@@ -208,7 +211,7 @@ public class NotificationServiceTest {
     }
 
     private Collection<NotificationReceiver> removeReceiver(UUID producerId, UUID receiverId) {
-        boolean result = notificationService.removeReceiver(producerId, receiverId);
+        boolean result = notificationReceiverService.removeReceiver(producerId, receiverId);
         assertTrue(result);
 
         Optional<Notification> notificationOptional = notificationRepository.findByProducerId(producerId);
