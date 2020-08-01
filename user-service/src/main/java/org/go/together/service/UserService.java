@@ -2,13 +2,12 @@ package org.go.together.service;
 
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.CrudServiceImpl;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.*;
-import org.go.together.dto.filter.FieldMapper;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.SimpleUserMapper;
 import org.go.together.mapper.UserMapper;
 import org.go.together.model.Language;
@@ -23,7 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService extends CrudService<UserDto, SystemUser> {
+public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(UserService.class);
     private final UserMapper userMapper;
     private final UserRepository userRepository;

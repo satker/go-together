@@ -2,11 +2,11 @@ package org.go.together.service;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.CrudServiceImpl;
+import org.go.together.dto.FieldMapper;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.PhotoDto;
-import org.go.together.dto.filter.FieldMapper;
 import org.go.together.enums.CrudOperation;
-import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.PhotoMapper;
 import org.go.together.model.Photo;
 import org.go.together.repository.PhotoRepository;
@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class PhotoService extends CrudService<PhotoDto, Photo> {
+public class PhotoService extends CrudServiceImpl<PhotoDto, Photo> {
     private final PhotoRepository photoRepository;
     private final String photoPath;
 

@@ -2,7 +2,7 @@ package org.go.together.service;
 
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.NotificationMessageDto;
-import org.go.together.dto.NotificationStatus;
+import org.go.together.enums.NotificationStatus;
 import org.go.together.model.Notification;
 import org.go.together.model.NotificationMessage;
 import org.go.together.model.NotificationReceiver;

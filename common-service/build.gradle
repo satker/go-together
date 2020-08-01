@@ -13,25 +13,4 @@ repositories {
 }
 
 dependencies {
-    compile (
-            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
-            "org.junit.jupiter:junit-jupiter-engine:5.2.0",
-            "uk.co.jemos.podam:podam:7.2.3.RELEASE",
-
-            "org.projectlombok:lombok:${lombokVersion}",
-            "com.google.guava:guava:${guavaVersion}",
-            "com.h2database:h2",
-
-            'org.apache.commons:commons-lang3:3.9'
-    )
-    compile project(":repository-service")
-    compile project(":notification-service-client")
-
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-}
-
-test {
-    useJUnitPlatform()
 }

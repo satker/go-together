@@ -19,5 +19,5 @@ dependencies {
             "org.projectlombok:lombok:${lombokVersion}"
     )
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    compile project(":common-service")
+    compile project(":common-service:crud-service")
 }

@@ -1,11 +1,10 @@
 package org.go.together.controller;
 
 import org.go.together.client.ContentClient;
+import org.go.together.dto.FormDto;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
-import org.go.together.dto.filter.FormDto;
-import org.go.together.logic.controllers.FindController;
 import org.go.together.service.GroupPhotoService;
 import org.go.together.service.PhotoService;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,9 +1,9 @@
 package org.go.together.service;
 
+import org.go.together.CrudServiceImpl;
+import org.go.together.dto.FieldMapper;
 import org.go.together.dto.GroupPhotoDto;
-import org.go.together.dto.filter.FieldMapper;
 import org.go.together.enums.CrudOperation;
-import org.go.together.logic.services.CrudService;
 import org.go.together.mapper.GroupPhotoMapper;
 import org.go.together.model.GroupPhoto;
 import org.go.together.model.Photo;
@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class GroupPhotoService extends CrudService<GroupPhotoDto, GroupPhoto> {
+public class GroupPhotoService extends CrudServiceImpl<GroupPhotoDto, GroupPhoto> {
     private final GroupPhotoRepository groupPhotoRepository;
     private PhotoService photoService;
 
