@@ -13,7 +13,6 @@ import java.util.UUID;
 @Table(name = "notification_receiver", schema = "notification_service")
 public class NotificationReceiver implements IdentifiedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(columnDefinition = "uuid")
     private UUID id;
     @Column(columnDefinition = "uuid")
@@ -24,6 +23,6 @@ public class NotificationReceiver implements IdentifiedEntity {
     private Set<NotificationReceiverMessage> notificationReceiverMessages = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "notification_id", nullable = false)
+    @JoinColumn(name = "notification_id")
     private Notification notification;
 }

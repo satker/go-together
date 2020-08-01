@@ -4,7 +4,10 @@ import lombok.Data;
 import org.go.together.enums.NotificationStatus;
 import org.go.together.interfaces.IdentifiedEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.UUID;
 
 @Data
@@ -12,7 +15,6 @@ import java.util.UUID;
 @Table(name = "notification", schema = "notification_service")
 public class Notification implements IdentifiedEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(columnDefinition = "uuid")
     private UUID id;
     @Column(columnDefinition = "uuid")
