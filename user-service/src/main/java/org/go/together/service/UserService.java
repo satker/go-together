@@ -9,12 +9,9 @@ import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.mapper.SimpleUserMapper;
-import org.go.together.mapper.UserMapper;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
 import org.go.together.repository.UserRepository;
-import org.go.together.validation.UserValidator;
-import org.slf4j.Logger;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(UserService.class);
-    private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ContentClient contentClient;
@@ -35,8 +30,6 @@ public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
     private final LocationClient locationClient;
 
     public UserService(UserRepository userRepository,
-                       UserMapper userMapper,
-                       UserValidator userValidator,
                        BCryptPasswordEncoder bCryptPasswordEncoder,
                        ContentClient contentClient,
                        SimpleUserMapper simpleUserMapper,
@@ -44,9 +37,7 @@ public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
                        InterestService interestService,
                        EventLikeService eventLikeService,
                        LocationClient locationClient) {
-        super(userRepository, userMapper, userValidator);
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.contentClient = contentClient;
         this.simpleUserMapper = simpleUserMapper;
@@ -57,16 +48,14 @@ public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
     }
 
     public UserDto findUserByLogin(String login) {
-        log.debug("user found by login {}", login);
         Optional<SystemUser> userByLogin = userRepository.findUserByLogin(login);
         if (userByLogin.isPresent()) {
-            return userMapper.entityToDto(userByLogin.get());
+            return mapper.entityToDto(userByLogin.get());
         }
         throw new CannotFindEntityException("Cannot find user by login");
     }
 
     public AuthUserDto findAuthUserByLogin(String login) {
-        log.debug("auth user found by login {}", login);
         Optional<SystemUser> userByLogin = userRepository.findUserByLogin(login);
         if (userByLogin.isPresent()) {
             SystemUser systemUser = userByLogin.get();
@@ -81,12 +70,10 @@ public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
     }
 
     public boolean checkIsPresentedMail(String mail) {
-        log.debug("user found by mail {}", mail);
         return !userRepository.findUserByMail(mail.replaceAll("\"", "")).isEmpty();
     }
 
     public boolean checkIsPresentedUsername(String username) {
-        log.debug("user found by login {}", username);
         return userRepository.findUserByLogin(username.replaceAll("\"", "")).isPresent();
     }
 
@@ -200,7 +187,6 @@ public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
     }
 
     public String findLoginById(UUID id) {
-        log.debug("user found by id {}", id);
         Optional<SystemUser> userById = userRepository.findById(id);
         if (userById.isPresent()) {
             return userById.get().getLogin();

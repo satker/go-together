@@ -7,10 +7,7 @@ import org.go.together.dto.FieldMapper;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.mapper.PhotoMapper;
 import org.go.together.model.Photo;
-import org.go.together.repository.PhotoRepository;
-import org.go.together.validation.PhotoValidator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,15 +18,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class PhotoService extends CrudServiceImpl<PhotoDto, Photo> {
-    private final PhotoRepository photoRepository;
     private final String photoPath;
 
-    public PhotoService(PhotoRepository photoRepository,
-                        PhotoMapper photoMapper,
-                        PhotoValidator photoValidator,
-                        @Value("${photo.store.path}") String photoPath) {
-        super(photoRepository, photoMapper, photoValidator);
-        this.photoRepository = photoRepository;
+    public PhotoService(@Value("${photo.store.path}") String photoPath) {
         this.photoPath = photoPath;
     }
 
@@ -83,7 +74,7 @@ public class PhotoService extends CrudServiceImpl<PhotoDto, Photo> {
                 .filter(photoDto -> photoDto.getId() == null || !presentedPhotoIds.contains(photoDto.getId()))
                 .map(super::create)
                 .map(IdDto::getId)
-                .map(photoRepository::findById)
+                .map(repository::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toSet());

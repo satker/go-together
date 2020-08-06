@@ -1,4 +1,4 @@
-package org.go.together.validation;
+package org.go.together.correction;
 
 import org.assertj.core.util.Strings;
 import org.go.together.dto.PhotoDto;

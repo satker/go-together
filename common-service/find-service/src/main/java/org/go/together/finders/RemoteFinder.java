@@ -9,13 +9,15 @@ import org.go.together.dto.FormDto;
 import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.exceptions.RemoteClientFindException;
 import org.go.together.utils.FindUtils;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RemoteFinder implements Finder<Collection<Object>> {
+@Component
+public class RemoteFinder implements Finder {
     public Map<String, Collection<Object>> getFilters(Map<String, FilterDto> filters,
                                                       Map<String, FieldMapper> availableFields) {
         Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices = new HashMap<>();
@@ -40,7 +42,7 @@ public class RemoteFinder implements Finder<Collection<Object>> {
                                          FilterDto value) {
         ClientLocalFieldObject clientLocalFieldObject = ClientLocalFieldObject.builder()
                 .client(fieldMapper.getRemoteServiceClient())
-                .localField(FindUtils.getParsedString(currentLocalField)[0]).build();
+                .localField(FindUtils.getParsedRemoteField(currentLocalField)[0]).build();
         FormDto stringFilterDtoMap = filtersToAnotherServices.get(clientLocalFieldObject);
         FormDto remoteClientFormDto = getRemoteClientFormDto(anotherServiceSearchField, value, stringFilterDtoMap, fieldMapper);
         filtersToAnotherServices.put(clientLocalFieldObject, remoteClientFormDto);
@@ -66,7 +68,7 @@ public class RemoteFinder implements Finder<Collection<Object>> {
     private Pair<String, String> getRemoteMainAndGetField(String anotherServiceSearchField, FieldMapper fieldMapper) {
         String remoteGetField = fieldMapper.getPathRemoteFieldGetter();
 
-        String[] havingCondition = FindUtils.getSplitHavingCountString(anotherServiceSearchField);
+        String[] havingCondition = FindUtils.getHavingCondition(anotherServiceSearchField);
         if (havingCondition.length > 1) {
             try {
                 int havingNumber = Integer.parseInt(havingCondition[1]);

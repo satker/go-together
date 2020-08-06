@@ -8,12 +8,10 @@ import org.go.together.dto.LocationDto;
 import org.go.together.dto.PlaceDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.mapper.LocationMapper;
 import org.go.together.mapper.PlaceMapper;
 import org.go.together.model.Location;
 import org.go.together.model.Place;
 import org.go.together.repository.LocationRepository;
-import org.go.together.validation.LocationValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,18 +19,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class LocationService extends CrudServiceImpl<LocationDto, Location> {
-    private final LocationMapper locationMapper;
     private final LocationRepository locationRepository;
     private final PlaceService placeService;
     private final PlaceMapper placeMapper;
 
     public LocationService(LocationRepository locationRepository,
-                           LocationMapper locationMapper,
-                           LocationValidator locationValidator,
                            PlaceService placeService,
                            PlaceMapper placeMapper) {
-        super(locationRepository, locationMapper, locationValidator);
-        this.locationMapper = locationMapper;
         this.locationRepository = locationRepository;
         this.placeService = placeService;
         this.placeMapper = placeMapper;
@@ -40,7 +33,7 @@ public class LocationService extends CrudServiceImpl<LocationDto, Location> {
 
     public Set<LocationDto> getEventRoute(UUID eventId) {
         return locationRepository.findByEventId(eventId).stream()
-                .map(locationMapper::entityToDto)
+                .map(mapper::entityToDto)
                 .collect(Collectors.toSet());
     }
 

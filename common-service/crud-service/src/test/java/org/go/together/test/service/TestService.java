@@ -7,9 +7,6 @@ import org.go.together.dto.ResponseDto;
 import org.go.together.test.client.AnotherClient;
 import org.go.together.test.dto.TestDto;
 import org.go.together.test.entities.TestEntity;
-import org.go.together.test.mapper.TestMapper;
-import org.go.together.test.repository.TestRepository;
-import org.go.together.test.validation.TestValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -21,13 +18,9 @@ public class TestService extends CrudServiceImpl<TestDto, TestEntity> {
     private final ManyJoinService manyJoinService;
     private final JoinTestService joinTestService;
 
-    protected TestService(TestRepository repository,
-                          TestMapper mapper,
-                          TestValidator validator,
-                          AnotherClient anotherClient,
+    protected TestService(AnotherClient anotherClient,
                           ManyJoinService manyJoinService,
                           JoinTestService joinTestService) {
-        super(repository, mapper, validator);
         this.anotherClient = anotherClient;
         this.manyJoinService = manyJoinService;
         this.joinTestService = joinTestService;

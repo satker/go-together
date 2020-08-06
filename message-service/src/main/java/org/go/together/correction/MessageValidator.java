@@ -1,4 +1,4 @@
-package org.go.together.validation;
+package org.go.together.correction;
 
 import com.google.common.collect.ImmutableMap;
 import org.go.together.dto.MessageDto;

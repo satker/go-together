@@ -5,10 +5,8 @@ import org.go.together.dto.EventLikeDto;
 import org.go.together.dto.FieldMapper;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.mapper.EventLikeMapper;
 import org.go.together.model.EventLike;
 import org.go.together.repository.EventLikeRepository;
-import org.go.together.validation.EventLikeValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -20,14 +18,9 @@ import java.util.stream.Collectors;
 @Service
 public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
     private final EventLikeRepository eventLikeRepository;
-    private final EventLikeMapper eventLikeMapper;
 
-    protected EventLikeService(EventLikeRepository repository,
-                               EventLikeMapper mapper,
-                               EventLikeValidator validator) {
-        super(repository, mapper, validator);
+    protected EventLikeService(EventLikeRepository repository) {
         this.eventLikeRepository = repository;
-        this.eventLikeMapper = mapper;
     }
 
     @Override
@@ -56,7 +49,7 @@ public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
                 .map(eventLikeRepository::findByEventId)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .map(eventLikeMapper::entityToDto)
+                .map(mapper::entityToDto)
                 .collect(Collectors.toSet());
     }
 
@@ -79,7 +72,7 @@ public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
                 .peek(eventLike -> {
                     eventLike.getUsers().removeIf(user -> user.getId().equals(userId));
                     eventLike.setUsers(eventLike.getUsers());
-                }).map(eventLikeMapper::entityToDto)
+                }).map(mapper::entityToDto)
                 .forEach(super::update);
     }
 }

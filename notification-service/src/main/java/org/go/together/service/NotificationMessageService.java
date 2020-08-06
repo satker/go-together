@@ -3,14 +3,11 @@ package org.go.together.service;
 import org.go.together.CrudServiceImpl;
 import org.go.together.dto.*;
 import org.go.together.enums.NotificationStatus;
-import org.go.together.mapper.NotificationMapper;
 import org.go.together.mapper.NotificationMessageMapper;
 import org.go.together.mapper.NotificationReceiverMapper;
 import org.go.together.model.NotificationMessage;
 import org.go.together.model.NotificationReceiver;
-import org.go.together.repository.NotificationMessageRepository;
 import org.go.together.repository.NotificationReceiverRepository;
-import org.go.together.validation.NotificationMessageValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,25 +18,19 @@ public class NotificationMessageService extends CrudServiceImpl<NotificationMess
     private final NotificationMessageMapper notificationMessageMapper;
     private final NotificationService notificationService;
     private final NotificationReceiverRepository notificationReceiverRepository;
-    private final NotificationMapper notificationMapper;
     private final NotificationReceiverMapper notificationReceiverMapper;
     private final NotificationReceiverService notificationReceiverService;
     private final NotificationReceiverMessageService notificationReceiverMessageService;
 
     public NotificationMessageService(NotificationMessageMapper notificationMessageMapper,
                                       NotificationService notificationService,
-                                      NotificationMessageRepository notificationMessageRepository,
                                       NotificationReceiverRepository notificationReceiverRepository,
-                                      NotificationMessageValidator notificationMessageValidator,
-                                      NotificationMapper notificationMapper,
                                       NotificationReceiverMapper notificationReceiverMapper,
                                       NotificationReceiverService notificationReceiverService,
                                       NotificationReceiverMessageService notificationReceiverMessageService) {
-        super(notificationMessageRepository, notificationMessageMapper, notificationMessageValidator);
         this.notificationMessageMapper = notificationMessageMapper;
         this.notificationService = notificationService;
         this.notificationReceiverRepository = notificationReceiverRepository;
-        this.notificationMapper = notificationMapper;
         this.notificationReceiverMapper = notificationReceiverMapper;
         this.notificationReceiverService = notificationReceiverService;
         this.notificationReceiverMessageService = notificationReceiverMessageService;

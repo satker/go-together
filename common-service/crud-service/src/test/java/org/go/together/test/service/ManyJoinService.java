@@ -5,21 +5,12 @@ import org.go.together.CrudServiceImpl;
 import org.go.together.dto.FieldMapper;
 import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.entities.ManyJoinEntity;
-import org.go.together.test.mapper.ManyJoinMapper;
-import org.go.together.test.repository.ManyJoinRepository;
-import org.go.together.test.validation.ManyJoinValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
 @Service
 public class ManyJoinService extends CrudServiceImpl<ManyJoinDto, ManyJoinEntity> {
-    protected ManyJoinService(ManyJoinRepository repository,
-                              ManyJoinMapper mapper,
-                              ManyJoinValidator validator) {
-        super(repository, mapper, validator);
-    }
-
     @Override
     public String getServiceName() {
         return "manyJoin";

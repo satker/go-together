@@ -6,11 +6,9 @@ import org.go.together.dto.FieldMapper;
 import org.go.together.dto.PlaceDto;
 import org.go.together.dto.SimpleDto;
 import org.go.together.mapper.CountryMapper;
-import org.go.together.mapper.PlaceMapper;
 import org.go.together.model.Country;
 import org.go.together.model.Place;
 import org.go.together.repository.PlaceRepository;
-import org.go.together.validation.PlaceValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -23,11 +21,8 @@ public class PlaceService extends CrudServiceImpl<PlaceDto, Place> {
     private final PlaceRepository placeRepository;
 
     public PlaceService(PlaceRepository placeRepository,
-                        PlaceMapper placeMapper,
-                        PlaceValidator placeValidator,
                         CountryService countryService,
                         CountryMapper countryMapper) {
-        super(placeRepository, placeMapper, placeValidator);
         this.placeRepository = placeRepository;
         this.countryService = countryService;
         this.countryMapper = countryMapper;

@@ -18,15 +18,13 @@ public class JoinBuilder<E extends IdentifiedEntity> {
     public JoinBuilder(Class<E> clazz) {
         this.clazz = clazz;
         Arrays.stream(clazz.getDeclaredFields())
-                .filter(field1 -> field1.getAnnotation(ElementCollection.class) != null ||
-                        field1.getAnnotation(ManyToMany.class) != null ||
-                        field1.getAnnotation(OneToMany.class) != null
+                .filter(field ->
+                        field.getAnnotation(ElementCollection.class) != null ||
+                                field.getAnnotation(ManyToMany.class) != null ||
+                                field.getAnnotation(OneToMany.class) != null
                 )
                 .map(Field::getName)
-                .forEach(fieldName -> {
-                    String generatedTableName = getJoinTableName(fieldName, clazz);
-                    joinTables.put(fieldName, generatedTableName);
-                });
+                .forEach(fieldName -> joinTables.put(fieldName, getJoinTableName(fieldName, clazz)));
     }
 
     private String getJoinTableName(String fieldName, Class<E> clazz) {

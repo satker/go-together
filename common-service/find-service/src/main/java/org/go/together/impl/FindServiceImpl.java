@@ -3,29 +3,38 @@ package org.go.together.impl;
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.CustomRepository;
 import org.go.together.FindService;
+import org.go.together.correction.CorrectedService;
 import org.go.together.dto.FilterDto;
 import org.go.together.dto.FindSqlOperator;
 import org.go.together.dto.FormDto;
 import org.go.together.dto.PageDto;
 import org.go.together.finders.Finder;
-import org.go.together.finders.RemoteFinder;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.repository.FindRepository;
 import org.go.together.repository.FindRepositoryImpl;
 import org.go.together.utils.FindUtils;
-import org.go.together.validation.CorrectFieldService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
 public abstract class FindServiceImpl<E extends IdentifiedEntity> implements FindService {
-    private final CustomRepository<E> repository;
+    protected CustomRepository<E> repository;
+    private Finder remoteFindService;
+    private CorrectedService correctedService;
 
-    private final Finder<Collection<Object>> remoteFindService;
-    private final CorrectFieldService correctFieldService = new CorrectFieldService();
-
-    protected FindServiceImpl(CustomRepository<E> repository) {
+    @Autowired
+    public void setRepository(CustomRepository<E> repository) {
         this.repository = repository;
-        this.remoteFindService = new RemoteFinder();
+    }
+
+    @Autowired
+    public void setRemoteFindService(Finder finder) {
+        this.remoteFindService = finder;
+    }
+
+    @Autowired
+    public void setCorrectedService(CorrectedService correctedService) {
+        this.correctedService = correctedService;
     }
 
     public Pair<PageDto, Collection<Object>> findByFormDto(FormDto formDto) {
@@ -46,7 +55,7 @@ public abstract class FindServiceImpl<E extends IdentifiedEntity> implements Fin
 
     private Map<String, FilterDto> getFilters(FormDto formDto) {
         Pair<Map<String, FilterDto>, Map<String, FilterDto>>
-                correctedFilters = correctFieldService.getRemoteAndCorrectedFilters(formDto.getFilters(), getMappingFields());
+                correctedFilters = correctedService.getRemoteAndCorrectedFilters(formDto.getFilters(), getMappingFields());
         Map<String, Collection<Object>> remoteFilters = new HashMap<>();
         if (!correctedFilters.getLeft().isEmpty()) {
             remoteFilters = remoteFindService.getFilters(correctedFilters.getLeft(), getMappingFields());
@@ -62,7 +71,7 @@ public abstract class FindServiceImpl<E extends IdentifiedEntity> implements Fin
         remoteFilters.forEach((key, values) -> {
             FilterDto filterDto = new FilterDto(FindSqlOperator.IN,
                     Collections.singleton(Collections.singletonMap(getCorrectFilterValuesKey(key), values)));
-            Map<String, FilterDto> filterForCurrentService = Collections.singletonMap(FindUtils.getParsedString(key)[0], filterDto);
+            Map<String, FilterDto> filterForCurrentService = Collections.singletonMap(FindUtils.getParsedRemoteField(key)[0], filterDto);
             localFilters.remove(key);
             localFilters.putAll(filterForCurrentService);
         });
@@ -71,9 +80,9 @@ public abstract class FindServiceImpl<E extends IdentifiedEntity> implements Fin
     }
 
     private String getCorrectFilterValuesKey(String key) {
-        String[] splitedKey = FindUtils.getParsedString(key);
+        String[] splitedKey = FindUtils.getParsedRemoteField(key);
         if (splitedKey.length > 1) {
-            String[] splitByDotString = FindUtils.getSplitByDotString(splitedKey[0]);
+            String[] splitByDotString = FindUtils.getParsedFields(splitedKey[0]);
             return splitByDotString[splitByDotString.length - 1];
         }
         return key;

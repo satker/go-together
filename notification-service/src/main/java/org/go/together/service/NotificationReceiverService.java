@@ -5,14 +5,12 @@ import org.go.together.dto.*;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.mapper.NotificationMapper;
 import org.go.together.mapper.NotificationMessageMapper;
-import org.go.together.mapper.NotificationReceiverMapper;
 import org.go.together.mapper.NotificationReceiverMessageMapper;
 import org.go.together.model.Notification;
 import org.go.together.model.NotificationReceiver;
 import org.go.together.repository.NotificationMessageRepository;
 import org.go.together.repository.NotificationReceiverRepository;
 import org.go.together.repository.NotificationRepository;
-import org.go.together.validation.NotificationReceiverValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,13 +24,10 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
     private final NotificationRepository notificationRepository;
     private final NotificationService notificationService;
     private final NotificationMapper notificationMapper;
-    private final NotificationReceiverMapper notificationReceiverMapper;
     private final NotificationMessageRepository notificationMessageRepository;
     private final NotificationMessageMapper notificationMessageMapper;
 
     protected NotificationReceiverService(NotificationReceiverRepository notificationReceiverRepository,
-                                          NotificationReceiverMapper notificationReceiverMapper,
-                                          NotificationReceiverValidator notificationReceiverValidator,
                                           NotificationReceiverMessageService notificationReceiverMessageService,
                                           NotificationReceiverMessageMapper notificationReceiverMessageMapper,
                                           NotificationRepository notificationRepository,
@@ -40,12 +35,10 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
                                           NotificationMapper notificationMapper,
                                           NotificationMessageRepository notificationMessageRepository,
                                           NotificationMessageMapper notificationMessageMapper) {
-        super(notificationReceiverRepository, notificationReceiverMapper, notificationReceiverValidator);
         this.notificationReceiverRepository = notificationReceiverRepository;
         this.notificationReceiverMessageService = notificationReceiverMessageService;
         this.notificationReceiverMessageMapper = notificationReceiverMessageMapper;
         this.notificationRepository = notificationRepository;
-        this.notificationReceiverMapper = notificationReceiverMapper;
         this.notificationService = notificationService;
         this.notificationMapper = notificationMapper;
         this.notificationMessageRepository = notificationMessageRepository;
@@ -103,7 +96,7 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
             Notification notification = notificationOptional.get();
             notificationReceiverRepository.findByNotificationId(notification.getId()).stream()
                     .filter(notificationReceiver -> !notificationReceiver.getUserId().equals(receiverId))
-                    .map(notificationReceiverMapper::entityToDto)
+                    .map(mapper::entityToDto)
                     .forEach(super::create);
         } else {
             throw new CannotFindEntityException("Cannot find notification.");

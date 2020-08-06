@@ -5,10 +5,8 @@ import org.go.together.dto.FieldMapper;
 import org.go.together.dto.MessageDto;
 import org.go.together.dto.MessageType;
 import org.go.together.enums.CrudOperation;
-import org.go.together.mapper.MessageMapper;
 import org.go.together.model.Message;
 import org.go.together.repository.MessageRepository;
-import org.go.together.validation.MessageValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -17,31 +15,26 @@ import java.util.stream.Collectors;
 @Service
 public class MessageService extends CrudServiceImpl<MessageDto, Message> {
     private final MessageRepository messageRepository;
-    private final MessageMapper messageMapper;
 
-    protected MessageService(MessageRepository messageRepository,
-                             MessageMapper messageMapper,
-                             MessageValidator messageValidator) {
-        super(messageRepository, messageMapper, messageValidator);
+    protected MessageService(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
-        this.messageMapper = messageMapper;
     }
 
     public Set<MessageDto> getReceiverMessages(UUID recipientId, UUID authorId, MessageType messageType) {
         return messageRepository.findReviewsByRecipientId(recipientId, authorId, messageType).stream()
-                .map(messageMapper::entityToDto)
+                .map(mapper::entityToDto)
                 .collect(Collectors.toSet());
     }
 
     public Set<MessageDto> getReceiverMessages(UUID recipientId, MessageType messageType) {
         return messageRepository.findReviewsByRecipientId(recipientId, messageType).stream()
-                .map(messageMapper::entityToDto)
+                .map(mapper::entityToDto)
                 .collect(Collectors.toSet());
     }
 
     public Set<MessageDto> getChatBetweenUsers(UUID myId, UUID otherUser) {
         return messageRepository.findMessagesBetweenUsers(myId, otherUser).stream()
-                .map(messageMapper::entityToDto)
+                .map(mapper::entityToDto)
                 .collect(Collectors.toSet());
     }
 
@@ -66,7 +59,7 @@ public class MessageService extends CrudServiceImpl<MessageDto, Message> {
 
         return groupAuthorEventId.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
-                        element -> messageMapper.entityToDto(element.getValue().stream()
+                        element -> mapper.entityToDto(element.getValue().stream()
                                 .max(Comparator.comparing(Message::getDate)).orElse(new Message()))));
     }
 

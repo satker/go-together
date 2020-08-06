@@ -29,18 +29,18 @@ import java.util.stream.Collectors;
 public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
         extends FindServiceImpl<E> implements CrudService<D> {
     protected final Logger log = LoggerFactory.getLogger(getClass());
-    private final Mapper<D, E> mapper;
-    private final Validator<D> validator;
-    private final CustomRepository<E> repository;
+    protected Mapper<D, E> mapper;
+    private Validator<D> validator;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private NotificationService<D> notificationService;
 
-    protected CrudServiceImpl(CustomRepository<E> repository,
-                              Mapper<D, E> mapper,
-                              Validator<D> validator) {
-        super(repository);
-        this.repository = repository;
+    @Autowired
+    public void setMapper(Mapper<D, E> mapper) {
         this.mapper = mapper;
+    }
+
+    @Autowired
+    public void setValidator(Validator<D> validator) {
         this.validator = validator;
     }
 

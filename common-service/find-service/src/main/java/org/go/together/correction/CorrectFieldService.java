@@ -1,10 +1,11 @@
-package org.go.together.validation;
+package org.go.together.correction;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.dto.FieldMapper;
 import org.go.together.dto.FilterDto;
 import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.utils.FindUtils;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.function.Function;
@@ -13,8 +14,10 @@ import java.util.stream.Stream;
 
 import static org.go.together.utils.FindUtils.*;
 
-public class CorrectFieldService {
-    public Pair<Map<String, FilterDto>, Map<String, FilterDto>> getRemoteAndCorrectedFilters(Map<String, FilterDto> filters, Map<String, FieldMapper> availableFields) {
+@Component
+public class CorrectFieldService implements CorrectedService {
+    public Pair<Map<String, FilterDto>, Map<String, FilterDto>> getRemoteAndCorrectedFilters(Map<String, FilterDto> filters,
+                                                                                             Map<String, FieldMapper> availableFields) {
         Map<String, FilterDto> localFilters = new HashMap<>();
         Map<String, FilterDto> remoteFilters = new HashMap<>();
         filters.forEach((key, value) -> {
@@ -35,8 +38,8 @@ public class CorrectFieldService {
         return Pair.of(remoteFilters, localFilters);
     }
 
-    public Collection<Map<String, Object>> getCorrectedValues(Map<String, String> fieldMappers,
-                                                              Collection<Map<String, Object>> filters) {
+    private Collection<Map<String, Object>> getCorrectedValues(Map<String, String> fieldMappers,
+                                                               Collection<Map<String, Object>> filters) {
         Collection<Map<String, Object>> result = new HashSet<>();
         for (Map<String, Object> next : filters) {
             Map<String, Object> map = new HashMap<>();
@@ -87,7 +90,7 @@ public class CorrectFieldService {
         Map<String, String> singleGroupFields = Stream.of(getSingleGroupFields(lastPathField))
                 .collect(Collectors.toMap(Function.identity(), Function.identity()));
         singleGroupFields.forEach((key, value) -> {
-            String[] splitByDotString = getSplitByDotString(key);
+            String[] splitByDotString = getParsedFields(key);
             if (splitByDotString.length > 1 &&
                     fieldMappers.containsKey(splitByDotString[0])) {
                 FieldMapper fieldMapper = fieldMappers.get(splitByDotString[0]);

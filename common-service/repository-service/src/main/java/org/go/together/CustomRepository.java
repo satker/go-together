@@ -3,6 +3,7 @@ package org.go.together;
 import org.go.together.builder.SqlBuilder;
 import org.go.together.builder.WhereBuilder;
 import org.go.together.interfaces.IdentifiedEntity;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -14,6 +15,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public abstract class CustomRepository<E extends IdentifiedEntity> {
     @PersistenceContext
     private EntityManager entityManager;

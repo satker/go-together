@@ -8,10 +8,8 @@ import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
-import org.go.together.mapper.EventMapper;
 import org.go.together.model.Event;
 import org.go.together.repository.EventRepository;
-import org.go.together.validation.EventValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -28,12 +26,9 @@ public class EventService extends CrudServiceImpl<EventDto, Event> {
     private final UserClient userClient;
 
     protected EventService(EventRepository eventRepository,
-                           EventMapper eventMapper,
-                           EventValidator eventValidator,
                            LocationClient locationClient,
                            ContentClient contentClient,
                            UserClient userClient) {
-        super(eventRepository, eventMapper, eventValidator);
         this.locationClient = locationClient;
         this.contentClient = contentClient;
         this.eventRepository = eventRepository;

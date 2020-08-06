@@ -16,7 +16,7 @@ public abstract class FindController {
     }
 
     public ResponseDto<Object> find(FormDto formDto) {
-        String[] serviceNameField = FindUtils.getSplitByDotString(formDto.getMainIdField());
+        String[] serviceNameField = FindUtils.getParsedFields(formDto.getMainIdField());
         return services.stream()
                 .filter(crudService -> crudService.getServiceName().equals(serviceNameField[0]))
                 .collect(Collectors.toSet()).iterator().next().find(formDto);

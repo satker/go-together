@@ -6,12 +6,10 @@ import org.go.together.client.UserClient;
 import org.go.together.dto.EventUserDto;
 import org.go.together.dto.FieldMapper;
 import org.go.together.enums.NotificationStatus;
-import org.go.together.mapper.EventUserMapper;
 import org.go.together.model.Event;
 import org.go.together.model.EventUser;
 import org.go.together.repository.EventRepository;
 import org.go.together.repository.EventUserRepository;
-import org.go.together.validation.EventUserValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -22,24 +20,19 @@ import java.util.UUID;
 @Service
 public class EventUserService extends CrudServiceImpl<EventUserDto, EventUser> {
     private final EventUserRepository eventUserRepository;
-    private final EventUserMapper eventUserMapper;
     private final UserClient userClient;
     private final EventRepository eventRepository;
 
     protected EventUserService(EventUserRepository eventUserRepository,
-                               EventUserMapper eventUserMapper,
-                               EventUserValidator eventUserValidator,
                                UserClient userClient,
                                EventRepository eventRepository) {
-        super(eventUserRepository, eventUserMapper, eventUserValidator);
         this.eventUserRepository = eventUserRepository;
-        this.eventUserMapper = eventUserMapper;
         this.userClient = userClient;
         this.eventRepository = eventRepository;
     }
 
     public Collection<EventUserDto> getEventUsersByEventId(UUID eventId) {
-        return eventUserMapper.entitiesToDtos(eventUserRepository.findEventUserByEventId(eventId));
+        return mapper.entitiesToDtos(eventUserRepository.findEventUserByEventId(eventId));
     }
 
     public boolean deleteEventUserByEventId(EventUserDto eventUserDto) {

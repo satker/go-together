@@ -18,16 +18,17 @@ public class FindUtils {
     private static final String GROUP_START = "\\[";
     private static final String GROUP_END = "]";
     private static final String REGEX_GROUP = "^\\[[a-zA-Z&|.,]*]$";
+    public static final String DOT = "\\.";
 
-    public static String[] getParsedString(String string) {
+    public static String[] getParsedRemoteField(String string) {
         return string.split(DELIMITER);
     }
 
-    public static String[] getSplitByDotString(String string) {
-        return string.split("\\.");
+    public static String[] getParsedFields(String string) {
+        return string.split(DOT);
     }
 
-    public static String[] getSplitHavingCountString(String string) {
+    public static String[] getHavingCondition(String string) {
         return string.split(HAVING_COUNT);
     }
 
@@ -37,12 +38,12 @@ public class FindUtils {
         if (matcher.find()) {
             return new String[]{matcher.group(0)};
         } else {
-            return getSplitByDotString(getParsedString(string)[0]);
+            return getParsedFields(getParsedRemoteField(string)[0]);
         }
     }
 
     public static String getAnotherServicePathFields(String string) {
-        String[] otherServiceFields = getParsedString(string);
+        String[] otherServiceFields = getParsedRemoteField(string);
         if (otherServiceFields.length > 1) {
             return otherServiceFields[1];
         }
@@ -50,7 +51,7 @@ public class FindUtils {
     }
 
     public static String getFieldSearch(String string) {
-        String[] parsedString = getParsedString(string);
+        String[] parsedString = getParsedRemoteField(string);
         if (parsedString.length > 1) {
             return parsedString[1];
         }
@@ -62,7 +63,8 @@ public class FindUtils {
         String localEntityField = localEntityFullFields[0];
         List<String> singleGroupFields = List.of(getSingleGroupFields(localEntityField));
         return availableFields.entrySet().stream()
-                .filter(stringFieldMapperEntry -> singleGroupFields.contains(stringFieldMapperEntry.getValue().getCurrentServiceField()))
+                .filter(stringFieldMapperEntry ->
+                        singleGroupFields.contains(stringFieldMapperEntry.getValue().getCurrentServiceField()))
                 .collect(Collectors.toMap(entry ->
                                 findStringFromList(entry.getValue().getCurrentServiceField(), singleGroupFields),
                         Map.Entry::getValue,
@@ -93,7 +95,7 @@ public class FindUtils {
 
     private static FieldMapper getFieldMapper(Map<String, FieldMapper> availableFields,
                                               String field) {
-        String[] splitByCommaString = getSplitByDotString(field);
+        String[] splitByCommaString = getParsedFields(field);
         if (splitByCommaString.length > 1) {
             return availableFields.get(splitByCommaString[0]);
         }
@@ -101,7 +103,7 @@ public class FindUtils {
     }
 
     private static String getEntityField(String field) {
-        String[] splitByCommaString = getSplitByDotString(field);
+        String[] splitByCommaString = getParsedFields(field);
         if (splitByCommaString.length > 1) {
             return splitByCommaString[0];
         }
@@ -110,7 +112,7 @@ public class FindUtils {
 
     public static String[] getSingleGroupFields(String localEntityField) {
         String[] result;
-        localEntityField = getSplitHavingCountString(localEntityField)[0];
+        localEntityField = getHavingCondition(localEntityField)[0];
         if (localEntityField.matches(REGEX_GROUP)) {
             result = localEntityField.replaceFirst(GROUP_START, "")
                     .replaceFirst(GROUP_END, "")

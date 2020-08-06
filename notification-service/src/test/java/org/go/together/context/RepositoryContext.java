@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Import;
         "org.go.together.mapper",
         "org.go.together.model",
         "org.go.together.repository",
-        "org.go.together.validation"})
+        "org.go.together.correction",
+        "org.go.together.finders"
+})
 public class RepositoryContext {
 }

@@ -1,4 +1,4 @@
-package org.go.together.validation;
+package org.go.together.correction;
 
 import org.go.together.dto.NotificationMessageDto;
 import org.go.together.logic.Validator;
