@@ -2,9 +2,9 @@ package org.go.together.mapper;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.go.together.dto.ContentDto;
+import org.go.together.dto.PhotoDto;
 import org.go.together.model.Photo;
-import org.go.together.notification.dto.ContentDto;
-import org.go.together.notification.dto.PhotoDto;
 import org.springframework.stereotype.Component;
 
 import java.io.File;

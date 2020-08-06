@@ -3,8 +3,8 @@ package org.go.together.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.go.together.dto.EventUserStatus;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.go.together.notification.dto.EventUserStatus;
 
 import javax.persistence.*;
 import java.util.UUID;

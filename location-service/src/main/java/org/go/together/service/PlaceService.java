@@ -2,13 +2,13 @@ package org.go.together.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.dto.PlaceDto;
 import org.go.together.dto.SimpleDto;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.mapper.CountryMapper;
 import org.go.together.model.Country;
 import org.go.together.model.Place;
-import org.go.together.notification.dto.PlaceDto;
-import org.go.together.notification.repository.PlaceRepository;
+import org.go.together.repository.PlaceRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

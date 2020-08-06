@@ -2,12 +2,12 @@ package org.go.together.service;
 
 import com.google.common.collect.ImmutableMap;
 import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.dto.GroupLocationDto;
+import org.go.together.dto.LocationDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.GroupLocation;
 import org.go.together.model.Location;
-import org.go.together.notification.dto.GroupLocationDto;
-import org.go.together.notification.dto.LocationDto;
 import org.go.together.repository.exceptions.CannotFindEntityException;
 import org.springframework.stereotype.Service;
 

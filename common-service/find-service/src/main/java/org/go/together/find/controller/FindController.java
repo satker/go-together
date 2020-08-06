@@ -4,14 +4,16 @@ import org.go.together.find.FindService;
 import org.go.together.find.dto.FormDto;
 import org.go.together.find.dto.ResponseDto;
 import org.go.together.find.utils.FindUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class FindController {
-    private final Set<FindService> services;
+    private Set<FindService> services;
 
-    public FindController(Set<FindService> services) {
+    @Autowired
+    public void setServices(Set<FindService> services) {
         this.services = services;
     }
 

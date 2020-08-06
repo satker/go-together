@@ -2,11 +2,11 @@ package org.go.together.validation;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.SimpleDto;
-import org.go.together.dto.validation.DateIntervalDto;
-import org.go.together.dto.validation.NumberIntervalDto;
-import org.go.together.dto.validation.StringRegexDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.interfaces.Dto;
+import org.go.together.validation.dto.DateIntervalDto;
+import org.go.together.validation.dto.NumberIntervalDto;
+import org.go.together.validation.dto.StringRegexDto;
 import org.go.together.validation.utils.ValidatorUtils;
 
 import java.util.Collection;

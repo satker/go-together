@@ -1,10 +1,10 @@
 package org.go.together.mapper;
 
+import org.go.together.client.ContentClient;
+import org.go.together.client.LocationClient;
+import org.go.together.client.UserClient;
+import org.go.together.dto.EventDto;
 import org.go.together.model.Event;
-import org.go.together.notification.client.ContentClient;
-import org.go.together.notification.client.LocationClient;
-import org.go.together.notification.client.UserClient;
-import org.go.together.notification.dto.EventDto;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;

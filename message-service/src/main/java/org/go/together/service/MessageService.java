@@ -1,12 +1,12 @@
 package org.go.together.service;
 
 import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.dto.MessageDto;
+import org.go.together.dto.MessageType;
 import org.go.together.enums.CrudOperation;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Message;
-import org.go.together.notification.dto.MessageDto;
-import org.go.together.notification.dto.MessageType;
-import org.go.together.notification.repository.MessageRepository;
+import org.go.together.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

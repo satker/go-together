@@ -1,12 +1,12 @@
 package org.go.together.notification;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.client.NotificationClient;
+import org.go.together.dto.NotificationMessageDto;
 import org.go.together.enums.NotificationStatus;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.NotificationService;
-import org.go.together.notification.client.NotificationClient;
-import org.go.together.notification.dto.NotificationMessageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

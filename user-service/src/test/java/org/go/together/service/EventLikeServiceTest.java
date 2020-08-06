@@ -1,19 +1,18 @@
 package org.go.together.service;
 
+import org.go.together.client.ContentClient;
+import org.go.together.client.LocationClient;
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.IdDto;
+import org.go.together.dto.*;
 import org.go.together.mapper.EventLikeMapper;
 import org.go.together.mapper.InterestMapper;
 import org.go.together.mapper.LanguageMapper;
 import org.go.together.model.EventLike;
 import org.go.together.model.SystemUser;
-import org.go.together.notification.client.ContentClient;
-import org.go.together.notification.client.LocationClient;
-import org.go.together.notification.dto.*;
-import org.go.together.notification.repository.EventLikeRepository;
-import org.go.together.notification.repository.InterestRepository;
-import org.go.together.notification.repository.LanguageRepository;
-import org.go.together.notification.repository.UserRepository;
+import org.go.together.repository.EventLikeRepository;
+import org.go.together.repository.InterestRepository;
+import org.go.together.repository.LanguageRepository;
+import org.go.together.repository.UserRepository;
 import org.go.together.repository.exceptions.CannotFindEntityException;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;

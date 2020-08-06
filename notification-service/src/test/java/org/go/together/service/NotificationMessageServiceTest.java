@@ -1,16 +1,16 @@
 package org.go.together.service;
 
 import org.go.together.context.RepositoryContext;
+import org.go.together.dto.NotificationMessageDto;
 import org.go.together.enums.NotificationStatus;
 import org.go.together.model.Notification;
 import org.go.together.model.NotificationMessage;
 import org.go.together.model.NotificationReceiver;
 import org.go.together.model.NotificationReceiverMessage;
-import org.go.together.notification.dto.NotificationMessageDto;
-import org.go.together.notification.repository.NotificationMessageRepository;
-import org.go.together.notification.repository.NotificationReceiverMessageRepository;
-import org.go.together.notification.repository.NotificationReceiverRepository;
-import org.go.together.notification.repository.NotificationRepository;
+import org.go.together.repository.NotificationMessageRepository;
+import org.go.together.repository.NotificationReceiverMessageRepository;
+import org.go.together.repository.NotificationReceiverRepository;
+import org.go.together.repository.NotificationRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

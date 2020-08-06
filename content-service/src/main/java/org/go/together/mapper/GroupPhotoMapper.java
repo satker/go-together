@@ -1,8 +1,8 @@
 package org.go.together.mapper;
 
+import org.go.together.dto.GroupPhotoDto;
+import org.go.together.dto.PhotoDto;
 import org.go.together.model.GroupPhoto;
-import org.go.together.notification.dto.GroupPhotoDto;
-import org.go.together.notification.dto.PhotoDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;

@@ -1,8 +1,8 @@
 package org.go.together.model;
 
 import lombok.Data;
+import org.go.together.dto.MessageType;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.go.together.notification.dto.MessageType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

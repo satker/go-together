@@ -1,7 +1,7 @@
 package org.go.together.find.utils;
 
+import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.find.dto.FieldMapper;
-import org.go.together.repository.exceptions.IncorrectFindObject;
 
 import java.util.List;
 import java.util.Map;

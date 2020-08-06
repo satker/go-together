@@ -1,7 +1,7 @@
 package org.go.together.mapper;
 
+import org.go.together.dto.LanguageDto;
 import org.go.together.model.Language;
-import org.go.together.notification.dto.LanguageDto;
 import org.springframework.stereotype.Component;
 
 @Component

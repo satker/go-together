@@ -4,10 +4,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.IdDto;
+import org.go.together.dto.PhotoDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Photo;
-import org.go.together.notification.dto.PhotoDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

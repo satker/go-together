@@ -2,13 +2,13 @@ package org.go.together.notification.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.dto.ComparingObject;
 import org.go.together.dto.SimpleDto;
+import org.go.together.exceptions.IncorrectDtoException;
+import org.go.together.find.dto.ComparingObject;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
 import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.NamedEnum;
-import org.go.together.repository.exceptions.IncorrectDtoException;
 
 import java.lang.reflect.Method;
 import java.util.*;

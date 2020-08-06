@@ -2,9 +2,9 @@ package org.go.together.validation.utils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.SimpleDto;
-import org.go.together.dto.validation.DateIntervalDto;
-import org.go.together.dto.validation.NumberIntervalDto;
-import org.go.together.dto.validation.StringRegexDto;
+import org.go.together.validation.dto.DateIntervalDto;
+import org.go.together.validation.dto.NumberIntervalDto;
+import org.go.together.validation.dto.StringRegexDto;
 
 import java.util.*;
 import java.util.regex.Pattern;

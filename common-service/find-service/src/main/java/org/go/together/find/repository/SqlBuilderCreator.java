@@ -1,10 +1,10 @@
 package org.go.together.find.repository;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.repository.CustomRepository;
 import org.go.together.repository.builder.SqlBuilder;
-import org.go.together.repository.exceptions.IncorrectFindObject;
 
 import static org.go.together.find.utils.FindUtils.DOT;
 import static org.go.together.find.utils.FindUtils.getHavingCondition;

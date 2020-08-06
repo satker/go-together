@@ -13,5 +13,7 @@ dependencies {
     compile (
             'org.apache.commons:commons-lang3:3.9'
     )
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
     compile project(":common-service:interfaces-service")
 }

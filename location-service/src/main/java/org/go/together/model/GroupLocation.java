@@ -1,8 +1,8 @@
 package org.go.together.model;
 
 import lombok.Data;
+import org.go.together.dto.LocationCategory;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.go.together.notification.dto.LocationCategory;
 
 import javax.persistence.*;
 import java.util.Set;

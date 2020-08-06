@@ -1,8 +1,8 @@
 package org.go.together.mapper;
 
+import org.go.together.dto.EventLikeDto;
 import org.go.together.model.EventLike;
-import org.go.together.notification.dto.EventLikeDto;
-import org.go.together.notification.repository.EventLikeRepository;
+import org.go.together.repository.EventLikeRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

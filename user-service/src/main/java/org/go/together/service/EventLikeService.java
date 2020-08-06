@@ -1,11 +1,11 @@
 package org.go.together.service;
 
 import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.dto.EventLikeDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.EventLike;
-import org.go.together.notification.dto.EventLikeDto;
-import org.go.together.notification.repository.EventLikeRepository;
+import org.go.together.repository.EventLikeRepository;
 import org.go.together.repository.exceptions.CannotFindEntityException;
 import org.springframework.stereotype.Service;
 

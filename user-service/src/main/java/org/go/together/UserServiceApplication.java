@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableEurekaClient
-@EnableFeignClients(basePackages = {"org.go.together.notification.client"})
+@EnableFeignClients(basePackages = {"org.go.together.client"})
 public class UserServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(UserServiceApplication.class, args);

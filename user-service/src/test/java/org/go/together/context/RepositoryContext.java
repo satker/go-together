@@ -1,10 +1,10 @@
 package org.go.together.context;
 
+import org.go.together.client.ContentClient;
+import org.go.together.client.LocationClient;
+import org.go.together.client.NotificationClient;
+import org.go.together.client.UserClient;
 import org.go.together.configuration.H2HibernateConfig;
-import org.go.together.notification.client.ContentClient;
-import org.go.together.notification.client.LocationClient;
-import org.go.together.notification.client.NotificationClient;
-import org.go.together.notification.client.UserClient;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;

@@ -1,8 +1,8 @@
 package org.go.together.model;
 
 import lombok.Data;
+import org.go.together.dto.HousingType;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.go.together.notification.dto.HousingType;
 
 import javax.persistence.*;
 import java.util.Date;

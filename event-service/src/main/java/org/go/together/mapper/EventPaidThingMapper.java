@@ -1,7 +1,7 @@
 package org.go.together.mapper;
 
+import org.go.together.dto.EventPaidThingDto;
 import org.go.together.model.EventPaidThing;
-import org.go.together.notification.dto.EventPaidThingDto;
 import org.springframework.stereotype.Component;
 
 @Component
