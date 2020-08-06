@@ -1,4 +1,4 @@
-package org.go.together.logic;
+package org.go.together;
 
 import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.IdentifiedEntity;

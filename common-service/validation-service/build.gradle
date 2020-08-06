@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+group 'org.go.together'
+version '1.0.1.SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile (
+            'org.apache.commons:commons-lang3:3.9'
+    )
+    compile project(":common-service:interfaces-service")
+}

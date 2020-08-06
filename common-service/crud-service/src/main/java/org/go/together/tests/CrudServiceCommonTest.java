@@ -1,6 +1,6 @@
 package org.go.together.tests;
 
-import org.go.together.CrudServiceImpl;
+import org.go.together.CrudService;
 import org.go.together.CustomRepository;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
@@ -33,7 +33,7 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
     protected Random rand = new Random();
 
     @Autowired
-    protected CrudServiceImpl<D, E> crudService;
+    protected CrudService<D> crudService;
 
     @Autowired
     protected CustomRepository<E> repository;

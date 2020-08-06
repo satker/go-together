@@ -1,4 +1,4 @@
-package org.go.together.logic;
+package org.go.together.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.SimpleDto;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class Validator<CD extends Dto> {
+public abstract class Validator<D extends Dto> {
     public Map<String, String> STRINGS_FOR_BLANK_CHECK = new HashMap<>();
     public Map<String, Collection<SimpleDto>> SIMPLE_DTO_CORRECT_CHECK = new HashMap<>();
     public Map<String, Number> NUMBER_CORRECT_ZERO_OR_NEGATIVE_CHECK = new HashMap<>();
@@ -24,7 +24,7 @@ public abstract class Validator<CD extends Dto> {
     public Map<String, Optional<Object>> OBJECT_NULL_CHECK = new HashMap<>();
     public Map<String, NumberIntervalDto> NUMBER_INTERVAL_CORRECT_CHECK = new HashMap<>();
 
-    public String validate(CD dto, CrudOperation crudOperation) {
+    public String validate(D dto, CrudOperation crudOperation) {
         getMapsForCheck(dto);
         StringBuilder errors = new StringBuilder();
 
@@ -42,7 +42,7 @@ public abstract class Validator<CD extends Dto> {
         return errors.toString();
     }
 
-    public String validateDtos(Collection<CD> dtos, CrudOperation crudOperation) {
+    public String validateDtos(Collection<D> dtos, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
         dtos.stream()
@@ -52,9 +52,9 @@ public abstract class Validator<CD extends Dto> {
         return errors.toString();
     }
 
-    public abstract void getMapsForCheck(CD dto);
+    public abstract void getMapsForCheck(D dto);
 
-    protected String commonValidation(CD dto, CrudOperation crudOperation) {
+    protected String commonValidation(D dto, CrudOperation crudOperation) {
         return StringUtils.EMPTY;
     }
 }
