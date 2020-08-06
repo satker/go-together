@@ -17,12 +17,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
-    private final EventLikeRepository eventLikeRepository;
-
-    protected EventLikeService(EventLikeRepository repository) {
-        this.eventLikeRepository = repository;
-    }
-
     @Override
     public String getServiceName() {
         return "eventLike";
@@ -36,7 +30,7 @@ public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
     @Override
     protected EventLike enrichEntity(EventLike entity, EventLikeDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE) {
-            EventLike eventLike = eventLikeRepository.findById(dto.getId())
+            EventLike eventLike = repository.findById(dto.getId())
                     .orElseThrow(() -> new CannotFindEntityException("Cannot find EventLike for event " + dto.getEventId()));
             eventLike.setUsers(entity.getUsers());
             return eventLike;
@@ -46,7 +40,7 @@ public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
 
     public Set<EventLikeDto> findUsersLikedEventIds(Set<UUID> eventIds) {
         return eventIds.stream()
-                .map(eventLikeRepository::findByEventId)
+                .map(((EventLikeRepository) repository)::findByEventId)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .map(mapper::entityToDto)
@@ -54,7 +48,7 @@ public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
     }
 
     public void deleteByEventId(UUID eventId) {
-        Optional<EventLike> eventLikeOptional = eventLikeRepository.findByEventId(eventId);
+        Optional<EventLike> eventLikeOptional = ((EventLikeRepository) repository).findByEventId(eventId);
         if (eventLikeOptional.isPresent()) {
             EventLike eventLike = eventLikeOptional.get();
             super.delete(eventLike.getId());
@@ -62,13 +56,13 @@ public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
     }
 
     public Set<UUID> findLikedEventIdsByUserId(UUID userId) {
-        return eventLikeRepository.findByUserId(userId).stream()
+        return ((EventLikeRepository) repository).findByUserId(userId).stream()
                 .map(EventLike::getEventId)
                 .collect(Collectors.toSet());
     }
 
     public void deleteByUserId(UUID userId) {
-        eventLikeRepository.findByUserId(userId).stream()
+        ((EventLikeRepository) repository).findByUserId(userId).stream()
                 .peek(eventLike -> {
                     eventLike.getUsers().removeIf(user -> user.getId().equals(userId));
                     eventLike.setUsers(eventLike.getUsers());

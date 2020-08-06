@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class NotificationReceiverService extends CrudServiceImpl<NotificationReceiverDto, NotificationReceiver> {
-    private final NotificationReceiverRepository notificationReceiverRepository;
     private final NotificationReceiverMessageService notificationReceiverMessageService;
     private final NotificationReceiverMessageMapper notificationReceiverMessageMapper;
     private final NotificationRepository notificationRepository;
@@ -27,15 +26,13 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
     private final NotificationMessageRepository notificationMessageRepository;
     private final NotificationMessageMapper notificationMessageMapper;
 
-    protected NotificationReceiverService(NotificationReceiverRepository notificationReceiverRepository,
-                                          NotificationReceiverMessageService notificationReceiverMessageService,
+    protected NotificationReceiverService(NotificationReceiverMessageService notificationReceiverMessageService,
                                           NotificationReceiverMessageMapper notificationReceiverMessageMapper,
                                           NotificationRepository notificationRepository,
                                           NotificationService notificationService,
                                           NotificationMapper notificationMapper,
                                           NotificationMessageRepository notificationMessageRepository,
                                           NotificationMessageMapper notificationMessageMapper) {
-        this.notificationReceiverRepository = notificationReceiverRepository;
         this.notificationReceiverMessageService = notificationReceiverMessageService;
         this.notificationReceiverMessageMapper = notificationReceiverMessageMapper;
         this.notificationRepository = notificationRepository;
@@ -50,7 +47,7 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
         if (notificationOptional.isPresent()) {
             Notification notification = notificationOptional.get();
             Collection<NotificationReceiver> notificationReceivers =
-                    notificationReceiverRepository.findByNotificationId(notification.getId());
+                    ((NotificationReceiverRepository) repository).findByNotificationId(notification.getId());
             boolean receiverNotPresented = notificationReceivers.stream()
                     .map(NotificationReceiver::getUserId)
                     .noneMatch(notificationReceiver -> notificationReceiver.equals(receiverId));
@@ -94,7 +91,7 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
         Optional<Notification> notificationOptional = notificationRepository.findByProducerId(producerId);
         if (notificationOptional.isPresent()) {
             Notification notification = notificationOptional.get();
-            notificationReceiverRepository.findByNotificationId(notification.getId()).stream()
+            ((NotificationReceiverRepository) repository).findByNotificationId(notification.getId()).stream()
                     .filter(notificationReceiver -> !notificationReceiver.getUserId().equals(receiverId))
                     .map(mapper::entityToDto)
                     .forEach(super::create);
@@ -105,7 +102,7 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
     }
 
     public boolean readNotifications(UUID receiverId) {
-        notificationReceiverRepository.findByReceiverId(receiverId).stream()
+        ((NotificationReceiverRepository) repository).findByReceiverId(receiverId).stream()
                 .map(NotificationReceiver::getNotificationReceiverMessages)
                 .flatMap(Collection::stream)
                 .map(notificationReceiverMessageMapper::entityToDto)

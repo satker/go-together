@@ -12,14 +12,8 @@ import java.util.Map;
 
 @Service
 public class CountryService extends CrudServiceImpl<CountryDto, Country> {
-    private final CountryRepository countryRepository;
-
-    public CountryService(CountryRepository countryRepository) {
-        this.countryRepository = countryRepository;
-    }
-
     public Collection<Country> findCountriesLike(String countryName) {
-        return countryRepository.findCountriesLike(countryName);
+        return ((CountryRepository) repository).findCountriesLike(countryName);
     }
 
     @Override

@@ -18,24 +18,21 @@ import java.util.stream.Collectors;
 public class PlaceService extends CrudServiceImpl<PlaceDto, Place> {
     private final CountryService countryService;
     private final CountryMapper countryMapper;
-    private final PlaceRepository placeRepository;
 
-    public PlaceService(PlaceRepository placeRepository,
-                        CountryService countryService,
+    public PlaceService(CountryService countryService,
                         CountryMapper countryMapper) {
-        this.placeRepository = placeRepository;
         this.countryService = countryService;
         this.countryMapper = countryMapper;
     }
 
     public Optional<Place> getPlaceEquals(PlaceDto anotherPlaceDto) {
-        return placeRepository.findLocationByNameAndStateAndByCountryId(anotherPlaceDto.getName(),
+        return ((PlaceRepository) repository).findLocationByNameAndStateAndByCountryId(anotherPlaceDto.getName(),
                 anotherPlaceDto.getState(),
                 countryMapper.dtoToEntity(anotherPlaceDto.getCountry()).getId());
     }
 
     public Optional<Place> getPlaceByLocationId(UUID locationId) {
-        return placeRepository.findByLocationId(locationId);
+        return ((PlaceRepository) repository).findByLocationId(locationId);
     }
 
     public Set<SimpleDto> getLocationsByName(String location) {
@@ -43,16 +40,16 @@ public class PlaceService extends CrudServiceImpl<PlaceDto, Place> {
         String splitedLocation = split[0].trim().toLowerCase();
         Collection<Place> places;
         if (split.length == 1 && StringUtils.isNotBlank(splitedLocation)) {
-            places = placeRepository.findLocationByName(splitedLocation, 0, 5);
+            places = ((PlaceRepository) repository).findLocationByName(splitedLocation, 0, 5);
         } else if (split.length == 2) {
             String country = split[1].trim();
             Set<UUID> countryIds = countryService.findCountriesLike(country.trim()).stream()
                     .map(Country::getId)
                     .collect(Collectors.toSet());
 
-            places = placeRepository.findLocationByNameAndByCountryId(splitedLocation, countryIds, 0, 5);
+            places = ((PlaceRepository) repository).findLocationByNameAndByCountryId(splitedLocation, countryIds, 0, 5);
         } else {
-            places = placeRepository.createQuery().fetchWithPageable(0, 5);
+            places = repository.createQuery().fetchWithPageable(0, 5);
         }
         return places.stream()
                 .map(loc -> new SimpleDto(loc.getId().toString(), loc.getName() + ", " +

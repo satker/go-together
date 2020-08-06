@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
-    private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ContentClient contentClient;
     private final SimpleUserMapper simpleUserMapper;
@@ -29,15 +28,13 @@ public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
     private final EventLikeService eventLikeService;
     private final LocationClient locationClient;
 
-    public UserService(UserRepository userRepository,
-                       BCryptPasswordEncoder bCryptPasswordEncoder,
+    public UserService(BCryptPasswordEncoder bCryptPasswordEncoder,
                        ContentClient contentClient,
                        SimpleUserMapper simpleUserMapper,
                        LanguageService languageService,
                        InterestService interestService,
                        EventLikeService eventLikeService,
                        LocationClient locationClient) {
-        this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.contentClient = contentClient;
         this.simpleUserMapper = simpleUserMapper;
@@ -48,7 +45,7 @@ public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
     }
 
     public UserDto findUserByLogin(String login) {
-        Optional<SystemUser> userByLogin = userRepository.findUserByLogin(login);
+        Optional<SystemUser> userByLogin = ((UserRepository) repository).findUserByLogin(login);
         if (userByLogin.isPresent()) {
             return mapper.entityToDto(userByLogin.get());
         }
@@ -56,7 +53,7 @@ public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
     }
 
     public AuthUserDto findAuthUserByLogin(String login) {
-        Optional<SystemUser> userByLogin = userRepository.findUserByLogin(login);
+        Optional<SystemUser> userByLogin = ((UserRepository) repository).findUserByLogin(login);
         if (userByLogin.isPresent()) {
             SystemUser systemUser = userByLogin.get();
             return AuthUserDto.builder()
@@ -70,17 +67,17 @@ public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
     }
 
     public boolean checkIsPresentedMail(String mail) {
-        return !userRepository.findUserByMail(mail.replaceAll("\"", "")).isEmpty();
+        return !((UserRepository) repository).findUserByMail(mail.replaceAll("\"", "")).isEmpty();
     }
 
     public boolean checkIsPresentedUsername(String username) {
-        return userRepository.findUserByLogin(username.replaceAll("\"", "")).isPresent();
+        return ((UserRepository) repository).findUserByLogin(username.replaceAll("\"", "")).isPresent();
     }
 
 
     public boolean checkLanguages(UUID ownerId, List<UUID> languagesForCompare) {
         if (languagesForCompare.size() != 0) {
-            Optional<SystemUser> user = userRepository.findById(ownerId);
+            Optional<SystemUser> user = repository.findById(ownerId);
             if (user.isPresent()) {
                 Set<UUID> userLanguages = user.get().getLanguages().stream()
                         .map(Language::getId)
@@ -94,14 +91,14 @@ public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
     }
 
     public Set<UUID> getIdLanguagesByOwnerId(UUID userId) {
-        Optional<SystemUser> user = userRepository.findById(userId);
+        Optional<SystemUser> user = repository.findById(userId);
         return user.map(systemUser -> systemUser.getLanguages().stream()
                 .map(Language::getId)
                 .collect(Collectors.toSet())).orElse(Collections.emptySet());
     }
 
     public boolean checkIfUserPresentsById(UUID id) {
-        return userRepository.findById(id).isPresent();
+        return repository.findById(id).isPresent();
     }
 
     @Override
@@ -152,7 +149,7 @@ public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
     }
 
     private Optional<SystemUser> updatePassword(SystemUser entity) {
-        Optional<SystemUser> user = userRepository.findById(entity.getId());
+        Optional<SystemUser> user = repository.findById(entity.getId());
         String password = entity.getPassword();
         if (StringUtils.isNotBlank(password)) {
             entity.setPassword(bCryptPasswordEncoder.encode(password));
@@ -165,7 +162,7 @@ public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
     }
 
     public Collection<SimpleUserDto> findSimpleUserDtosByUserIds(Set<UUID> userIds) {
-        Collection<SystemUser> allUsersByIds = userRepository.findAllByIds(userIds);
+        Collection<SystemUser> allUsersByIds = ((UserRepository) repository).findAllByIds(userIds);
         return simpleUserMapper.entitiesToDtos(allUsersByIds);
     }
 
@@ -187,7 +184,7 @@ public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
     }
 
     public String findLoginById(UUID id) {
-        Optional<SystemUser> userById = userRepository.findById(id);
+        Optional<SystemUser> userById = repository.findById(id);
         if (userById.isPresent()) {
             return userById.get().getLogin();
         }

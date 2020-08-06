@@ -14,38 +14,32 @@ import java.util.stream.Collectors;
 
 @Service
 public class MessageService extends CrudServiceImpl<MessageDto, Message> {
-    private final MessageRepository messageRepository;
-
-    protected MessageService(MessageRepository messageRepository) {
-        this.messageRepository = messageRepository;
-    }
-
     public Set<MessageDto> getReceiverMessages(UUID recipientId, UUID authorId, MessageType messageType) {
-        return messageRepository.findReviewsByRecipientId(recipientId, authorId, messageType).stream()
+        return ((MessageRepository) repository).findReviewsByRecipientId(recipientId, authorId, messageType).stream()
                 .map(mapper::entityToDto)
                 .collect(Collectors.toSet());
     }
 
     public Set<MessageDto> getReceiverMessages(UUID recipientId, MessageType messageType) {
-        return messageRepository.findReviewsByRecipientId(recipientId, messageType).stream()
+        return ((MessageRepository) repository).findReviewsByRecipientId(recipientId, messageType).stream()
                 .map(mapper::entityToDto)
                 .collect(Collectors.toSet());
     }
 
     public Set<MessageDto> getChatBetweenUsers(UUID myId, UUID otherUser) {
-        return messageRepository.findMessagesBetweenUsers(myId, otherUser).stream()
+        return ((MessageRepository) repository).findMessagesBetweenUsers(myId, otherUser).stream()
                 .map(mapper::entityToDto)
                 .collect(Collectors.toSet());
     }
 
     public Map<UUID, MessageDto> getAllChatsByEvent(UUID eventId) {
-        List<Message> messagesByAuthorId = messageRepository.findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
+        List<Message> messagesByAuthorId = ((MessageRepository) repository).findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
                 .collect(Collectors.groupingBy(Message::getAuthorId)).get(eventId);
         Map<UUID, List<Message>> groupAuthorEventId = Optional.ofNullable(messagesByAuthorId)
                 .orElse(Collections.emptyList()).stream()
                 .filter(message -> message.getRecipientId() != null)
                 .collect(Collectors.groupingBy(Message::getRecipientId));
-        List<Message> messagesByRecipientId = messageRepository.findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
+        List<Message> messagesByRecipientId = ((MessageRepository) repository).findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
                 .filter(message -> message.getRecipientId() != null)
                 .collect(Collectors.groupingBy(Message::getRecipientId)).get(eventId);
         Map<UUID, List<Message>> groupRecipientId = Optional.ofNullable(messagesByRecipientId)

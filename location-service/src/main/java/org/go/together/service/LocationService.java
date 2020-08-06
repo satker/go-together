@@ -19,20 +19,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class LocationService extends CrudServiceImpl<LocationDto, Location> {
-    private final LocationRepository locationRepository;
     private final PlaceService placeService;
     private final PlaceMapper placeMapper;
 
-    public LocationService(LocationRepository locationRepository,
-                           PlaceService placeService,
+    public LocationService(PlaceService placeService,
                            PlaceMapper placeMapper) {
-        this.locationRepository = locationRepository;
         this.placeService = placeService;
         this.placeMapper = placeMapper;
     }
 
     public Set<LocationDto> getEventRoute(UUID eventId) {
-        return locationRepository.findByEventId(eventId).stream()
+        return ((LocationRepository) repository).findByEventId(eventId).stream()
                 .map(mapper::entityToDto)
                 .collect(Collectors.toSet());
     }
@@ -59,7 +56,7 @@ public class LocationService extends CrudServiceImpl<LocationDto, Location> {
 
         return result.stream()
                 .map(IdDto::getId)
-                .map(locationRepository::findById)
+                .map(repository::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toSet());

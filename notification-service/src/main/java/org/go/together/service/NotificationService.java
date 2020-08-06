@@ -15,14 +15,8 @@ import java.util.UUID;
 
 @Component
 public class NotificationService extends CrudServiceImpl<NotificationDto, Notification> {
-    private final NotificationRepository notificationRepository;
-
-    protected NotificationService(NotificationRepository notificationRepository) {
-        this.notificationRepository = notificationRepository;
-    }
-
     public NotificationDto saveNotificationByProducerId(UUID producerId, NotificationStatus status) {
-        Optional<Notification> notificationOptional = notificationRepository.findByProducerId(producerId);
+        Optional<Notification> notificationOptional = ((NotificationRepository) repository).findByProducerId(producerId);
         IdDto savedNotification;
         if (notificationOptional.isPresent()) {
             Notification notification = notificationOptional.get();

@@ -22,16 +22,13 @@ import java.util.stream.Collectors;
 public class EventService extends CrudServiceImpl<EventDto, Event> {
     private final LocationClient locationClient;
     private final ContentClient contentClient;
-    private final EventRepository eventRepository;
     private final UserClient userClient;
 
-    protected EventService(EventRepository eventRepository,
-                           LocationClient locationClient,
+    protected EventService(LocationClient locationClient,
                            ContentClient contentClient,
                            UserClient userClient) {
         this.locationClient = locationClient;
         this.contentClient = contentClient;
-        this.eventRepository = eventRepository;
         this.userClient = userClient;
     }
 
@@ -79,9 +76,9 @@ public class EventService extends CrudServiceImpl<EventDto, Event> {
     public Set<SimpleDto> autocompleteEvents(String name) {
         Collection<Event> events;
         if (StringUtils.isNotBlank(name)) {
-            events = eventRepository.findEventsByNameLike(name, 0, 5);
+            events = ((EventRepository) repository).findEventsByNameLike(name, 0, 5);
         } else {
-            events = eventRepository.createQuery().fetchWithPageable(0, 5);
+            events = repository.createQuery().fetchWithPageable(0, 5);
         }
         return events.stream()
                 .map(event -> new SimpleDto(event.getId().toString(), event.getName()))

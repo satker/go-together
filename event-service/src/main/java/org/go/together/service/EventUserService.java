@@ -19,25 +19,22 @@ import java.util.UUID;
 
 @Service
 public class EventUserService extends CrudServiceImpl<EventUserDto, EventUser> {
-    private final EventUserRepository eventUserRepository;
     private final UserClient userClient;
     private final EventRepository eventRepository;
 
-    protected EventUserService(EventUserRepository eventUserRepository,
-                               UserClient userClient,
+    protected EventUserService(UserClient userClient,
                                EventRepository eventRepository) {
-        this.eventUserRepository = eventUserRepository;
         this.userClient = userClient;
         this.eventRepository = eventRepository;
     }
 
     public Collection<EventUserDto> getEventUsersByEventId(UUID eventId) {
-        return mapper.entitiesToDtos(eventUserRepository.findEventUserByEventId(eventId));
+        return mapper.entitiesToDtos(((EventUserRepository) repository).findEventUserByEventId(eventId));
     }
 
     public boolean deleteEventUserByEventId(EventUserDto eventUserDto) {
         Optional<EventUser> eventUserByUserIdAndEventId =
-                eventUserRepository.findEventUserByUserIdAndEventId(eventUserDto.getUser().getId(), eventUserDto.getEventId());
+                ((EventUserRepository) repository).findEventUserByUserIdAndEventId(eventUserDto.getUser().getId(), eventUserDto.getEventId());
         if (eventUserByUserIdAndEventId.isEmpty()) {
             return false;
         }
