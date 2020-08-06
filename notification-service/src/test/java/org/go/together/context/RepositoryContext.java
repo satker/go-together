@@ -12,9 +12,7 @@ import org.springframework.context.annotation.Import;
 @ComponentScan(value = {"org.go.together.service",
         "org.go.together.mapper",
         "org.go.together.model",
-        "org.go.together.repository",
-        "org.go.together.correction",
-        "org.go.together.finders"
+        "org.go.together.find"
 })
 public class RepositoryContext {
 }

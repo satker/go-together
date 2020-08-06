@@ -2,14 +2,17 @@ package org.go.together.service;
 
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.CrudServiceImpl;
-import org.go.together.client.ContentClient;
-import org.go.together.client.LocationClient;
-import org.go.together.client.UserClient;
-import org.go.together.dto.*;
+import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.dto.IdDto;
+import org.go.together.dto.SimpleDto;
 import org.go.together.enums.CrudOperation;
+import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Event;
-import org.go.together.repository.EventRepository;
+import org.go.together.notification.client.ContentClient;
+import org.go.together.notification.client.LocationClient;
+import org.go.together.notification.client.UserClient;
+import org.go.together.notification.dto.*;
+import org.go.together.notification.repository.EventRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;

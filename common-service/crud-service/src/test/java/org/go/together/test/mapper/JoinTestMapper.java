@@ -1,6 +1,6 @@
 package org.go.together.test.mapper;
 
-import org.go.together.logic.Mapper;
+import org.go.together.mapper.Mapper;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.entities.JoinTestEntity;
 import org.springframework.stereotype.Component;

@@ -1,8 +1,7 @@
 package org.go.together.mapper;
 
-import org.go.together.dto.InterestDto;
-import org.go.together.logic.Mapper;
 import org.go.together.model.Interest;
+import org.go.together.notification.dto.InterestDto;
 import org.springframework.stereotype.Component;
 
 @Component

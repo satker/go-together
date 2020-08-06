@@ -1,17 +1,17 @@
 package org.go.together.service;
 
 import com.google.common.collect.ImmutableMap;
-import org.go.together.CrudServiceImpl;
-import org.go.together.dto.FieldMapper;
+import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.IdDto;
-import org.go.together.dto.LocationDto;
-import org.go.together.dto.PlaceDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.exceptions.CannotFindEntityException;
+import org.go.together.find.dto.FieldMapper;
 import org.go.together.mapper.PlaceMapper;
 import org.go.together.model.Location;
 import org.go.together.model.Place;
-import org.go.together.repository.LocationRepository;
+import org.go.together.notification.dto.LocationDto;
+import org.go.together.notification.dto.PlaceDto;
+import org.go.together.notification.repository.LocationRepository;
+import org.go.together.repository.exceptions.CannotFindEntityException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

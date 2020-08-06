@@ -1,8 +1,8 @@
 package org.go.together.model;
 
 import lombok.Data;
-import org.go.together.dto.CashCategory;
 import org.go.together.interfaces.IdentifiedEntity;
+import org.go.together.notification.dto.CashCategory;
 
 import javax.persistence.*;
 import java.util.UUID;

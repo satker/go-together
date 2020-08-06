@@ -1,16 +1,20 @@
 package org.go.together.service;
 
-import org.go.together.CrudServiceImpl;
-import org.go.together.dto.*;
-import org.go.together.exceptions.CannotFindEntityException;
+import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.dto.IdDto;
+import org.go.together.find.dto.FieldMapper;
 import org.go.together.mapper.NotificationMapper;
 import org.go.together.mapper.NotificationMessageMapper;
 import org.go.together.mapper.NotificationReceiverMessageMapper;
 import org.go.together.model.Notification;
 import org.go.together.model.NotificationReceiver;
-import org.go.together.repository.NotificationMessageRepository;
-import org.go.together.repository.NotificationReceiverRepository;
-import org.go.together.repository.NotificationRepository;
+import org.go.together.notification.dto.NotificationDto;
+import org.go.together.notification.dto.NotificationReceiverDto;
+import org.go.together.notification.dto.NotificationReceiverMessageDto;
+import org.go.together.notification.repository.NotificationMessageRepository;
+import org.go.together.notification.repository.NotificationReceiverRepository;
+import org.go.together.notification.repository.NotificationRepository;
+import org.go.together.repository.exceptions.CannotFindEntityException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

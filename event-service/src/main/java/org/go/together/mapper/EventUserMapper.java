@@ -1,9 +1,8 @@
 package org.go.together.mapper;
 
-import org.go.together.client.UserClient;
-import org.go.together.dto.EventUserDto;
-import org.go.together.logic.Mapper;
 import org.go.together.model.EventUser;
+import org.go.together.notification.client.UserClient;
+import org.go.together.notification.dto.EventUserDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;

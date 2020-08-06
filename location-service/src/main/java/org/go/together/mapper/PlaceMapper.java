@@ -1,11 +1,10 @@
 package org.go.together.mapper;
 
-import org.go.together.dto.PlaceDto;
-import org.go.together.logic.Mapper;
 import org.go.together.model.Country;
 import org.go.together.model.Location;
 import org.go.together.model.Place;
-import org.go.together.repository.LocationRepository;
+import org.go.together.notification.dto.PlaceDto;
+import org.go.together.notification.repository.LocationRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

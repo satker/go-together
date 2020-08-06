@@ -7,8 +7,8 @@ import org.go.together.dto.validation.DateIntervalDto;
 import org.go.together.dto.validation.NumberIntervalDto;
 import org.go.together.dto.validation.StringRegexDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.logic.Validator;
 import org.go.together.test.dto.TestDto;
+import org.go.together.validation.Validator;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;

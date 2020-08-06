@@ -2,8 +2,8 @@ package org.go.together.model;
 
 
 import lombok.Data;
-import org.go.together.dto.Role;
 import org.go.together.interfaces.IdentifiedEntity;
+import org.go.together.notification.dto.Role;
 
 import javax.persistence.*;
 import java.util.HashSet;

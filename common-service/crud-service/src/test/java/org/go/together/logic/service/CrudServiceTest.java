@@ -2,9 +2,14 @@ package org.go.together.logic.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.*;
-import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.exceptions.IncorrectFindObject;
+import org.go.together.dto.IdDto;
+import org.go.together.dto.SimpleDto;
+import org.go.together.find.dto.FilterDto;
+import org.go.together.find.dto.FormDto;
+import org.go.together.find.dto.PageDto;
+import org.go.together.find.dto.ResponseDto;
+import org.go.together.repository.exceptions.CannotFindEntityException;
+import org.go.together.repository.exceptions.IncorrectFindObject;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.dto.TestDto;
@@ -15,6 +20,7 @@ import org.go.together.test.repository.JoinTestRepository;
 import org.go.together.test.repository.ManyJoinRepository;
 import org.go.together.test.service.TestService;
 import org.go.together.tests.CrudServiceCommonTest;
+import org.go.together.validation.Validator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +30,7 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.go.together.dto.FindSqlOperator.*;
+import static org.go.together.find.dto.FindSqlOperator.*;
 import static org.go.together.test.TestUtils.createManyJoinDtos;
 import static org.go.together.test.TestUtils.createTestDto;
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,6 +50,9 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Autowired
     private JoinTestRepository joinTestRepository;
+
+    @Autowired
+    private Validator<TestDto> validator;
 
     @BeforeEach
     public void init() {
@@ -186,7 +195,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void validate() {
-        String validate = crudService.validate(testDto);
+        String validate = validator.validate(testDto, null);
 
         assertTrue(StringUtils.isBlank(validate));
     }

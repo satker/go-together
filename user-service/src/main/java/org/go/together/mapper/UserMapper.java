@@ -1,10 +1,9 @@
 package org.go.together.mapper;
 
-import org.go.together.client.ContentClient;
-import org.go.together.client.LocationClient;
-import org.go.together.dto.UserDto;
-import org.go.together.logic.Mapper;
 import org.go.together.model.SystemUser;
+import org.go.together.notification.client.ContentClient;
+import org.go.together.notification.client.LocationClient;
+import org.go.together.notification.dto.UserDto;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;

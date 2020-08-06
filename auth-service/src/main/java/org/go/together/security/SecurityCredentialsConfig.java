@@ -1,6 +1,6 @@
 package org.go.together.security;
 
-import org.go.together.dto.JwtConfig;
+import org.go.together.notification.dto.JwtConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;

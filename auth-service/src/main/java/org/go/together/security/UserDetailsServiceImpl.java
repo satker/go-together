@@ -1,7 +1,7 @@
 package org.go.together.security;
 
-import org.go.together.client.UserClient;
-import org.go.together.dto.AuthUserDto;
+import org.go.together.notification.client.UserClient;
+import org.go.together.notification.dto.AuthUserDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

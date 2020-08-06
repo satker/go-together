@@ -1,8 +1,8 @@
 package org.go.together.test.service;
 
 import com.google.common.collect.ImmutableMap;
-import org.go.together.CrudServiceImpl;
-import org.go.together.dto.FieldMapper;
+import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.find.dto.FieldMapper;
 import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.entities.ManyJoinEntity;
 import org.springframework.stereotype.Service;

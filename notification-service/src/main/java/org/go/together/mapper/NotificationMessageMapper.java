@@ -1,8 +1,7 @@
 package org.go.together.mapper;
 
-import org.go.together.dto.NotificationMessageDto;
-import org.go.together.logic.Mapper;
 import org.go.together.model.NotificationMessage;
+import org.go.together.notification.dto.NotificationMessageDto;
 import org.springframework.stereotype.Component;
 
 @Component

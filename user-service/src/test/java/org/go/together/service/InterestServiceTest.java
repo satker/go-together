@@ -1,8 +1,8 @@
 package org.go.together.service;
 
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.InterestDto;
 import org.go.together.model.Interest;
+import org.go.together.notification.dto.InterestDto;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.springframework.test.context.ContextConfiguration;
 

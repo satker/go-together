@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-@EnableFeignClients(basePackages = {"org.go.together.client"})
+@EnableFeignClients(basePackages = {"org.go.together.notification.client"})
 @EnableTransactionManagement
 @EnableEurekaClient
 public class ContentServiceApplication {

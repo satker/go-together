@@ -1,13 +1,13 @@
 package org.go.together.service;
 
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.CountryDto;
-import org.go.together.dto.PlaceDto;
 import org.go.together.dto.SimpleDto;
 import org.go.together.mapper.CountryMapper;
 import org.go.together.model.Country;
 import org.go.together.model.Place;
-import org.go.together.repository.CountryRepository;
+import org.go.together.notification.dto.CountryDto;
+import org.go.together.notification.dto.PlaceDto;
+import org.go.together.notification.repository.CountryRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

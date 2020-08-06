@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableEurekaClient
-@EnableFeignClients(basePackages = {"org.go.together.client"})
+@EnableFeignClients(basePackages = {"org.go.together.notification.client"})
 public class EventServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(EventServiceApplication.class);

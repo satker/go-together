@@ -1,13 +1,14 @@
 package org.go.together.tests;
 
-import org.go.together.CrudService;
-import org.go.together.CustomRepository;
-import org.go.together.dto.*;
+import org.go.together.base.CrudService;
+import org.go.together.dto.IdDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.exceptions.CannotFindEntityException;
+import org.go.together.find.dto.*;
 import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.go.together.logic.Mapper;
+import org.go.together.mapper.Mapper;
+import org.go.together.repository.CustomRepository;
+import org.go.together.repository.exceptions.CannotFindEntityException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

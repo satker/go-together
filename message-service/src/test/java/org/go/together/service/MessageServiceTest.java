@@ -1,10 +1,10 @@
 package org.go.together.service;
 
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.MessageDto;
-import org.go.together.dto.MessageType;
 import org.go.together.enums.CrudOperation;
 import org.go.together.model.Message;
+import org.go.together.notification.dto.MessageDto;
+import org.go.together.notification.dto.MessageType;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

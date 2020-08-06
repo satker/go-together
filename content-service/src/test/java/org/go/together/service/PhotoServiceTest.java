@@ -2,10 +2,10 @@ package org.go.together.service;
 
 import org.apache.commons.io.FileUtils;
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.ContentDto;
-import org.go.together.dto.PhotoDto;
 import org.go.together.model.Photo;
-import org.go.together.repository.PhotoRepository;
+import org.go.together.notification.dto.ContentDto;
+import org.go.together.notification.dto.PhotoDto;
+import org.go.together.notification.repository.PhotoRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

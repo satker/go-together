@@ -1,8 +1,7 @@
 package org.go.together.mapper;
 
-import org.go.together.dto.GroupLocationDto;
-import org.go.together.logic.Mapper;
 import org.go.together.model.GroupLocation;
+import org.go.together.notification.dto.GroupLocationDto;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;

@@ -1,10 +1,10 @@
 package org.go.together.service;
 
-import org.go.together.CrudServiceImpl;
-import org.go.together.dto.CountryDto;
-import org.go.together.dto.FieldMapper;
+import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Country;
-import org.go.together.repository.CountryRepository;
+import org.go.together.notification.dto.CountryDto;
+import org.go.together.notification.repository.CountryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;

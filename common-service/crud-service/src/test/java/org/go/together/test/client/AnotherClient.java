@@ -1,8 +1,8 @@
 package org.go.together.test.client;
 
-import org.go.together.client.FindClient;
-import org.go.together.dto.FormDto;
-import org.go.together.dto.ResponseDto;
+import org.go.together.find.client.FindClient;
+import org.go.together.find.dto.FormDto;
+import org.go.together.find.dto.ResponseDto;
 import org.springframework.stereotype.Component;
 
 @Component
