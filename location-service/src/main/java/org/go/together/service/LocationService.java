@@ -6,12 +6,12 @@ import org.go.together.dto.IdDto;
 import org.go.together.dto.LocationDto;
 import org.go.together.dto.PlaceDto;
 import org.go.together.enums.CrudOperation;
+import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.mapper.PlaceMapper;
 import org.go.together.model.Location;
 import org.go.together.model.Place;
 import org.go.together.repository.LocationRepository;
-import org.go.together.repository.exceptions.CannotFindEntityException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

@@ -20,6 +20,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
         "org.go.together.mapper",
         "org.go.together.model",
         "org.go.together.find",
+        "org.go.together.repository",
+        "org.go.together.validation",
         "org.go.together.notification"
 })
 public class RepositoryContext {

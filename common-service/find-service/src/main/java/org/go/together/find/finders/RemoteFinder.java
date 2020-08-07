@@ -21,13 +21,8 @@ public class RemoteFinder implements Finder {
     public Map<String, Collection<Object>> getFilters(Map<String, FilterDto> filters,
                                                       Map<String, FieldMapper> availableFields) {
         Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices = new HashMap<>();
-        filters.forEach((key, value) -> {
-            Map<String, FieldMapper> fieldMappers = FindUtils.getFieldMapperByRemoteField(availableFields, key);
-            fieldMappers.forEach((localField, fieldMapper) ->
-                    convertToAnotherRequest(filtersToAnotherServices, key,
-                            FindUtils.getFieldSearch(key),
-                            fieldMapper, value));
-        });
+        filters.forEach((key, value) -> FindUtils.getFieldMapperByRemoteField(availableFields, key).values()
+                .forEach(fieldMapper -> convertToAnotherRequest(filtersToAnotherServices, key, fieldMapper, value)));
         if (!filtersToAnotherServices.isEmpty()) {
             return getFilterResultFromOtherServices(filtersToAnotherServices);
         }
@@ -37,9 +32,9 @@ public class RemoteFinder implements Finder {
 
     private void convertToAnotherRequest(Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices,
                                          String currentLocalField,
-                                         String anotherServiceSearchField,
                                          FieldMapper fieldMapper,
                                          FilterDto value) {
+        String anotherServiceSearchField = FindUtils.getFieldSearch(currentLocalField);
         ClientLocalFieldObject clientLocalFieldObject = ClientLocalFieldObject.builder()
                 .client(fieldMapper.getRemoteServiceClient())
                 .localField(FindUtils.getParsedRemoteField(currentLocalField)[0]).build();

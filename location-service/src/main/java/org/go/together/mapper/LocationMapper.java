@@ -1,10 +1,10 @@
 package org.go.together.mapper;
 
 import org.go.together.dto.LocationDto;
+import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.model.Location;
 import org.go.together.model.Place;
 import org.go.together.repository.PlaceRepository;
-import org.go.together.repository.exceptions.CannotFindEntityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

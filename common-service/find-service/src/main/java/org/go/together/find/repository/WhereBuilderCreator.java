@@ -9,7 +9,6 @@ import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.repository.CustomRepository;
 import org.go.together.repository.builder.WhereBuilder;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -34,20 +33,17 @@ public class WhereBuilderCreator<E extends IdentifiedEntity> {
             String[] groupFields = getSingleGroupFields(searchField);
             String suffix = key.replace(searchField, "");
             if (groupFields.length > 1) {
-                WhereBuilder<E> groupWhere = repository.createGroup();
-                addGroups(suffix, searchField, value.getValues(), filterType, groupFields, groupWhere);
+                WhereBuilder<E> groupWhere = addGroups(suffix, searchField, value, groupFields);
                 whereBuilder.group(groupWhere).and();
             } else if (groupFields.length == 1) {
-                value.getValues().forEach(map -> {
+                value.getValues().forEach(filterValues -> {
                     WhereBuilder<E> groupWhere = repository.createGroup();
                     String field = groupFields[0];
                     if (StringUtils.isNotBlank(suffix)) {
                         field = suffix + field;
                     }
-                    addCondition(map, filterType, groupWhere, field);
-                    if (!join.toString().contains(groupWhere.getJoinQuery())) {
-                        join.append(groupWhere.getJoinQuery());
-                    }
+                    addCondition(filterValues, filterType, groupWhere, field);
+                    join.append(groupWhere.getJoinQuery());
                     whereBuilder.group(groupWhere).and();
                 });
             }
@@ -60,24 +56,23 @@ public class WhereBuilderCreator<E extends IdentifiedEntity> {
         return whereBuilder;
     }
 
-    private void addGroups(String suffix,
-                           String key,
-                           Collection<Map<String, Object>> values,
-                           FindSqlOperator filterType,
-                           String[] groupFields,
-                           WhereBuilder<E> groupWhere) {
-        values.forEach(map -> {
+    private WhereBuilder<E> addGroups(String suffix,
+                                      String key,
+                                      FilterDto filterDto,
+                                      String[] groupFields) {
+        WhereBuilder<E> groupWhere = repository.createGroup();
+        filterDto.getValues().forEach(filterValues -> {
             WhereBuilder<E> innerGroup = repository.createGroup();
+            WhereBuilder<E> whereAdd = filterDto.getValues().size() > 1 ? innerGroup : groupWhere;
             Stream.of(groupFields).forEach(field -> {
-                WhereBuilder<E> whereAdd = values.size() > 1 ? innerGroup : groupWhere;
                 String currentGroupField = field;
                 if (StringUtils.isNotBlank(suffix)) {
                     currentGroupField = suffix + field;
                 }
-                addCondition(map, filterType, whereAdd, currentGroupField);
+                addCondition(filterValues, filterDto.getFilterType(), whereAdd, currentGroupField);
                 addDelimiter(key, whereAdd, field);
             });
-            if (values.size() > 1) {
+            if (filterDto.getValues().size() > 1) {
                 if (!join.toString().contains(innerGroup.getJoinQuery())) {
                     join.append(innerGroup.getJoinQuery());
                 }
@@ -89,6 +84,7 @@ public class WhereBuilderCreator<E extends IdentifiedEntity> {
             }
         });
         groupWhere.cutLastOr();
+        return groupWhere;
     }
 
     private void addDelimiter(String key, WhereBuilder<E> groupWhere, String field) {

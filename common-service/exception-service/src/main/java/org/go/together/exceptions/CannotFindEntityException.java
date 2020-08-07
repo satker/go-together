@@ -1,4 +1,4 @@
-package org.go.together.repository.exceptions;
+package org.go.together.exceptions;
 
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;

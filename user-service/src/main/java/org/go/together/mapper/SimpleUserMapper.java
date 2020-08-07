@@ -2,9 +2,9 @@ package org.go.together.mapper;
 
 import org.go.together.client.ContentClient;
 import org.go.together.dto.SimpleUserDto;
+import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.model.SystemUser;
 import org.go.together.repository.UserRepository;
-import org.go.together.repository.exceptions.CannotFindEntityException;
 import org.springframework.stereotype.Component;
 
 @Component

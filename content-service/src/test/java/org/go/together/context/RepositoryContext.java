@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Import;
 @ComponentScan(value = {"org.go.together.service",
         "org.go.together.mapper",
         "org.go.together.model",
+        "org.go.together.repository",
+        "org.go.together.validation",
         "org.go.together.find",
         "org.go.together.notification"
 })

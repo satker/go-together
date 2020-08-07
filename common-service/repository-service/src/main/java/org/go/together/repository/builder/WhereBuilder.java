@@ -25,7 +25,7 @@ public class WhereBuilder<E extends IdentifiedEntity> {
         whereQuery = new StringBuilder(isGroup ? StringUtils.EMPTY : " WHERE ");
     }
 
-    protected StringBuilder getWhereQuery() {
+    public StringBuilder getWhereQuery() {
         return whereQuery;
     }
 

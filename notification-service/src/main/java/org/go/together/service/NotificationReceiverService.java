@@ -5,6 +5,7 @@ import org.go.together.dto.IdDto;
 import org.go.together.dto.NotificationDto;
 import org.go.together.dto.NotificationReceiverDto;
 import org.go.together.dto.NotificationReceiverMessageDto;
+import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.mapper.NotificationMapper;
 import org.go.together.mapper.NotificationMessageMapper;
@@ -14,7 +15,6 @@ import org.go.together.model.NotificationReceiver;
 import org.go.together.repository.NotificationMessageRepository;
 import org.go.together.repository.NotificationReceiverRepository;
 import org.go.together.repository.NotificationRepository;
-import org.go.together.repository.exceptions.CannotFindEntityException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -74,21 +74,23 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
         NotificationReceiverDto notificationReceiverDto = new NotificationReceiverDto();
         notificationReceiverDto.setUserId(receiverId);
         notificationReceiverDto.setNotification(savedNotificationDto);
-        IdDto saveNotificationReceiverId = super.create(notificationReceiverDto);
-        NotificationReceiverDto receiverDto = super.read(saveNotificationReceiverId.getId());
 
-        Set<NotificationReceiverMessageDto> notificationReceiverMessages = notificationMessageRepository.findByNotificationId(savedNotificationDto.getId()).stream()
-                .map(notificationMessageMapper::entityToDto)
-                .map(notificationMessageDto -> {
-                    NotificationReceiverMessageDto notificationReceiverMessageDto = new NotificationReceiverMessageDto();
-                    notificationReceiverMessageDto.setIsRead(false);
-                    notificationReceiverMessageDto.setNotificationMessage(notificationMessageDto);
-                    return notificationReceiverMessageDto;
-                })
-                .collect(Collectors.toSet());
+        Set<NotificationReceiverMessageDto> notificationReceiverMessages =
+                notificationMessageRepository.findByNotificationId(savedNotificationDto.getId()).stream()
+                        .map(notificationMessageMapper::entityToDto)
+                        .map(notificationMessageDto -> {
+                            NotificationReceiverMessageDto notificationReceiverMessageDto = new NotificationReceiverMessageDto();
+                            notificationReceiverMessageDto.setIsRead(false);
+                            notificationReceiverMessageDto.setNotificationMessage(notificationMessageDto);
+                            return notificationReceiverMessageDto;
+                        })
+                        .map(notificationReceiverMessageService::create)
+                        .map(IdDto::getId)
+                        .map(notificationReceiverMessageService::read)
+                        .collect(Collectors.toSet());
 
-        receiverDto.setNotificationReceiverMessages(notificationReceiverMessages);
-        super.create(receiverDto);
+        notificationReceiverDto.setNotificationReceiverMessages(notificationReceiverMessages);
+        super.create(notificationReceiverDto);
     }
 
     public boolean removeReceiver(UUID producerId, UUID receiverId) {
@@ -98,7 +100,7 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
             ((NotificationReceiverRepository) repository).findByNotificationId(notification.getId()).stream()
                     .filter(notificationReceiver -> !notificationReceiver.getUserId().equals(receiverId))
                     .map(mapper::entityToDto)
-                    .forEach(super::create);
+                    .forEach(super::update);
         } else {
             throw new CannotFindEntityException("Cannot find notification.");
         }
@@ -111,7 +113,7 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
                 .flatMap(Collection::stream)
                 .map(notificationReceiverMessageMapper::entityToDto)
                 .peek(notificationReceiverMessage -> notificationReceiverMessage.setIsRead(true))
-                .forEach(notificationReceiverMessageService::create);
+                .forEach(notificationReceiverMessageService::update);
         return true;
     }
 
