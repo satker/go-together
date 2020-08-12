@@ -1,10 +1,7 @@
 package org.go.together.service;
 
 import org.go.together.base.impl.CrudServiceImpl;
-import org.go.together.dto.IdDto;
-import org.go.together.dto.NotificationDto;
-import org.go.together.dto.NotificationReceiverDto;
-import org.go.together.dto.NotificationReceiverMessageDto;
+import org.go.together.dto.*;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.mapper.NotificationMapper;
@@ -25,7 +22,6 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
     private final NotificationReceiverMessageService notificationReceiverMessageService;
     private final NotificationReceiverMessageMapper notificationReceiverMessageMapper;
     private final NotificationRepository notificationRepository;
-    private final NotificationService notificationService;
     private final NotificationMapper notificationMapper;
     private final NotificationMessageRepository notificationMessageRepository;
     private final NotificationMessageMapper notificationMessageMapper;
@@ -33,41 +29,29 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
     protected NotificationReceiverService(NotificationReceiverMessageService notificationReceiverMessageService,
                                           NotificationReceiverMessageMapper notificationReceiverMessageMapper,
                                           NotificationRepository notificationRepository,
-                                          NotificationService notificationService,
                                           NotificationMapper notificationMapper,
                                           NotificationMessageRepository notificationMessageRepository,
                                           NotificationMessageMapper notificationMessageMapper) {
         this.notificationReceiverMessageService = notificationReceiverMessageService;
         this.notificationReceiverMessageMapper = notificationReceiverMessageMapper;
         this.notificationRepository = notificationRepository;
-        this.notificationService = notificationService;
         this.notificationMapper = notificationMapper;
         this.notificationMessageRepository = notificationMessageRepository;
         this.notificationMessageMapper = notificationMessageMapper;
     }
 
-    public boolean addReceiver(UUID producerId, UUID receiverId) {
-        Optional<Notification> notificationOptional = notificationRepository.findByProducerId(producerId);
-        if (notificationOptional.isPresent()) {
-            Notification notification = notificationOptional.get();
-            Collection<NotificationReceiver> notificationReceivers =
-                    ((NotificationReceiverRepository) repository).findByNotificationId(notification.getId());
-            boolean receiverNotPresented = notificationReceivers.stream()
-                    .map(NotificationReceiver::getUserId)
-                    .noneMatch(notificationReceiver -> notificationReceiver.equals(receiverId));
-            if (receiverNotPresented) {
-                addNotificationMessageReceiver(receiverId, notificationMapper.entityToDto(notification));
-                return true;
-            }
-        } else {
-            NotificationDto notification = new NotificationDto();
-            notification.setProducerId(producerId);
-            IdDto savedNotificationId = notificationService.create(notification);
-
-            addNotificationMessageReceiver(receiverId, notificationService.read(savedNotificationId.getId()));
-            return true;
+    public void addReceiver(UUID producerId, UUID receiverId) {
+        Notification notification = notificationRepository.findByProducerId(producerId)
+                .orElseThrow(() -> new CannotFindEntityException("Cannot find notification by producer id " +
+                        producerId));
+        Collection<NotificationReceiver> notificationReceivers =
+                ((NotificationReceiverRepository) repository).findByNotificationId(notification.getId());
+        boolean receiverNotPresented = notificationReceivers.stream()
+                .map(NotificationReceiver::getUserId)
+                .noneMatch(notificationReceiver -> notificationReceiver.equals(receiverId));
+        if (receiverNotPresented) {
+            addNotificationMessageReceiver(receiverId, notificationMapper.entityToDto(notification));
         }
-        return false;
     }
 
     private void addNotificationMessageReceiver(UUID receiverId, NotificationDto savedNotificationDto) {
@@ -93,18 +77,14 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
         super.create(notificationReceiverDto);
     }
 
-    public boolean removeReceiver(UUID producerId, UUID receiverId) {
-        Optional<Notification> notificationOptional = notificationRepository.findByProducerId(producerId);
-        if (notificationOptional.isPresent()) {
-            Notification notification = notificationOptional.get();
-            ((NotificationReceiverRepository) repository).findByNotificationId(notification.getId()).stream()
-                    .filter(notificationReceiver -> !notificationReceiver.getUserId().equals(receiverId))
-                    .map(mapper::entityToDto)
-                    .forEach(super::update);
-        } else {
-            throw new CannotFindEntityException("Cannot find notification.");
-        }
-        return true;
+    public void removeReceiver(UUID producerId, UUID receiverId) {
+        Notification notification = notificationRepository.findByProducerId(producerId)
+                .orElseThrow(() -> new CannotFindEntityException("Cannot find notification by producer id " +
+                        producerId));
+        ((NotificationReceiverRepository) repository).findByNotificationId(notification.getId()).stream()
+                .filter(notificationReceiver -> notificationReceiver.getUserId().equals(receiverId))
+                .map(NotificationReceiver::getId)
+                .forEach(super::delete);
     }
 
     public boolean readNotifications(UUID receiverId) {
@@ -115,6 +95,21 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
                 .peek(notificationReceiverMessage -> notificationReceiverMessage.setIsRead(true))
                 .forEach(notificationReceiverMessageService::update);
         return true;
+    }
+
+    public Collection<NotificationMessageDto> getReceiverNotifications(UUID receiverId) {
+        return ((NotificationReceiverRepository) repository).findByReceiverId(receiverId)
+                .stream()
+                .map(NotificationReceiver::getNotificationReceiverMessages)
+                .flatMap(Collection::stream)
+                .map(notificationReceiverMessage -> {
+                    NotificationMessageDto notificationMessageDto =
+                            notificationMessageMapper.entityToDto(notificationReceiverMessage.getNotificationMessage());
+                    notificationMessageDto.setIsRead(notificationReceiverMessage.getIsRead());
+                    return notificationMessageDto;
+                }).sorted(Comparator.comparing(NotificationMessageDto::getDate,
+                        Comparator.nullsLast(Comparator.reverseOrder())))
+                .collect(Collectors.toList());
     }
 
     @Override

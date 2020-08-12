@@ -100,7 +100,8 @@ public class WhereBuilderCreator<E extends IdentifiedEntity> {
 
     private void addCondition(Map<String, Object> value,
                               FindSqlOperator filterType,
-                              WhereBuilder<E> groupWhere, String field) {
+                              WhereBuilder<E> groupWhere,
+                              String field) {
         Object searchObject = Optional.ofNullable(value.get(field)).orElseGet(() -> {
             String[] searchField = FindUtils.getParsedFields(field);
             return value.get(searchField[searchField.length - 1]);

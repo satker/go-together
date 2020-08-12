@@ -34,11 +34,13 @@ public class EventUserService extends CrudServiceImpl<EventUserDto, EventUser> {
 
     public boolean deleteEventUserByEventId(EventUserDto eventUserDto) {
         Optional<EventUser> eventUserByUserIdAndEventId =
-                ((EventUserRepository) repository).findEventUserByUserIdAndEventId(eventUserDto.getUser().getId(), eventUserDto.getEventId());
+                ((EventUserRepository) repository).findEventUserByUserIdAndEventId(eventUserDto.getUser().getId(),
+                        eventUserDto.getEventId());
         if (eventUserByUserIdAndEventId.isEmpty()) {
             return false;
         }
         super.delete(eventUserByUserIdAndEventId.get().getId());
+        notificationService.removedReceiver(eventUserDto);
         return true;
     }
 

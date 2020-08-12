@@ -7,5 +7,9 @@ import java.util.UUID;
 public interface NotificationService<D extends Dto> {
     String getMessage(D dto, D anotherDto, String serviceName, NotificationStatus notificationStatus);
 
-    void notificate(UUID id, D dto, String resultMessage, NotificationStatus notificationStatus);
+    void createNotification(UUID id, D dto, String resultMessage);
+
+    void updateNotification(UUID id, D dto, String resultMessage);
+
+    void removedReceiver(D dto);
 }

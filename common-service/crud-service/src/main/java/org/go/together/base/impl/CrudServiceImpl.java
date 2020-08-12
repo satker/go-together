@@ -36,7 +36,7 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
     protected Mapper<D, E> mapper;
     private Validator<D> validator;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private NotificationService<D> notificationService;
+    protected NotificationService<D> notificationService;
 
     @Autowired
     public void setMapper(Mapper<D, E> mapper) {
@@ -74,7 +74,7 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
             }
             if (dto instanceof ComparableDto) {
                 String message = getNotificationMessage(read(dto.getId()), dto, NotificationStatus.CREATED);
-                notificationService.notificate(createdEntity.getId(), dto, message, NotificationStatus.CREATED);
+                notificationService.createNotification(createdEntity.getId(), dto, message);
             }
             return new IdDto(createdEntity.getId());
         } else {
@@ -105,7 +105,7 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
             }
             if (dto instanceof ComparableDto) {
                 String message = getNotificationMessage(read(dto.getId()), dto, NotificationStatus.UPDATED);
-                notificationService.notificate(dto.getId(), dto, message, NotificationStatus.UPDATED);
+                notificationService.updateNotification(dto.getId(), dto, message);
             }
             return new IdDto(createdEntity.getId());
         } else {
@@ -134,7 +134,7 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
             }
             repository.delete(enrichedEntity);
             if (dto instanceof ComparableDto) {
-                notificationService.notificate(uuid, dto, message, NotificationStatus.DELETED);
+                notificationService.updateNotification(uuid, dto, message);
             }
         } else {
             String message = getServiceName() + ": " + "Cannot find entity by id " + uuid;

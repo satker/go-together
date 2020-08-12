@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-import static org.go.together.enums.NotificationStatus.CREATED;
-import static org.go.together.enums.NotificationStatus.DELETED;
 import static org.go.together.notification.utils.ComparatorUtils.compareDtos;
 import static org.go.together.notification.utils.ComparatorUtils.getMainField;
 
@@ -26,22 +24,33 @@ public class NotificationServiceImpl<D extends Dto> implements NotificationServi
         this.notificationClient = notificationClient;
     }
 
-    public void notificate(UUID id, D dto, String resultMessage, NotificationStatus notificationStatus) {
+    public void createNotification(UUID id, D dto, String resultMessage) {
         Optional.ofNullable(dto)
                 .map(d -> (ComparableDto) d)
                 .ifPresent(comparableDto -> {
                     UUID ownerId = comparableDto.getOwnerId();
-                    NotificationMessageDto notificationMessageDto = new NotificationMessageDto();
-                    notificationMessageDto.setMessage(resultMessage);
-                    notificationMessageDto.setDate(new Date());
                     UUID producerId = Optional.ofNullable(comparableDto.getParentId()).orElse(id);
-                    notificationClient.notificate(producerId, notificationStatus, notificationMessageDto);
-                    if (notificationStatus == CREATED) {
-                        addedReceiver(producerId, ownerId);
-                    } else if (notificationStatus == DELETED) {
-                        removedReceiver(producerId, ownerId);
-                    }
+                    NotificationMessageDto notificationMessageDto = getNotificationMessageDto(resultMessage);
+                    notificationClient.createNotification(producerId, notificationMessageDto);
+                    addedReceiver(producerId, ownerId);
                 });
+    }
+
+    public void updateNotification(UUID id, D dto, String resultMessage) {
+        Optional.ofNullable(dto)
+                .map(d -> (ComparableDto) d)
+                .ifPresent(comparableDto -> {
+                    UUID producerId = Optional.ofNullable(comparableDto.getParentId()).orElse(id);
+                    NotificationMessageDto notificationMessageDto = getNotificationMessageDto(resultMessage);
+                    notificationClient.updateNotification(producerId, notificationMessageDto);
+                });
+    }
+
+    private NotificationMessageDto getNotificationMessageDto(String resultMessage) {
+        NotificationMessageDto notificationMessageDto = new NotificationMessageDto();
+        notificationMessageDto.setMessage(resultMessage);
+        notificationMessageDto.setDate(new Date());
+        return notificationMessageDto;
     }
 
     public String getMessage(D dto, D anotherDto, String serviceName, NotificationStatus notificationStatus) {
@@ -66,7 +75,13 @@ public class NotificationServiceImpl<D extends Dto> implements NotificationServi
         }
     }
 
-    private void removedReceiver(UUID producerId, UUID receiverId) {
-        notificationClient.removeReceiver(producerId, receiverId);
+    public void removedReceiver(D dto) {
+        Optional.ofNullable(dto)
+                .map(d -> (ComparableDto) d)
+                .ifPresent(comparableDto -> {
+                    UUID ownerId = comparableDto.getOwnerId();
+                    Optional.ofNullable(comparableDto.getParentId())
+                            .ifPresent((producerId) -> notificationClient.removeReceiver(producerId, ownerId));
+                });
     }
 }
