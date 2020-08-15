@@ -25,6 +25,9 @@ public abstract class Validator<D extends Dto> {
     public Map<String, NumberIntervalDto> NUMBER_INTERVAL_CORRECT_CHECK = new HashMap<>();
 
     public String validate(D dto, CrudOperation crudOperation) {
+        if (dto == null) {
+            return "Dto is null";
+        }
         getMapsForCheck(dto);
         StringBuilder errors = new StringBuilder();
 

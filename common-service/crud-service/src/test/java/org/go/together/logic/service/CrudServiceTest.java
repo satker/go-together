@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.SimpleDto;
-import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.find.dto.FilterDto;
 import org.go.together.find.dto.FormDto;
@@ -83,8 +82,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
         IdDto idDto = crudService.create(testDto);
 
-        TestEntity testEntity = repository.findById(idDto.getId())
-                .orElseThrow(() -> new CannotFindEntityException("Cannot find TestDto"));
+        TestEntity testEntity = repository.findByIdOrThrow(idDto.getId());
         this.testDto = mapper.entityToDto(testEntity);
     }
 

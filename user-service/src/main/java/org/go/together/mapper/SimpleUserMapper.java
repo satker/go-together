@@ -2,7 +2,6 @@ package org.go.together.mapper;
 
 import org.go.together.client.ContentClient;
 import org.go.together.dto.SimpleUserDto;
-import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.model.SystemUser;
 import org.go.together.repository.UserRepository;
 import org.springframework.stereotype.Component;
@@ -31,7 +30,6 @@ public class SimpleUserMapper implements Mapper<SimpleUserDto, SystemUser> {
 
     @Override
     public SystemUser dtoToEntity(SimpleUserDto dto) {
-        return userRepository.findById(dto.getId())
-                .orElseThrow(() -> new CannotFindEntityException("Cannot find user " + dto.getLogin()));
+        return userRepository.findByIdOrThrow(dto.getId());
     }
 }

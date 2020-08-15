@@ -1,5 +1,6 @@
 package org.go.together.repository;
 
+import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.repository.builder.SqlBuilder;
 import org.go.together.repository.builder.WhereBuilder;
@@ -47,6 +48,12 @@ public abstract class CustomRepository<E extends IdentifiedEntity> {
     @Transactional
     public Optional<E> findById(UUID uuid) {
         return Optional.ofNullable(entityManager.find(this.getEntityClass(), uuid));
+    }
+
+    @Transactional
+    public E findByIdOrThrow(UUID uuid) {
+        return Optional.ofNullable(entityManager.find(this.getEntityClass(), uuid))
+                .orElseThrow(() -> new CannotFindEntityException("Cannot find " + getEntityClass().getSimpleName() + " by id " + uuid));
     }
 
     @Transactional

@@ -3,7 +3,6 @@ package org.go.together.service;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.EventLikeDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.EventLike;
 import org.go.together.repository.EventLikeRepository;
@@ -30,8 +29,7 @@ public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
     @Override
     protected EventLike enrichEntity(EventLike entity, EventLikeDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE) {
-            EventLike eventLike = repository.findById(dto.getId())
-                    .orElseThrow(() -> new CannotFindEntityException("Cannot find EventLike for event " + dto.getEventId()));
+            EventLike eventLike = repository.findByIdOrThrow(dto.getId());
             eventLike.setUsers(entity.getUsers());
             return eventLike;
         }

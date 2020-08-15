@@ -101,8 +101,7 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
     public void findTest() {
         D createdDto = getCreatedEntityId(dto);
 
-        E savedEntity = repository.findById(createdDto.getId())
-                .orElseThrow(() -> new CannotFindEntityException("Cannot find saved entity"));
+        E savedEntity = repository.findByIdOrThrow(createdDto.getId());
 
 
         Map<String, FieldMapper> mappingFields = crudService.getMappingFields();

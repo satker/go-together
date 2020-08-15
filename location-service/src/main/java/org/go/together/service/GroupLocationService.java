@@ -5,7 +5,6 @@ import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.GroupLocationDto;
 import org.go.together.dto.LocationDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.GroupLocation;
 import org.go.together.model.Location;
@@ -32,13 +31,11 @@ public class GroupLocationService extends CrudServiceImpl<GroupLocationDto, Grou
             entity.setLocations(savedLocations);
         } else if (crudOperation == CrudOperation.UPDATE) {
             Set<LocationDto> locationDtos = dto.getLocations();
-            GroupLocation groupLocation = repository.findById(entity.getId())
-                    .orElseThrow(() -> new CannotFindEntityException("Cannot find group location by id: " + entity.getId()));
+            GroupLocation groupLocation = repository.findByIdOrThrow(entity.getId());
             Set<Location> savedLocations = locationService.saveOrUpdateEventRoutes(locationDtos, groupLocation.getLocations());
             entity.setLocations(savedLocations);
         } else if (crudOperation == CrudOperation.DELETE) {
-            GroupLocation groupLocation = repository.findById(entity.getId())
-                    .orElseThrow(() -> new CannotFindEntityException("Cannot find group location by id: " + entity.getId()));
+            GroupLocation groupLocation = repository.findByIdOrThrow(entity.getId());
             Optional.ofNullable(groupLocation.getLocations())
                     .orElse(Collections.emptySet())
                     .stream()

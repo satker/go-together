@@ -9,7 +9,6 @@ import org.go.together.dto.IdDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.enums.NotificationStatus;
 import org.go.together.exceptions.ApplicationException;
-import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.exceptions.ValidationException;
 import org.go.together.find.dto.FormDto;
 import org.go.together.find.dto.PageDto;
@@ -34,7 +33,7 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
         extends FindServiceImpl<E> implements CrudService<D> {
     protected final Logger log = LoggerFactory.getLogger(getClass());
     protected Mapper<D, E> mapper;
-    private Validator<D> validator;
+    protected Validator<D> validator;
     private final ObjectMapper objectMapper = new ObjectMapper();
     protected NotificationService<D> notificationService;
 
@@ -78,19 +77,17 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
             }
             return new IdDto(createdEntity.getId());
         } else {
-            log.error(dto.getClass().getSimpleName() + " with id " + dto.getId() + ": " + validate);
+            log.error("Validation failed " + getServiceName() + ": " + validate);
             throw new ValidationException(validate);
         }
     }
 
     public IdDto update(D dto) {
         CrudOperation crudOperation = CrudOperation.UPDATE;
-        E entityById = repository.findById(dto.getId())
-                .orElseThrow(() -> new CannotFindEntityException("Cannot find " + getServiceName() + " by id " +
-                        dto.getId()));
-        D entityToDto = mapper.entityToDto(entityById);
         String validate = validator.validate(dto, crudOperation);
         if (StringUtils.isBlank(validate)) {
+            E entityById = repository.findByIdOrThrow(dto.getId());
+            D entityToDto = mapper.entityToDto(entityById);
             E entity = mapper.dtoToEntity(dto);
             E createdEntity;
             try {
@@ -109,7 +106,7 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
             }
             return new IdDto(createdEntity.getId());
         } else {
-            log.error(dto.getClass().getSimpleName() + " with id " + dto.getId() + ": " + validate);
+            log.error("Validation failed " + getServiceName() + ": " + validate);
             throw new ValidationException(validate);
         }
     }
