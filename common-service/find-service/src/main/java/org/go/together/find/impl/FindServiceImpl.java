@@ -1,12 +1,14 @@
 package org.go.together.find.impl;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.go.together.exceptions.IncorrectDtoException;
 import org.go.together.find.FindService;
 import org.go.together.find.correction.CorrectedService;
-import org.go.together.find.dto.FilterDto;
-import org.go.together.find.dto.FindSqlOperator;
-import org.go.together.find.dto.FormDto;
-import org.go.together.find.dto.PageDto;
+import org.go.together.find.dto.FieldDto;
+import org.go.together.find.dto.form.FilterDto;
+import org.go.together.find.dto.utils.FindSqlOperator;
+import org.go.together.find.dto.form.FormDto;
+import org.go.together.find.dto.form.PageDto;
 import org.go.together.find.finders.Finder;
 import org.go.together.find.repository.FindRepository;
 import org.go.together.find.repository.FindRepositoryImpl;
@@ -42,7 +44,7 @@ public abstract class FindServiceImpl<E extends IdentifiedEntity> implements Fin
         if (Optional.ofNullable(formDto.getFilters()).map(Map::isEmpty).orElse(true)) {
             return findRepository.getResult(formDto.getMainIdField(), null, formDto.getPage());
         }
-        Map<String, FilterDto> commonService = getFilters(formDto);
+        Map<FieldDto, FilterDto> commonService = getFilters(formDto);
         if (commonService == null) {
             PageDto notFoundPageDto = null;
             if (formDto.getPage() != null) {
@@ -53,10 +55,10 @@ public abstract class FindServiceImpl<E extends IdentifiedEntity> implements Fin
         return findRepository.getResult(formDto.getMainIdField(), commonService, formDto.getPage());
     }
 
-    private Map<String, FilterDto> getFilters(FormDto formDto) {
-        Pair<Map<String, FilterDto>, Map<String, FilterDto>>
+    private Map<FieldDto, FilterDto> getFilters(FormDto formDto) {
+        Pair<Map<FieldDto, FilterDto>, Map<FieldDto, FilterDto>>
                 correctedFilters = correctedService.getRemoteAndCorrectedFilters(formDto.getFilters(), getMappingFields());
-        Map<String, Collection<Object>> remoteFilters = new HashMap<>();
+        Map<FieldDto, Collection<Object>> remoteFilters = new HashMap<>();
         if (!correctedFilters.getLeft().isEmpty()) {
             remoteFilters = remoteFindService.getFilters(correctedFilters.getLeft(), getMappingFields());
         }
@@ -66,25 +68,22 @@ public abstract class FindServiceImpl<E extends IdentifiedEntity> implements Fin
         return getConcatRemoteAndLocalFilters(remoteFilters, correctedFilters.getRight());
     }
 
-    private Map<String, FilterDto> getConcatRemoteAndLocalFilters(Map<String, Collection<Object>> remoteFilters,
-                                                                  Map<String, FilterDto> localFilters) {
+    private Map<FieldDto, FilterDto> getConcatRemoteAndLocalFilters(Map<FieldDto, Collection<Object>> remoteFilters,
+                                                                  Map<FieldDto, FilterDto> localFilters) {
         remoteFilters.forEach((key, values) -> {
             FilterDto filterDto = new FilterDto(FindSqlOperator.IN,
                     Collections.singleton(Collections.singletonMap(getCorrectFilterValuesKey(key), values)));
-            Map<String, FilterDto> filterForCurrentService = Collections.singletonMap(FindUtils.getParsedRemoteField(key)[0], filterDto);
             localFilters.remove(key);
-            localFilters.putAll(filterForCurrentService);
+            localFilters.put(key, filterDto);
         });
 
         return localFilters;
     }
 
-    private String getCorrectFilterValuesKey(String key) {
-        String[] splitedKey = FindUtils.getParsedRemoteField(key);
-        if (splitedKey.length > 1) {
-            String[] splitByDotString = FindUtils.getParsedFields(splitedKey[0]);
-            return splitByDotString[splitByDotString.length - 1];
-        }
-        return key;
+    private String getCorrectFilterValuesKey(FieldDto fieldDto) {
+        return Optional.ofNullable(fieldDto.getLocalField())
+                .map(FindUtils::getParsedFields)
+                .map(splitByDotString -> splitByDotString[splitByDotString.length - 1])
+                .orElseThrow(() -> new IncorrectDtoException("Incorrect search field"));
     }
 }

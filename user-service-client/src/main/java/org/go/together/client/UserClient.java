@@ -36,12 +36,6 @@ public interface UserClient extends FindClient {
     @PostMapping("/users")
     IdDto updateUser(@RequestBody UserDto user);
 
-    @GetMapping("/languages")
-    Collection<Object> getLanguages();
-
-    @GetMapping("/interests")
-    Collection<Object> getInterests();
-
     @GetMapping("/users/{userId}/languages")
     Set<UUID> getLanguagesByOwnerId(@PathVariable("userId") UUID userId);
 

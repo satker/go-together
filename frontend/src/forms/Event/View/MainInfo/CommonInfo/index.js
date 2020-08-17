@@ -27,7 +27,7 @@ const CommonInfo = ({event, users, getUsers, userId, getEventsLikes}) => {
         </ItemContainer>
         <ItemContainer>
             {userId && userId !== event.author.id &&
-                <ParticipationButton users={users.response}
+                <ParticipationButton users={users.response.result || users.response}
                                      getUsers={getUsers}
                                      eventId={event.id}/>
             }

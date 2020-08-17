@@ -32,7 +32,7 @@ const Users = ({event, users, statuses, userId, postUserStatus, userStatus, getU
     }, [getUsers, userStatus, flag, event]);
 
     const updateUserStatus = (status) => (userId) => {
-        const approvedUser = [...users.response].filter(user => user.user.id === userId).map(user => {
+        const approvedUser = [...users.response.result].filter(user => user.user.id === userId).map(user => {
             user.userStatus = status;
             return user;
         })[0];
@@ -42,7 +42,7 @@ const Users = ({event, users, statuses, userId, postUserStatus, userStatus, getU
 
     return <>
         <LoadableContent loadableData={statuses}>
-                {userId === event.author.id && <ElementTabs elements={users.response}
+                {userId === event.author.id && <ElementTabs elements={users.response.result}
                                                             onClick={updateUserStatus('APPROVED')}
                                                             onDelete={updateUserStatus('REJECTED')}
                                                             onAction={setUserMessageId}

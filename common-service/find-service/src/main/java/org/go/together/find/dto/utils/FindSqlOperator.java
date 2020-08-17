@@ -1,4 +1,4 @@
-package org.go.together.find.dto;
+package org.go.together.find.dto.utils;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.repository.builder.WhereBuilder;

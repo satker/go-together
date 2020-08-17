@@ -12,9 +12,6 @@ import java.util.UUID;
 
 @FeignClient(name = "message-service")
 public interface MessageClient extends FindClient {
-    @GetMapping("users/{userId}/reviews")
-    Set<MessageDto> getUserReviews(@PathVariable("userId") UUID userId);
-
     @GetMapping("events/{eventId}/messages/{userId}")
     Set<MessageDto> getEventMessages(@PathVariable("eventId") UUID eventId,
                                      @PathVariable("userId") UUID userId);

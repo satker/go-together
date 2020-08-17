@@ -1,9 +1,12 @@
 package org.go.together.find.correction;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.exceptions.IncorrectFindObject;
+import org.go.together.find.dto.FieldDto;
 import org.go.together.find.dto.FieldMapper;
-import org.go.together.find.dto.FilterDto;
+import org.go.together.find.dto.form.FilterDto;
+import org.go.together.find.mapper.FieldMapperUtils;
 import org.go.together.find.utils.FindUtils;
 import org.springframework.stereotype.Component;
 
@@ -16,16 +19,17 @@ import static org.go.together.find.utils.FindUtils.*;
 
 @Component
 public class CorrectFieldService implements CorrectedService {
-    public Pair<Map<String, FilterDto>, Map<String, FilterDto>> getRemoteAndCorrectedFilters(Map<String, FilterDto> filters,
+    public Pair<Map<FieldDto, FilterDto>, Map<FieldDto, FilterDto>> getRemoteAndCorrectedFilters(Map<String, FilterDto> filters,
                                                                                              Map<String, FieldMapper> availableFields) {
-        Map<String, FilterDto> localFilters = new HashMap<>();
-        Map<String, FilterDto> remoteFilters = new HashMap<>();
+        Map<FieldDto, FilterDto> localFilters = new HashMap<>();
+        Map<FieldDto, FilterDto> remoteFilters = new HashMap<>();
         filters.forEach((key, value) -> {
-            Map<String, FieldMapper> fieldMappers = FindUtils.getFieldMappers(availableFields, key);
+            FieldDto fieldDto = FieldMapperUtils.getFieldDto(key);
+            Map<String, FieldMapper> fieldMappers = FindUtils.getFieldMappers(availableFields, fieldDto);
             boolean isNotRemote = fieldMappers.values().stream()
                     .allMatch(fieldMapper -> fieldMapper.getRemoteServiceClient() == null);
-            Pair<Map<String, String>, String> localFieldForSearch =
-                    getCorrectedPathAndFields(key, fieldMappers);
+            Pair<Map<String, String>, FieldDto> localFieldForSearch =
+                    getCorrectedPathAndFields(fieldDto, fieldMappers);
             if (isNotRemote) {
                 Collection<Map<String, Object>> correctedValuesForSearch =
                         getCorrectedValues(localFieldForSearch.getLeft(), value.getValues());
@@ -51,26 +55,29 @@ public class CorrectFieldService implements CorrectedService {
         return result;
     }
 
-    private Pair<Map<String, String>, String> getCorrectedPathAndFields(String string, Map<String, FieldMapper> fieldMappers) {
-        String[] localEntityFullFields = getPathFields(string);
+    private Pair<Map<String, String>, FieldDto> getCorrectedPathAndFields(FieldDto fieldDto, Map<String, FieldMapper> fieldMappers) {
+        String[] localEntityFullFields = fieldDto.getPaths();
 
-        Pair<Map<String, FieldMapper>, StringBuilder>
-                correctedPath = getCorrectedPath(localEntityFullFields, fieldMappers);
+        Pair<Map<String, FieldMapper>, StringBuilder> correctedPath = getCorrectedPath(localEntityFullFields, fieldMappers);
         StringBuilder result = new StringBuilder(correctedPath.getRight());
 
         String lastPathField = localEntityFullFields[localEntityFullFields.length - 1];
         Pair<Map<String, String>, String> localEntityCorrectChildField = getCorrectedField(correctedPath.getLeft(), lastPathField);
+
+        FieldDto.FieldDtoBuilder fieldDtoBuilder = FieldDto.builder();
 
         if (result.length() > 0) {
             result.append(".").append(localEntityCorrectChildField.getRight());
         } else {
             result.append(localEntityCorrectChildField.getRight());
         }
-        String anotherServicePathFields = getAnotherServicePathFields(string);
-        if (anotherServicePathFields != null) {
-            result.append("?").append(anotherServicePathFields);
+        fieldDtoBuilder.localField(result.toString());
+
+        String remoteField = fieldDto.getRemoteField();
+        if (StringUtils.isNotBlank(remoteField)) {
+            fieldDtoBuilder.remoteField(remoteField);
         }
-        return Pair.of(localEntityCorrectChildField.getLeft(), result.toString());
+        return Pair.of(localEntityCorrectChildField.getLeft(), fieldDtoBuilder.build());
     }
 
     private Pair<Map<String, FieldMapper>, StringBuilder> getCorrectedPath(String[] localPaths,
@@ -116,9 +123,9 @@ public class CorrectFieldService implements CorrectedService {
     private StringBuilder getCorrectedField(String[] splitByDotString, FieldMapper fieldMapper) {
         StringBuilder changedField = new StringBuilder(fieldMapper.getCurrentServiceField());
         List<String> fieldsForChange = List.of(splitByDotString).subList(1, splitByDotString.length);
-        String updatedField = getCorrectedPathAndFields(String.join(".", fieldsForChange),
-                fieldMapper.getInnerService().getMappingFields()).getRight();
-        changedField.append(".").append(updatedField);
+        FieldDto fieldDto = FieldMapperUtils.getFieldDto(String.join(".", fieldsForChange));
+        FieldDto updatedFieldDto = getCorrectedPathAndFields(fieldDto, fieldMapper.getInnerService().getMappingFields()).getRight();
+        changedField.append(".").append(updatedFieldDto.getLocalField());
         return changedField;
     }
 }

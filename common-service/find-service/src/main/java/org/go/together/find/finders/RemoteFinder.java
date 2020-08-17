@@ -5,9 +5,10 @@ import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.exceptions.RemoteClientFindException;
 import org.go.together.find.client.FindClient;
 import org.go.together.find.dto.ClientLocalFieldObject;
+import org.go.together.find.dto.FieldDto;
 import org.go.together.find.dto.FieldMapper;
-import org.go.together.find.dto.FilterDto;
-import org.go.together.find.dto.FormDto;
+import org.go.together.find.dto.form.FilterDto;
+import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.utils.FindUtils;
 import org.springframework.stereotype.Component;
 
@@ -18,11 +19,11 @@ import java.util.Map;
 
 @Component
 public class RemoteFinder implements Finder {
-    public Map<String, Collection<Object>> getFilters(Map<String, FilterDto> filters,
+    public Map<FieldDto, Collection<Object>> getFilters(Map<FieldDto, FilterDto> filters,
                                                       Map<String, FieldMapper> availableFields) {
         Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices = new HashMap<>();
-        filters.forEach((key, value) -> FindUtils.getFieldMapperByRemoteField(availableFields, key).values()
-                .forEach(fieldMapper -> convertToAnotherRequest(filtersToAnotherServices, key, fieldMapper, value)));
+        filters.forEach((fieldDto, value) -> FindUtils.getFieldMapperByRemoteField(availableFields, fieldDto).values()
+                .forEach(fieldMapper -> convertToAnotherRequest(filtersToAnotherServices, fieldDto, fieldMapper, value)));
         if (!filtersToAnotherServices.isEmpty()) {
             return getFilterResultFromOtherServices(filtersToAnotherServices);
         }
@@ -31,13 +32,13 @@ public class RemoteFinder implements Finder {
     }
 
     private void convertToAnotherRequest(Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices,
-                                         String currentLocalField,
+                                         FieldDto fieldDto,
                                          FieldMapper fieldMapper,
                                          FilterDto value) {
-        String anotherServiceSearchField = FindUtils.getFieldSearch(currentLocalField);
+        String anotherServiceSearchField = fieldDto.getRemoteField();
         ClientLocalFieldObject clientLocalFieldObject = ClientLocalFieldObject.builder()
                 .client(fieldMapper.getRemoteServiceClient())
-                .localField(FindUtils.getParsedRemoteField(currentLocalField)[0]).build();
+                .fieldDto(fieldDto).build();
         FormDto stringFilterDtoMap = filtersToAnotherServices.get(clientLocalFieldObject);
         FormDto remoteClientFormDto = getRemoteClientFormDto(anotherServiceSearchField, value, stringFilterDtoMap, fieldMapper);
         filtersToAnotherServices.put(clientLocalFieldObject, remoteClientFormDto);
@@ -86,18 +87,18 @@ public class RemoteFinder implements Finder {
         return filterDto;
     }
 
-    private Map<String, Collection<Object>> getFilterResultFromOtherServices(Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices) {
-        Map<String, Collection<Object>> result = new HashMap<>();
+    private Map<FieldDto, Collection<Object>> getFilterResultFromOtherServices(Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices) {
+        Map<FieldDto, Collection<Object>> result = new HashMap<>();
         for (Map.Entry<ClientLocalFieldObject, FormDto> filtersService : filtersToAnotherServices.entrySet()) {
             Collection<Object> request = getRemoteResult(filtersService.getKey().getClient(), filtersService.getValue());
             if (request == null || request.isEmpty()) {
                 return null;
             } else {
-                String localField = filtersService.getKey().getLocalField();
-                if (result.get(localField) == null) {
-                    result.put(localField, request);
+                FieldDto localFieldDto = filtersService.getKey().getFieldDto();
+                if (result.get(localFieldDto) == null) {
+                    result.put(localFieldDto, request);
                 } else {
-                    result.get(localField).addAll(request);
+                    result.get(localFieldDto).addAll(request);
                 }
             }
         }

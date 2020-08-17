@@ -1,4 +1,4 @@
-package org.go.together.find.dto;
+package org.go.together.notification.dto;
 
 import lombok.Data;
 

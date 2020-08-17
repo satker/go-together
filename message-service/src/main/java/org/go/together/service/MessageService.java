@@ -1,5 +1,6 @@
 package org.go.together.service;
 
+import com.google.common.collect.ImmutableMap;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.MessageDto;
 import org.go.together.dto.MessageType;
@@ -72,6 +73,12 @@ public class MessageService extends CrudServiceImpl<MessageDto, Message> {
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return null;
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("messageType", FieldMapper.builder()
+                        .currentServiceField("messageType").build())
+                .put("recipientId", FieldMapper.builder()
+                        .currentServiceField("recipientId").build())
+                .put("authorId", FieldMapper.builder()
+                        .currentServiceField("authorId").build()).build();
     }
 }

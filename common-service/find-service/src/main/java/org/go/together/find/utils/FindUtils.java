@@ -1,6 +1,7 @@
 package org.go.together.find.utils;
 
 import org.go.together.exceptions.IncorrectFindObject;
+import org.go.together.find.dto.FieldDto;
 import org.go.together.find.dto.FieldMapper;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public class FindUtils {
     public static final String DELIMITER = "\\?";
     public static final String HAVING_COUNT = ":";
     public static final String GROUP_AND = "&";
-    public static final String GROUP_OR = "\\|";
+    public static final String GROUP_OR = "|";
     private static final String GROUP_START = "\\[";
     private static final String GROUP_END = "]";
     private static final String REGEX_GROUP = "^\\[[a-zA-Z&|.,]*]$";
@@ -42,25 +43,8 @@ public class FindUtils {
         }
     }
 
-    public static String getAnotherServicePathFields(String string) {
-        String[] otherServiceFields = getParsedRemoteField(string);
-        if (otherServiceFields.length > 1) {
-            return otherServiceFields[1];
-        }
-        return null;
-    }
-
-    public static String getFieldSearch(String string) {
-        String[] parsedString = getParsedRemoteField(string);
-        if (parsedString.length > 1) {
-            return parsedString[1];
-        }
-        return parsedString[0];
-    }
-
-    public static Map<String, FieldMapper> getFieldMapperByRemoteField(Map<String, FieldMapper> availableFields, String searchField) {
-        String[] localEntityFullFields = getPathFields(searchField);
-        String localEntityField = localEntityFullFields[0];
+    public static Map<String, FieldMapper> getFieldMapperByRemoteField(Map<String, FieldMapper> availableFields, FieldDto fieldDto) {
+        String localEntityField = fieldDto.getPaths()[0];
         List<String> singleGroupFields = List.of(getSingleGroupFields(localEntityField));
         return availableFields.entrySet().stream()
                 .filter(stringFieldMapperEntry ->
@@ -79,8 +63,9 @@ public class FindUtils {
     }
 
     public static Map<String, FieldMapper> getFieldMappers(Map<String, FieldMapper> availableFields,
-                                                           String searchField) {
-        String[] localEntityFullFields = getPathFields(searchField);
+                                                           FieldDto fieldDto) {
+        String[] localEntityFullFields = fieldDto.getPaths();
+
         String localEntityField = localEntityFullFields[0];
         String[] singleGroupFields = getSingleGroupFields(localEntityField);
         try {
@@ -89,7 +74,7 @@ public class FindUtils {
                             field -> getFieldMapper(availableFields, field),
                             (fieldMapper, fieldMapper2) -> fieldMapper));
         } catch (Exception exception) {
-            throw new IncorrectFindObject("Field " + searchField + " is unavailable for search.");
+            throw new IncorrectFindObject("Field " + fieldDto.toString() + " is unavailable for search.");
         }
     }
 
@@ -116,7 +101,7 @@ public class FindUtils {
         if (localEntityField.matches(REGEX_GROUP)) {
             result = localEntityField.replaceFirst(GROUP_START, "")
                     .replaceFirst(GROUP_END, "")
-                    .split(GROUP_OR + "|" + GROUP_AND);
+                    .split("\\|" + GROUP_OR + GROUP_AND);
         } else {
             result = new String[]{localEntityField};
         }

@@ -1,13 +1,35 @@
 import {MESSAGE_SERVICE_URL} from "forms/utils/constants";
-import {PUT} from "App/utils/api/constants";
+import {POST, PUT} from "App/utils/api/constants";
 
 import {MESSAGES_MESSAGES_BY_EVENT, MESSAGES_NEW_MESSAGE} from "./constants";
 
 export const getMessagesByEvent = (eventId, authorId) => (dispatch) => {
     dispatch({
         type: MESSAGES_MESSAGES_BY_EVENT,
-        url: MESSAGE_SERVICE_URL + "/events/_id_/messages/_author_id_".replace("_id_", eventId)
-            .replace('_author_id_', authorId)
+        method: POST,
+        url: MESSAGE_SERVICE_URL + '/find',
+        data: {
+            mainIdField: "message",
+            filters: {
+                "messageType": {
+                    filterType: 'EQUAL',
+                    values: [{
+                        messageType: 'TO_EVENT'
+                    }]
+                },
+                "[recipientId&authorId]": {
+                    filterType: 'EQUAL',
+                    values: [{
+                        recipientId: eventId,
+                        authorId
+                    },
+                        {
+                        recipientId: authorId,
+                        authorId: eventId
+                    }]
+                },
+            }
+        }
     });
 };
 

@@ -4,7 +4,7 @@ import org.go.together.client.MessageClient;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.MessageDto;
 import org.go.together.find.controller.FindController;
-import org.go.together.find.dto.FormDto;
+import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.dto.ResponseDto;
 import org.go.together.service.MessageService;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,11 +22,6 @@ public class MessageController extends FindController implements MessageClient {
 
     public MessageController(MessageService messageService) {
         this.messageService = messageService;
-    }
-
-    @Override
-    public Set<MessageDto> getUserReviews(UUID userId) {
-        return messageService.getReceiverMessages(userId, REVIEW);
     }
 
     @Override

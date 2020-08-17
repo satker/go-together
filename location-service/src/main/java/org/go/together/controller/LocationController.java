@@ -3,10 +3,9 @@ package org.go.together.controller;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.*;
 import org.go.together.find.controller.FindController;
-import org.go.together.find.dto.FormDto;
+import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.dto.ResponseDto;
 import org.go.together.service.GroupLocationService;
-import org.go.together.service.LocationService;
 import org.go.together.service.PlaceService;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,21 +14,13 @@ import java.util.UUID;
 
 @RestController
 public class LocationController extends FindController implements LocationClient {
-    private final LocationService locationService;
     private final PlaceService placeService;
     private final GroupLocationService groupLocationService;
 
-    public LocationController(LocationService locationService,
-                              PlaceService placeService,
+    public LocationController(PlaceService placeService,
                               GroupLocationService groupLocationService) {
-        this.locationService = locationService;
         this.placeService = placeService;
         this.groupLocationService = groupLocationService;
-    }
-
-    @Override
-    public Set<LocationDto> getEventRoute(UUID eventId) {
-        return locationService.getEventRoute(eventId);
     }
 
     @Override
@@ -60,11 +51,6 @@ public class LocationController extends FindController implements LocationClient
     @Override
     public String validateLocation(PlaceDto placeDto) {
         return placeService.validate(placeDto);
-    }
-
-    @Override
-    public PlaceDto getLocationById(UUID locationId) {
-        return placeService.read(locationId);
     }
 
     @Override

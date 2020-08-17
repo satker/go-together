@@ -25,9 +25,9 @@ const PaidThings = ({
 
     useEffect(() => {
         if (event.paidThings.length === 0 &&
-            !payedThings.inProcess && payedThings.response.length !== 0) {
+            !payedThings.inProcess && payedThings.response.result.length !== 0) {
             const newPaidThings = [];
-            for (const paidThing of payedThings.response) {
+            for (const paidThing of payedThings.response.result) {
                 const newElement = {...DEFAULT_PAID_THING};
                 newElement.paidThing = paidThing;
                 newPaidThings.push(newElement);

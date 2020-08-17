@@ -1,8 +1,9 @@
-package org.go.together.find.dto;
+package org.go.together.find.dto.form;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.go.together.find.dto.utils.FindSqlOperator;
 
 import java.util.Collection;
 import java.util.Map;

@@ -1,8 +1,9 @@
 package org.go.together.find.repository;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.go.together.find.dto.FilterDto;
-import org.go.together.find.dto.PageDto;
+import org.go.together.find.dto.FieldDto;
+import org.go.together.find.dto.form.FilterDto;
+import org.go.together.find.dto.form.PageDto;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.repository.CustomRepository;
 import org.go.together.repository.builder.SqlBuilder;
@@ -23,7 +24,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
     }
 
     @Override
-    public Pair<PageDto, Collection<Object>> getResult(String mainField, Map<String, FilterDto> filters, PageDto page) {
+    public Pair<PageDto, Collection<Object>> getResult(String mainField, Map<FieldDto, FilterDto> filters, PageDto page) {
         SqlBuilder<E> query = sqlBuilderCreator.getSqlBuilder(mainField);
         long countRows;
         if (filters == null || filters.isEmpty()) {

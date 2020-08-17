@@ -10,9 +10,9 @@ import org.go.together.enums.CrudOperation;
 import org.go.together.enums.NotificationStatus;
 import org.go.together.exceptions.ApplicationException;
 import org.go.together.exceptions.ValidationException;
-import org.go.together.find.dto.FormDto;
-import org.go.together.find.dto.PageDto;
 import org.go.together.find.dto.ResponseDto;
+import org.go.together.find.dto.form.FormDto;
+import org.go.together.find.dto.form.PageDto;
 import org.go.together.find.impl.FindServiceImpl;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.Dto;
@@ -72,7 +72,7 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
                 throw new ApplicationException(e);
             }
             if (dto instanceof ComparableDto) {
-                String message = getNotificationMessage(read(dto.getId()), dto, NotificationStatus.CREATED);
+                String message = getNotificationMessage(dto, dto, NotificationStatus.CREATED);
                 notificationService.createNotification(createdEntity.getId(), dto, message);
             }
             return new IdDto(createdEntity.getId());
@@ -127,14 +127,15 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
             E enrichedEntity = enrichEntity(entity, null, crudOperation);
             String message = null;
             if (dto instanceof ComparableDto) {
-                message = getNotificationMessage(read(dto.getId()), dto, NotificationStatus.DELETED);
+                D readDto = read(dto.getId());
+                message = getNotificationMessage(readDto, readDto, NotificationStatus.DELETED);
             }
             repository.delete(enrichedEntity);
             if (dto instanceof ComparableDto) {
                 notificationService.updateNotification(uuid, dto, message);
             }
         } else {
-            String message = getServiceName() + ": " + "Cannot find entity by id " + uuid;
+            String message = "Cannot find entity " + getServiceName() + "  by id " + uuid;
             log.warn(message);
         }
     }

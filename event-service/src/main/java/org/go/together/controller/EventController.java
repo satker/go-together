@@ -3,11 +3,10 @@ package org.go.together.controller;
 import org.go.together.client.EventClient;
 import org.go.together.dto.*;
 import org.go.together.find.controller.FindController;
-import org.go.together.find.dto.FormDto;
+import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.dto.ResponseDto;
 import org.go.together.service.EventService;
 import org.go.together.service.EventUserService;
-import org.go.together.service.PaidThingService;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
@@ -19,14 +18,11 @@ import java.util.stream.Stream;
 @RestController
 public class EventController extends FindController implements EventClient {
     private final EventService eventService;
-    private final PaidThingService paidThingService;
     private final EventUserService eventUserService;
 
     public EventController(EventService eventService,
-                           PaidThingService paidThingService,
                            EventUserService eventUserService) {
         this.eventService = eventService;
-        this.paidThingService = paidThingService;
         this.eventUserService = eventUserService;
     }
 
@@ -68,13 +64,6 @@ public class EventController extends FindController implements EventClient {
     }
 
     @Override
-    public Collection<Object> getPaidThings() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField(paidThingService.getServiceName());
-        return paidThingService.find(formDto).getResult();
-    }
-
-    @Override
     public Collection<SimpleDto> getCashCategories() {
         return Stream.of(CashCategory.values())
                 .map(type -> new SimpleDto(type.name(), type.getDescription()))
@@ -84,11 +73,6 @@ public class EventController extends FindController implements EventClient {
     @Override
     public EventUserStatus[] getUserStatuses() {
         return EventUserStatus.values();
-    }
-
-    @Override
-    public Collection<EventUserDto> getEventUsersByEventId(UUID eventId) {
-        return eventUserService.getEventUsersByEventId(eventId);
     }
 
     @Override

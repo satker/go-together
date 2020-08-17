@@ -10,13 +10,4 @@ import java.util.UUID;
 
 @Repository
 public class LocationRepository extends CustomRepository<Location> {
-    @Transactional
-    public Collection<Location> findByEventId(UUID id) {
-        return createQuery().where(createWhere().condition("eventId", SqlOperator.EQUAL, id)).fetchAll();
-    }
-
-    @Transactional
-    public Number getCountPlaceIdRows(UUID placeId) {
-        return createQuery().where(createWhere().condition("place", SqlOperator.EQUAL, placeId)).getCountRows();
-    }
 }

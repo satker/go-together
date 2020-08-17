@@ -1,8 +1,8 @@
 package org.go.together.find.controller;
 
 import org.go.together.find.FindService;
-import org.go.together.find.dto.FormDto;
 import org.go.together.find.dto.ResponseDto;
+import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.utils.FindUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 

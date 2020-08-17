@@ -2,8 +2,9 @@ package org.go.together.find.repository;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.go.together.find.dto.FilterDto;
-import org.go.together.find.dto.FindSqlOperator;
+import org.go.together.find.dto.FieldDto;
+import org.go.together.find.dto.form.FilterDto;
+import org.go.together.find.dto.utils.FindSqlOperator;
 import org.go.together.find.utils.FindUtils;
 import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.repository.CustomRepository;
@@ -24,14 +25,14 @@ public class WhereBuilderCreator<E extends IdentifiedEntity> {
         this.join = new StringBuilder();
     }
 
-    public WhereBuilder<E> getWhereBuilder(Map<String, FilterDto> filters) {
+    public WhereBuilder<E> getWhereBuilder(Map<FieldDto, FilterDto> filters) {
         WhereBuilder<E> whereBuilder = repository.createWhere();
         filters.forEach((key, value) -> {
             FindSqlOperator filterType = value.getFilterType();
-            String[] splitByDotString = FindUtils.getPathFields(key);
+            String[] splitByDotString = key.getPaths();
             String searchField = splitByDotString[splitByDotString.length - 1];
             String[] groupFields = getSingleGroupFields(searchField);
-            String suffix = key.replace(searchField, "");
+            String suffix = key.getLocalField().replace(searchField, "");
             if (groupFields.length > 1) {
                 WhereBuilder<E> groupWhere = addGroups(suffix, searchField, value, groupFields);
                 whereBuilder.group(groupWhere).and();
@@ -92,7 +93,7 @@ public class WhereBuilderCreator<E extends IdentifiedEntity> {
         if (delimiter != null) {
             if (delimiter.equals(FindUtils.GROUP_AND)) {
                 groupWhere.and();
-            } else {
+            } else if (delimiter.equals(FindUtils.GROUP_OR)){
                 groupWhere.or();
             }
         }

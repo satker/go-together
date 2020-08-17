@@ -28,12 +28,6 @@ public class LocationService extends CrudServiceImpl<LocationDto, Location> {
         this.placeMapper = placeMapper;
     }
 
-    public Set<LocationDto> getEventRoute(UUID eventId) {
-        return ((LocationRepository) repository).findByEventId(eventId).stream()
-                .map(mapper::entityToDto)
-                .collect(Collectors.toSet());
-    }
-
     public Set<Location> saveOrUpdateEventRoutes(Set<LocationDto> locationDtos, Set<Location> presentedLocations) {
         Set<UUID> presentedEventLocations = presentedLocations.stream()
                 .map(Location::getId)

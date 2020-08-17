@@ -1,5 +1,6 @@
 package org.go.together.service;
 
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.client.UserClient;
@@ -26,10 +27,6 @@ public class EventUserService extends CrudServiceImpl<EventUserDto, EventUser> {
                                EventRepository eventRepository) {
         this.userClient = userClient;
         this.eventRepository = eventRepository;
-    }
-
-    public Collection<EventUserDto> getEventUsersByEventId(UUID eventId) {
-        return mapper.entitiesToDtos(((EventUserRepository) repository).findEventUserByEventId(eventId));
     }
 
     public boolean deleteEventUserByEventId(EventUserDto eventUserDto) {
@@ -59,7 +56,7 @@ public class EventUserService extends CrudServiceImpl<EventUserDto, EventUser> {
         } else if (notificationStatus == NotificationStatus.DELETED) {
             return "Delete user '" + login + "' from event '" + eventName + "'.";
         }
-        return super.getNotificationMessage(dto, anotherDto, notificationStatus);
+        return null;
     }
 
     @Override
@@ -69,6 +66,8 @@ public class EventUserService extends CrudServiceImpl<EventUserDto, EventUser> {
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return null;
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("eventId", FieldMapper.builder()
+                        .currentServiceField("eventId").build()).build();
     }
 }

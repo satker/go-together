@@ -8,5 +8,5 @@ import org.go.together.find.client.FindClient;
 @Builder
 public class ClientLocalFieldObject {
     private final FindClient client;
-    private final String localField;
+    private final FieldDto fieldDto;
 }

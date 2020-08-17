@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.SimpleDto;
 import org.go.together.exceptions.IncorrectDtoException;
-import org.go.together.find.dto.ComparingObject;
+import org.go.together.notification.dto.ComparingObject;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
 import org.go.together.interfaces.Dto;
@@ -80,7 +80,7 @@ public class ComparatorUtils {
             if (isNotEmptyCollections) {
                 if ((!iteratorCollection.hasNext() || iteratorCollection.next() != null) &&
                         (!iteratorAnotherCollection.hasNext() || iteratorAnotherCollection.next() != null)) {
-                    compareCollectionDtos(result, fieldName, collection, anotherCollection);
+                    compareCollectionDtos(result, fieldName, collection, anotherCollection, idCompare);
                 }
             }
         } else if (object instanceof Dto && anotherObject instanceof Dto) {
@@ -140,7 +140,8 @@ public class ComparatorUtils {
 
     public static <T extends Dto> void compareCollectionDtos(Collection<String> result, String fieldName,
                                                              Collection<T> collectionDtos,
-                                                             Collection<T> anotherCollectionDtos) {
+                                                             Collection<T> anotherCollectionDtos,
+                                                             boolean idCompare) {
         StringBuilder resultString = new StringBuilder();
         Map<UUID, ? extends List<T>> collectionIdsMap = collectionDtos.stream()
                 .collect(Collectors.groupingBy(Dto::getId));
