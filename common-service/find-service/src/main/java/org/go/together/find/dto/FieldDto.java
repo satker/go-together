@@ -4,7 +4,10 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import static org.go.together.find.utils.FindUtils.getPathFields;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.go.together.find.utils.FindUtils.*;
 
 @Builder
 @Getter
@@ -14,7 +17,18 @@ public class FieldDto {
     private final String remoteField;
 
     public String[] getPaths(){
-        return getPathFields(localField);
+        Pattern pattern = Pattern.compile(REGEX_GROUP);
+        Matcher matcher = pattern.matcher(localField);
+        if (matcher.find()) {
+            return new String[]{matcher.group(0)};
+        } else {
+            return getParsedFields(getParsedRemoteField(localField)[0]);
+        }
+    }
+
+    public String getFilterFields(){
+        String[] paths = this.getPaths();
+        return paths[paths.length - 1];
     }
 
     @Override

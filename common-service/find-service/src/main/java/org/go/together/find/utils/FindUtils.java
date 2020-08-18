@@ -6,8 +6,6 @@ import org.go.together.find.dto.FieldMapper;
 
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,7 +16,7 @@ public class FindUtils {
     public static final String GROUP_OR = "|";
     private static final String GROUP_START = "\\[";
     private static final String GROUP_END = "]";
-    private static final String REGEX_GROUP = "^\\[[a-zA-Z&|.,]*]$";
+    public static final String REGEX_GROUP = "^\\[[a-zA-Z&|.,]*]$";
     public static final String DOT = "\\.";
 
     public static String[] getParsedRemoteField(String string) {
@@ -31,16 +29,6 @@ public class FindUtils {
 
     public static String[] getHavingCondition(String string) {
         return string.split(HAVING_COUNT);
-    }
-
-    public static String[] getPathFields(String string) {
-        Pattern pattern = Pattern.compile(REGEX_GROUP);
-        Matcher matcher = pattern.matcher(string);
-        if (matcher.find()) {
-            return new String[]{matcher.group(0)};
-        } else {
-            return getParsedFields(getParsedRemoteField(string)[0]);
-        }
     }
 
     public static Map<String, FieldMapper> getFieldMapperByRemoteField(Map<String, FieldMapper> availableFields, FieldDto fieldDto) {
