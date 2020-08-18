@@ -2,17 +2,22 @@ package org.go.together.find.correction;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.find.dto.FieldDto;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.find.dto.form.FilterDto;
 import org.go.together.find.mapper.FieldMapperUtils;
-import org.go.together.find.utils.FindUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.go.together.find.utils.FindUtils.getParsedFields;
+import static org.go.together.find.utils.FindUtils.getSingleGroupFields;
 
 @Component
 public class FilterCorrector implements CorrectedService {
@@ -23,7 +28,7 @@ public class FilterCorrector implements CorrectedService {
         Map<FieldDto, FilterDto> remoteFilters = new HashMap<>();
         filters.forEach((key, value) -> {
             FieldDto fieldDto = FieldMapperUtils.getFieldDto(key);
-            Map<String, FieldMapper> fieldMappers = FindUtils.getFieldMappers(availableFields, fieldDto);
+            Map<String, FieldMapper> fieldMappers = getFieldMappersByFieldDto(availableFields, fieldDto);
             boolean isNotRemote = fieldMappers.values().stream()
                     .allMatch(fieldMapper -> fieldMapper.getRemoteServiceClient() == null);
             FieldDto localFieldForSearch = getCorrectedFieldDto(fieldDto, fieldMappers, fieldCorrector);
@@ -84,5 +89,35 @@ public class FilterCorrector implements CorrectedService {
             fieldDtoBuilder.remoteField(remoteField);
         }
         return fieldDtoBuilder.build();
+    }
+
+    private Map<String, FieldMapper> getFieldMappersByFieldDto(Map<String, FieldMapper> availableFields,
+                                                                     FieldDto fieldDto) {
+        String[] localEntityFullFields = fieldDto.getPaths();
+
+        String localEntityField = localEntityFullFields[0];
+        String[] singleGroupFields = getSingleGroupFields(localEntityField);
+        try {
+            return Stream.of(singleGroupFields)
+                    .collect(Collectors.toMap(this::getFirstField,
+                            field -> getFieldMapper(availableFields, field),
+                            (fieldMapper, fieldMapper2) -> fieldMapper));
+        } catch (Exception exception) {
+            throw new IncorrectFindObject("Field " + fieldDto.toString() + " is unavailable for search.");
+        }
+    }
+
+    private FieldMapper getFieldMapper(Map<String, FieldMapper> availableFields,
+                                              String field) {
+        String firstField = getFirstField(field);
+        return availableFields.get(firstField);
+    }
+
+    private String getFirstField(String field) {
+        if (field.contains(".")) {
+            String[] splitByCommaString = getParsedFields(field);
+            return splitByCommaString[0];
+        }
+        return field;
     }
 }

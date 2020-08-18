@@ -7,7 +7,6 @@ import org.go.together.find.dto.FieldMapper;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class FindUtils {
     public static final String DELIMITER = "\\?";
@@ -48,39 +47,6 @@ public class FindUtils {
                 .filter(string -> string.equals(element))
                 .findFirst().orElseThrow(() ->
                         new IncorrectFindObject("Field " + element + " is unavailable for find."));
-    }
-
-    public static Map<String, FieldMapper> getFieldMappers(Map<String, FieldMapper> availableFields,
-                                                           FieldDto fieldDto) {
-        String[] localEntityFullFields = fieldDto.getPaths();
-
-        String localEntityField = localEntityFullFields[0];
-        String[] singleGroupFields = getSingleGroupFields(localEntityField);
-        try {
-            return Stream.of(singleGroupFields)
-                    .collect(Collectors.toMap(FindUtils::getEntityField,
-                            field -> getFieldMapper(availableFields, field),
-                            (fieldMapper, fieldMapper2) -> fieldMapper));
-        } catch (Exception exception) {
-            throw new IncorrectFindObject("Field " + fieldDto.toString() + " is unavailable for search.");
-        }
-    }
-
-    private static FieldMapper getFieldMapper(Map<String, FieldMapper> availableFields,
-                                              String field) {
-        String[] splitByCommaString = getParsedFields(field);
-        if (splitByCommaString.length > 1) {
-            return availableFields.get(splitByCommaString[0]);
-        }
-        return availableFields.get(field);
-    }
-
-    private static String getEntityField(String field) {
-        String[] splitByCommaString = getParsedFields(field);
-        if (splitByCommaString.length > 1) {
-            return splitByCommaString[0];
-        }
-        return field;
     }
 
     public static String[] getSingleGroupFields(String localEntityField) {
