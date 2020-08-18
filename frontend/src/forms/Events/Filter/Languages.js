@@ -28,7 +28,7 @@ const Languages = ({languages, getLanguages, setFilter}) => {
     return <LoadableContent loadableData={languages}>
         <MultipleSelectBox onChange={onChange}
                            value={chooseLanguages}
-                           optionsSimple={languages.response}
+                           optionsSimple={languages.response.result}
                            label='Languages'/>
     </LoadableContent>;
 };

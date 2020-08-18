@@ -1,33 +1,20 @@
 package org.go.together.service;
 
-import org.go.together.CrudServiceImpl;
-import org.go.together.dto.FieldMapper;
+import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.mapper.GroupPhotoMapper;
 import org.go.together.model.GroupPhoto;
 import org.go.together.model.Photo;
-import org.go.together.repository.GroupPhotoRepository;
-import org.go.together.validation.GroupPhotoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 @Service
 public class GroupPhotoService extends CrudServiceImpl<GroupPhotoDto, GroupPhoto> {
-    private final GroupPhotoRepository groupPhotoRepository;
     private PhotoService photoService;
-
-    public GroupPhotoService(GroupPhotoRepository groupPhotoRepository,
-                             GroupPhotoMapper groupPhotoMapper,
-                             GroupPhotoValidator groupPhotoValidator) {
-        super(groupPhotoRepository, groupPhotoMapper, groupPhotoValidator);
-        this.groupPhotoRepository = groupPhotoRepository;
-    }
 
     @Autowired
     public void setPhotoService(PhotoService photoService) {
@@ -38,7 +25,7 @@ public class GroupPhotoService extends CrudServiceImpl<GroupPhotoDto, GroupPhoto
     protected GroupPhoto enrichEntity(GroupPhoto entity, GroupPhotoDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE || crudOperation == CrudOperation.UPDATE) {
             GroupPhoto groupPhoto = Optional.ofNullable(entity.getId())
-                    .map(groupPhotoRepository::findById)
+                    .map(repository::findById)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .orElse(null);
@@ -69,10 +56,5 @@ public class GroupPhotoService extends CrudServiceImpl<GroupPhotoDto, GroupPhoto
     @Override
     public String getServiceName() {
         return "groupPhotos";
-    }
-
-    @Override
-    public Map<String, FieldMapper> getMappingFields() {
-        return null;
     }
 }

@@ -1,10 +1,9 @@
 package org.go.together.repository;
 
-import org.go.together.CustomRepository;
-import org.go.together.builder.WhereBuilder;
 import org.go.together.dto.MessageType;
 import org.go.together.model.Message;
-import org.go.together.sql.SqlOperator;
+import org.go.together.repository.builder.WhereBuilder;
+import org.go.together.repository.sql.SqlOperator;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Import;
 @EnableAutoConfiguration
 @Configuration
 @Import(H2HibernateConfig.class)
-@ComponentScan({"org.go.together.test", "org.go.together.impl"})
+@ComponentScan({"org.go.together.test", "org.go.together.find", "org.go.together.notification"})
 public class RepositoryContext {
     @Bean
     public NotificationClient notificationClient() {

@@ -50,7 +50,7 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
     @AfterEach
     public void clean() {
         try {
-            FileUtils.cleanDirectory(new File(storePath));
+            FileUtils.deleteDirectory(new File(storePath));
         } catch (IOException e) {
             throw new RuntimeException("Cannot get file in content-service");
         }

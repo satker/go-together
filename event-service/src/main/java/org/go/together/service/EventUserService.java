@@ -1,54 +1,42 @@
 package org.go.together.service;
 
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.CrudServiceImpl;
+import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventUserDto;
-import org.go.together.dto.FieldMapper;
 import org.go.together.enums.NotificationStatus;
-import org.go.together.mapper.EventUserMapper;
+import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Event;
 import org.go.together.model.EventUser;
 import org.go.together.repository.EventRepository;
 import org.go.together.repository.EventUserRepository;
-import org.go.together.validation.EventUserValidator;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class EventUserService extends CrudServiceImpl<EventUserDto, EventUser> {
-    private final EventUserRepository eventUserRepository;
-    private final EventUserMapper eventUserMapper;
     private final UserClient userClient;
     private final EventRepository eventRepository;
 
-    protected EventUserService(EventUserRepository eventUserRepository,
-                               EventUserMapper eventUserMapper,
-                               EventUserValidator eventUserValidator,
-                               UserClient userClient,
+    protected EventUserService(UserClient userClient,
                                EventRepository eventRepository) {
-        super(eventUserRepository, eventUserMapper, eventUserValidator);
-        this.eventUserRepository = eventUserRepository;
-        this.eventUserMapper = eventUserMapper;
         this.userClient = userClient;
         this.eventRepository = eventRepository;
     }
 
-    public Collection<EventUserDto> getEventUsersByEventId(UUID eventId) {
-        return eventUserMapper.entitiesToDtos(eventUserRepository.findEventUserByEventId(eventId));
-    }
-
     public boolean deleteEventUserByEventId(EventUserDto eventUserDto) {
         Optional<EventUser> eventUserByUserIdAndEventId =
-                eventUserRepository.findEventUserByUserIdAndEventId(eventUserDto.getUser().getId(), eventUserDto.getEventId());
+                ((EventUserRepository) repository).findEventUserByUserIdAndEventId(eventUserDto.getUser().getId(),
+                        eventUserDto.getEventId());
         if (eventUserByUserIdAndEventId.isEmpty()) {
             return false;
         }
         super.delete(eventUserByUserIdAndEventId.get().getId());
+        notificationService.removedReceiver(eventUserDto);
         return true;
     }
 
@@ -67,7 +55,7 @@ public class EventUserService extends CrudServiceImpl<EventUserDto, EventUser> {
         } else if (notificationStatus == NotificationStatus.DELETED) {
             return "Delete user '" + login + "' from event '" + eventName + "'.";
         }
-        return super.getNotificationMessage(dto, anotherDto, notificationStatus);
+        return null;
     }
 
     @Override
@@ -77,6 +65,9 @@ public class EventUserService extends CrudServiceImpl<EventUserDto, EventUser> {
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return null;
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("eventId", FieldMapper.builder()
+                        .currentServiceField("eventId")
+                        .fieldClass(UUID.class).build()).build();
     }
 }

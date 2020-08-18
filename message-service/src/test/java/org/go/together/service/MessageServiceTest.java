@@ -22,19 +22,6 @@ public class MessageServiceTest extends CrudServiceCommonTest<Message, MessageDt
     private MessageService messageService;
 
     @Test
-    void getReceiverMessages() {
-        MessageDto messageDto = getCreatedEntityId(dto);
-
-        Set<MessageDto> receiverMessages =
-                messageService.getReceiverMessages(messageDto.getRecipientId(),
-                        messageDto.getAuthorId(),
-                        messageDto.getMessageType());
-
-        assertEquals(1, receiverMessages.size());
-        checkDtos(messageDto, receiverMessages.iterator().next(), null);
-    }
-
-    @Test
     void testGetReceiverMessages() {
         MessageDto messageDto = getCreatedEntityId(dto);
 
@@ -44,38 +31,6 @@ public class MessageServiceTest extends CrudServiceCommonTest<Message, MessageDt
 
         assertEquals(1, receiverMessages.size());
         checkDtos(messageDto, receiverMessages.iterator().next(), null);
-    }
-
-    @Test
-    void getNotPresentedReceiverMessages() {
-        Set<MessageDto> receiverMessages =
-                messageService.getReceiverMessages(UUID.randomUUID(),
-                        UUID.randomUUID(),
-                        MessageType.TO_USER);
-
-        assertEquals(0, receiverMessages.size());
-    }
-
-    @Test
-    void getChatBetweenUsers() {
-        dto.setMessageType(MessageType.TO_USER);
-        MessageDto messageDto = getCreatedEntityId(dto);
-
-        Set<MessageDto> receiverMessages =
-                messageService.getChatBetweenUsers(messageDto.getRecipientId(),
-                        messageDto.getAuthorId());
-
-        assertEquals(1, receiverMessages.size());
-        checkDtos(messageDto, receiverMessages.iterator().next(), null);
-    }
-
-    @Test
-    void getNotPresentedChatBetweenUsers() {
-        Set<MessageDto> receiverMessages =
-                messageService.getChatBetweenUsers(UUID.randomUUID(),
-                        UUID.randomUUID());
-
-        assertEquals(0, receiverMessages.size());
     }
 
     @Test

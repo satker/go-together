@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Strings;
 import org.go.together.dto.LocationDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.logic.Validator;
 import org.go.together.mapper.CountryMapper;
 import org.go.together.model.Country;
 import org.springframework.stereotype.Component;

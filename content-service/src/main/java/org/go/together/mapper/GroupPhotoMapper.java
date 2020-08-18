@@ -2,7 +2,6 @@ package org.go.together.mapper;
 
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.PhotoDto;
-import org.go.together.logic.Mapper;
 import org.go.together.model.GroupPhoto;
 import org.springframework.stereotype.Component;
 

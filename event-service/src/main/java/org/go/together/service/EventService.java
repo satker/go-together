@@ -2,41 +2,31 @@ package org.go.together.service;
 
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.CrudServiceImpl;
+import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
-import org.go.together.mapper.EventMapper;
+import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Event;
 import org.go.together.repository.EventRepository;
-import org.go.together.validation.EventValidator;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class EventService extends CrudServiceImpl<EventDto, Event> {
     private final LocationClient locationClient;
     private final ContentClient contentClient;
-    private final EventRepository eventRepository;
     private final UserClient userClient;
 
-    protected EventService(EventRepository eventRepository,
-                           EventMapper eventMapper,
-                           EventValidator eventValidator,
-                           LocationClient locationClient,
+    protected EventService(LocationClient locationClient,
                            ContentClient contentClient,
                            UserClient userClient) {
-        super(eventRepository, eventMapper, eventValidator);
         this.locationClient = locationClient;
         this.contentClient = contentClient;
-        this.eventRepository = eventRepository;
         this.userClient = userClient;
     }
 
@@ -84,9 +74,9 @@ public class EventService extends CrudServiceImpl<EventDto, Event> {
     public Set<SimpleDto> autocompleteEvents(String name) {
         Collection<Event> events;
         if (StringUtils.isNotBlank(name)) {
-            events = eventRepository.findEventsByNameLike(name, 0, 5);
+            events = ((EventRepository) repository).findEventsByNameLike(name, 0, 5);
         } else {
-            events = eventRepository.createQuery().fetchWithPageable(0, 5);
+            events = repository.createQuery().fetchWithPageable(0, 5);
         }
         return events.stream()
                 .map(event -> new SimpleDto(event.getId().toString(), event.getName()))
@@ -102,20 +92,25 @@ public class EventService extends CrudServiceImpl<EventDto, Event> {
     public Map<String, FieldMapper> getMappingFields() {
         return ImmutableMap.<String, FieldMapper>builder()
                 .put("name", FieldMapper.builder()
-                        .currentServiceField("name").build())
+                        .currentServiceField("name")
+                        .fieldClass(String.class).build())
                 .put("author", FieldMapper.builder()
                         .currentServiceField("authorId")
                         .remoteServiceClient(userClient)
                         .remoteServiceName("user")
-                        .remoteServiceFieldGetter("id").build())
+                        .remoteServiceFieldGetter("id")
+                        .fieldClass(UUID.class).build())
                 .put("idEventRoutes", FieldMapper.builder()
                         .currentServiceField("id")
                         .remoteServiceClient(locationClient)
                         .remoteServiceName("groupLocation")
-                        .remoteServiceFieldGetter("groupId").build())
+                        .remoteServiceFieldGetter("groupId")
+                        .fieldClass(UUID.class).build())
                 .put("startDate", FieldMapper.builder()
-                        .currentServiceField("startDate").build())
+                        .currentServiceField("startDate")
+                        .fieldClass(Date.class).build())
                 .put("endDate", FieldMapper.builder()
+                        .fieldClass(Date.class)
                         .currentServiceField("endDate").build())
                 .build();
     }

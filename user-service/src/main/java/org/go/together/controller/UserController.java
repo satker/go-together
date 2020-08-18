@@ -2,9 +2,10 @@ package org.go.together.controller;
 
 import org.go.together.client.UserClient;
 import org.go.together.dto.*;
+import org.go.together.find.controller.FindController;
+import org.go.together.find.dto.ResponseDto;
+import org.go.together.find.dto.form.FormDto;
 import org.go.together.service.EventLikeService;
-import org.go.together.service.InterestService;
-import org.go.together.service.LanguageService;
 import org.go.together.service.UserService;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,18 +17,11 @@ import java.util.UUID;
 @RestController
 class UserController extends FindController implements UserClient {
     private final UserService userService;
-    private final LanguageService languageService;
-    private final InterestService interestService;
     private final EventLikeService eventLikeService;
 
     public UserController(UserService userService,
-                          LanguageService languageService,
-                          InterestService interestService,
                           EventLikeService eventLikeService) {
-        super(Set.of(userService, languageService, interestService, eventLikeService));
         this.userService = userService;
-        this.languageService = languageService;
-        this.interestService = interestService;
         this.eventLikeService = eventLikeService;
     }
 
@@ -49,20 +43,6 @@ class UserController extends FindController implements UserClient {
     @Override
     public boolean checkIsGoodMail(String mail) {
         return userService.checkIsPresentedMail(mail);
-    }
-
-    @Override
-    public Collection<Object> getLanguages() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField(languageService.getServiceName());
-        return languageService.find(formDto).getResult();
-    }
-
-    @Override
-    public Collection<Object> getInterests() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField(interestService.getServiceName());
-        return interestService.find(formDto).getResult();
     }
 
     @Override
@@ -134,10 +114,5 @@ class UserController extends FindController implements UserClient {
     public Set<UUID> getLikedEventsByUserId(UUID userId) {
         // FROM USER
         return eventLikeService.findLikedEventIdsByUserId(userId);
-    }
-
-    @Override
-    public Set<EventLikeDto> getUsersLikedEventIds(Set<UUID> eventIds) {
-        return eventLikeService.findUsersLikedEventIds(eventIds);
     }
 }

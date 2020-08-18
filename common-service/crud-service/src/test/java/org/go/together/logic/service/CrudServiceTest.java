@@ -2,9 +2,13 @@ package org.go.together.logic.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.*;
-import org.go.together.exceptions.CannotFindEntityException;
+import org.go.together.dto.IdDto;
+import org.go.together.dto.SimpleDto;
 import org.go.together.exceptions.IncorrectFindObject;
+import org.go.together.find.dto.ResponseDto;
+import org.go.together.find.dto.form.FilterDto;
+import org.go.together.find.dto.form.FormDto;
+import org.go.together.find.dto.form.PageDto;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.dto.TestDto;
@@ -15,6 +19,7 @@ import org.go.together.test.repository.JoinTestRepository;
 import org.go.together.test.repository.ManyJoinRepository;
 import org.go.together.test.service.TestService;
 import org.go.together.tests.CrudServiceCommonTest;
+import org.go.together.validation.Validator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +29,7 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.go.together.dto.FindSqlOperator.*;
+import static org.go.together.find.dto.utils.FindSqlOperator.*;
 import static org.go.together.test.TestUtils.createManyJoinDtos;
 import static org.go.together.test.TestUtils.createTestDto;
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,6 +49,9 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Autowired
     private JoinTestRepository joinTestRepository;
+
+    @Autowired
+    private Validator<TestDto> validator;
 
     @BeforeEach
     public void init() {
@@ -74,8 +82,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
         IdDto idDto = crudService.create(testDto);
 
-        TestEntity testEntity = repository.findById(idDto.getId())
-                .orElseThrow(() -> new CannotFindEntityException("Cannot find TestDto"));
+        TestEntity testEntity = repository.findByIdOrThrow(idDto.getId());
         this.testDto = mapper.entityToDto(testEntity);
     }
 
@@ -186,7 +193,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void validate() {
-        String validate = crudService.validate(testDto);
+        String validate = validator.validate(testDto, null);
 
         assertTrue(StringUtils.isBlank(validate));
     }
@@ -368,7 +375,34 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
     }
 
     @Test
-    void findWithGroup() {
+    void findWithGroupOr() {
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField("test");
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(EQUAL);
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", "test name");
+        values.put("number", 1);
+        filterDto.setValues(Collections.singleton(values));
+        formDto.setFilters(Collections.singletonMap("[name|number]", filterDto));
+        PageDto pageDto = new PageDto();
+        pageDto.setPage(0);
+        pageDto.setSize(3);
+        pageDto.setSort(Collections.emptyList());
+        pageDto.setTotalSize(0L);
+        formDto.setPage(pageDto);
+        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+
+        assertEquals(1, objectResponseDto.getResult().size());
+        assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        Object result = objectResponseDto.getResult().iterator().next();
+
+        assertTrue(result instanceof TestDto);
+        assertEquals(testDto, result);
+    }
+
+    @Test
+    void findWithGroupAnd() {
         FormDto formDto = new FormDto();
         formDto.setMainIdField("test");
         FilterDto filterDto = new FilterDto();

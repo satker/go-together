@@ -2,6 +2,7 @@ package org.go.together.client;
 
 import org.go.together.dto.IdDto;
 import org.go.together.dto.MessageDto;
+import org.go.together.find.client.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,17 +12,6 @@ import java.util.UUID;
 
 @FeignClient(name = "message-service")
 public interface MessageClient extends FindClient {
-    @GetMapping("users/{userId}/reviews")
-    Set<MessageDto> getUserReviews(@PathVariable("userId") UUID userId);
-
-    @GetMapping("events/{eventId}/messages/{userId}")
-    Set<MessageDto> getEventMessages(@PathVariable("eventId") UUID eventId,
-                                     @PathVariable("userId") UUID userId);
-
-    @GetMapping("users/{userId}/messages/{otherUserId}")
-    Set<MessageDto> getChatBetweenUsers(@PathVariable("userId") UUID myId,
-                                        @PathVariable("otherUserId") UUID otherUser);
-
     @GetMapping("events/{eventId}/messages/")
     Map<UUID, MessageDto> getAllChatsByEvent(@PathVariable("eventId") UUID eventId);
 

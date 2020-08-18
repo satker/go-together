@@ -1,7 +1,7 @@
 package org.go.together.client;
 
+import org.go.together.dto.IdDto;
 import org.go.together.dto.NotificationMessageDto;
-import org.go.together.enums.NotificationStatus;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,17 +14,20 @@ public interface NotificationClient {
     Collection<NotificationMessageDto> getReceiverNotifications(@PathVariable("receiverId") UUID receiverId);
 
     @PutMapping("notifications/receivers/{receiverId}/producers/{producerId}")
-    boolean addReceiver(@PathVariable("producerId") UUID producerId,
-                        @PathVariable("receiverId") UUID receiverId);
+    void addReceiver(@PathVariable("producerId") UUID producerId,
+                     @PathVariable("receiverId") UUID receiverId);
 
     @DeleteMapping("notifications/receivers/{receiverId}/producers/{producerId}")
-    boolean removeReceiver(@PathVariable("producerId") UUID producerId,
-                           @PathVariable("receiverId") UUID receiverId);
+    void removeReceiver(@PathVariable("producerId") UUID producerId,
+                        @PathVariable("receiverId") UUID receiverId);
 
-    @PostMapping("notifications/producers/{producerId}/status/{status}")
-    boolean notificate(@PathVariable("producerId") UUID producerId,
-                       @PathVariable("status") NotificationStatus status,
-                       @RequestBody NotificationMessageDto notificationMessage);
+    @PostMapping("notifications/producers/{producerId}")
+    IdDto updateNotification(@PathVariable("producerId") UUID producerId,
+                             @RequestBody NotificationMessageDto notificationMessage);
+
+    @PutMapping("notifications/producers/{producerId}")
+    IdDto createNotification(@PathVariable("producerId") UUID producerId,
+                             @RequestBody NotificationMessageDto notificationMessage);
 
     @PostMapping("notifications/receivers/{receiverId}")
     boolean readNotifications(@PathVariable("receiverId") UUID receiverId);

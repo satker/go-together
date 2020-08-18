@@ -9,9 +9,8 @@ import org.go.together.dto.CashCategory;
 import org.go.together.dto.EventDto;
 import org.go.together.dto.EventPaidThingDto;
 import org.go.together.dto.UserDto;
-import org.go.together.dto.validation.DateIntervalDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.logic.Validator;
+import org.go.together.validation.dto.DateIntervalDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;

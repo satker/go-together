@@ -1,6 +1,7 @@
 package org.go.together.client;
 
 import org.go.together.dto.*;
+import org.go.together.find.client.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,12 +36,6 @@ public interface UserClient extends FindClient {
     @PostMapping("/users")
     IdDto updateUser(@RequestBody UserDto user);
 
-    @GetMapping("/languages")
-    Collection<Object> getLanguages();
-
-    @GetMapping("/interests")
-    Collection<Object> getInterests();
-
     @GetMapping("/users/{userId}/languages")
     Set<UUID> getLanguagesByOwnerId(@PathVariable("userId") UUID userId);
 
@@ -67,7 +62,4 @@ public interface UserClient extends FindClient {
 
     @GetMapping("/users/{userId}/events")
     Set<UUID> getLikedEventsByUserId(@PathVariable("userId") UUID userId);
-
-    @PostMapping("/events/likes")
-    Set<EventLikeDto> getUsersLikedEventIds(@RequestBody Set<UUID> eventIds);
 }

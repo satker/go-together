@@ -4,7 +4,6 @@ import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventDto;
-import org.go.together.logic.Mapper;
 import org.go.together.model.Event;
 import org.springframework.stereotype.Component;
 

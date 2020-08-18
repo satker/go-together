@@ -1,5 +1,6 @@
-import {EVENTS_URL} from "forms/utils/constants";
+import {EVENT_SERVICE_URL, EVENTS_URL} from "forms/utils/constants";
 import {PAID_THINGS, PAID_THINGS_CASH_CATEGORIES} from "./constants";
+import {POST} from "App/utils/api/constants";
 
 export const getCashCategories = () => (dispatch) => {
     dispatch({
@@ -11,6 +12,10 @@ export const getCashCategories = () => (dispatch) => {
 export const getPayedThings = () => (dispatch) => {
     dispatch({
         type: PAID_THINGS,
-        url: EVENTS_URL + '/payedThings'
+        method: POST,
+        url: EVENT_SERVICE_URL + '/find',
+        data: {
+            mainIdField: "paidThing"
+        }
     });
 };

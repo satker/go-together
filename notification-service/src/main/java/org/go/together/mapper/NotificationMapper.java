@@ -1,7 +1,6 @@
 package org.go.together.mapper;
 
 import org.go.together.dto.NotificationDto;
-import org.go.together.logic.Mapper;
 import org.go.together.model.Notification;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +11,6 @@ public class NotificationMapper implements Mapper<NotificationDto, Notification>
         NotificationDto notificationDto = new NotificationDto();
         notificationDto.setId(entity.getId());
         notificationDto.setProducerId(entity.getProducerId());
-        notificationDto.setStatus(entity.getStatus());
         return notificationDto;
     }
 
@@ -21,7 +19,6 @@ public class NotificationMapper implements Mapper<NotificationDto, Notification>
         Notification notification = new Notification();
         notification.setId(dto.getId());
         notification.setProducerId(dto.getProducerId());
-        notification.setStatus(dto.getStatus());
         return notification;
     }
 }

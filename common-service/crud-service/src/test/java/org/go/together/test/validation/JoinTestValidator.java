@@ -1,8 +1,8 @@
 package org.go.together.test.validation;
 
 import com.google.common.collect.ImmutableMap;
-import org.go.together.logic.Validator;
 import org.go.together.test.dto.JoinTestDto;
+import org.go.together.validation.Validator;
 import org.springframework.stereotype.Component;
 
 @Component

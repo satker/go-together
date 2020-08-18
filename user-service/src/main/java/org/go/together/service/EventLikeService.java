@@ -1,14 +1,12 @@
 package org.go.together.service;
 
-import org.go.together.CrudServiceImpl;
+import com.google.common.collect.ImmutableMap;
+import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.EventLikeDto;
-import org.go.together.dto.FieldMapper;
 import org.go.together.enums.CrudOperation;
-import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.mapper.EventLikeMapper;
+import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.EventLike;
 import org.go.together.repository.EventLikeRepository;
-import org.go.together.validation.EventLikeValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -19,17 +17,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
-    private final EventLikeRepository eventLikeRepository;
-    private final EventLikeMapper eventLikeMapper;
-
-    protected EventLikeService(EventLikeRepository repository,
-                               EventLikeMapper mapper,
-                               EventLikeValidator validator) {
-        super(repository, mapper, validator);
-        this.eventLikeRepository = repository;
-        this.eventLikeMapper = mapper;
-    }
-
     @Override
     public String getServiceName() {
         return "eventLike";
@@ -37,31 +24,24 @@ public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return null;
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("eventId", FieldMapper.builder()
+                        .currentServiceField("eventId")
+                        .fieldClass(UUID.class).build()).build();
     }
 
     @Override
     protected EventLike enrichEntity(EventLike entity, EventLikeDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE) {
-            EventLike eventLike = eventLikeRepository.findById(dto.getId())
-                    .orElseThrow(() -> new CannotFindEntityException("Cannot find EventLike for event " + dto.getEventId()));
+            EventLike eventLike = repository.findByIdOrThrow(dto.getId());
             eventLike.setUsers(entity.getUsers());
             return eventLike;
         }
         return entity;
     }
 
-    public Set<EventLikeDto> findUsersLikedEventIds(Set<UUID> eventIds) {
-        return eventIds.stream()
-                .map(eventLikeRepository::findByEventId)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(eventLikeMapper::entityToDto)
-                .collect(Collectors.toSet());
-    }
-
     public void deleteByEventId(UUID eventId) {
-        Optional<EventLike> eventLikeOptional = eventLikeRepository.findByEventId(eventId);
+        Optional<EventLike> eventLikeOptional = ((EventLikeRepository) repository).findByEventId(eventId);
         if (eventLikeOptional.isPresent()) {
             EventLike eventLike = eventLikeOptional.get();
             super.delete(eventLike.getId());
@@ -69,17 +49,17 @@ public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
     }
 
     public Set<UUID> findLikedEventIdsByUserId(UUID userId) {
-        return eventLikeRepository.findByUserId(userId).stream()
+        return ((EventLikeRepository) repository).findByUserId(userId).stream()
                 .map(EventLike::getEventId)
                 .collect(Collectors.toSet());
     }
 
     public void deleteByUserId(UUID userId) {
-        eventLikeRepository.findByUserId(userId).stream()
+        ((EventLikeRepository) repository).findByUserId(userId).stream()
                 .peek(eventLike -> {
                     eventLike.getUsers().removeIf(user -> user.getId().equals(userId));
                     eventLike.setUsers(eventLike.getUsers());
-                }).map(eventLikeMapper::entityToDto)
+                }).map(mapper::entityToDto)
                 .forEach(super::update);
     }
 }

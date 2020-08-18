@@ -1,6 +1,7 @@
 package org.go.together.client;
 
 import org.go.together.dto.*;
+import org.go.together.find.client.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,17 +29,11 @@ public interface EventClient extends FindClient {
     @GetMapping("/events/housingTypes")
     Collection<SimpleDto> getHousingTypes();
 
-    @GetMapping("/events/payedThings")
-    Collection<Object> getPaidThings();
-
     @GetMapping("/events/cashCategories")
     Collection<SimpleDto> getCashCategories();
 
     @GetMapping("/events/{eventId}/users/statuses")
     EventUserStatus[] getUserStatuses();
-
-    @GetMapping("/events/{eventId}/users")
-    Collection<EventUserDto> getEventUsersByEventId(@PathVariable("eventId") UUID eventId);
 
     @PutMapping("/events/users")
     IdDto createEventUser(@RequestBody EventUserDto eventUserDto);

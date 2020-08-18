@@ -2,7 +2,6 @@ package org.go.together.mapper;
 
 import org.go.together.dto.CountryDto;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.logic.Mapper;
 import org.go.together.model.Country;
 import org.go.together.repository.CountryRepository;
 import org.springframework.stereotype.Component;

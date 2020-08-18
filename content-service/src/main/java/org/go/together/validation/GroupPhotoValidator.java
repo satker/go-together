@@ -3,7 +3,6 @@ package org.go.together.validation;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.logic.Validator;
 import org.springframework.stereotype.Component;
 
 @Component

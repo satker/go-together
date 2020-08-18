@@ -16,7 +16,8 @@ const MessagesForm = ({event, userMessageId, userId, messagesByEvent, getMessage
     }, [event, userId, userMessageId, getMessagesByEvent]);
 
     useEffect(() => {
-        const updateReviews = messagesByEvent.response.map(review => {
+        const messages = messagesByEvent.response.result || messagesByEvent.response;
+        const updateReviews = messages.map(review => {
             review.date = moment(review.date);
             return review;
         }).sort((review1, review2) => review1.date.diff(review2.date, 'seconds'));

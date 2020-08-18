@@ -7,22 +7,27 @@ import {
     REGISTER_CHECK_MAIL,
     REGISTER_CHECK_USERNAME
 } from "./constants";
-import {PUT} from "App/utils/api/constants";
-
-const URL_USERS_LANGUAGES = USER_SERVICE_URL + "/languages";
-const URL_USERS_INTERESTS = USER_SERVICE_URL + "/interests";
+import {POST, PUT} from "App/utils/api/constants";
 
 export const getAllLanguages = () => (dispatch) => {
     dispatch({
         type: REGISTER_ALL_LANGUAGES,
-        url: URL_USERS_LANGUAGES
+        method: POST,
+        url: USER_SERVICE_URL + '/find',
+        data: {
+            mainIdField: "language"
+        }
     });
 };
 
 export const getAllInterests = () => (dispatch) => {
     dispatch({
         type: REGISTER_ALL_INTERESTS,
-        url: URL_USERS_INTERESTS
+        method: POST,
+        url: USER_SERVICE_URL + '/find',
+        data: {
+            mainIdField: "interest"
+        }
     });
 };
 

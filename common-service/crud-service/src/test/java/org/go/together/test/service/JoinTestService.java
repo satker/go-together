@@ -1,25 +1,17 @@
 package org.go.together.test.service;
 
 import com.google.common.collect.ImmutableMap;
-import org.go.together.CrudServiceImpl;
-import org.go.together.dto.FieldMapper;
+import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.find.dto.FieldMapper;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.entities.JoinTestEntity;
-import org.go.together.test.mapper.JoinTestMapper;
-import org.go.together.test.repository.JoinTestRepository;
-import org.go.together.test.validation.JoinTestValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class JoinTestService extends CrudServiceImpl<JoinTestDto, JoinTestEntity> {
-    protected JoinTestService(JoinTestRepository repository,
-                              JoinTestMapper mapper,
-                              JoinTestValidator validator) {
-        super(repository, mapper, validator);
-    }
-
     @Override
     public String getServiceName() {
         return "joinTest";
@@ -29,9 +21,11 @@ public class JoinTestService extends CrudServiceImpl<JoinTestDto, JoinTestEntity
     public Map<String, FieldMapper> getMappingFields() {
         return ImmutableMap.<String, FieldMapper>builder()
                 .put("id", FieldMapper.builder()
-                        .currentServiceField("id").build())
+                        .currentServiceField("id")
+                        .fieldClass(UUID.class).build())
                 .put("name", FieldMapper.builder()
-                        .currentServiceField("name").build())
+                        .currentServiceField("name")
+                        .fieldClass(String.class).build())
                 .build();
     }
 }

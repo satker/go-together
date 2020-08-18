@@ -10,7 +10,7 @@ const SelectBoxLoadableField = ({name, options, placeholder, value, setValue, er
             <MultipleSelectBox label={placeholder}
                                error={error}
                                value={value || []}
-                               optionsSimple={options.response}
+                               optionsSimple={options.response.result}
                                onChange={(languages) => setValue(name, languages)}/>
         </LoadableContent>
     </ItemContainer>;

@@ -17,14 +17,22 @@ export const postFindEvents = (filterObject) => (dispatch) => {
 export const getInterests = () => (dispatch) => {
     dispatch({
         type: EVENTS_INTERESTS,
-        url: USER_SERVICE_URL + '/interests'
+        method: POST,
+        url: USER_SERVICE_URL + '/find',
+        data: {
+            mainIdField: "interest"
+        }
     });
 };
 
 export const getLanguages = () => (dispatch) => {
     dispatch({
         type: EVENTS_LANGUAGES,
-        url: USER_SERVICE_URL + '/languages'
+        method: POST,
+        url: USER_SERVICE_URL + '/find',
+        data: {
+            mainIdField: "language"
+        }
     });
 };
 

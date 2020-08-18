@@ -1,14 +1,13 @@
 package org.go.together.service;
 
-import org.go.together.CrudServiceImpl;
-import org.go.together.dto.FieldMapper;
+import com.google.common.collect.ImmutableMap;
+import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.MessageDto;
 import org.go.together.dto.MessageType;
 import org.go.together.enums.CrudOperation;
-import org.go.together.mapper.MessageMapper;
+import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Message;
 import org.go.together.repository.MessageRepository;
-import org.go.together.validation.MessageValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,43 +15,20 @@ import java.util.stream.Collectors;
 
 @Service
 public class MessageService extends CrudServiceImpl<MessageDto, Message> {
-    private final MessageRepository messageRepository;
-    private final MessageMapper messageMapper;
-
-    protected MessageService(MessageRepository messageRepository,
-                             MessageMapper messageMapper,
-                             MessageValidator messageValidator) {
-        super(messageRepository, messageMapper, messageValidator);
-        this.messageRepository = messageRepository;
-        this.messageMapper = messageMapper;
-    }
-
-    public Set<MessageDto> getReceiverMessages(UUID recipientId, UUID authorId, MessageType messageType) {
-        return messageRepository.findReviewsByRecipientId(recipientId, authorId, messageType).stream()
-                .map(messageMapper::entityToDto)
-                .collect(Collectors.toSet());
-    }
-
     public Set<MessageDto> getReceiverMessages(UUID recipientId, MessageType messageType) {
-        return messageRepository.findReviewsByRecipientId(recipientId, messageType).stream()
-                .map(messageMapper::entityToDto)
-                .collect(Collectors.toSet());
-    }
-
-    public Set<MessageDto> getChatBetweenUsers(UUID myId, UUID otherUser) {
-        return messageRepository.findMessagesBetweenUsers(myId, otherUser).stream()
-                .map(messageMapper::entityToDto)
+        return ((MessageRepository) repository).findReviewsByRecipientId(recipientId, messageType).stream()
+                .map(mapper::entityToDto)
                 .collect(Collectors.toSet());
     }
 
     public Map<UUID, MessageDto> getAllChatsByEvent(UUID eventId) {
-        List<Message> messagesByAuthorId = messageRepository.findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
+        List<Message> messagesByAuthorId = ((MessageRepository) repository).findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
                 .collect(Collectors.groupingBy(Message::getAuthorId)).get(eventId);
         Map<UUID, List<Message>> groupAuthorEventId = Optional.ofNullable(messagesByAuthorId)
                 .orElse(Collections.emptyList()).stream()
                 .filter(message -> message.getRecipientId() != null)
                 .collect(Collectors.groupingBy(Message::getRecipientId));
-        List<Message> messagesByRecipientId = messageRepository.findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
+        List<Message> messagesByRecipientId = ((MessageRepository) repository).findReviewsByEventId(eventId, MessageType.TO_EVENT).stream()
                 .filter(message -> message.getRecipientId() != null)
                 .collect(Collectors.groupingBy(Message::getRecipientId)).get(eventId);
         Map<UUID, List<Message>> groupRecipientId = Optional.ofNullable(messagesByRecipientId)
@@ -66,7 +42,7 @@ public class MessageService extends CrudServiceImpl<MessageDto, Message> {
 
         return groupAuthorEventId.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
-                        element -> messageMapper.entityToDto(element.getValue().stream()
+                        element -> mapper.entityToDto(element.getValue().stream()
                                 .max(Comparator.comparing(Message::getDate)).orElse(new Message()))));
     }
 
@@ -85,6 +61,15 @@ public class MessageService extends CrudServiceImpl<MessageDto, Message> {
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return null;
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("messageType", FieldMapper.builder()
+                        .currentServiceField("messageType")
+                        .fieldClass(MessageType.class).build())
+                .put("recipientId", FieldMapper.builder()
+                        .currentServiceField("recipientId")
+                        .fieldClass(UUID.class).build())
+                .put("authorId", FieldMapper.builder()
+                        .currentServiceField("authorId")
+                        .fieldClass(UUID.class).build()).build();
     }
 }

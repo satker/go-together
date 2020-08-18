@@ -20,7 +20,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,16 +67,6 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
     public void init() {
         super.init();
         updatedDto.setEventId(dto.getEventId());
-    }
-
-    @Test
-    public void findUsersLikedEventIds() {
-        EventLikeDto eventLikeDto = getCreatedEntityId(dto);
-        Set<EventLikeDto> usersLikedEventIds =
-                ((EventLikeService) crudService).findUsersLikedEventIds(Collections.singleton(eventLikeDto.getEventId()));
-
-        assertEquals(1, usersLikedEventIds.size());
-        assertEquals(eventLikeDto, usersLikedEventIds.iterator().next());
     }
 
     @Test

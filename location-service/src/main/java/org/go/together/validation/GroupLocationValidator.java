@@ -5,7 +5,6 @@ import org.go.together.dto.GroupLocationDto;
 import org.go.together.dto.LocationCategory;
 import org.go.together.dto.LocationDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.logic.Validator;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;

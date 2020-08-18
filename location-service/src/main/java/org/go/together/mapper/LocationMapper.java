@@ -2,7 +2,6 @@ package org.go.together.mapper;
 
 import org.go.together.dto.LocationDto;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.logic.Mapper;
 import org.go.together.model.Location;
 import org.go.together.model.Place;
 import org.go.together.repository.PlaceRepository;

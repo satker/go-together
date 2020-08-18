@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.PlaceDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.logic.Validator;
 import org.springframework.stereotype.Component;
 
 @Component

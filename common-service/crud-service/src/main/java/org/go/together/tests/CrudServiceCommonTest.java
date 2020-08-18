@@ -1,13 +1,18 @@
 package org.go.together.tests;
 
-import org.go.together.CrudServiceImpl;
-import org.go.together.CustomRepository;
-import org.go.together.dto.*;
+import org.go.together.base.CrudService;
+import org.go.together.dto.IdDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
+import org.go.together.find.dto.FieldMapper;
+import org.go.together.find.dto.ResponseDto;
+import org.go.together.find.dto.form.FilterDto;
+import org.go.together.find.dto.form.FormDto;
+import org.go.together.find.dto.utils.FindSqlOperator;
 import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.IdentifiedEntity;
-import org.go.together.logic.Mapper;
+import org.go.together.mapper.Mapper;
+import org.go.together.repository.CustomRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +38,7 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
     protected Random rand = new Random();
 
     @Autowired
-    protected CrudServiceImpl<D, E> crudService;
+    protected CrudService<D> crudService;
 
     @Autowired
     protected CustomRepository<E> repository;
@@ -100,8 +105,7 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
     public void findTest() {
         D createdDto = getCreatedEntityId(dto);
 
-        E savedEntity = repository.findById(createdDto.getId())
-                .orElseThrow(() -> new CannotFindEntityException("Cannot find saved entity"));
+        E savedEntity = repository.findByIdOrThrow(createdDto.getId());
 
 
         Map<String, FieldMapper> mappingFields = crudService.getMappingFields();

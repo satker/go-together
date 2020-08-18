@@ -28,7 +28,7 @@ const Interests = ({interests, getInterests, setFilter}) => {
     return <LoadableContent loadableData={interests}>
         <MultipleSelectBox onChange={onChange}
                            label='Interests'
-                           optionsSimple={interests.response}
+                           optionsSimple={interests.response.result}
                            value={chooseInterests}/>
     </LoadableContent>;
 };

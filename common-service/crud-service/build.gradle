@@ -23,10 +23,10 @@ dependencies {
             "org.projectlombok:lombok:${lombokVersion}",
             "com.google.guava:guava:${guavaVersion}",
             "com.h2database:h2",
-
-            'org.apache.commons:commons-lang3:3.9'
     )
     compile project(":common-service:find-service")
+    compile project(":common-service:validation-service")
+    compile project(":common-service:mapper-service")
     testCompile project(":common-service:notification-service")
 
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"

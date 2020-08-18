@@ -6,7 +6,6 @@ import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.UserDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.logic.Validator;
 import org.go.together.repository.InterestRepository;
 import org.go.together.repository.LanguageRepository;
 import org.springframework.stereotype.Service;

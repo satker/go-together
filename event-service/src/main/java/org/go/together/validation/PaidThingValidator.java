@@ -2,7 +2,6 @@ package org.go.together.validation;
 
 import com.google.common.collect.ImmutableMap;
 import org.go.together.dto.PaidThingDto;
-import org.go.together.logic.Validator;
 import org.springframework.stereotype.Component;
 
 @Component

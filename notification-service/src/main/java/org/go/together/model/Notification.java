@@ -1,7 +1,6 @@
 package org.go.together.model;
 
 import lombok.Data;
-import org.go.together.enums.NotificationStatus;
 import org.go.together.interfaces.IdentifiedEntity;
 
 import javax.persistence.Column;
@@ -19,5 +18,4 @@ public class Notification implements IdentifiedEntity {
     private UUID id;
     @Column(columnDefinition = "uuid")
     private UUID producerId;
-    private NotificationStatus status;
 }

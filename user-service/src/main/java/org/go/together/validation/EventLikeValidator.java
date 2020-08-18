@@ -3,7 +3,6 @@ package org.go.together.validation;
 import org.go.together.dto.EventLikeDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.logic.Validator;
 import org.go.together.model.EventLike;
 import org.go.together.repository.EventLikeRepository;
 import org.springframework.beans.factory.annotation.Autowired;

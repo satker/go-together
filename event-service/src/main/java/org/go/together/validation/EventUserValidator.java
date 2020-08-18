@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventUserDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.logic.Validator;
 import org.go.together.repository.EventRepository;
 import org.springframework.stereotype.Component;
 

@@ -13,8 +13,6 @@ import {
 const URL_USER = USER_SERVICE_URL + "/users/";
 const URL_USER_ID = URL_USER + "_id_";
 const URLtoCheck = USER_SERVICE_URL + '/users/check/mail/_mail_';
-const URL_USERS_LANGUAGES = USER_SERVICE_URL + "/languages";
-const URL_USERS_INTERESTS = USER_SERVICE_URL + "/interests";
 
 export const getUserInfo = () => (dispatch, state) => {
     dispatch({
@@ -42,13 +40,21 @@ export const getCheckMail = (value) => (dispatch) => {
 export const getAllLanguages = () => (dispatch) => {
     dispatch({
         type: PERSONAL_AREA_ALL_LANGUAGES,
-        url: URL_USERS_LANGUAGES
+        method: POST,
+        url: USER_SERVICE_URL + '/find',
+        data: {
+            mainIdField: "language"
+        }
     });
 };
 
 export const getAllInterests = () => (dispatch) => {
     dispatch({
         type: PERSONAL_AREA_ALL_INTERESTS,
-        url: URL_USERS_INTERESTS
+        method: POST,
+        url: USER_SERVICE_URL + '/find',
+        data: {
+            mainIdField: "interest"
+        }
     });
 };

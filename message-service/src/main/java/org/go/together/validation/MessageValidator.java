@@ -2,8 +2,7 @@ package org.go.together.validation;
 
 import com.google.common.collect.ImmutableMap;
 import org.go.together.dto.MessageDto;
-import org.go.together.dto.validation.NumberIntervalDto;
-import org.go.together.logic.Validator;
+import org.go.together.validation.dto.NumberIntervalDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
