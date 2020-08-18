@@ -1,13 +1,5 @@
 package org.go.together.find.utils;
 
-import org.go.together.exceptions.IncorrectFindObject;
-import org.go.together.find.dto.FieldDto;
-import org.go.together.find.dto.FieldMapper;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 public class FindUtils {
     public static final String DELIMITER = "\\?";
     public static final String HAVING_COUNT = ":";
@@ -28,25 +20,6 @@ public class FindUtils {
 
     public static String[] getHavingCondition(String string) {
         return string.split(HAVING_COUNT);
-    }
-
-    public static Map<String, FieldMapper> getFieldMapperByRemoteField(Map<String, FieldMapper> availableFields, FieldDto fieldDto) {
-        String localEntityField = fieldDto.getPaths()[0];
-        List<String> singleGroupFields = List.of(getSingleGroupFields(localEntityField));
-        return availableFields.entrySet().stream()
-                .filter(stringFieldMapperEntry ->
-                        singleGroupFields.contains(stringFieldMapperEntry.getValue().getCurrentServiceField()))
-                .collect(Collectors.toMap(entry ->
-                                findStringFromList(entry.getValue().getCurrentServiceField(), singleGroupFields),
-                        Map.Entry::getValue,
-                        (entry1, entry2) -> entry1));
-    }
-
-    private static String findStringFromList(String element, List<String> elements) {
-        return elements.stream()
-                .filter(string -> string.equals(element))
-                .findFirst().orElseThrow(() ->
-                        new IncorrectFindObject("Field " + element + " is unavailable for find."));
     }
 
     public static String[] getSingleGroupFields(String localEntityField) {

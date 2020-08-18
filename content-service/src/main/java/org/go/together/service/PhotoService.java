@@ -6,14 +6,16 @@ import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Photo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,10 +99,5 @@ public class PhotoService extends CrudServiceImpl<PhotoDto, Photo> {
     @Override
     public String getServiceName() {
         return "photo";
-    }
-
-    @Override
-    public Map<String, FieldMapper> getMappingFields() {
-        return null;
     }
 }

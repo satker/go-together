@@ -6,7 +6,6 @@ import org.go.together.dto.SimpleDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.ApplicationException;
 import org.go.together.exceptions.ValidationException;
-import org.go.together.find.dto.FieldMapper;
 import org.go.together.test.dto.TestDto;
 import org.go.together.test.entities.TestEntity;
 import org.go.together.test.mapper.JoinTestMapper;
@@ -27,7 +26,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.go.together.test.TestUtils.createTestDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -84,11 +86,6 @@ class CrudServiceRevertTest {
             @Override
             public String getServiceName() {
                 return "testServiceOverride";
-            }
-
-            @Override
-            public Map<String, FieldMapper> getMappingFields() {
-                return null;
             }
         };
     }

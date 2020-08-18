@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,6 +20,8 @@ import static org.go.together.find.utils.FindUtils.getSingleGroupFields;
 
 @Component
 public class FilterCorrector implements CorrectedService {
+    private final ValuesCorrector valuesCorrector = new ValuesCorrector();
+
     public Pair<Map<FieldDto, FilterDto>, Map<FieldDto, FilterDto>> getRemoteAndCorrectedFilters(Map<String, FilterDto> filters,
                                                                                              Map<String, FieldMapper> availableFields) {
         FieldCorrector fieldCorrector = new FieldCorrector(this);
@@ -34,7 +35,7 @@ public class FilterCorrector implements CorrectedService {
             FieldDto localFieldForSearch = getCorrectedFieldDto(fieldDto, fieldMappers, fieldCorrector);
             if (isNotRemote) {
                 Collection<Map<String, Object>> correctedValuesForSearch =
-                        getCorrectedValues(fieldCorrector.getOldNewValue(), value.getValues());
+                        valuesCorrector.getCorrectedValues(fieldCorrector, value.getValues());
                 value.setValues(correctedValuesForSearch);
                 localFilters.put(localFieldForSearch, value);
             } else {
@@ -42,19 +43,6 @@ public class FilterCorrector implements CorrectedService {
             }
         });
         return Pair.of(remoteFilters, localFilters);
-    }
-
-    private Collection<Map<String, Object>> getCorrectedValues(Map<String, String> fieldMappers,
-                                                               Collection<Map<String, Object>> filters) {
-        Collection<Map<String, Object>> result = new HashSet<>();
-        for (Map<String, Object> next : filters) {
-            Map<String, Object> map = new HashMap<>();
-            fieldMappers.forEach((oldKey, newKey) -> {
-                map.put(newKey, next.get(oldKey));
-            });
-            result.add(map);
-        }
-        return result;
     }
 
     public FieldDto getCorrectedFieldDto(FieldDto fieldDto,

@@ -13,7 +13,6 @@ import org.go.together.repository.EventRepository;
 import org.go.together.repository.EventUserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -68,6 +67,7 @@ public class EventUserService extends CrudServiceImpl<EventUserDto, EventUser> {
     public Map<String, FieldMapper> getMappingFields() {
         return ImmutableMap.<String, FieldMapper>builder()
                 .put("eventId", FieldMapper.builder()
-                        .currentServiceField("eventId").build()).build();
+                        .currentServiceField("eventId")
+                        .fieldClass(UUID.class).build()).build();
     }
 }

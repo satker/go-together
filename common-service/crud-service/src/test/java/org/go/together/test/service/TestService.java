@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class TestService extends CrudServiceImpl<TestDto, TestEntity> {
@@ -42,13 +43,17 @@ public class TestService extends CrudServiceImpl<TestDto, TestEntity> {
     public Map<String, FieldMapper> getMappingFields() {
         return ImmutableMap.<String, FieldMapper>builder()
                 .put("name", FieldMapper.builder()
-                        .currentServiceField("name").build())
+                        .currentServiceField("name")
+                        .fieldClass(String.class).build())
                 .put("number", FieldMapper.builder()
-                        .currentServiceField("number").build())
+                        .currentServiceField("number")
+                        .fieldClass(Number.class).build())
                 .put("names", FieldMapper.builder()
-                        .currentServiceField("name").build())
+                        .currentServiceField("name")
+                        .fieldClass(String.class).build())
                 .put("numbers", FieldMapper.builder()
-                        .currentServiceField("number").build())
+                        .currentServiceField("number")
+                        .fieldClass(Number.class).build())
                 .put("manyJoinEntities", FieldMapper.builder()
                         .innerService(manyJoinService)
                         .currentServiceField("manyJoinEntities").build())
@@ -56,18 +61,21 @@ public class TestService extends CrudServiceImpl<TestDto, TestEntity> {
                         .currentServiceField("elements")
                         .remoteServiceClient(anotherClient)
                         .remoteServiceName("element")
-                        .remoteServiceFieldGetter("id").build())
+                        .remoteServiceFieldGetter("id")
+                        .fieldClass(UUID.class).build())
                 .put("joinTestEntities", FieldMapper.builder()
                         .currentServiceField("joinTestEntities")
                         .innerService(joinTestService)
                         .remoteServiceClient(anotherClient)
                         .remoteServiceName("join")
-                        .remoteServiceFieldGetter("id").build())
+                        .remoteServiceFieldGetter("id")
+                        .fieldClass(UUID.class).build())
                 .put("elementss", FieldMapper.builder()
                         .currentServiceField("elements")
                         .remoteServiceClient(anotherClient)
                         .remoteServiceName("element")
-                        .remoteServiceFieldGetter("id").build())
+                        .remoteServiceFieldGetter("id")
+                        .fieldClass(UUID.class).build())
                 .build();
     }
 }

@@ -8,6 +8,7 @@ import org.go.together.test.entities.JoinTestEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class JoinTestService extends CrudServiceImpl<JoinTestDto, JoinTestEntity> {
@@ -20,9 +21,11 @@ public class JoinTestService extends CrudServiceImpl<JoinTestDto, JoinTestEntity
     public Map<String, FieldMapper> getMappingFields() {
         return ImmutableMap.<String, FieldMapper>builder()
                 .put("id", FieldMapper.builder()
-                        .currentServiceField("id").build())
+                        .currentServiceField("id")
+                        .fieldClass(UUID.class).build())
                 .put("name", FieldMapper.builder()
-                        .currentServiceField("name").build())
+                        .currentServiceField("name")
+                        .fieldClass(String.class).build())
                 .build();
     }
 }

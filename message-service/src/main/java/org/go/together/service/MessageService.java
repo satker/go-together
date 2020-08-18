@@ -75,10 +75,13 @@ public class MessageService extends CrudServiceImpl<MessageDto, Message> {
     public Map<String, FieldMapper> getMappingFields() {
         return ImmutableMap.<String, FieldMapper>builder()
                 .put("messageType", FieldMapper.builder()
-                        .currentServiceField("messageType").build())
+                        .currentServiceField("messageType")
+                        .fieldClass(MessageType.class).build())
                 .put("recipientId", FieldMapper.builder()
-                        .currentServiceField("recipientId").build())
+                        .currentServiceField("recipientId")
+                        .fieldClass(UUID.class).build())
                 .put("authorId", FieldMapper.builder()
-                        .currentServiceField("authorId").build()).build();
+                        .currentServiceField("authorId")
+                        .fieldClass(UUID.class).build()).build();
     }
 }

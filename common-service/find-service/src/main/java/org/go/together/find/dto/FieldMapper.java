@@ -13,6 +13,7 @@ public class FieldMapper {
     private final FindClient remoteServiceClient;
     private final String remoteServiceName;
     private final String remoteServiceFieldGetter;
+    private final Class fieldClass;
 
     public String getPathRemoteFieldGetter() {
         return remoteServiceName + "." + remoteServiceFieldGetter;

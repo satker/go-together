@@ -3,14 +3,12 @@ package org.go.together.service;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.GroupPhoto;
 import org.go.together.model.Photo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -58,10 +56,5 @@ public class GroupPhotoService extends CrudServiceImpl<GroupPhotoDto, GroupPhoto
     @Override
     public String getServiceName() {
         return "groupPhotos";
-    }
-
-    @Override
-    public Map<String, FieldMapper> getMappingFields() {
-        return null;
     }
 }

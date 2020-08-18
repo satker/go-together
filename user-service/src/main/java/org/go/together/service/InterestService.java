@@ -8,6 +8,7 @@ import org.go.together.model.Interest;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class InterestService extends CrudServiceImpl<InterestDto, Interest> {
@@ -20,6 +21,7 @@ public class InterestService extends CrudServiceImpl<InterestDto, Interest> {
     public Map<String, FieldMapper> getMappingFields() {
         return ImmutableMap.<String, FieldMapper>builder()
                 .put("id", FieldMapper.builder()
-                        .currentServiceField("id").build()).build();
+                        .currentServiceField("id")
+                        .fieldClass(UUID.class).build()).build();
     }
 }

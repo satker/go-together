@@ -4,14 +4,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.PlaceDto;
 import org.go.together.dto.SimpleDto;
-import org.go.together.find.dto.FieldMapper;
 import org.go.together.mapper.CountryMapper;
 import org.go.together.model.Country;
 import org.go.together.model.Place;
 import org.go.together.repository.PlaceRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,10 +62,5 @@ public class PlaceService extends CrudServiceImpl<PlaceDto, Place> {
     @Override
     public String getServiceName() {
         return "location";
-    }
-
-    @Override
-    public Map<String, FieldMapper> getMappingFields() {
-        return null;
     }
 }

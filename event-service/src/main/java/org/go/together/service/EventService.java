@@ -13,10 +13,7 @@ import org.go.together.model.Event;
 import org.go.together.repository.EventRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -95,20 +92,25 @@ public class EventService extends CrudServiceImpl<EventDto, Event> {
     public Map<String, FieldMapper> getMappingFields() {
         return ImmutableMap.<String, FieldMapper>builder()
                 .put("name", FieldMapper.builder()
-                        .currentServiceField("name").build())
+                        .currentServiceField("name")
+                        .fieldClass(String.class).build())
                 .put("author", FieldMapper.builder()
                         .currentServiceField("authorId")
                         .remoteServiceClient(userClient)
                         .remoteServiceName("user")
-                        .remoteServiceFieldGetter("id").build())
+                        .remoteServiceFieldGetter("id")
+                        .fieldClass(UUID.class).build())
                 .put("idEventRoutes", FieldMapper.builder()
                         .currentServiceField("id")
                         .remoteServiceClient(locationClient)
                         .remoteServiceName("groupLocation")
-                        .remoteServiceFieldGetter("groupId").build())
+                        .remoteServiceFieldGetter("groupId")
+                        .fieldClass(UUID.class).build())
                 .put("startDate", FieldMapper.builder()
-                        .currentServiceField("startDate").build())
+                        .currentServiceField("startDate")
+                        .fieldClass(Date.class).build())
                 .put("endDate", FieldMapper.builder()
+                        .fieldClass(Date.class)
                         .currentServiceField("endDate").build())
                 .build();
     }

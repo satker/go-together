@@ -11,7 +11,6 @@ import org.go.together.find.dto.FieldMapper;
 import org.go.together.mapper.PlaceMapper;
 import org.go.together.model.Location;
 import org.go.together.model.Place;
-import org.go.together.repository.LocationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -108,9 +107,11 @@ public class LocationService extends CrudServiceImpl<LocationDto, Location> {
     public Map<String, FieldMapper> getMappingFields() {
         return ImmutableMap.<String, FieldMapper>builder()
                 .put("isStart", FieldMapper.builder()
-                        .currentServiceField("isStart").build())
+                        .currentServiceField("isStart")
+                        .fieldClass(Boolean.class).build())
                 .put("isEnd", FieldMapper.builder()
-                        .currentServiceField("isEnd").build())
+                        .currentServiceField("isEnd")
+                        .fieldClass(Boolean.class).build())
                 .put("latitude,longitude", FieldMapper.builder()
                         .currentServiceField("latitude,longitude").build()).build();
     }

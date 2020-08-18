@@ -12,17 +12,17 @@ import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.utils.FindUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.go.together.find.utils.FindUtils.getSingleGroupFields;
 
 @Component
 public class RemoteFinder implements Finder {
     public Map<FieldDto, Collection<Object>> getFilters(Map<FieldDto, FilterDto> filters,
                                                       Map<String, FieldMapper> availableFields) {
         Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices = new HashMap<>();
-        filters.forEach((fieldDto, value) -> FindUtils.getFieldMapperByRemoteField(availableFields, fieldDto).values()
+        filters.forEach((fieldDto, value) -> getFieldMapperByRemoteField(availableFields, fieldDto).values()
                 .forEach(fieldMapper -> convertToAnotherRequest(filtersToAnotherServices, fieldDto, fieldMapper, value)));
         if (!filtersToAnotherServices.isEmpty()) {
             return getFilterResultFromOtherServices(filtersToAnotherServices);
@@ -112,5 +112,24 @@ public class RemoteFinder implements Finder {
         } catch (Exception e) {
             throw new RemoteClientFindException(e);
         }
+    }
+
+    private Map<String, FieldMapper> getFieldMapperByRemoteField(Map<String, FieldMapper> availableFields, FieldDto fieldDto) {
+        String localEntityField = fieldDto.getPaths()[0];
+        List<String> singleGroupFields = List.of(getSingleGroupFields(localEntityField));
+        return availableFields.entrySet().stream()
+                .filter(stringFieldMapperEntry ->
+                        singleGroupFields.contains(stringFieldMapperEntry.getValue().getCurrentServiceField()))
+                .collect(Collectors.toMap(entry ->
+                                findStringFromList(entry.getValue().getCurrentServiceField(), singleGroupFields),
+                        Map.Entry::getValue,
+                        (entry1, entry2) -> entry1));
+    }
+
+    private String findStringFromList(String element, List<String> elements) {
+        return elements.stream()
+                .filter(string -> string.equals(element))
+                .findFirst().orElseThrow(() ->
+                        new IncorrectFindObject("Field " + element + " is unavailable for find."));
     }
 }

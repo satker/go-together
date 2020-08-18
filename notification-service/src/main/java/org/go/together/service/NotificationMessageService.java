@@ -5,7 +5,6 @@ import org.go.together.dto.IdDto;
 import org.go.together.dto.NotificationMessageDto;
 import org.go.together.dto.NotificationReceiverMessageDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.find.dto.FieldMapper;
 import org.go.together.mapper.NotificationReceiverMapper;
 import org.go.together.model.NotificationMessage;
 import org.go.together.model.NotificationReceiver;
@@ -13,7 +12,6 @@ import org.go.together.repository.NotificationReceiverRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -60,10 +58,5 @@ public class NotificationMessageService extends CrudServiceImpl<NotificationMess
     @Override
     public String getServiceName() {
         return "notificationMessage";
-    }
-
-    @Override
-    public Map<String, FieldMapper> getMappingFields() {
-        return null;
     }
 }
