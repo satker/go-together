@@ -15,20 +15,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class MessageService extends CrudServiceImpl<MessageDto, Message> {
-    public Set<MessageDto> getReceiverMessages(UUID recipientId, UUID authorId, MessageType messageType) {
-        return ((MessageRepository) repository).findReviewsByRecipientId(recipientId, authorId, messageType).stream()
-                .map(mapper::entityToDto)
-                .collect(Collectors.toSet());
-    }
-
     public Set<MessageDto> getReceiverMessages(UUID recipientId, MessageType messageType) {
         return ((MessageRepository) repository).findReviewsByRecipientId(recipientId, messageType).stream()
-                .map(mapper::entityToDto)
-                .collect(Collectors.toSet());
-    }
-
-    public Set<MessageDto> getChatBetweenUsers(UUID myId, UUID otherUser) {
-        return ((MessageRepository) repository).findMessagesBetweenUsers(myId, otherUser).stream()
                 .map(mapper::entityToDto)
                 .collect(Collectors.toSet());
     }

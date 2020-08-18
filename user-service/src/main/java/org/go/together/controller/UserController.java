@@ -3,8 +3,8 @@ package org.go.together.controller;
 import org.go.together.client.UserClient;
 import org.go.together.dto.*;
 import org.go.together.find.controller.FindController;
-import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.dto.ResponseDto;
+import org.go.together.find.dto.form.FormDto;
 import org.go.together.service.EventLikeService;
 import org.go.together.service.UserService;
 import org.springframework.web.bind.annotation.RestController;
@@ -114,10 +114,5 @@ class UserController extends FindController implements UserClient {
     public Set<UUID> getLikedEventsByUserId(UUID userId) {
         // FROM USER
         return eventLikeService.findLikedEventIdsByUserId(userId);
-    }
-
-    @Override
-    public Set<EventLikeDto> getUsersLikedEventIds(Set<UUID> eventIds) {
-        return eventLikeService.findUsersLikedEventIds(eventIds);
     }
 }

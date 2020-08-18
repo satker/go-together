@@ -62,7 +62,4 @@ public interface UserClient extends FindClient {
 
     @GetMapping("/users/{userId}/events")
     Set<UUID> getLikedEventsByUserId(@PathVariable("userId") UUID userId);
-
-    @PostMapping("/events/likes")
-    Set<EventLikeDto> getUsersLikedEventIds(@RequestBody Set<UUID> eventIds);
 }

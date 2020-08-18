@@ -4,8 +4,8 @@ import org.go.together.client.MessageClient;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.MessageDto;
 import org.go.together.find.controller.FindController;
-import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.dto.ResponseDto;
+import org.go.together.find.dto.form.FormDto;
 import org.go.together.service.MessageService;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.go.together.dto.MessageType.REVIEW;
 import static org.go.together.dto.MessageType.TO_EVENT;
 
 @RestController
@@ -22,16 +21,6 @@ public class MessageController extends FindController implements MessageClient {
 
     public MessageController(MessageService messageService) {
         this.messageService = messageService;
-    }
-
-    @Override
-    public Set<MessageDto> getEventMessages(UUID eventId, UUID userId) {
-        return messageService.getReceiverMessages(eventId, userId, TO_EVENT);
-    }
-
-    @Override
-    public Set<MessageDto> getChatBetweenUsers(UUID myId, UUID otherUser) {
-        return messageService.getChatBetweenUsers(myId, otherUser);
     }
 
     @Override

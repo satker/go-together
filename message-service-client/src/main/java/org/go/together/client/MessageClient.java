@@ -12,14 +12,6 @@ import java.util.UUID;
 
 @FeignClient(name = "message-service")
 public interface MessageClient extends FindClient {
-    @GetMapping("events/{eventId}/messages/{userId}")
-    Set<MessageDto> getEventMessages(@PathVariable("eventId") UUID eventId,
-                                     @PathVariable("userId") UUID userId);
-
-    @GetMapping("users/{userId}/messages/{otherUserId}")
-    Set<MessageDto> getChatBetweenUsers(@PathVariable("userId") UUID myId,
-                                        @PathVariable("otherUserId") UUID otherUser);
-
     @GetMapping("events/{eventId}/messages/")
     Map<UUID, MessageDto> getAllChatsByEvent(@PathVariable("eventId") UUID eventId);
 

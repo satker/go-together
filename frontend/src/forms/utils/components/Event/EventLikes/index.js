@@ -6,9 +6,9 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import {connect} from "App/Context";
 import LoadableContent from "forms/utils/components/LoadableContent";
 
-import {getEventsLikes, updateEventLike} from "./actions";
+import {createEventLike, getEventsLikes, updateEventLike} from "./actions";
 
-const EventLikes = ({eventId, updateEventLike, newLike, getEventsLikes, likes, userId, eventIds}) => {
+const EventLikes = ({eventId, updateEventLike, newLike, getEventsLikes, likes, userId, eventIds, createEventLike}) => {
     const [flag, setFlag] = useState(false);
 
     useEffect(() => {
@@ -18,17 +18,18 @@ const EventLikes = ({eventId, updateEventLike, newLike, getEventsLikes, likes, u
         }
     }, [newLike, getEventsLikes, eventIds, flag, setFlag]);
 
-    const currentLikes = likes.response.find(eventLike => eventLike.eventId === eventId) || [];
+    const likesArray = likes.response.result || likes.response;
+    const currentLikes = likesArray.find(eventLike => eventLike.eventId === eventId) || [];
     const currentLikeUsers = currentLikes?.users || [];
     const likeType = !!currentLikeUsers.find(user => user.id === userId);
 
     const saveLike = (isSave) => () => {
         let eventLikeObject;
         if (isSave) {
-            eventLikeObject = {...currentLikes, users: [...currentLikes.users, {id: userId}]};
+            eventLikeObject = {...currentLikes, users: [...currentLikeUsers, {id: userId}]};
         } else {
             eventLikeObject = {
-                ...currentLikes, users: currentLikes.users
+                ...currentLikes, users: currentLikeUsers
                     .filter(eventLikeUser => eventLikeUser.id !== userId)
             }
         }
@@ -54,4 +55,4 @@ const mapStateToProps = state => ({
     userId: state.userId.value
 });
 
-export default connect(mapStateToProps, {updateEventLike, getEventsLikes})(EventLikes);
+export default connect(mapStateToProps, {updateEventLike, createEventLike, getEventsLikes})(EventLikes);

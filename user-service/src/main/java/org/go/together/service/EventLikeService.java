@@ -1,12 +1,15 @@
 package org.go.together.service;
 
+import com.google.common.collect.ImmutableMap;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.EventLikeDto;
 import org.go.together.enums.CrudOperation;
+import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.EventLike;
 import org.go.together.repository.EventLikeRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -20,6 +23,14 @@ public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
     }
 
     @Override
+    public Map<String, FieldMapper> getMappingFields() {
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("eventId", FieldMapper.builder()
+                        .currentServiceField("eventId")
+                        .fieldClass(UUID.class).build()).build();
+    }
+
+    @Override
     protected EventLike enrichEntity(EventLike entity, EventLikeDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE) {
             EventLike eventLike = repository.findByIdOrThrow(dto.getId());
@@ -27,15 +38,6 @@ public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
             return eventLike;
         }
         return entity;
-    }
-
-    public Set<EventLikeDto> findUsersLikedEventIds(Set<UUID> eventIds) {
-        return eventIds.stream()
-                .map(((EventLikeRepository) repository)::findByEventId)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(mapper::entityToDto)
-                .collect(Collectors.toSet());
     }
 
     public void deleteByEventId(UUID eventId) {
