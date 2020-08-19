@@ -4,7 +4,6 @@ import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.find.correction.FilterCorrector;
 import org.go.together.find.dto.FieldDto;
 import org.go.together.find.dto.FieldMapper;
-import org.go.together.find.mapper.FieldMapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -80,7 +79,7 @@ public class FieldCorrectorService implements FieldCorrector {
     private String getCorrectedComplexField(String[] splitByDotString, FieldMapper fieldMapper) {
         String changedField = fieldMapper.getCurrentServiceField();
         List<String> fieldsForChange = List.of(splitByDotString).subList(1, splitByDotString.length);
-        FieldDto fieldDto = FieldMapperUtils.getFieldDto(String.join(".", fieldsForChange));
+        FieldDto fieldDto = new FieldDto(String.join(".", fieldsForChange));
         Map<String, FieldMapper> innerServiceMappingFields = fieldMapper.getInnerService().getMappingFields();
         CorrectedFieldDto updatedFieldDto = filterCorrector.getCorrectedFieldDto(fieldDto, innerServiceMappingFields);
         return changedField + "." + updatedFieldDto.getFieldDto().getLocalField();

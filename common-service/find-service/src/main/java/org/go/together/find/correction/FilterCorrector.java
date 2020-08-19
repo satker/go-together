@@ -11,7 +11,6 @@ import org.go.together.find.correction.values.ValuesCorrector;
 import org.go.together.find.dto.FieldDto;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.find.dto.form.FilterDto;
-import org.go.together.find.mapper.FieldMapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -50,7 +49,7 @@ public class FilterCorrector implements CorrectedService {
         Map<FieldDto, FilterDto> localFilters = new HashMap<>();
         Map<FieldDto, FilterDto> remoteFilters = new HashMap<>();
         filters.forEach((key, value) -> {
-            FieldDto fieldDto = FieldMapperUtils.getFieldDto(key);
+            FieldDto fieldDto = new FieldDto(key);
             Map<String, FieldMapper> fieldMappers = getFieldMappersByFieldDto(availableFields, fieldDto);
             boolean isNotRemote = fieldMappers.values().stream()
                     .allMatch(fieldMapper -> fieldMapper.getRemoteServiceClient() == null);
@@ -85,20 +84,17 @@ public class FilterCorrector implements CorrectedService {
     private FieldDto getCorrectedFieldDto(FieldDto fieldDto,
                                           StringBuilder resultFilterString,
                                           String correctedFilterFields) {
-        FieldDto.FieldDtoBuilder fieldDtoBuilder = FieldDto.builder();
-
         if (resultFilterString.length() > 0) {
             resultFilterString.append(".").append(correctedFilterFields);
         } else {
             resultFilterString.append(correctedFilterFields);
         }
-        fieldDtoBuilder.localField(resultFilterString.toString());
 
-        String remoteField = fieldDto.getRemoteField();
-        if (StringUtils.isNotBlank(remoteField)) {
-            fieldDtoBuilder.remoteField(remoteField);
-        }
-        return fieldDtoBuilder.build();
+        String fieldDtoRemoteField = fieldDto.getRemoteField();
+
+        String remoteField = StringUtils.isNotBlank(fieldDtoRemoteField) ? fieldDtoRemoteField : null;
+
+        return new FieldDto(resultFilterString.toString(), remoteField);
     }
 
     private Map<String, FieldMapper> getFieldMappersByFieldDto(Map<String, FieldMapper> availableFields,

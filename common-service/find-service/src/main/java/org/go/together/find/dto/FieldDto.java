@@ -1,6 +1,5 @@
 package org.go.together.find.dto;
 
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -9,14 +8,31 @@ import java.util.regex.Pattern;
 
 import static org.go.together.find.utils.FindUtils.*;
 
-@Builder
 @Getter
 @EqualsAndHashCode
 public class FieldDto {
     private final String localField;
     private final String remoteField;
 
-    public String[] getPaths(){
+    public FieldDto(String searchField) {
+        this.localField = getParsedRemoteField(searchField)[0];
+        this.remoteField = getAnotherServiceFilter(searchField);
+    }
+
+    public FieldDto(String localField, String remoteField) {
+        this.localField = localField;
+        this.remoteField = remoteField;
+    }
+
+    private String getAnotherServiceFilter(String string) {
+        String[] otherServiceFields = getParsedRemoteField(string);
+        if (otherServiceFields.length > 1) {
+            return otherServiceFields[1];
+        }
+        return null;
+    }
+
+    public String[] getPaths() {
         Pattern pattern = Pattern.compile(REGEX_GROUP);
         Matcher matcher = pattern.matcher(localField);
         if (matcher.find()) {
