@@ -1,19 +1,15 @@
-package org.go.together.find.correction;
+package org.go.together.find.correction.path;
 
 import org.go.together.find.dto.FieldMapper;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-public class PathCorrector {
-    private Map<String, FieldMapper> currentFieldMapper;
-
-    public Map<String, FieldMapper> getCurrentFieldMapper() {
-        return currentFieldMapper;
-    }
-
-    public StringBuilder getCorrectedPath(String[] localPaths, Map<String, FieldMapper> fieldMappers) {
+@Component
+public class PathCorrectorService implements PathCorrector {
+    public CorrectedPathDto getCorrectedPath(String[] localPaths, Map<String, FieldMapper> fieldMappers) {
         StringBuilder result = new StringBuilder();
-        currentFieldMapper = fieldMappers;
+        Map<String, FieldMapper> currentFieldMapper = fieldMappers;
         for (int i = 0; i < localPaths.length - 1; i++) {
             FieldMapper fieldMapper = currentFieldMapper.get(localPaths[i]);
             result.append(fieldMapper.getCurrentServiceField());
@@ -21,6 +17,8 @@ public class PathCorrector {
                 currentFieldMapper = fieldMapper.getInnerService().getMappingFields();
             }
         }
-        return result;
+        return CorrectedPathDto.builder()
+                .correctedPath(result)
+                .currentFieldMapper(currentFieldMapper).build();
     }
 }

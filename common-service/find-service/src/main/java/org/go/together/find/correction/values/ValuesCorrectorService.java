@@ -1,14 +1,19 @@
-package org.go.together.find.correction;
+package org.go.together.find.correction.values;
+
+import org.go.together.find.correction.field.CorrectedFieldDto;
+import org.springframework.stereotype.Component;
+
 import java.util.*;
 
-public class ValuesCorrector {
-    public Collection<Map<String, Object>> getCorrectedValues(FieldCorrector fieldCorrector,
-                                                               Collection<Map<String, Object>> filters) {
+@Component
+public class ValuesCorrectorService implements ValuesCorrector {
+    public Collection<Map<String, Object>> getCorrectedValues(CorrectedFieldDto correctedFieldDto,
+                                                              Collection<Map<String, Object>> filters) {
         Collection<Map<String, Object>> result = new HashSet<>();
-        Map<String, Class> oldValueClass = fieldCorrector.getOldValueClass();
+        Map<String, Class> oldValueClass = correctedFieldDto.getOldValueClass();
         for (Map<String, Object> next : filters) {
             Map<String, Object> map = new HashMap<>();
-            fieldCorrector.getOldNewFilterField().forEach((oldKey, newKey) -> {
+            correctedFieldDto.getOldNewFilterField().forEach((oldKey, newKey) -> {
                 Object value = next.get(oldKey);
                 Class parsedClass = oldValueClass.getOrDefault(oldKey, Object.class);
                 Object parsedValue = parseFilterObjectToClass(value, parsedClass);
@@ -20,6 +25,9 @@ public class ValuesCorrector {
     }
 
     private Object parseFilterObjectToClass(Object value, Class clazz) {
+        if (clazz == null) {
+            return value;
+        }
         if (clazz == String.class && value instanceof String) {
             return String.valueOf(value);
         } else if (clazz == UUID.class && value instanceof String) {
