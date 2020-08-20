@@ -1,4 +1,4 @@
-import {EVENT_SERVICE_URL, USER_SERVICE_URL} from "forms/utils/constants";
+import {EVENT_SERVICE_URL, FORM_DTO, USER_SERVICE_URL} from "forms/utils/constants";
 import {POST} from "App/utils/api/constants";
 import {PAGE} from "App/Context/constants";
 
@@ -43,14 +43,20 @@ export const setPage = (page) => (dispatch) => {
     });
 };
 
-export const setFilter = (filterOperation, values, searchField, havingCount) =>
-    (dispatch, state) => {
-        const currentFilter = state.components.forms.events.filter.response;
+export const cleanFilter = () => (dispatch) => {
+    dispatch({
+        type: PAGE,
+        value: {...FORM_DTO("event")}
+    });
+};
 
-        const updatedFilterObject = updateFormDto(currentFilter, filterOperation, values, searchField, havingCount);
+export const setFilter = (filterOperation, values, searchField, havingCount) => (dispatch, state) => {
+    const currentFilter = state.components.forms.events.filter.response;
 
-        dispatch({
-            type: FILTER,
-            value: updatedFilterObject
-        });
-    };
+    const updatedFilterObject = updateFormDto(currentFilter, filterOperation, values, searchField, havingCount);
+
+    dispatch({
+        type: FILTER,
+        value: updatedFilterObject
+    });
+};

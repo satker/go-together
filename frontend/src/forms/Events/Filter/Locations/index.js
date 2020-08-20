@@ -17,7 +17,7 @@ export const LocationField = 'idEventRoutes?locations.[isStart&isEnd&latitude,lo
 export const latLng = "latitude,longitude";
 
 const Locations = ({setFilter, filter}) => {
-    function updatedLocations(locations, filteredLocations) {
+    const updatedLocations = (locations, filteredLocations) => {
         const updatedBetweenLocations = locations
             .filter(value => value.lat && value.lng)
             .map(value => ({

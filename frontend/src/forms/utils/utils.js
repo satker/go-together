@@ -95,9 +95,6 @@ export const updateFormDto = (currentFilter, filterType, values, searchField,
                               havingCount) => {
     let resultFilterObject = {...currentFilter};
     if (havingCount) {
-        console.log(havingCount, keys(resultFilterObject.filters),
-            searchField
-        )
         const findValue = keys(resultFilterObject.filters)
             .find(keyFilter => keyFilter.startsWith(searchField));
         if (findValue) {
