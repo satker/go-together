@@ -43,7 +43,7 @@ export const setPage = (page) => (dispatch) => {
     });
 };
 
-export const setFilter = (filterOperation, values, searchField, havingCount = false) =>
+export const setFilter = (filterOperation, values, searchField, havingCount) =>
     (dispatch, state) => {
         const currentFilter = state.components.forms.events.filter.response;
 

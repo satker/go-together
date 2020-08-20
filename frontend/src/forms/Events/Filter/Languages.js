@@ -20,9 +20,17 @@ const Languages = ({languages, getLanguages, setFilter}) => {
     const onChange = (languages) => {
         const searchField = "author?languages.id";
         setChooseLanguages(languages);
-        setFilter(FilterOperator.EQUAL,
-            languages.map(language => ({id: language.id})),
-            searchField);
+        let searchLanguages;
+        if (languages.length === 0) {
+            searchLanguages = null;
+        } else {
+            searchLanguages = [{
+                "id": languages.map(language => language.id)
+            }];
+        }
+        setFilter(FilterOperator.IN,
+            searchLanguages,
+            searchField, languages.length);
     }
 
     return <LoadableContent loadableData={languages}>

@@ -4,6 +4,7 @@ import org.go.together.find.correction.field.CorrectedFieldDto;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class ValuesCorrectorService implements ValuesCorrector {
@@ -28,7 +29,11 @@ public class ValuesCorrectorService implements ValuesCorrector {
         if (clazz == null) {
             return value;
         }
-        if (clazz == String.class && value instanceof String) {
+        if (value instanceof Collection) {
+            return ((Collection) value).stream()
+                    .map(val -> parseFilterObjectToClass(val, clazz))
+                    .collect(Collectors.toSet());
+        } else if (clazz == String.class && value instanceof String) {
             return String.valueOf(value);
         } else if (clazz == UUID.class && value instanceof String) {
             return UUID.fromString(String.valueOf(value));

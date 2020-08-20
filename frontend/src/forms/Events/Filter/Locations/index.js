@@ -52,7 +52,7 @@ const Locations = ({setFilter, filter}) => {
             filteredLocations.push(newElement)
         }
 
-        setFilter(FilterOperator.NEAR_LOCATION, filteredLocations, LocationField, true);
+        setFilter(FilterOperator.NEAR_LOCATION, filteredLocations, LocationField, filteredLocations.length);
     }
 
     return <Container>

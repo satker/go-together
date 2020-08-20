@@ -20,9 +20,17 @@ const Interests = ({interests, getInterests, setFilter}) => {
     const onChange = (interests) => {
         const searchField = "author?interests.id";
         setChooseInterests(interests);
-        setFilter(FilterOperator.EQUAL,
-            interests.map(interest => ({id: interest.id})),
-            searchField);
+        let searchInterests;
+        if (interests.length === 0) {
+            searchInterests = null;
+        } else {
+            searchInterests = [{
+                "id": interests.map(interest => interest.id)
+            }];
+        }
+        setFilter(FilterOperator.IN,
+            searchInterests,
+            searchField, interests.length);
     }
 
     return <LoadableContent loadableData={interests}>
