@@ -45,8 +45,8 @@ export const setPage = (page) => (dispatch) => {
 
 export const cleanFilter = () => (dispatch) => {
     dispatch({
-        type: PAGE,
-        value: {...FORM_DTO("event")}
+        type: FILTER,
+        value: FORM_DTO("event")
     });
 };
 

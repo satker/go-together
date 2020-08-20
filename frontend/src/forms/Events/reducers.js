@@ -4,7 +4,7 @@ import {EVENTS_FIND_EVENTS, EVENTS_INTERESTS, EVENTS_LANGUAGES, FILTER} from "./
 import {FORM_DTO} from "../utils/constants";
 
 export const events = {
-    filter: createEmptyResponse(FILTER, {...FORM_DTO("event")}),
+    filter: createEmptyResponse(FILTER, FORM_DTO("event")),
     findEvents: createEmptyResponse(EVENTS_FIND_EVENTS, []),
     interests: createEmptyResponse(EVENTS_INTERESTS, []),
     languages: createEmptyResponse(EVENTS_LANGUAGES, [])
