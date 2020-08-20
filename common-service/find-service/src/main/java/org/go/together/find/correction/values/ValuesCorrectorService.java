@@ -7,8 +7,8 @@ import java.util.*;
 
 @Component
 public class ValuesCorrectorService implements ValuesCorrector {
-    public Collection<Map<String, Object>> getCorrectedValues(CorrectedFieldDto correctedFieldDto,
-                                                              Collection<Map<String, Object>> filters) {
+    public Collection<Map<String, Object>> correct(CorrectedFieldDto correctedFieldDto,
+                                                   Collection<Map<String, Object>> filters) {
         Collection<Map<String, Object>> result = new HashSet<>();
         Map<String, Class> oldValueClass = correctedFieldDto.getOldValueClass();
         for (Map<String, Object> next : filters) {

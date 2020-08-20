@@ -27,7 +27,7 @@ public class FieldCorrectorService implements FieldCorrector {
         this.filterCorrector = filterCorrector;
     }
 
-    public CorrectedFieldDto getCorrectedField(Map<String, FieldMapper> fieldMappers, String filterField) {
+    public CorrectedFieldDto correct(Map<String, FieldMapper> fieldMappers, String filterField) {
         Map<String, String> oldNewFilterField = Stream.of(getSingleGroupFields(filterField))
                 .collect(Collectors.toMap(Function.identity(), Function.identity()));
         Map<String, Class> oldValueClass = new HashMap<>();

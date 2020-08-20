@@ -14,8 +14,4 @@ import java.util.Map;
 public class FilterDto {
     private FindSqlOperator filterType;
     private Collection<Map<String, Object>> values;
-
-    public void addValue(Collection<Map<String, Object>> values) {
-        this.values.addAll(values);
-    }
 }

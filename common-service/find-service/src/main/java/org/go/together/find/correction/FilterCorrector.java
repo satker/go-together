@@ -56,7 +56,7 @@ public class FilterCorrector implements CorrectedService {
             CorrectedFieldDto localFieldForSearch = getCorrectedFieldDto(fieldDto, fieldMappers);
             if (isNotRemote) {
                 Collection<Map<String, Object>> correctedValuesForSearch =
-                        valuesCorrector.getCorrectedValues(localFieldForSearch, value.getValues());
+                        valuesCorrector.correct(localFieldForSearch, value.getValues());
                 value.setValues(correctedValuesForSearch);
                 localFilters.put(localFieldForSearch.getFieldDto(), value);
             } else {
@@ -70,11 +70,11 @@ public class FilterCorrector implements CorrectedService {
                                                   Map<String, FieldMapper> fieldMappers) {
         String[] localEntityFullFields = fieldDto.getPaths();
 
-        CorrectedPathDto correctedPath = pathCorrector.getCorrectedPath(localEntityFullFields, fieldMappers);
+        CorrectedPathDto correctedPath = pathCorrector.correct(localEntityFullFields, fieldMappers);
         Map<String, FieldMapper> lastFieldMapper = correctedPath.getCurrentFieldMapper();
 
         String lastFilterFields = fieldDto.getFilterFields();
-        CorrectedFieldDto correctedField = fieldCorrector.getCorrectedField(lastFieldMapper, lastFilterFields);
+        CorrectedFieldDto correctedField = fieldCorrector.correct(lastFieldMapper, lastFilterFields);
 
         FieldDto correctedFieldDto = getCorrectedFieldDto(fieldDto, correctedPath.getCorrectedPath(), correctedField.getCorrectedField());
 

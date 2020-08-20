@@ -6,6 +6,6 @@ import java.util.Collection;
 import java.util.Map;
 
 public interface ValuesCorrector {
-    Collection<Map<String, Object>> getCorrectedValues(CorrectedFieldDto correctedFieldDto,
-                                                       Collection<Map<String, Object>> filters);
+    Collection<Map<String, Object>> correct(CorrectedFieldDto correctedFieldDto,
+                                            Collection<Map<String, Object>> filters);
 }

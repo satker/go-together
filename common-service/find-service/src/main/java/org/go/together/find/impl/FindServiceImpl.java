@@ -6,9 +6,9 @@ import org.go.together.find.FindService;
 import org.go.together.find.correction.CorrectedService;
 import org.go.together.find.dto.FieldDto;
 import org.go.together.find.dto.form.FilterDto;
-import org.go.together.find.dto.utils.FindSqlOperator;
 import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.dto.form.PageDto;
+import org.go.together.find.dto.utils.FindSqlOperator;
 import org.go.together.find.finders.Finder;
 import org.go.together.find.repository.FindRepository;
 import org.go.together.find.repository.FindRepositoryImpl;
@@ -70,6 +70,10 @@ public abstract class FindServiceImpl<E extends IdentifiedEntity> implements Fin
 
     private Map<FieldDto, FilterDto> getConcatRemoteAndLocalFilters(Map<FieldDto, Collection<Object>> remoteFilters,
                                                                   Map<FieldDto, FilterDto> localFilters) {
+        boolean isNotFound = remoteFilters.values().stream().anyMatch(Collection::isEmpty);
+        if (isNotFound) {
+            return null;
+        }
         remoteFilters.forEach((key, values) -> {
             FilterDto filterDto = new FilterDto(FindSqlOperator.IN,
                     Collections.singleton(Collections.singletonMap(getCorrectFilterValuesKey(key), values)));
