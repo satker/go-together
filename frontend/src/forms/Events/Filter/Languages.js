@@ -13,17 +13,7 @@ import {keys} from "lodash";
 
 const LANGUAGES_FIELD = "author?languages.id";
 
-const Languages = ({languages, getLanguages, setFilter, filter}) => {
-    const filtersName = keys(filter.filters)
-        .find(keyFilter => keyFilter.startsWith(LANGUAGES_FIELD));
-    const filterLanguages = filter.filters[filtersName]?.values[0].id || [];
-    const chooseLanguages = filterLanguages
-        .map(languageId => ({
-            id: languageId,
-            name: languages.response?.result.find(language => language.id === languageId)
-        }).name)
-
-
+const Languages = ({languages, getLanguages, setFilter, chooseLanguages}) => {
     useEffect(() => {
         getLanguages();
     }, [getLanguages]);
@@ -52,9 +42,22 @@ Languages.propTypes = {
     languages: ResponseData
 }
 
-const mapStateToProps = state => ({
-    languages: state.components.forms.events.languages,
-    filter: state.components.forms.events.filter.response
-});
+const mapStateToProps = state => {
+    const languages = state.components.forms.events.languages;
+    const filters = state.components.forms.events.filter.response.filters;
+    const filtersName = keys(filters)
+        .find(keyFilter => keyFilter.startsWith(LANGUAGES_FIELD));
+    const filterLanguages = filters[filtersName]?.values[0].id || [];
+    const chooseLanguages = filterLanguages
+        .map(languageId => ({
+            id: languageId,
+            name: languages.response?.result.find(language => language.id === languageId)
+        }).name)
+
+    return ({
+        languages,
+        chooseLanguages
+    });
+}
 
 export default connect(mapStateToProps, {getLanguages, setFilter})(Languages);

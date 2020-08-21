@@ -25,7 +25,7 @@ const options = {
     types: ['(cities)']
 };
 
-const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, setValue, error}) => {
+const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, setValueCenter, error}) => {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const [currentOptions, setCurrentOptions] = useState([]);
@@ -38,7 +38,7 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
         return newLocation;
     };
 
-    const getLocationByPlaceId = ({results}) => {
+    const getLocationByPlaceId = (value) => ({results}) => {
         const result = results[0];
         if (onChangeLocation) {
             const newLocation = getLocation(['name', 'country.name', 'state'],
@@ -47,19 +47,18 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
         }
         if (setCenter) {
             setCenter({lat: result.geometry.location.lat, lng: result.geometry.location.lng});
+        } else if (setValueCenter) {
+            setValueCenter({value, lat: result.geometry.location.lat, lng: result.geometry.location.lng})
         }
     };
 
-    const onChooseItem = (chooseItem) => requestPlaceId(chooseItem.id, getLocationByPlaceId);
+    const onChooseItem = (chooseItem) => requestPlaceId(chooseItem, getLocationByPlaceId);
 
     const setPredictions = (value) => (predictions) => {
         const result = predictions.map(prediction =>
             ({id: prediction.place_id, name: prediction.description}))
         const choose = result.filter(option => option.name === value)[0];
         if (choose) {
-            if (setValue) {
-                setValue(choose);
-            }
             onChooseItem(choose);
         }
         setCurrentOptions(result);
@@ -89,8 +88,7 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
                 params = {
                     ...params, inputProps: {
                         ...params.inputProps,
-                        value: params.inputProps.value ||
-                            value && value.name + ', ' + value.country?.name
+                        value: setValueCenter ? value && value.name + ', ' + value.country?.name : params.inputProps.value
                     }
                 }
                 return <TextField

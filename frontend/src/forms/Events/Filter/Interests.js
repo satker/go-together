@@ -13,16 +13,7 @@ import {keys} from "lodash";
 
 const INTERESTS_FIELD = "author?interests.id";
 
-const Interests = ({interests, getInterests, setFilter, filter}) => {
-    const filtersName = keys(filter.filters)
-        .find(keyFilter => keyFilter.startsWith(INTERESTS_FIELD));
-    const filterInterests = filter.filters[filtersName]?.values[0].id || [];
-    const chooseInterests = filterInterests
-        .map(interestId => ({
-            id: interestId,
-            name: interests.response?.result.find(interest => interest.id === interestId)
-        }).name)
-
+const Interests = ({interests, getInterests, setFilter, chooseInterests}) => {
     useEffect(() => {
         getInterests();
     }, [getInterests]);
@@ -51,9 +42,22 @@ Interests.propTypes = {
     interests: ResponseData
 }
 
-const mapStateToProps = state => ({
-    interests: state.components.forms.events.interests,
-    filter: state.components.forms.events.filter.response
-});
+const mapStateToProps = state => {
+    const interests = state.components.forms.events.interests;
+    const filters = state.components.forms.events.filter.response.filters;
+    const filtersName = keys(filters)
+        .find(keyFilter => keyFilter.startsWith(INTERESTS_FIELD));
+    const filterInterests = filters[filtersName]?.values[0].id || [];
+    const chooseInterests = filterInterests
+        .map(interestId => ({
+            id: interestId,
+            name: interests.response?.result.find(interest => interest.id === interestId)
+        }).name)
+
+    return ({
+        interests,
+        chooseInterests
+    });
+}
 
 export default connect(mapStateToProps, {getInterests, setFilter})(Interests);

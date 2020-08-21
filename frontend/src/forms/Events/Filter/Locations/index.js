@@ -58,7 +58,7 @@ const Locations = ({setFilter, filter}) => {
     return <Container>
         <ItemContainer>
             <AutocompleteLocation
-                setCenter={onChangeLocation(true, false)}
+                setValueCenter={onChangeLocation(true, false)}
                 placeholder='Start place'/>
         </ItemContainer>
         <BetweenLocations onChangeLocation={onChangeLocation(false, false)}/>

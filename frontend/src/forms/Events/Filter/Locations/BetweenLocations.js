@@ -25,22 +25,14 @@ const BetweenLocations = ({onChangeLocation}) => {
         onChangeLocation(updatedRoutes);
     }
 
-    const updateLocation = (index) => (chooseValue) => {
+    const updateLocation = (index) => ({value, lat, lng}) => {
         const updatedLocation = routes.map(route => {
             if (route.number === index) {
                 const updatedLocation = {...route};
-                updatedLocation.value = chooseValue;
+                updatedLocation.value = value;
+                updatedLocation.lat = lat;
+                updatedLocation.lng = lng;
                 return updatedLocation;
-            }
-            return route;
-        });
-        setRoutes(updatedLocation);
-    };
-
-    const updateLocationWitLatLng = (index) => ({lat, lng}) => {
-        const updatedLocation = routes.map(route => {
-            if (route.number === index) {
-                return {...route, lat, lng};
             }
             return route;
         });
@@ -54,13 +46,11 @@ const BetweenLocations = ({onChangeLocation}) => {
         };
         setRoutes([...routes, newLocation]);
     }
-
     return <Container>
         {routes.map(route => <ItemContainer>
             <AutocompleteLocation key={route.number}
-                                  setCenter={updateLocationWitLatLng(route.number)}
                                   value={route.value}
-                                  setValue={updateLocation(route.number)}
+                                  setValueCenter={updateLocation(route.number)}
                                   placeholder='Middle place'
             />
             <DeleteIcon onDelete={onDeleteLocation(route.number)}/>
@@ -76,7 +66,4 @@ BetweenLocations.propTypes = {
     onChangeLocation: PropTypes.func.isRequired
 }
 
-BetweenLocations.propTypes = {
-    onChangeLocation: PropTypes.func.isRequired
-}
 export default BetweenLocations;
