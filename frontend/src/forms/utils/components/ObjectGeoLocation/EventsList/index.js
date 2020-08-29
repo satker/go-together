@@ -1,8 +1,8 @@
 import React from "react";
-
 import List from "@material-ui/core/List";
-import RouteItem from "./RouteItem";
 import PropTypes from "prop-types";
+
+import RouteItem from "./RouteItem";
 
 const RoutesList = ({routes, googleMap, selectedEvent, setSelectedEvent}) => {
 

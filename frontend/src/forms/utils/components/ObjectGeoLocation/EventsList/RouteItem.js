@@ -1,10 +1,10 @@
 import React from "react";
-
-import ContainerColumn from "../../Container/ContainerColumn";
+import PropTypes from "prop-types";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import {Route} from "../../../types";
-import PropTypes from "prop-types";
+
+import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
+import {Route} from "forms/utils/types";
 
 const RouteItem = ({selected, route, googleMap, setSelectedEvent}) => {
     const centerLocations = () => {

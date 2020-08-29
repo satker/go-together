@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from "App/Context";
-import MultipleMap from "../../utils/components/ObjectGeoLocation/MultipleMap";
+import MultipleMap from "forms/utils/components/ObjectGeoLocation/MultipleMap";
 
 const Map = ({events}) => {
     const eventLocations = events.map(event => ({

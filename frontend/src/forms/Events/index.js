@@ -10,12 +10,12 @@ import {getEventsLikes} from "forms/utils/components/Event/EventLikes/actions";
 import CustomPagination from "forms/utils/components/Pagination";
 import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import LeftContainer from "forms/utils/components/Container/LeftContainer";
+import {ResponseData, SearchObject} from "forms/utils/types";
+import CustomButton from "forms/utils/components/CustomButton";
 import RightContainer from "forms/utils/components/Container/RightContainer";
 
 import {postFindEvents} from "./actions";
 import Filter from "./Filter";
-import {ResponseData, SearchObject} from "forms/utils/types";
-import CustomButton from "../utils/components/CustomButton";
 import Map from "./Map";
 
 const Events = ({pageSize, postFindEvents, findEvents, getEventsLikes, filter}) => {

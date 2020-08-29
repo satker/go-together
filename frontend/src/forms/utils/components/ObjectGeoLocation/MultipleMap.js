@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from "react";
-import Marker from "./Marker";
-import Container from "../Container/ContainerRow";
-import ItemContainer from "../Container/ItemContainer";
-import AutocompleteLocation from "../AutocompleteLocation";
-import ContainerColumn from "../Container/ContainerColumn";
+
+import Container from "forms/utils/components/Container/ContainerRow";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
+import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
+import RightContainer from "forms/utils/components/Container/RightContainer";
+
 import ObjectGeoLocationContainer from "./ObjectGeoLocationContainer";
-import RightContainer from "../Container/RightContainer";
 import EventsList from "./EventsList";
+import Marker from "./Marker";
 
 const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}) => {
     const [center, setCenter] = useState({lat: 18.5204, lng: 73.8567});
