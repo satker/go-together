@@ -19,13 +19,10 @@ const ViewForm = ({event, getUsers, userId}) => {
     return <Container>
         {userId === event.author.id &&
         <Reference formRef={'/events/' + event.id + '/edit'} description='Edit event'/>}
-
         <MainInfo/>
         <ObjectGeoLocation
             editable={false}
-            setCurrentCenter={() => null}
-            routes={event.route.locations}
-            height={400}
+            route={event.route.locations}
         />
         <Users/>
     </Container>;

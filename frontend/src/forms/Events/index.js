@@ -15,9 +15,12 @@ import RightContainer from "forms/utils/components/Container/RightContainer";
 import {postFindEvents} from "./actions";
 import Filter from "./Filter";
 import {ResponseData, SearchObject} from "forms/utils/types";
+import CustomButton from "../utils/components/CustomButton";
+import Map from "./Map";
 
 const Events = ({pageSize, postFindEvents, findEvents, getEventsLikes, filter}) => {
     const [page, setPage] = useState(1);
+    const [isMap, setIsMap] = useState(false);
 
     useEffect(() => {
         filter.page.size = pageSize;
@@ -51,12 +54,14 @@ const Events = ({pageSize, postFindEvents, findEvents, getEventsLikes, filter}) 
                 <Filter/>
             </LeftContainer>
             <RightContainer style={{width: '80%'}}>
+                <CustomButton onClick={() => setIsMap(!isMap)} text={isMap ? 'Hide map' : 'Show map'}/>
                 <LoadableContent loadableData={findEvents}>
-                    <GroupItems
-                        onDelete={onDelete}
-                        items={findEvents.response.result}
-                        isEvents
-                    />
+                    {isMap ?
+                        <Map events={findEvents.response.result}/>
+                        : <GroupItems
+                            onDelete={onDelete}
+                            items={findEvents.response.result}
+                            isEvents/>}
                 </LoadableContent>
                 {pageCount <= 1 || <CustomPagination pageCount={pageCount}
                                                      page={page}

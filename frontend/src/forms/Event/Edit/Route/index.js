@@ -78,7 +78,7 @@ const Route = ({eventRoute, updateEvent}) => {
                 onAdd={addLocation}
                 onDelete={onDelete}
                 editable={true}
-                routes={eventRoute.locations}
+                route={eventRoute.locations}
                 onChange={onChangeLocation}
                 height={400}
             />
