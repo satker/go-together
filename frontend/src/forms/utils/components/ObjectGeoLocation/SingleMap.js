@@ -3,16 +3,17 @@ import PropTypes from "prop-types";
 
 import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
 import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
-import RightContainer from "forms/utils/components/Container/RightContainer";
 import Container from "forms/utils/components/Container/ContainerRow";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 
-import Marker from './Marker';
 import RoutesList from './RoutesList';
-import ObjectGeoLocationContainer from "./ObjectGeoLocationContainer";
+import MapContainer from "./Common/MapContainer";
+import ListContainer from "./Common/ListContainer";
+import {getMarker} from "./utils";
+import {usePosition} from "./hooks/usePosition";
 
-const ObjectGeoLocation = ({route, editable, onChange, zoom, onDelete, onAdd, height}) => {
-    const [center, setCenter] = useState({lat: 18.5204, lng: 73.8567});
+const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) => {
+    const [center, setCenter] = useState(usePosition());
     const [googleMap, setGoogleMap] = useState(null);
     const [polyline, setPolyline] = useState(null);
 
@@ -40,58 +41,38 @@ const ObjectGeoLocation = ({route, editable, onChange, zoom, onDelete, onAdd, he
 
     const getSortedRoutes = () => route.sort((route1, route2) => route1.routeNumber > route2.routeNumber ? 1 : -1);
 
-    const getMarker = (routes) => {
-        return routes
-            .map(route => <Marker
-                key={route.routeNumber}
-                lat={route.latitude}
-                lng={route.longitude}
-                name={route.address}
-                color={getColorByRouteNumber(route, routes)}
-            />);
-    }
     const getRoutes = () => getMarker(getSortedRoutes());
-
-    const getColorByRouteNumber = (route, routes) => {
-        if (route.routeNumber === 1) {
-            return 'green';
-        } else if (route.routeNumber === routes.length) {
-            return 'red'
-        } else {
-            return 'orange';
-        }
-    };
 
     return <Container>
         <ItemContainer>
             {editable && googleMap && <AutocompleteLocation setCenter={setCenter}/>}
         </ItemContainer>
         <ContainerColumn>
-            <ObjectGeoLocationContainer editable={editable}
-                                        height={height}
-                                        onAdd={onAdd}
-                                        onChange={onChange}
-                                        onDelete={onDelete}
-                                        route={route}
-                                        zoom={zoom}
-                                        setGoogleMap={setGoogleMap}
-                                        center={center}
-                                        setCenter={setCenter}
+            <MapContainer editable={editable}
+                          height={height}
+                          onAdd={onAdd}
+                          onChange={onChange}
+                          onDelete={onDelete}
+                          route={route}
+                          zoom={zoom}
+                          setGoogleMap={setGoogleMap}
+                          center={center}
+                          setCenter={setCenter}
             >
                 {getRoutes()}
-            </ObjectGeoLocationContainer>
-            <RightContainer isBordered={true} style={{width: '30%', height}}>
+            </MapContainer>
+            <ListContainer height={height}>
                 <RoutesList setCenter={setCenter}
                             onDelete={onDelete}
                             center={center}
                             routes={getSortedRoutes()}
                             editable={editable}/>
-            </RightContainer>
+            </ListContainer>
         </ContainerColumn>
     </Container>;
 };
 
-ObjectGeoLocation.props = {
+SingleMap.props = {
     route: PropTypes.array,
     routes: PropTypes.array,
     editable: PropTypes.bool.isRequired,
@@ -103,8 +84,8 @@ ObjectGeoLocation.props = {
     multipleRoutes: PropTypes.bool
 };
 
-ObjectGeoLocation.defaultProps = {
+SingleMap.defaultProps = {
     height: 400
 };
 
-export default ObjectGeoLocation;
+export default SingleMap;

@@ -4,14 +4,15 @@ import Container from "forms/utils/components/Container/ContainerRow";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
 import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
-import RightContainer from "forms/utils/components/Container/RightContainer";
 
-import ObjectGeoLocationContainer from "./ObjectGeoLocationContainer";
+import MapContainer from "./Common/MapContainer";
 import EventsList from "./EventsList";
-import Marker from "./Marker";
+import ListContainer from "./Common/ListContainer";
+import {getMarker} from "./utils";
+import {usePosition} from "./hooks/usePosition";
 
 const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}) => {
-    const [center, setCenter] = useState({lat: 18.5204, lng: 73.8567});
+    const [center, setCenter] = useState(usePosition());
     const [googleMap, setGoogleMap] = useState(null);
     const [polyline, setPolyline] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState(null);
@@ -42,53 +43,33 @@ const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}
         return routes.map(multipleRoutes => sort(multipleRoutes));
     };
 
-    const getMarker = (routes) => {
-        return routes
-            .map(route => <Marker
-                key={route.routeNumber}
-                lat={route.latitude}
-                lng={route.longitude}
-                name={route.address}
-                color={getColorByRouteNumber(route, routes)}
-            />);
-    }
     const getRoutes = () => getSortedRoutes().map(route => getMarker(route));
-
-    const getColorByRouteNumber = (route, routes) => {
-        if (route.routeNumber === 1) {
-            return 'green';
-        } else if (route.routeNumber === routes.length) {
-            return 'red'
-        } else {
-            return 'orange';
-        }
-    };
 
     return <Container>
         <ItemContainer>
             {editable && googleMap && <AutocompleteLocation setCenter={setCenter}/>}
         </ItemContainer>
         <ContainerColumn>
-            <ObjectGeoLocationContainer editable={editable}
-                                        height={height}
-                                        onAdd={onAdd}
-                                        onChange={onChange}
-                                        onDelete={onDelete}
-                                        routes={routes}
-                                        zoom={zoom}
-                                        setGoogleMap={setGoogleMap}
-                                        center={center}
-                                        setCenter={setCenter}
+            <MapContainer editable={editable}
+                          height={height}
+                          onAdd={onAdd}
+                          onChange={onChange}
+                          onDelete={onDelete}
+                          routes={routes}
+                          zoom={zoom}
+                          setGoogleMap={setGoogleMap}
+                          center={center}
+                          setCenter={setCenter}
             >
                 {getRoutes()}
-            </ObjectGeoLocationContainer>
-            <RightContainer isBordered={true} style={{width: '30%', height}}>
+            </MapContainer>
+            <ListContainer height={height}>
                 <EventsList routes={routes}
                             googleMap={googleMap}
-                            selected={selectedEvent}
+                            selectedEvent={selectedEvent}
                             setSelectedEvent={setSelectedEvent}
                 />
-            </RightContainer>
+            </ListContainer>
         </ContainerColumn>
     </Container>;
 }

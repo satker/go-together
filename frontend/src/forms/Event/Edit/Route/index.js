@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import PropTypes from "prop-types";
 
-import ObjectGeoLocation from "forms/utils/components/ObjectGeoLocation";
+import SingleMap from "forms/utils/components/ObjectGeoLocation/SingleMap";
 import {onChange} from "forms/utils/utils";
 import Container from "forms/utils/components/Container/ContainerRow";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
@@ -57,12 +57,6 @@ const Route = ({eventRoute, updateEvent}) => {
         }
         onChange(newElement, result => newElement = result)(paths, values);
         setRouteNumber(nextRouteNumber);
-        console.log(paths, values, [...eventRoute.locations.map(route => {
-            if (route.isEnd) {
-                route.isEnd = false;
-            }
-            return route;
-        }), newElement])
         updateEvent('route.locations', [...eventRoute.locations.map(route => {
             if (route.isEnd) {
                 route.isEnd = false;
@@ -74,14 +68,14 @@ const Route = ({eventRoute, updateEvent}) => {
         <ItemContainer>
             Add {routeNumber} route point (left click to add location):
         </ItemContainer>
-            <ObjectGeoLocation
-                onAdd={addLocation}
-                onDelete={onDelete}
-                editable={true}
-                route={eventRoute.locations}
-                onChange={onChangeLocation}
-                height={400}
-            />
+        <SingleMap
+            onAdd={addLocation}
+            onDelete={onDelete}
+            editable={true}
+            route={eventRoute.locations}
+            onChange={onChangeLocation}
+            height={400}
+        />
     </Container>;
 };
 

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import GoogleMapReact from 'google-map-react';
 
 import LeftContainer from "forms/utils/components/Container/LeftContainer";
-import {getAddress, getCity, getCountry, getState, GOOGLE_API_KEY, requestLatLng} from './utils';
+import {getAddress, getCity, getCountry, getState, GOOGLE_API_KEY, requestLatLng} from '../utils';
 
 const getMapOptions = {
     disableDefaultUI: true,
@@ -12,11 +12,11 @@ const getMapOptions = {
     styles: [{featureType: 'poi', elementType: 'labels', stylers: [{visibility: 'on'}]}],
 };
 
-const ObjectGeoLocationContainer = ({
-                                        route, routes, editable, onChange, zoom,
-                                        onAdd, height, children, setGoogleMap,
-                                        center, setCenter
-                                    }) => {
+const MapContainer = ({
+                          route, routes, editable, onChange, zoom,
+                          onAdd, height, children, setGoogleMap,
+                          center, setCenter
+                      }) => {
     const [isDraggable, setIsDraggable] = useState(true);
     const [zoomValue, setZoomValue] = useState(zoom || 9);
     const [currentKey, setCurrentKey] = useState(0);
@@ -111,7 +111,7 @@ const ObjectGeoLocationContainer = ({
     </LeftContainer>;
 };
 
-ObjectGeoLocationContainer.props = {
+MapContainer.props = {
     route: PropTypes.array,
     routes: PropTypes.array,
     editable: PropTypes.bool.isRequired,
@@ -122,8 +122,8 @@ ObjectGeoLocationContainer.props = {
     height: PropTypes.number,
 };
 
-ObjectGeoLocationContainer.defaultProps = {
+MapContainer.defaultProps = {
     height: 400
 };
 
-export default ObjectGeoLocationContainer;
+export default MapContainer;

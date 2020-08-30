@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import RouteItem from "./RouteItem";
 
 const RoutesList = ({routes, googleMap, selectedEvent, setSelectedEvent}) => {
-
+    console.log(selectedEvent, routes)
     return <List style={{overflow: 'auto'}}>
         {routes.map(route => <RouteItem key={route.name}
                                         route={route}
