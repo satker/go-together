@@ -75,9 +75,10 @@ export const getState = (addressObject) => {
     }
 };
 
-export const getMarker = (routes) => {
+export const getMarker = (routes, onClick) => {
     return routes
         .map(route => <Marker
+            onClick={onClick}
             key={route.routeNumber}
             lat={route.latitude}
             lng={route.longitude}
@@ -95,3 +96,5 @@ const getColorByRouteNumber = (route, routes) => {
         return 'orange';
     }
 };
+
+export const sort = (locations) => locations.sort((route1, route2) => route1.routeNumber > route2.routeNumber ? 1 : -1);

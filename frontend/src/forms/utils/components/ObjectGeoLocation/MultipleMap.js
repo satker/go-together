@@ -8,7 +8,7 @@ import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import MapContainer from "./Common/MapContainer";
 import EventsList from "./EventsList";
 import ListContainer from "./Common/ListContainer";
-import {getMarker} from "./utils";
+import {getMarker, sort} from "./utils";
 import {usePosition} from "./hooks/usePosition";
 
 const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}) => {
@@ -20,30 +20,27 @@ const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}
     useEffect(() => {
         if (googleMap) {
             const setMultiplePolyLine = (route) => {
-                let newPolylines = new googleMap.maps.Polyline({
-                    path: route.locations.map(route => ({lat: route.latitude, lng: route.longitude})),
+                const routePath = route.locations.map(route => ({lat: route.latitude, lng: route.longitude}));
+                let newPolyline = new googleMap.maps.Polyline({
+                    path: routePath,
                     geodesic: true,
                     strokeColor: selectedEvent !== route.id ? '#33BD4E' : '#0b4a16',
                     strokeOpacity: 1,
-                    strokeWeight: 5
+                    strokeWeight: 3
                 });
-                newPolylines.setMap(googleMap.map);
-                setPolyline([...polyline, newPolylines]);
+                newPolyline.setMap(googleMap.map);
+                setPolyline([...polyline, newPolyline]);
+                googleMap.maps.event.addListener(newPolyline, 'click', () => setSelectedEvent(route.id));
             }
 
             routes.map(route => setMultiplePolyLine(route));
         }
     }, [routes, googleMap, selectedEvent]);
 
-    const sort = (routes) =>
-        routes.locations =
-            routes.locations.sort((route1, route2) => route1.routeNumber > route2.routeNumber ? 1 : -1);
-
-    const getSortedRoutes = () => {
-        return routes.map(multipleRoutes => sort(multipleRoutes));
-    };
-
-    const getRoutes = () => getSortedRoutes().map(route => getMarker(route));
+    const getRoutes = () => routes.map(route => {
+        const sortedLocations = sort(route.locations);
+        return getMarker(sortedLocations, () => setSelectedEvent(route.id))
+    });
 
     return <Container>
         <ItemContainer>

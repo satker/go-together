@@ -9,7 +9,7 @@ import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import RoutesList from './RoutesList';
 import MapContainer from "./Common/MapContainer";
 import ListContainer from "./Common/ListContainer";
-import {getMarker} from "./utils";
+import {getMarker, sort} from "./utils";
 import {usePosition} from "./hooks/usePosition";
 
 const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) => {
@@ -31,7 +31,7 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
                     geodesic: true,
                     strokeColor: '#33BD4E',
                     strokeOpacity: 1,
-                    strokeWeight: 5
+                    strokeWeight: 3
                 });
                 newPolyline.setMap(googleMap.map);
                 setPolyline(newPolyline);
@@ -39,9 +39,7 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
         }
     }, [googleMap, route]);
 
-    const getSortedRoutes = () => route.sort((route1, route2) => route1.routeNumber > route2.routeNumber ? 1 : -1);
-
-    const getRoutes = () => getMarker(getSortedRoutes());
+    const getRoutes = () => getMarker(sort(route));
 
     return <Container>
         <ItemContainer>
@@ -65,7 +63,7 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
                 <RoutesList setCenter={setCenter}
                             onDelete={onDelete}
                             center={center}
-                            routes={getSortedRoutes()}
+                            routes={sort(route)}
                             editable={editable}/>
             </ListContainer>
         </ContainerColumn>
