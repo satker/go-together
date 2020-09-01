@@ -38,7 +38,6 @@ const MapContainer = ({
     }, [route, currentKey, editable, onChange, currentLat, currentLng]);
 
     const onCircleInteraction = (childKey, childProps, mouse) => {
-        // function is just a stub to test callbacks
         setIsDraggable(false);
         setCurrentKey(parseInt(childKey));
         setCurrentLat(mouse.lat);
@@ -71,7 +70,6 @@ const MapContainer = ({
     }
 
     const handleGoogleMapApi = (google) => {
-        // center map to route
         const bounds = new google.maps.LatLngBounds();
         routes ?
             routes.map(multipleRoutes => extendBounds(multipleRoutes.locations, bounds)) :

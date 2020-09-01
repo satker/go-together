@@ -15,7 +15,7 @@ const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}
     const [center, setCenter] = useState(usePosition());
     const [googleMap, setGoogleMap] = useState(null);
     const [polyline, setPolyline] = useState([]);
-    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [selected, setSelected] = useState(null);
 
     useEffect(() => {
         if (googleMap) {
@@ -24,23 +24,20 @@ const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}
                 let newPolyline = new googleMap.maps.Polyline({
                     path: routePath,
                     geodesic: true,
-                    strokeColor: selectedEvent !== route.id ? '#33BD4E' : '#0b4a16',
+                    strokeColor: selected !== route.id ? '#33BD4E' : '#0b4a16',
                     strokeOpacity: 1,
                     strokeWeight: 3
                 });
                 newPolyline.setMap(googleMap.map);
                 setPolyline([...polyline, newPolyline]);
-                googleMap.maps.event.addListener(newPolyline, 'click', () => setSelectedEvent(route.id));
+                googleMap.maps.event.addListener(newPolyline, 'click', () => setSelected(route.id));
             }
 
             routes.map(route => setMultiplePolyLine(route));
         }
-    }, [routes, googleMap, selectedEvent]);
+    }, [routes, googleMap, selected]);
 
-    const getRoutes = () => routes.map(route => {
-        const sortedLocations = sort(route.locations);
-        return getMarker(sortedLocations, () => setSelectedEvent(route.id))
-    });
+    const getRoutes = () => routes.map(route => getMarker(sort(route.locations), () => setSelected(route.id)));
 
     return <Container>
         <ItemContainer>
@@ -63,8 +60,8 @@ const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}
             <ListContainer height={height}>
                 <EventsList routes={routes}
                             googleMap={googleMap}
-                            selectedEvent={selectedEvent}
-                            setSelectedEvent={setSelectedEvent}
+                            selected={selected}
+                            setSelected={setSelected}
                 />
             </ListContainer>
         </ContainerColumn>

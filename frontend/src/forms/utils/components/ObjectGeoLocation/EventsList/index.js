@@ -4,14 +4,13 @@ import PropTypes from "prop-types";
 
 import RouteItem from "./RouteItem";
 
-const RoutesList = ({routes, googleMap, selectedEvent, setSelectedEvent}) => {
-    console.log(selectedEvent, routes)
+const RoutesList = ({routes, googleMap, selected, setSelected}) => {
     return <List style={{overflow: 'auto'}}>
         {routes.map(route => <RouteItem key={route.name}
                                         route={route}
                                         googleMap={googleMap}
-                                        selected={selectedEvent === route.id}
-                                        setSelectedEvent={setSelectedEvent}
+                                        selected={selected}
+                                        setSelected={setSelected}
         />)}
     </List>;
 };

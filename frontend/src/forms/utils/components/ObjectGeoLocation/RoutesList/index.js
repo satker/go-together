@@ -2,28 +2,26 @@ import React from "react";
 import PropTypes from "prop-types";
 import List from "@material-ui/core/List";
 
-import {CoordinateCenter} from "forms/utils/types";
-
 import RouteItem from "./RouteItem";
 
-const RoutesList = ({routes, editable, onDelete, center, setCenter}) => {
+const RoutesList = ({routes, editable, onDelete, googleMap, selected, setSelected}) => {
     return <List style={{overflow: 'auto'}}>
         {routes.map(route => <RouteItem key={route.routeNumber}
-                                        onDelete={editable && ((routeNumber) => {
-                                            onDelete(routeNumber);
-                                        })}
+                                        onDelete={editable && (() => onDelete(route.routeNumber))}
                                         route={route}
-                                        center={center}
-                                        setCenter={setCenter}/>)}
+                                        googleMap={googleMap}
+                                        selected={selected}
+                                        setSelected={setSelected}/>)}
     </List>;
 };
 
 RoutesList.propTypes = {
     routes: PropTypes.array,
     editable: PropTypes.bool,
+    googleMap: PropTypes.object,
     onDelete: PropTypes.func,
-    center: CoordinateCenter,
-    setCenter: PropTypes.func.isRequired
+    selected: PropTypes.string,
+    setSelected: PropTypes.func.isRequired
 };
 
 export default RoutesList;

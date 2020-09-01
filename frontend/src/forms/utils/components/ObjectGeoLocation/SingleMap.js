@@ -16,6 +16,7 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
     const [center, setCenter] = useState(usePosition());
     const [googleMap, setGoogleMap] = useState(null);
     const [polyline, setPolyline] = useState(null);
+    const [selected, setSelected] = useState(null);
 
     useEffect(() => {
         if (googleMap) {
@@ -39,7 +40,7 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
         }
     }, [googleMap, route]);
 
-    const getRoutes = () => getMarker(sort(route));
+    const getRoutes = () => getMarker(sort(route), editable || setSelected);
 
     return <Container>
         <ItemContainer>
@@ -60,9 +61,10 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
                 {getRoutes()}
             </MapContainer>
             <ListContainer height={height}>
-                <RoutesList setCenter={setCenter}
+                <RoutesList googleMap={googleMap}
+                            selected={selected}
+                            setSelected={setSelected}
                             onDelete={onDelete}
-                            center={center}
                             routes={sort(route)}
                             editable={editable}/>
             </ListContainer>

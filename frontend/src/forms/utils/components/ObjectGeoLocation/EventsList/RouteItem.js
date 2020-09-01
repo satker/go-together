@@ -8,17 +8,17 @@ import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import RightForward from "forms/utils/components/Icon/RightForward";
 import {Route} from "forms/utils/types";
 
-const RouteItem = ({selected, route, googleMap, setSelectedEvent}) => {
+const RouteItem = ({selected, route, googleMap, setSelected}) => {
     const centerLocations = () => {
         const bounds = new googleMap.maps.LatLngBounds();
         route.locations.map(route => ({lat: route.latitude, lng: route.longitude}))
             .forEach(route => bounds.extend(route));
         googleMap.map.fitBounds(bounds);
-        setSelectedEvent(route.id);
+        setSelected(route.id);
     };
 
     return <ContainerColumn>
-        <ListItem selected={selected}
+        <ListItem selected={selected === route.id}
                   onClick={centerLocations}>
             <ListItemIcon>
                 {route.name}
