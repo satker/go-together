@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import {connect} from "App/Context";
-import {Review} from "forms/utils/types";
+import {Event, Review} from "forms/utils/types";
 
 import ItemComment from "./ItemComment";
 
@@ -23,8 +23,7 @@ const MessagesContainer = ({reviews, event, userId}) => {
 
 MessagesContainer.propTypes = {
     reviews: PropTypes.arrayOf(Review),
-    eventUserId: PropTypes.string,
-    eventId: PropTypes.string.isRequired,
+    event: Event.isRequired,
     userId: PropTypes.string
 };
 

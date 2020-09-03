@@ -109,7 +109,7 @@ const MapContainer = ({
     </LeftContainer>;
 };
 
-MapContainer.props = {
+MapContainer.propTypes = {
     route: PropTypes.array,
     routes: PropTypes.array,
     editable: PropTypes.bool.isRequired,
@@ -117,7 +117,7 @@ MapContainer.props = {
     zoom: PropTypes.number,
     onDelete: PropTypes.func,
     onAdd: PropTypes.func,
-    height: PropTypes.number,
+    height: PropTypes.number
 };
 
 MapContainer.defaultProps = {

@@ -6,7 +6,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 
 import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import RightForward from "forms/utils/components/Icon/RightForward";
-import {Route} from "forms/utils/types";
+import {Location} from "forms/utils/types";
 
 const RouteItem = ({selected, route, centerLocations}) => {
     return <ContainerColumn>
@@ -23,7 +23,7 @@ const RouteItem = ({selected, route, centerLocations}) => {
 };
 
 RouteItem.propTypes = {
-    route: Route.isRequired,
+    route: Location.isRequired,
     selected: PropTypes.string,
     centerLocations: PropTypes.func.isRequired
 };

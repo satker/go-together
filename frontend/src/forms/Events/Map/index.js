@@ -8,8 +8,7 @@ const Map = ({events}) => {
         name: event.name,
         locations: event.route.locations
     }));
-    return <MultipleMap editable={false}
-                        routes={eventLocations}/>
+    return <MultipleMap routes={eventLocations}/>
 };
 
 const mapStateToProps = state => ({});

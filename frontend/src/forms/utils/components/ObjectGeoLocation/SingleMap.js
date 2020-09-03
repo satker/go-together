@@ -76,9 +76,8 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
     </Container>;
 };
 
-SingleMap.props = {
+SingleMap.propTypes = {
     route: PropTypes.array,
-    routes: PropTypes.array,
     editable: PropTypes.bool.isRequired,
     onChange: PropTypes.func,
     zoom: PropTypes.number,

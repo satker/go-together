@@ -10,6 +10,7 @@ import EventsList from "./EventsList";
 import ListContainer from "./Common/ListContainer";
 import {getMarker, sort} from "./utils";
 import {usePosition} from "./hooks/usePosition";
+import PropTypes from "prop-types";
 
 const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}) => {
     const [center, setCenter] = useState(usePosition());
@@ -73,6 +74,16 @@ const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}
             </ListContainer>
         </ContainerColumn>
     </Container>;
+}
+
+MultipleMap.propTypes = {
+    routes: PropTypes.array,
+    editable: PropTypes.bool.isRequired,
+    onChange: PropTypes.func,
+    zoom: PropTypes.number,
+    onDelete: PropTypes.func,
+    onAdd: PropTypes.func,
+    height: PropTypes.number,
 }
 
 export default MultipleMap;

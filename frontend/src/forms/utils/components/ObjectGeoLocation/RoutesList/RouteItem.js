@@ -4,7 +4,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 
-import {Route} from 'forms/utils/types'
+import {Location} from 'forms/utils/types'
 import Delete from "forms/utils/components/Icon/Delete";
 import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import LeftContainer from "../../Container/LeftContainer";
@@ -31,7 +31,7 @@ const RouteItem = ({selected, centerPlace, route, onDelete}) => {
 
 RouteItem.propTypes = {
     selected: PropTypes.string,
-    route: Route.isRequired,
+    route: Location.isRequired,
     centerPlace: PropTypes.func.isRequired,
     onDelete: PropTypes.oneOfType([PropTypes.func, PropTypes.bool])
 };

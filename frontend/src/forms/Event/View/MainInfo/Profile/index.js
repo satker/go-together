@@ -29,7 +29,7 @@ const Profile = ({author}) => {
     </RightContainer>;
 };
 
-Profile.props = {
+Profile.propTypes = {
     author: User.isRequired
 };
 
