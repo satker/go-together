@@ -10,14 +10,7 @@ import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import LeftContainer from "../../Container/LeftContainer";
 import RightContainer from "../../Container/RightContainer";
 
-const RouteItem = ({googleMap, selected, setSelected, route, onDelete}) => {
-    const centerPlace = () => {
-        const bounds = new googleMap.maps.LatLngBounds();
-        bounds.extend(({lat: route.latitude, lng: route.longitude}));
-        googleMap.map.fitBounds(bounds);
-        setSelected(route.id);
-    };
-
+const RouteItem = ({selected, centerPlace, route, onDelete}) => {
     return <ContainerColumn>
         <LeftContainer>
             <ListItem selected={selected === route.id} onClick={centerPlace}>
@@ -39,8 +32,7 @@ const RouteItem = ({googleMap, selected, setSelected, route, onDelete}) => {
 RouteItem.propTypes = {
     selected: PropTypes.string,
     route: Route.isRequired,
-    googleMap: PropTypes.object,
-    setSelected: PropTypes.func.isRequired,
+    centerPlace: PropTypes.func.isRequired,
     onDelete: PropTypes.oneOfType([PropTypes.func, PropTypes.bool])
 };
 

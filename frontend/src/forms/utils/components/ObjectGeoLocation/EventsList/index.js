@@ -4,21 +4,20 @@ import PropTypes from "prop-types";
 
 import RouteItem from "./RouteItem";
 
-const RoutesList = ({routes, googleMap, selected, setSelected}) => {
+const RoutesList = ({routes, selected, centerLocations}) => {
     return <List style={{overflow: 'auto'}}>
         {routes.map(route => <RouteItem key={route.name}
                                         route={route}
-                                        googleMap={googleMap}
                                         selected={selected}
-                                        setSelected={setSelected}
+                                        centerLocations={centerLocations(route)}
         />)}
     </List>;
 };
 
 RoutesList.propTypes = {
     routes: PropTypes.array,
-    editable: PropTypes.bool,
-    onDelete: PropTypes.func
+    selected: PropTypes.string,
+    centerLocations: PropTypes.func.isRequired
 };
 
 export default RoutesList;

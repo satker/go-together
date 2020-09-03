@@ -78,7 +78,7 @@ export const getState = (addressObject) => {
 export const getMarker = (routes, onClick) => {
     return routes
         .map(route => <Marker
-            onClick={() => onClick(route.id)}
+            onClick={() => onClick(route)}
             key={route.routeNumber}
             lat={route.latitude}
             lng={route.longitude}

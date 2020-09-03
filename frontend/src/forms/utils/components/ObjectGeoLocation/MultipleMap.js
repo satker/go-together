@@ -39,6 +39,14 @@ const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}
 
     const getRoutes = () => routes.map(route => getMarker(sort(route.locations), () => setSelected(route.id)));
 
+    const centerLocations = (route) => () => {
+        const bounds = new googleMap.maps.LatLngBounds();
+        route.locations.map(route => ({lat: route.latitude, lng: route.longitude}))
+            .forEach(route => bounds.extend(route));
+        googleMap.map.fitBounds(bounds);
+        setSelected(route.id);
+    };
+
     return <Container>
         <ItemContainer>
             {editable && googleMap && <AutocompleteLocation setCenter={setCenter}/>}
@@ -59,9 +67,8 @@ const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}
             </MapContainer>
             <ListContainer height={height}>
                 <EventsList routes={routes}
-                            googleMap={googleMap}
                             selected={selected}
-                            setSelected={setSelected}
+                            centerLocations={centerLocations}
                 />
             </ListContainer>
         </ContainerColumn>

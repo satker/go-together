@@ -8,15 +8,7 @@ import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import RightForward from "forms/utils/components/Icon/RightForward";
 import {Route} from "forms/utils/types";
 
-const RouteItem = ({selected, route, googleMap, setSelected}) => {
-    const centerLocations = () => {
-        const bounds = new googleMap.maps.LatLngBounds();
-        route.locations.map(route => ({lat: route.latitude, lng: route.longitude}))
-            .forEach(route => bounds.extend(route));
-        googleMap.map.fitBounds(bounds);
-        setSelected(route.id);
-    };
-
+const RouteItem = ({selected, route, centerLocations}) => {
     return <ContainerColumn>
         <ListItem selected={selected === route.id}
                   onClick={centerLocations}>
@@ -32,7 +24,8 @@ const RouteItem = ({selected, route, googleMap, setSelected}) => {
 
 RouteItem.propTypes = {
     route: Route.isRequired,
-    onDelete: PropTypes.oneOfType([PropTypes.func, PropTypes.bool])
+    selected: PropTypes.string,
+    centerLocations: PropTypes.func.isRequired
 };
 
 export default RouteItem;

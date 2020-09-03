@@ -40,7 +40,12 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
         }
     }, [googleMap, route]);
 
-    const getRoutes = () => getMarker(sort(route), editable || setSelected);
+    const getRoutes = () => getMarker(sort(route), editable || ((route) => centerPlace(route)()));
+
+    const centerPlace = (route) => () => {
+        setCenter({lat: route.latitude, lng: route.longitude})
+        setSelected(route.id);
+    };
 
     return <Container>
         <ItemContainer>
@@ -61,9 +66,8 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
                 {getRoutes()}
             </MapContainer>
             <ListContainer height={height}>
-                <RoutesList googleMap={googleMap}
-                            selected={selected}
-                            setSelected={setSelected}
+                <RoutesList selected={selected}
+                            centerPlace={centerPlace}
                             onDelete={onDelete}
                             routes={sort(route)}
                             editable={editable}/>
