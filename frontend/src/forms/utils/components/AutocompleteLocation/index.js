@@ -66,7 +66,7 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
     }
 
     const onChangeValue = (inputValue) => {
-        setValueCenter({value: {name: inputValue}})
+        setValueCenter && setValueCenter({value: {name: inputValue}});
 
         if (inputValue) {
             setLoading(true);
