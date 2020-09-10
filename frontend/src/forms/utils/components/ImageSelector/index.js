@@ -62,7 +62,7 @@ const ImageSelector = ({photos, setPhotos, multiple}) => {
     </ContainerRow>;
 };
 
-ImageSelector.props = {
+ImageSelector.propTypes = {
     photos: PropTypes.arrayOf(PhotoObject),
     setPhotos: PropTypes.func.isRequired,
     multiple: PropTypes.bool.isRequired

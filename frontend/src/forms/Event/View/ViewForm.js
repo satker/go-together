@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {connect} from "App/Context";
 import {Event} from "forms/utils/types";
 import Reference from "forms/utils/components/Reference";
-import ObjectGeoLocation from "forms/utils/components/ObjectGeoLocation";
+import SingleMap from "forms/utils/components/ObjectGeoLocation/SingleMap";
 import Container from "forms/utils/components/Container/ContainerRow";
 
 import Users from "./Users";
@@ -19,13 +19,10 @@ const ViewForm = ({event, getUsers, userId}) => {
     return <Container>
         {userId === event.author.id &&
         <Reference formRef={'/events/' + event.id + '/edit'} description='Edit event'/>}
-
         <MainInfo/>
-        <ObjectGeoLocation
+        <SingleMap
             editable={false}
-            setCurrentCenter={() => null}
-            routes={event.route.locations}
-            height={400}
+            route={event.route.locations}
         />
         <Users/>
     </Container>;

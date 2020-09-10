@@ -24,7 +24,7 @@ const CounterItem = ({value, setValue, disabled}) => {
 
 };
 
-CounterItem.props = {
+CounterItem.propTypes = {
     value: PropTypes.object.isRequired,
     setValue: PropTypes.func.isRequired,
     disabled: PropTypes.bool.isRequired

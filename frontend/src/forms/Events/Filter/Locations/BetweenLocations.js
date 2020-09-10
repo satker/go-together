@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
 
 import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
@@ -6,9 +6,19 @@ import CustomButton from "forms/utils/components/CustomButton";
 import DeleteIcon from "forms/utils/components/Icon/Delete";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import Container from "forms/utils/components/Container/ContainerRow";
+import {connect} from "App/Context";
 
-const BetweenLocations = ({onChangeLocation}) => {
+import {getChangedRoutes} from "./index";
+
+const BetweenLocations = ({onChangeLocation, filters}) => {
     const [routes, setRoutes] = useState([]);
+
+    useEffect(() => {
+        if (filters?.filters) {
+            const newRoutes = getChangedRoutes(filters, routes, (value) => !value.isEnd && !value.isStart);
+            setRoutes(newRoutes);
+        }
+    }, [filters]);
 
     const onDeleteLocation = (index) => () => {
         const updatedRoutes = routes
@@ -37,7 +47,10 @@ const BetweenLocations = ({onChangeLocation}) => {
             return route;
         });
         setRoutes(updatedLocation);
-        onChangeLocation(updatedLocation);
+
+        if (lat && lng) {
+            onChangeLocation(updatedLocation);
+        }
     };
 
     const onAddLocation = () => {
@@ -66,4 +79,8 @@ BetweenLocations.propTypes = {
     onChangeLocation: PropTypes.func.isRequired
 }
 
-export default BetweenLocations;
+const mapStateToProps = state => ({
+    filters: state.components.forms.events.filter.response
+});
+
+export default connect(mapStateToProps, null)(BetweenLocations);

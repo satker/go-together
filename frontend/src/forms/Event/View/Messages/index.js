@@ -17,7 +17,7 @@ const Messages = ({userMessageId, eventAuthorId, setUserMessageId, userId}) => {
     </ContainerColumn>
 };
 
-Messages.props = {
+Messages.propTypes = {
     userMessageId: PropTypes.string,
     eventUserId: PropTypes.string,
     eventId: PropTypes.string.isRequired,

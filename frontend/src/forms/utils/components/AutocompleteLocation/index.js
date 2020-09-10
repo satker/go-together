@@ -66,6 +66,8 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
     }
 
     const onChangeValue = (inputValue) => {
+        setValueCenter({value: {name: inputValue}})
+
         if (inputValue) {
             setLoading(true);
             autocomplete.getQueryPredictions({input: inputValue, ...options}, setPredictions(inputValue));
@@ -74,21 +76,20 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
         }
     };
 
-    return (
-        <StyledAutocomplete
-            id={"location_autocomplete"}
-            fullWidth
-            open={open}
-            onOpen={() => setOpen(true)}
-            onClose={() => setOpen(false)}
-            getOptionLabel={option => option.name}
-            options={currentOptions}
-            onInputChange={(evt, value) => onChangeValue(value)}
-            renderInput={params => {
-                params = {
+    return <StyledAutocomplete
+        id={"location_autocomplete"}
+        fullWidth
+        open={open}
+        onOpen={() => setOpen(true)}
+        onClose={() => setOpen(false)}
+        getOptionLabel={option => option.name}
+        options={currentOptions}
+        onInputChange={(evt, value) => onChangeValue(value)}
+        renderInput={params => {
+            params = {
                     ...params, inputProps: {
                         ...params.inputProps,
-                        value: setValueCenter ? value && value.name + ', ' + value.country?.name : params.inputProps.value
+                    value: setValueCenter ? value?.name || '' : params.inputProps.value
                     }
                 }
                 return <TextField
@@ -110,10 +111,9 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
                         ),
                     }}
                 />
-            }
-            }
-        />
-    );
+        }
+        }
+    />;
 };
 
 AutocompleteLocation.propTypes = {

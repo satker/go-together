@@ -3,13 +3,13 @@ import PropTypes from "prop-types";
 
 import './style.css';
 
-const Marker = ({color, name}) => {
+const Marker = ({color, name, onClick}) => {
     return (
         <div>
-            <div
-                className="pin bounce"
-                style={{backgroundColor: color, cursor: 'pointer'}}
-                title={name}
+            <div onClick={onClick}
+                 className="pin bounce"
+                 style={{backgroundColor: color, cursor: 'pointer'}}
+                 title={name}
             />
             <div className="pulse"/>
         </div>
@@ -19,6 +19,10 @@ const Marker = ({color, name}) => {
 Marker.propTypes = {
     color: PropTypes.string.isRequired,
     name: PropTypes.string
+};
+
+Marker.defaultProps = {
+    onClick: () => null
 };
 
 export default Marker;
