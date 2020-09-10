@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {navigate} from "hookrouter";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
+import {ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 
 import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import RightForward from "forms/utils/components/Icon/RightForward";
@@ -12,9 +11,9 @@ const RouteItem = ({selected, route, centerLocations}) => {
     return <ContainerColumn>
         <ListItem selected={selected === route.id}
                   onClick={centerLocations}>
-            <ListItemIcon>
+            <ListItemText>
                 {route.name}
-            </ListItemIcon>
+            </ListItemText>
             <ListItemIcon>
                 <RightForward onClick={() => navigate('/events/' + route.id)}/>
             </ListItemIcon>
