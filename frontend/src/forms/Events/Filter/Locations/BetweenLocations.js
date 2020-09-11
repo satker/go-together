@@ -5,7 +5,6 @@ import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
 import CustomButton from "forms/utils/components/CustomButton";
 import DeleteIcon from "forms/utils/components/Icon/Delete";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
-import Container from "forms/utils/components/Container/ContainerRow";
 import {connect} from "App/Context";
 
 import {getChangedRoutes} from "./index";
@@ -48,7 +47,7 @@ const BetweenLocations = ({onChangeLocation, filters}) => {
         });
         setRoutes(updatedLocation);
 
-        if (lat && lng) {
+        if ((lat && lng) || value.name === '') {
             onChangeLocation(updatedLocation);
         }
     };
@@ -59,7 +58,7 @@ const BetweenLocations = ({onChangeLocation, filters}) => {
         };
         setRoutes([...routes, newLocation]);
     }
-    return <Container>
+    return <>
         {routes.map(route => <ItemContainer>
             <AutocompleteLocation key={route.number}
                                   value={route.value}
@@ -72,7 +71,7 @@ const BetweenLocations = ({onChangeLocation, filters}) => {
             <CustomButton onClick={onAddLocation}
                           text='Add place'/>
         </ItemContainer>
-    </Container>
+    </>
 }
 
 BetweenLocations.propTypes = {

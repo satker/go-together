@@ -10,6 +10,7 @@ import Locations from "./Locations";
 import Interests from "./Interests";
 import Languages from "./Languages";
 import Dates from "./Dates";
+import MyEvents from "./MyEvents";
 
 const Filter = ({cleanFilter}) => {
     const clearFilters = () => {
@@ -18,6 +19,9 @@ const Filter = ({cleanFilter}) => {
     };
 
     return <Container>
+        <ItemContainer>
+            <MyEvents/>
+        </ItemContainer>
         <Locations/>
         <ItemContainer>
             <Dates/>

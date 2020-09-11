@@ -9,24 +9,26 @@ import CheckInOutDates from "forms/utils/components/CheckInOutDates";
 import {setFilter} from "../actions";
 import {SearchObject} from "forms/utils/types";
 
+const START_DATE = 'startDate';
+const END_DATE = 'endDate';
+
 const Dates = ({filter, setFilter}) => {
     const onChangeDate = (searchField, filterOperation) => (date) => {
-        let values = null;
         if (date) {
-            values = [{
+            const values = [{
                 [searchField]: date
             }];
             setFilter(filterOperation, values, searchField);
         }
     }
 
-    const startDate = filter.filters['startDate'];
-    const endDate = filter.filters['endDate'];
+    const startDate = filter.filters[START_DATE];
+    const endDate = filter.filters[END_DATE];
 
     return <CheckInOutDates startDate={startDate && startDate.values[0]?.startDate}
                             endDate={endDate && endDate.values[0]?.endDate}
-                            setStartDate={onChangeDate('startDate', FilterOperator.START_DATE)}
-                            setEndDate={onChangeDate('endDate', FilterOperator.END_DATE)}/>;
+                            setStartDate={onChangeDate(START_DATE, FilterOperator.START_DATE)}
+                            setEndDate={onChangeDate(END_DATE, FilterOperator.END_DATE)}/>;
 };
 
 Dates.propTypes = {

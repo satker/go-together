@@ -8,7 +8,6 @@ import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
 import {FilterOperator} from "forms/utils/utils";
 import {SearchObject} from "forms/utils/types";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
-import Container from "forms/utils/components/Container/ContainerRow";
 
 import BetweenLocations from "./BetweenLocations";
 import {setFilter} from "../../actions";
@@ -49,7 +48,7 @@ const Locations = ({setFilter, filter}) => {
         }
     }, [filter]);
 
-    const updatedLocations = (locations, filteredLocations) => {
+    const updateBetweenLocations = (locations, filteredLocations) => {
         const updatedBetweenLocations = locations
             .filter(value => value.lat && value.lng)
             .map(value => ({
@@ -57,10 +56,8 @@ const Locations = ({setFilter, filter}) => {
                 isEnd: false,
                 [LAT_LNG]: value.lat + ',' + value.lng
             }))
-        filteredLocations = filteredLocations
-            .filter(place => place.isStart || place.isEnd);
-        filteredLocations = [...filteredLocations, ...updatedBetweenLocations];
-        return filteredLocations;
+        return [...filteredLocations.filter(place => place.isStart || place.isEnd),
+            ...updatedBetweenLocations];
     }
 
     const onChangeLocation = (isStart, isEnd) => (locations) => {
@@ -70,7 +67,7 @@ const Locations = ({setFilter, filter}) => {
         let filteredLocations = foundKey ? filter.filters[foundKey]?.values : [];
 
         if (locations instanceof Array) {
-            filteredLocations = updatedLocations(locations, filteredLocations);
+            filteredLocations = updateBetweenLocations(locations, filteredLocations);
         } else {
             if (isEnd) {
                 setLastRoute(locations)
@@ -78,6 +75,11 @@ const Locations = ({setFilter, filter}) => {
                 setFirstRoute(locations);
             }
             if (!locations.lat || !locations.lng) {
+                if (locations.value.name === '' && filteredLocations) {
+                    filteredLocations = filteredLocations
+                        .filter(place => !(place.isStart === isStart && place.isEnd === isEnd));
+                    setFilter(FilterOperator.NEAR_LOCATION, filteredLocations, LOCATION_FIELD, filteredLocations.length);
+                }
                 return;
             } else {
                 const newElement = {
@@ -96,7 +98,7 @@ const Locations = ({setFilter, filter}) => {
         setFilter(FilterOperator.NEAR_LOCATION, filteredLocations, LOCATION_FIELD, filteredLocations.length);
     }
 
-    return <Container>
+    return <>
         <ItemContainer>
             <AutocompleteLocation
                 value={firstRoute?.value}
@@ -110,7 +112,7 @@ const Locations = ({setFilter, filter}) => {
                 setValueCenter={onChangeLocation(false, true)}
                 placeholder='End place'/>
         </ItemContainer>
-    </Container>
+    </>
 }
 
 Locations.propTypes = {

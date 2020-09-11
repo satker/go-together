@@ -10,7 +10,7 @@ import {connect} from "App/Context";
 
 const ItemEvent = ({event, onDelete, userId, eventIds}) => <Card>
     <CardActionArea href={'/events/' + event.id}>
-        <DeleteIcon onDelete={() => onDelete(event.id)}/>
+        {event.author.id === userId && <DeleteIcon onDelete={() => onDelete(event.id)}/>}
         <CardMedia
             component="img"
             height="250"
