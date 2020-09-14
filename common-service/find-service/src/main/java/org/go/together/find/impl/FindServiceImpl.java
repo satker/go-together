@@ -5,6 +5,7 @@ import org.go.together.exceptions.IncorrectDtoException;
 import org.go.together.find.FindService;
 import org.go.together.find.correction.CorrectedService;
 import org.go.together.find.dto.FieldDto;
+import org.go.together.find.dto.FieldMapper;
 import org.go.together.find.dto.form.FilterDto;
 import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.dto.form.PageDto;
@@ -56,16 +57,17 @@ public abstract class FindServiceImpl<E extends IdentifiedEntity> implements Fin
     }
 
     private Map<FieldDto, FilterDto> getFilters(FormDto formDto) {
-        Pair<Map<FieldDto, FilterDto>, Map<FieldDto, FilterDto>>
-                correctedFilters = correctedService.getRemoteAndCorrectedFilters(formDto.getFilters(), getMappingFields());
-        Map<FieldDto, Collection<Object>> remoteFilters = new HashMap<>();
-        if (!correctedFilters.getLeft().isEmpty()) {
-            remoteFilters = remoteFindService.getFilters(correctedFilters.getLeft(), getMappingFields());
+        Map<String, FieldMapper> mappingFields = getMappingFields();
+        Map<FieldDto, FilterDto> remoteFilters = correctedService.getRemoteFilters(formDto.getFilters(), mappingFields);
+        Map<FieldDto, Collection<Object>> resultRemoteFilters = new HashMap<>();
+        if (!remoteFilters.isEmpty()) {
+            resultRemoteFilters = remoteFindService.getFilters(remoteFilters, mappingFields);
         }
-        if (remoteFilters == null) {
+        if (resultRemoteFilters == null) {
             return null;
         }
-        return getConcatRemoteAndLocalFilters(remoteFilters, correctedFilters.getRight());
+        Map<FieldDto, FilterDto> localFilters = correctedService.getLocalFilters(formDto.getFilters(), mappingFields);
+        return getConcatRemoteAndLocalFilters(resultRemoteFilters, localFilters);
     }
 
     private Map<FieldDto, FilterDto> getConcatRemoteAndLocalFilters(Map<FieldDto, Collection<Object>> remoteFilters,

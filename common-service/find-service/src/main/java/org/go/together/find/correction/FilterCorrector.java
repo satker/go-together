@@ -1,7 +1,6 @@
 package org.go.together.find.correction;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.find.correction.field.CorrectedFieldDto;
 import org.go.together.find.correction.field.FieldCorrector;
@@ -14,8 +13,8 @@ import org.go.together.find.dto.form.FilterDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.AbstractMap;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -44,40 +43,55 @@ public class FilterCorrector implements CorrectedService {
         this.pathCorrector = pathCorrector;
     }
 
-    public Pair<Map<FieldDto, FilterDto>, Map<FieldDto, FilterDto>> getRemoteAndCorrectedFilters(Map<String, FilterDto> filters,
-                                                                                                 Map<String, FieldMapper> availableFields) {
-        Map<FieldDto, FilterDto> localFilters = new HashMap<>();
-        Map<FieldDto, FilterDto> remoteFilters = new HashMap<>();
-        filters.forEach((key, value) -> {
-            FieldDto fieldDto = new FieldDto(key);
-            Map<String, FieldMapper> fieldMappers = getFieldMappersByFieldDto(availableFields, fieldDto);
-            boolean isNotRemote = fieldMappers.values().stream()
-                    .allMatch(fieldMapper -> fieldMapper.getRemoteServiceClient() == null);
-            CorrectedFieldDto localFieldForSearch = getCorrectedFieldDto(fieldDto, fieldMappers);
-            if (isNotRemote) {
-                Collection<Map<String, Object>> correctedValuesForSearch =
-                        valuesCorrector.correct(localFieldForSearch, value.getValues());
-                value.setValues(correctedValuesForSearch);
-                localFilters.put(localFieldForSearch.getFieldDto(), value);
-            } else {
-                remoteFilters.put(localFieldForSearch.getFieldDto(), value);
-            }
-        });
-        return Pair.of(remoteFilters, localFilters);
+    @Override
+    public Map<FieldDto, FilterDto> getRemoteFilters(Map<String, FilterDto> filters,
+                                                     Map<String, FieldMapper> availableFields) {
+        return filters.entrySet().stream()
+                .map(entry -> new AbstractMap.SimpleEntry<>(new FieldDto(entry.getKey()), entry.getValue()))
+                .filter(entry -> getFieldMappersByFieldDto(availableFields, entry.getKey()).values().stream()
+                        .noneMatch(fieldMapper -> fieldMapper.getRemoteServiceClient() == null))
+                .map(entry -> getRemoteFields(entry, getFieldMappersByFieldDto(availableFields, entry.getKey())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    @Override
+    public Map<FieldDto, FilterDto> getLocalFilters(Map<String, FilterDto> filters,
+                                                    Map<String, FieldMapper> availableFields) {
+        return filters.entrySet().stream()
+                .map(entry -> new AbstractMap.SimpleEntry<>(new FieldDto(entry.getKey()), entry.getValue()))
+                .filter(entry -> getFieldMappersByFieldDto(availableFields, entry.getKey()).values().stream()
+                        .allMatch(fieldMapper -> fieldMapper.getRemoteServiceClient() == null))
+                .map(entry -> getCorrectedLocalFields(entry, getFieldMappersByFieldDto(availableFields, entry.getKey())))
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        Map.Entry::getValue, (filterDto, filterDto1) -> filterDto));
+    }
+
+    private Map.Entry<FieldDto, FilterDto> getRemoteFields(Map.Entry<FieldDto, FilterDto> entry,
+                                                           Map<String, FieldMapper> fieldMappers) {
+        CorrectedFieldDto localFieldForSearch = getCorrectedFieldDto(entry.getKey(), fieldMappers);
+        return new AbstractMap.SimpleEntry<>(localFieldForSearch.getFieldDto(), entry.getValue());
+    }
+
+    private Map.Entry<FieldDto, FilterDto> getCorrectedLocalFields(Map.Entry<FieldDto, FilterDto> entry,
+                                                                   Map<String, FieldMapper> fieldMappers) {
+        CorrectedFieldDto localFieldForSearch = getCorrectedFieldDto(entry.getKey(), fieldMappers);
+        FilterDto value = entry.getValue();
+        Collection<Map<String, Object>> correctedValuesForSearch =
+                valuesCorrector.correct(localFieldForSearch, value.getValues());
+        value.setValues(correctedValuesForSearch);
+        return new AbstractMap.SimpleEntry<>(localFieldForSearch.getFieldDto(), value);
     }
 
     public CorrectedFieldDto getCorrectedFieldDto(FieldDto fieldDto,
                                                   Map<String, FieldMapper> fieldMappers) {
         String[] localEntityFullFields = fieldDto.getPaths();
-
         CorrectedPathDto correctedPath = pathCorrector.correct(localEntityFullFields, fieldMappers);
         Map<String, FieldMapper> lastFieldMapper = correctedPath.getCurrentFieldMapper();
-
         String lastFilterFields = fieldDto.getFilterFields();
         CorrectedFieldDto correctedField = fieldCorrector.correct(lastFieldMapper, lastFilterFields);
-
-        FieldDto correctedFieldDto = getCorrectedFieldDto(fieldDto, correctedPath.getCorrectedPath(), correctedField.getCorrectedField());
-
+        FieldDto correctedFieldDto = getCorrectedFieldDto(fieldDto,
+                correctedPath.getCorrectedPath(),
+                correctedField.getCorrectedField());
         return correctedField.toBuilder().fieldDto(correctedFieldDto).build();
     }
 
@@ -89,16 +103,13 @@ public class FilterCorrector implements CorrectedService {
         } else {
             resultFilterString.append(correctedFilterFields);
         }
-
         String fieldDtoRemoteField = fieldDto.getRemoteField();
-
         String remoteField = StringUtils.isNotBlank(fieldDtoRemoteField) ? fieldDtoRemoteField : null;
-
         return new FieldDto(resultFilterString.toString(), remoteField);
     }
 
     private Map<String, FieldMapper> getFieldMappersByFieldDto(Map<String, FieldMapper> availableFields,
-                                                                     FieldDto fieldDto) {
+                                                               FieldDto fieldDto) {
         String[] localEntityFullFields = fieldDto.getPaths();
 
         String localEntityField = localEntityFullFields[0];

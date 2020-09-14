@@ -56,6 +56,7 @@ public class RemoteFinder implements Finder {
         String localEntityField = fieldDto.getPaths()[0];
         Set<String> singleGroupFields = Set.of(getSingleGroupFields(localEntityField));
         return availableFields.values().stream()
+                .filter(fieldMapper -> fieldMapper.getRemoteServiceClient() != null)
                 .filter(fieldMapper -> singleGroupFields.contains(fieldMapper.getCurrentServiceField()))
                 .collect(Collectors.toSet());
     }

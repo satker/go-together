@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
 import CustomButton from "forms/utils/components/CustomButton";
-import DeleteIcon from "forms/utils/components/Icon/Delete";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import {connect} from "App/Context";
 
@@ -18,21 +17,6 @@ const BetweenLocations = ({onChangeLocation, filters}) => {
             setRoutes(newRoutes);
         }
     }, [filters]);
-
-    const onDeleteLocation = (index) => () => {
-        const updatedRoutes = routes
-            .filter(route => parseInt(route.number) !== parseInt(index))
-            .map(route => {
-                if (parseInt(route.number) > parseInt(index)) {
-                    const updatedRoute = {...route};
-                    updatedRoute.number = route.number - 1;
-                    return updatedRoute;
-                }
-                return route;
-            });
-        setRoutes(updatedRoutes);
-        onChangeLocation(updatedRoutes);
-    }
 
     const updateLocation = (index) => ({value, lat, lng}) => {
         const updatedLocation = routes.map(route => {
@@ -65,7 +49,6 @@ const BetweenLocations = ({onChangeLocation, filters}) => {
                                   setValueCenter={updateLocation(route.number)}
                                   placeholder='Middle place'
             />
-            <DeleteIcon onDelete={onDeleteLocation(route.number)}/>
         </ItemContainer>)}
         <ItemContainer>
             <CustomButton onClick={onAddLocation}
