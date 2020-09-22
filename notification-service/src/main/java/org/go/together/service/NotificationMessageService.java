@@ -3,15 +3,14 @@ package org.go.together.service;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.NotificationMessageDto;
+import org.go.together.dto.NotificationReceiverDto;
 import org.go.together.dto.NotificationReceiverMessageDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.mapper.NotificationReceiverMapper;
 import org.go.together.model.NotificationMessage;
-import org.go.together.model.NotificationReceiver;
 import org.go.together.repository.NotificationReceiverRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Set;
 
 @Service
@@ -36,23 +35,27 @@ public class NotificationMessageService extends CrudServiceImpl<NotificationMess
                                                NotificationMessageDto dto,
                                                CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE) {
-            Collection<NotificationReceiver> notificationReceivers = notificationReceiverRepository.findByNotificationId(dto.getNotificationId());
-            notificationReceivers.stream()
+            notificationReceiverRepository.findByNotificationId(dto.getNotificationId()).stream()
                     .map(notificationReceiverMapper::entityToDto)
-                    .peek(notificationReceiverDto -> {
-                        Set<NotificationReceiverMessageDto> notificationReceiverMessages = notificationReceiverDto.getNotificationReceiverMessages();
-
-                        NotificationReceiverMessageDto notificationReceiverMessageDto = new NotificationReceiverMessageDto();
-                        notificationReceiverMessageDto.setIsRead(false);
-                        notificationReceiverMessageDto.setNotificationMessage(super.read(entity.getId()));
-                        IdDto notificationReceiverMessageId = notificationReceiverMessageService.create(notificationReceiverMessageDto);
-
-                        notificationReceiverMessages.add(notificationReceiverMessageService.read(notificationReceiverMessageId.getId()));
-                        notificationReceiverDto.setNotificationReceiverMessages(notificationReceiverMessages);
-                    })
-                    .forEach(notificationReceiverService::create);
+                    .peek(notificationReceiverDto -> notificateReceivers(entity, notificationReceiverDto))
+                    .forEach(notificationReceiverService::update);
         }
         return entity;
+    }
+
+    private void notificateReceivers(NotificationMessage entity, NotificationReceiverDto notificationReceiverDto) {
+        Set<NotificationReceiverMessageDto> notificationReceiverMessages = notificationReceiverDto.getNotificationReceiverMessages();
+
+        NotificationReceiverMessageDto notificationReceiverMessageDto = new NotificationReceiverMessageDto();
+        notificationReceiverMessageDto.setIsRead(false);
+        NotificationMessageDto notificationMessage = super.read(entity.getId());
+        notificationReceiverMessageDto.setNotificationMessage(notificationMessage);
+        IdDto notificationReceiverMessageId = notificationReceiverMessageService.create(notificationReceiverMessageDto);
+
+        NotificationReceiverMessageDto receiverMessageDto =
+                notificationReceiverMessageService.read(notificationReceiverMessageId.getId());
+        notificationReceiverMessages.add(receiverMessageDto);
+        notificationReceiverDto.setNotificationReceiverMessages(notificationReceiverMessages);
     }
 
     @Override

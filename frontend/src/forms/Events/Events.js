@@ -12,6 +12,7 @@ import CustomButton from "forms/utils/components/CustomButton";
 
 import {postFindEvents} from "./actions";
 import Map from "./Map";
+import ItemContainer from "../utils/components/Container/ItemContainer";
 
 const Events = ({pageSize, postFindEvents, findEvents, getEventsLikes, filter}) => {
     const [page, setPage] = useState(1);
@@ -44,7 +45,9 @@ const Events = ({pageSize, postFindEvents, findEvents, getEventsLikes, filter}) 
         findEvents.response.page.totalSize / findEvents.response.page.size : 0;
 
     return <>
-        <CustomButton onClick={() => setIsMap(!isMap)} text={isMap ? 'Hide map' : 'Show map'}/>
+        <ItemContainer>
+            <CustomButton onClick={() => setIsMap(!isMap)} text={isMap ? 'Hide map' : 'Show map'}/>
+        </ItemContainer>
         <LoadableContent loadableData={findEvents}>
             {isMap ?
                 <Map events={findEvents.response.result}/>

@@ -1,16 +1,17 @@
 package org.go.together.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.go.together.interfaces.IdentifiedEntity;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Data
 @Entity
 @Table(name = "notification_receiver", schema = "notification_service")
+@EqualsAndHashCode(exclude = {"notificationReceiverMessages"})
 public class NotificationReceiver implements IdentifiedEntity {
     @Id
     @Column(columnDefinition = "uuid")
@@ -18,9 +19,8 @@ public class NotificationReceiver implements IdentifiedEntity {
     @Column(columnDefinition = "uuid")
     private UUID userId;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "notification_receiver_id")
-    private Set<NotificationReceiverMessage> notificationReceiverMessages = new HashSet<>();
+    @OneToMany(mappedBy = "notificationReceiver")
+    private Set<NotificationReceiverMessage> notificationReceiverMessages;
 
     @ManyToOne
     @JoinColumn(name = "notification_id")

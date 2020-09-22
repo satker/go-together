@@ -1,8 +1,6 @@
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 
-import {connect} from "App/Context";
-import {cleanToken, cleanUserId} from "./actions";
 import MobileMenu from "./Menu/Mobile";
 import MainBar from "./MainBar";
 
@@ -50,8 +48,4 @@ const NavBar = () => {
     );
 };
 
-const mapStateToProps = (state) => ({
-    userId: state.userId.value
-});
-
-export default connect(mapStateToProps, {cleanUserId, cleanToken})(NavBar);
+export default NavBar;

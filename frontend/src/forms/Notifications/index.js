@@ -13,7 +13,8 @@ const Notifications = ({userNotifications, readNotifications, userId}) => {
         if (userId) {
             readNotifications(userId);
         }
-    }, [readNotifications])
+    }, [readNotifications, userId]);
+
     return <Container>
         {userNotifications.map(notification =>
             <Notification notification={notification} key={notification.id}/>

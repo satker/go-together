@@ -18,4 +18,8 @@ public class NotificationReceiverMessage implements IdentifiedEntity {
     @ManyToOne
     @JoinColumn(name = "notification_message_id")
     private NotificationMessage notificationMessage;
+
+    @ManyToOne
+    @JoinColumn(name = "notification_receiver_id")
+    private NotificationReceiver notificationReceiver;
 }

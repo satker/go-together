@@ -29,7 +29,9 @@ export const SimpleObject = PropTypes.exact({
 export const NotificationObject = PropTypes.exact({
     id: PropTypes.string,
     message: PropTypes.string,
-    date: PropTypes.string
+    date: PropTypes.string,
+    isRead: PropTypes.bool,
+    notificationId: PropTypes.string
 });
 
 export const ResponseData = PropTypes.exact({
