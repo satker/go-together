@@ -13,7 +13,7 @@ public class NotificationReceiverRepository extends CustomRepository<Notificatio
         return createQuery().where(createWhere().condition("notification.id", SqlOperator.EQUAL, notificationId)).fetchAll();
     }
 
-    public Collection<NotificationReceiver> findByReceiverId(UUID receiverId) {
-        return createQuery().where(createWhere().condition("userId", SqlOperator.EQUAL, receiverId)).fetchAll();
+    public Collection<NotificationReceiver> findByProducerId(UUID producerId) {
+        return createQuery().where(createWhere().condition("notification.producerId", SqlOperator.EQUAL, producerId)).fetchAll();
     }
 }

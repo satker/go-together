@@ -10,4 +10,5 @@ public class NotificationReceiverMessageDto implements Dto {
     private UUID id;
     private Boolean isRead;
     private NotificationMessageDto notificationMessage;
+    private NotificationReceiverDto notificationReceiver;
 }

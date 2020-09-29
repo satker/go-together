@@ -11,4 +11,4 @@ eureka:
       defaultZone: http://localhost:1111/eureka
 photo:
   store:
-    path: D:\\test_photos\\
+    path: store/

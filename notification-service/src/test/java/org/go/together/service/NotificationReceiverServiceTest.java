@@ -1,21 +1,26 @@
 package org.go.together.service;
 
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.*;
+import org.go.together.dto.IdDto;
+import org.go.together.dto.NotificationDto;
+import org.go.together.dto.NotificationMessageDto;
+import org.go.together.dto.NotificationReceiverDto;
 import org.go.together.model.NotificationReceiver;
 import org.go.together.model.NotificationReceiverMessage;
+import org.go.together.repository.NotificationMessageRepository;
 import org.go.together.repository.NotificationReceiverMessageRepository;
+import org.go.together.repository.NotificationRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 public class NotificationReceiverServiceTest extends CrudServiceCommonTest<NotificationReceiver, NotificationReceiverDto> {
@@ -25,44 +30,31 @@ public class NotificationReceiverServiceTest extends CrudServiceCommonTest<Notif
     private NotificationService notificationService;
 
     @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
     private NotificationMessageService notificationMessageService;
 
     @Autowired
-    private NotificationReceiverMessageService notificationReceiverMessageService;
+    private NotificationMessageRepository notificationMessageRepository;
 
     @Autowired
     private NotificationReceiverMessageRepository notificationReceiverMessageRepository;
 
-    @Test
-    public void readNotifications() {
-        createNotificationMessage();
-        boolean readResult = ((NotificationReceiverService) crudService).readNotifications(dto.getUserId());
-        assertTrue(readResult);
-
-        Collection<NotificationMessageDto> receiverNotifications =
-                ((NotificationReceiverService) crudService).getReceiverNotifications(dto.getUserId());
-
-        assertEquals(1, receiverNotifications.size());
-        assertEquals(CREATED, receiverNotifications.iterator().next().getMessage());
-        assertEquals(true, receiverNotifications.iterator().next().getIsRead());
-    }
-
-    @Test
-    public void getReceiverNotifications() {
-        UUID receiverId = UUID.randomUUID();
-        createNotificationMessage();
-        ((NotificationReceiverService) crudService).addReceiver(dto.getNotification().getProducerId(), receiverId);
-
-        Collection<NotificationMessageDto> receiverNotifications =
-                ((NotificationReceiverService) crudService).getReceiverNotifications(receiverId);
-
-        assertEquals(1, receiverNotifications.size());
-        assertEquals(CREATED, receiverNotifications.iterator().next().getMessage());
-        assertEquals(false, receiverNotifications.iterator().next().getIsRead());
+    @Override
+    public void clean() {
+        super.clean();
+        notificationReceiverMessageRepository.findAll()
+                .forEach(notificationReceiverMessageRepository::delete);
+        notificationMessageRepository.findAll()
+                .forEach(notificationMessageRepository::delete);
+        notificationRepository.findAll()
+                .forEach(notificationRepository::delete);
     }
 
     @Test
     public void removeReceiver() {
+        getCreatedEntityId(dto);
         createNotificationMessage();
         ((NotificationReceiverService) crudService).removeReceiver(dto.getNotification().getProducerId(), dto.getUserId());
 
@@ -73,6 +65,7 @@ public class NotificationReceiverServiceTest extends CrudServiceCommonTest<Notif
 
     @Test
     public void addReceiver() {
+        getCreatedEntityId(dto);
         UUID receiverId = UUID.randomUUID();
         createNotificationMessage();
         ((NotificationReceiverService) crudService).addReceiver(dto.getNotification().getProducerId(), receiverId);
@@ -81,7 +74,7 @@ public class NotificationReceiverServiceTest extends CrudServiceCommonTest<Notif
 
         assertEquals(2, notificationReceiverMessages.size());
 
-        assertNull(notificationReceiverMessages.iterator().next().getIsRead());
+        assertFalse(notificationReceiverMessages.iterator().next().getIsRead());
         assertEquals(CREATED, notificationReceiverMessages.iterator().next().getNotificationMessage().getMessage());
     }
 
@@ -95,7 +88,6 @@ public class NotificationReceiverServiceTest extends CrudServiceCommonTest<Notif
 
 
         notificationReceiverDto.setNotification(notificationService.read(notificationId.getId()));
-        notificationReceiverDto.setNotificationReceiverMessages(Collections.emptySet());
         return notificationReceiverDto;
     }
 
@@ -105,13 +97,6 @@ public class NotificationReceiverServiceTest extends CrudServiceCommonTest<Notif
         notificationMessageDto.setIsRead(null);
         notificationMessageDto.setNotificationId(dto.getNotification().getId());
         notificationMessageDto.setDate(new Date());
-        IdDto createdNotificationMessage = notificationMessageService.create(notificationMessageDto);
-
-        NotificationReceiverMessageDto notificationReceiverMessageDto = new NotificationReceiverMessageDto();
-        notificationReceiverMessageDto.setNotificationMessage(notificationMessageService.read(createdNotificationMessage.getId()));
-        notificationReceiverMessageDto.setIsRead(null);
-        NotificationReceiverMessageDto read = notificationReceiverMessageService.read(notificationReceiverMessageService.create(notificationReceiverMessageDto).getId());
-        dto.setNotificationReceiverMessages(Collections.singleton(read));
-        getCreatedEntityId(dto);
+        notificationMessageService.create(notificationMessageDto);
     }
 }
