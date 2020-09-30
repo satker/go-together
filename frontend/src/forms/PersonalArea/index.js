@@ -4,7 +4,7 @@ import Container from "forms/utils/components/Container/ContainerRow";
 import LoadableContent from "forms/utils/components/LoadableContent";
 import {connect} from "App/Context";
 
-import {getAllInterests, getAllLanguages, getUserInfo, updateUser} from "./actions";
+import {getAllInterests, getAllLanguages, getUserInfo, URL_USER} from "./actions";
 import TextField from "forms/utils/components/Form/fields/TextField";
 import AutocompleteLocationField from "forms/utils/components/Form/fields/AutocompleteLocationField";
 import SelectBoxLoadableField from "forms/utils/components/Form/fields/SelectBoxLoadableField";
@@ -16,14 +16,15 @@ import {
     lengthValidation,
     regexValidation,
     validatePhoto
-} from "../utils/validation";
-import {PATTERN_TO_CHECK_NAME} from "../Register/constants";
-import {createReduxForm} from "../utils/components/Form";
+} from "forms/utils/validation";
+import {PATTERN_TO_CHECK_NAME} from "forms/Register/constants";
+import {createReduxForm} from "forms/utils/components/Form";
 import {FORM_ID} from "./constants";
+import {showNotification} from "forms/utils/components/Notification/actions";
 
 const PersonalArea = ({
-                          userInfo, getUserInfo, updatedUser, updateUser, getAllLanguages, getAllInterests,
-                          allLanguages, allInterests
+                          userInfo, getUserInfo, getAllLanguages, getAllInterests,
+                          allLanguages, allInterests, showNotification
                       }) => {
     useEffect(() => {
         getAllInterests();
@@ -40,8 +41,7 @@ const PersonalArea = ({
     return (
         <Container>
             <LoadableContent loadableData={userInfo}>
-                <RegisterForm onClose={() => console.log('updated')}
-                              onSubmit={updateUser}
+                <RegisterForm onSubmitOk={() => showNotification("Refreshed personal data successfully!")}
                               defaultValue={userInfo.response}>
                     <TextField name='firstName'
                                placeholder='First name'/>
@@ -72,7 +72,7 @@ const PersonalArea = ({
 
 const mapStateToProps = state => ({
     userInfo: state.components.forms.personalArea.userInfo,
-    updatedUser: state.components.forms.personalArea.updatedUser,
+    updatedUser: state.components.forms.personalArea.updatedUser.response,
     allLanguages: state.components.forms.personalArea.allLanguages,
     allInterests: state.components.forms.personalArea.allInterests
 });
@@ -89,11 +89,11 @@ const validation = (fields) => {
     }
 }
 
-const RegisterForm = createReduxForm({FORM_ID, validation});
+const RegisterForm = createReduxForm({FORM_ID, validation, url: URL_USER});
 
 export default connect(mapStateToProps, {
     getUserInfo,
-    updateUser,
     getAllLanguages,
-    getAllInterests
+    getAllInterests,
+    showNotification
 })(PersonalArea);

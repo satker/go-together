@@ -2,6 +2,7 @@ import {findPath} from "App/utils/utils";
 import {context} from "App/Context";
 
 import {GET} from "./constants";
+import {NOTIFICATION} from "forms/utils/components/Notification/constants";
 
 const resolveStatus = (pathData, isToken, setResult) => (response) => {
     if (isToken) {
@@ -31,7 +32,8 @@ export const fetchAndSet = (url,
                             data = {},
                             headers = {},
                             type,
-                            isToken) => {
+                            isToken,
+                            setNotificationMessage) => {
     const pathData = findPath(type, null, context);
     pathData.data.inProcess = true;
     setResult(pathData);
@@ -59,7 +61,7 @@ export const fetchAndSet = (url,
         pathData.data.error = errorMessage;
         pathData.data.inProcess = false;
         setResult(pathData);
-        alert(errorMessage);
+        setNotificationMessage(errorMessage.toString());
     });
 };
 
@@ -73,6 +75,10 @@ const setGlobalState = (type, value, setToContext) => {
     setToContext(pathData);
 };
 
+const setNotificationMessage = (setToContext) => (message) => {
+    setGlobalState(NOTIFICATION, {isOpen: true, message}, setToContext)
+}
+
 export const fetchAndSetToken = (token) =>
     (setToContext) => ({type, url, method = GET, data = {}, value, isToken = false}) => {
         if (!url) {
@@ -85,7 +91,7 @@ export const fetchAndSetToken = (token) =>
         };
 
         if (token) {
-                headers['Authorization'] = token;
-            }
-        fetchAndSet(url, setToContext, method, data, headers, type, isToken);
-        };
+            headers['Authorization'] = token;
+        }
+        fetchAndSet(url, setToContext, method, data, headers, type, isToken, setNotificationMessage(setToContext));
+    };

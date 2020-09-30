@@ -2,7 +2,7 @@ import {GET} from "App/utils/api/constants";
 import Marker from "./Marker";
 import React from "react";
 
-export const GOOGLE_API_KEY = "AIzaSyBSjnMkN8ckymUWZO5v0q-cZW9WppoFsyM";
+export const GOOGLE_API_KEY = "AIzaSyDDOYr_mg4-0iLXHExVIHte0QaDZ50QHcs";
 
 const resolveStatus = (response) => {
     if (response.status >= 200 && response.status < 300) {

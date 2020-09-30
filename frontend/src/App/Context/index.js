@@ -30,10 +30,10 @@ const wrapActions = (actions, state, setState, ACTIONS_ID) => {
     const FORM_ID = ACTIONS_ID || state.formId.value;
 
     const result = {};
+    const dispatch = fetchAndSetToken(state.csrfToken.value)(setToContext(setState));
     for (const action in actions) {
         if (!(actionsStore[FORM_ID] && actionsStore[FORM_ID][action])) {
-            result[action] = (...args) =>
-                actions[action](...args)(fetchAndSetToken(state.csrfToken.value)(setToContext(setState)), state);
+            result[action] = (...args) => actions[action](...args)(dispatch, state);
             actionsStore[FORM_ID] = {
                 ...actionsStore[FORM_ID],
                 [action]: result[action]
