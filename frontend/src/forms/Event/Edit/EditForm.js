@@ -12,10 +12,11 @@ import PaidThings from "./PaidThings";
 import MainInfo from "./MainInfo";
 import Route from "./Route";
 import {postUpdatedEvent, putNewEvent, updateEvent} from "./actions";
+import {showNotification} from "forms/utils/components/Notification/actions";
 
 const EditForm = ({
                       event, userId, postUpdatedEvent, putNewEvent,
-                      updatedEvent, newEvent
+                      updatedEvent, newEvent, showNotification, isUpdate
                   }) => {
 
     const saveEvent = () => {
@@ -44,7 +45,9 @@ const EditForm = ({
     useEffect(() => {
         const id = updatedEvent.response.id || newEvent.response.id;
         if (id) {
-            navigate('/events/' + id)
+            navigate('/events/' + id);
+            const notificationMessage = isUpdate ? 'Updated event successful' : 'Created event';
+            showNotification(notificationMessage);
         }
     }, [updatedEvent, newEvent]);
 
@@ -76,4 +79,4 @@ const mapStateToProps = (state) => ({
     event: state.components.forms.event.eventEdit.event.response
 });
 
-export default connect(mapStateToProps, {postUpdatedEvent, putNewEvent, updateEvent})(EditForm);
+export default connect(mapStateToProps, {postUpdatedEvent, putNewEvent, updateEvent, showNotification})(EditForm);

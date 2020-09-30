@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import {connect} from "App/Context";
 import {Event} from "forms/utils/types";
-import Reference from "forms/utils/components/Reference";
 import SingleMap from "forms/utils/components/ObjectGeoLocation/SingleMap";
 import Container from "forms/utils/components/Container/ContainerRow";
 
@@ -11,14 +10,12 @@ import Users from "./Users";
 import MainInfo from "./MainInfo";
 import {getUsers} from "./actions";
 
-const ViewForm = ({event, getUsers, userId}) => {
+const ViewForm = ({event, getUsers}) => {
     useEffect(() => {
         getUsers(event.id);
     }, [getUsers, event]);
 
     return <Container>
-        {userId === event.author.id &&
-        <Reference formRef={'/events/' + event.id + '/edit'} description='Edit event'/>}
         <MainInfo/>
         <SingleMap
             editable={false}
@@ -31,12 +28,10 @@ const ViewForm = ({event, getUsers, userId}) => {
 ViewForm.propTypes = {
     event: Event.isRequired,
     getUsers: PropTypes.func.isRequired,
-    userId: PropTypes.string
 };
 
 const mapStateToProps = state => ({
-    event: state.components.forms.event.eventView.event.response,
-    userId: state.userId.value
+    event: state.components.forms.event.eventView.event.response
 });
 
 export default connect(mapStateToProps, {getUsers})(ViewForm);

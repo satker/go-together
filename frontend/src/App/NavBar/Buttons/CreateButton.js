@@ -8,7 +8,6 @@ import IconButton from "@material-ui/core/IconButton";
 const CreateButton = ({menuId}) => {
     return <IconButton onClick={() => navigate('/create', true)}
                        key={menuId + '_create'}
-                       aria-label="show 4 new mails"
                        color="inherit">
         <Badge color="secondary">
             <AddCircle/>
