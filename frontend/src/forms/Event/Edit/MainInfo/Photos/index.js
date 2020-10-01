@@ -8,11 +8,15 @@ import {updateEvent} from "../../actions";
 import {connect} from "App/Context";
 
 const Photos = ({event, updateEvent}) => {
+    const deletePhoto = (id) => {
+        const photos = event.groupPhoto.photos.filter(photo => photo.id !== id);
+        updateEvent('groupPhoto.photos', photos);
+    }
     return <>
         <ItemContainer>
             <GroupItems items={event.groupPhoto.photos}
                         isPhotos
-                        onDelete={(id) => console.log('delete: ', id)}/>
+                        onDelete={deletePhoto}/>
         </ItemContainer>
         <ItemContainer>
             <ImageSelector

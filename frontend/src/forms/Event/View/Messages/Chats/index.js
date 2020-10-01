@@ -42,7 +42,8 @@ const UserChats = ({
 
     useEffect(() => {
         if (userId === event.author.id && !timer.length) {
-            const intervalId = setInterval(() => getChats(event.id), 2000);
+            getChats(event.id);
+            const intervalId = setInterval(() => getChats(event.id), 3000);
             setTimer(intervalId);
         }
     }, [userId, event, timer, setTimer, getUserChats]);

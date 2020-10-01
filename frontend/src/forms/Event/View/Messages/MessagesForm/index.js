@@ -33,7 +33,8 @@ const MessagesForm = ({event, userMessageId, userId, messagesByEvent, getMessage
             if (currentTimer) {
                 clearTimer(currentTimer);
             }
-            const intervalId = setInterval(getMessages, 2000);
+            getMessages();
+            const intervalId = setInterval(getMessages, 3000);
             setCurrentTimer(intervalId);
             setTimer(intervalId);
         } else {
