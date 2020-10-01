@@ -34,7 +34,13 @@ const App = () => {
 
     useEffect(() => {
         if (route.key && route.key !== state.formId.value) {
-            onChange(state, setState)('formId.value', route.key);
+            const interval = state.temporary.interval.value;
+            if (interval.length) {
+                interval.forEach(timer => clearInterval(timer));
+                onChange(state, setState)(['formId.value', 'temporary.interval.value'], [route.key, []]);
+            } else {
+                onChange(state, setState)('formId.value', route.key);
+            }
         }
     }, [route, state, setState]);
 

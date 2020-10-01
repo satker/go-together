@@ -6,6 +6,7 @@ import {USER_ID} from "forms/utils/constants";
 import {components} from "forms/reducers";
 import {createContextValue} from "App/utils/utils";
 import {CONTEXT_USER_ID, CSRF_TOKEN, EVENT_ID, FORM_ID, PAGE, PAGE_SIZE} from "./constants";
+import {temporary} from "App/TemporaryTimer/reducers";
 
 export const context = {
     userId: createContextValue(CONTEXT_USER_ID, getCookie(USER_ID) === 'null' ? null : getCookie(USER_ID)),
@@ -14,6 +15,7 @@ export const context = {
     csrfToken: createContextValue(CSRF_TOKEN, getCookie(CSRF_TOKEN) === 'null' ? null : getCookie(CSRF_TOKEN)),
     page: createContextValue(PAGE, 0),
     pageSize: createContextValue(PAGE_SIZE, 9),
+    temporary,
     components: {...components}
 };
 

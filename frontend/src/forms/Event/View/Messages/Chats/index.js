@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect} from "react";
 import PropTypes from "prop-types";
 import {keys} from 'lodash';
 
@@ -7,13 +7,12 @@ import {ResponseData} from "forms/utils/types";
 
 import MessageItem from "./MessageItem";
 import {getChats, postUsersInfo} from "./actions";
+import {setTimer} from "App/TemporaryTimer/actions";
 
 const UserChats = ({
                        event, userMessageId, setUserMessageId, userId,
-                       getChats, messages, postUsersInfo, usersInfo
+                       getChats, messages, postUsersInfo, usersInfo, timer, setTimer
                    }) => {
-    const [timer, setTimer] = useState(null);
-
     const getUserChats = useCallback(() => {
         getChats(event.id);
     }, [event, getChats]);
@@ -23,7 +22,6 @@ const UserChats = ({
         if (!messages.inProcess &&
             !usersInfo.inProcess &&
             messages.response.length !== 0) {
-            console.log(usersInfo, messages)
             let notFoundUserIds = [];
             const userIds = keys(messages.response) || [];
             const cachedUserIds = usersInfo.response.map(user => user.id);
@@ -43,8 +41,9 @@ const UserChats = ({
     }, [usersInfo, messages, postUsersInfo]);
 
     useEffect(() => {
-        if (userId === event.author.id && !timer) {
-            //setTimer(setInterval(getChats, 2000));
+        if (userId === event.author.id && !timer.length) {
+            const intervalId = setInterval(() => getChats(event.id), 2000);
+            setTimer(intervalId);
         }
     }, [userId, event, timer, setTimer, getUserChats]);
 
@@ -80,6 +79,7 @@ const mapStateToProps = state => ({
     messages: state.components.forms.event.eventView.messages.chats,
     usersInfo: state.components.forms.event.eventView.messages.usersInfo,
     event: state.components.forms.event.eventView.event.response,
+    timer: state.temporary.interval.value
 });
 
-export default connect(mapStateToProps, {getChats, postUsersInfo})(UserChats);
+export default connect(mapStateToProps, {getChats, postUsersInfo, setTimer})(UserChats);

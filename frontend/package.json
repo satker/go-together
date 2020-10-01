@@ -28,8 +28,7 @@
     "lodash": "^4.17.20",
     "prop-types": "^15.7.2",
     "react-dates": "^21.8.0",
-    "moment": "^2.27.0",
-    "webrtc-adapter": "^7.6.0"
+    "moment": "^2.27.0"
   },
   "scripts": {
     "build": "webpack -w",

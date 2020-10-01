@@ -4,16 +4,20 @@ import moment from "moment";
 import {connect} from "App/Context";
 
 import MessagesContainer from "./MesagesContainer";
-import WebRTCInputMessage from "./WebRTCInputMessage";
 import {getMessagesByEvent} from "../actions";
+import InputMessage from "./InputMessage";
+import {clearTimer, setTimer} from "App/TemporaryTimer/actions";
 
-const MessagesForm = ({event, userMessageId, userId, messagesByEvent, getMessagesByEvent}) => {
+const MessagesForm = ({event, userMessageId, userId, messagesByEvent, getMessagesByEvent, setTimer, clearTimer}) => {
     const [parsedReviewsByEvent, setParsedReviewsByEvent] = useState([]);
+    const [currentTimer, setCurrentTimer] = useState(null);
+
+    const getAuthorId = useCallback(() => userId === event.author.id ? userMessageId : userId,
+        [userId, event, userMessageId]);
 
     const getMessages = useCallback(() => {
-        const authorId = userId === event.author.id ? userMessageId : userId;
-        getMessagesByEvent(event.id, authorId);
-    }, [event, userId, userMessageId, getMessagesByEvent]);
+        getMessagesByEvent(event.id, getAuthorId());
+    }, [event, getAuthorId, getMessagesByEvent]);
 
     useEffect(() => {
         const messages = messagesByEvent.response.result || messagesByEvent.response;
@@ -25,22 +29,26 @@ const MessagesForm = ({event, userMessageId, userId, messagesByEvent, getMessage
     }, [messagesByEvent]);
 
     useEffect(() => {
-        const authorId = userId === event.author.id ? userMessageId : userId;
-        if (userMessageId && authorId) {
-            getMessages();
+        if (userMessageId && getAuthorId()) {
+            if (currentTimer) {
+                clearTimer(currentTimer);
+            }
+            const intervalId = setInterval(getMessages, 2000);
+            setCurrentTimer(intervalId);
+            setTimer(intervalId);
         } else {
             setParsedReviewsByEvent([])
         }
-    }, [getMessages, setParsedReviewsByEvent, userId, userMessageId, event]);
+    }, [getMessages, setParsedReviewsByEvent, userMessageId]);
 
     return <div className='container-input-messages' style={{width: event.author.id === userId ? '70%' : '100%'}}>
         <div className='container-messages'>
             <MessagesContainer reviews={parsedReviewsByEvent}/>
         </div>
-        {userMessageId && <WebRTCInputMessage messages={parsedReviewsByEvent}
-                                              setMessages={setParsedReviewsByEvent}
-                                              userMessageId={userMessageId}
-                                              readOnly={parsedReviewsByEvent.length === 0}/>}
+        {userMessageId && <InputMessage messages={parsedReviewsByEvent}
+                                        setMessages={setParsedReviewsByEvent}
+                                        userMessageId={userMessageId}
+                                        readOnly={parsedReviewsByEvent.length === 0}/>}
     </div>
 };
 
@@ -52,4 +60,4 @@ const mapStateToProps = state => ({
     event: state.components.forms.event.eventView.event.response
 });
 
-export default connect(mapStateToProps, {getMessagesByEvent})(MessagesForm);
+export default connect(mapStateToProps, {getMessagesByEvent, setTimer, clearTimer})(MessagesForm);
