@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.SimpleDto;
-import org.go.together.exceptions.IncorrectFindObject;
+import org.go.together.exceptions.ApplicationException;
 import org.go.together.find.dto.ResponseDto;
 import org.go.together.find.dto.form.FilterDto;
 import org.go.together.find.dto.form.FormDto;
@@ -276,7 +276,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
     @Test
     void findWithUndefinedField() {
         assertThrows(
-                IncorrectFindObject.class,
+                ApplicationException.class,
                 () -> {
                     FormDto formDto = new FormDto();
                     formDto.setMainIdField("test");

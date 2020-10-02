@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.SimpleDto;
 import org.go.together.exceptions.IncorrectDtoException;
-import org.go.together.notification.dto.ComparingObject;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
 import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.NamedEnum;
+import org.go.together.notification.dto.ComparingObject;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -158,19 +158,21 @@ public class ComparatorUtils {
 
         Set<String> changedElements = new HashSet<>();
 
-        anotherCollectionIdsMap.forEach((key, value) -> {
-            Dto anotherComparableDto = value.iterator().next();
-            if (!collectionIdsMap.containsKey(key)) {
-                addedElements.add(getMainField(anotherComparableDto));
-            } else {
-                Set<String> resultComparing = new HashSet<>();
-                Dto comparableDto = collectionIdsMap.get(key).iterator().next();
-                compareDtos(resultComparing, fieldName, comparableDto, anotherComparableDto);
-                if (!resultComparing.isEmpty()) {
-                    changedElements.add(StringUtils.join(resultComparing, ","));
+        if (idCompare) {
+            anotherCollectionIdsMap.forEach((key, value) -> {
+                Dto anotherComparableDto = value.iterator().next();
+                if (!collectionIdsMap.containsKey(key)) {
+                    addedElements.add(getMainField(anotherComparableDto));
+                } else {
+                    Set<String> resultComparing = new HashSet<>();
+                    Dto comparableDto = collectionIdsMap.get(key).iterator().next();
+                    compareDtos(resultComparing, fieldName, comparableDto, anotherComparableDto);
+                    if (!resultComparing.isEmpty()) {
+                        changedElements.add(StringUtils.join(resultComparing, ","));
+                    }
                 }
-            }
-        });
+            });
+        }
 
         collectionIdsMap.keySet().forEach(key -> {
             if (!anotherCollectionIdsMap.containsKey(key)) {

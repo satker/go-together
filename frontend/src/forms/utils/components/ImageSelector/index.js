@@ -17,7 +17,7 @@ const ImageSelector = ({photos, setPhotos, multiple}) => {
     const addPhotoUrl = (roomPhotoUrl) => {
         setFileLength(1);
         const photo = createPhotoObj(true, roomPhotoUrl);
-        setPhotoFiles(photo);
+        setPhotoFiles([...photoFiles, photo]);
     };
 
     const addPhotoFile = (customPhotoFiles) => {
