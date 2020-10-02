@@ -18,13 +18,11 @@ const resolveStatus = (pathData, isToken, setResult) => (response) => {
     if (response.status >= 200 && response.status < 300) {
         return Promise.resolve(response)
     } else {
-        return Promise.reject(new Error(response.statusText))
+        return Promise.reject(response)
     }
 };
 
-const resolveJson = (response) => {
-    return response.json();
-};
+const resolveJson = (response) => response.json();
 
 export const fetchAndSet = (url,
                             setResult,
@@ -54,15 +52,14 @@ export const fetchAndSet = (url,
             pathData.data.response = response;
             pathData.data.inProcess = false;
             setResult(pathData);
-        }).catch(errorMessage => {
-        if (errorMessage.name === 'SyntaxError') {
-            return;
-        }
-        pathData.data.error = errorMessage;
-        pathData.data.inProcess = false;
-        setResult(pathData);
-        setNotificationMessage(errorMessage.toString());
-    });
+        }).catch(errorMessage => Promise.resolve(errorMessage)
+        .then(error => error.json())
+        .then(exception => {
+            pathData.data.error = exception;
+            pathData.data.inProcess = false;
+            setResult(pathData);
+            setNotificationMessage(exception.message);
+        }));
 };
 
 const setGlobalState = (type, value, setToContext) => {

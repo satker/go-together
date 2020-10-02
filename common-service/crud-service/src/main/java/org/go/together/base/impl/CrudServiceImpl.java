@@ -144,22 +144,26 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
     public ResponseDto<Object> find(FormDto formDto) {
         log.info("Started find in '" + getServiceName() + "' with filter: " +
                 objectMapper.writeValueAsString(formDto));
-        Pair<PageDto, Collection<Object>> pageDtoResult = super.findByFormDto(formDto);
+        try {
+            Pair<PageDto, Collection<Object>> pageDtoResult = super.findByFormDto(formDto);
 
-        Collection<Object> values = pageDtoResult.getValue();
-        if (values != null
-                && !values.isEmpty()
-                && values.iterator().next() instanceof IdentifiedEntity) {
-            values = values.stream()
-                    .map(value -> (E) value)
-                    .map(mapper::entityToDto)
-                    .collect(Collectors.toSet());
+            Collection<Object> values = pageDtoResult.getValue();
+            if (values != null
+                    && !values.isEmpty()
+                    && values.iterator().next() instanceof IdentifiedEntity) {
+                values = values.stream()
+                        .map(value -> (E) value)
+                        .map(mapper::entityToDto)
+                        .collect(Collectors.toSet());
+            }
+            log.info("Find in '" + getServiceName() + "' " + Optional.ofNullable(values)
+                    .map(Collection::size)
+                    .orElse(0) + " rows with filter: " +
+                    objectMapper.writeValueAsString(formDto));
+            return new ResponseDto<>(pageDtoResult.getKey(), values);
+        } catch (Exception exception) {
+            throw new ApplicationException(exception);
         }
-        log.info("Find in '" + getServiceName() + "' " + Optional.ofNullable(values)
-                .map(Collection::size)
-                .orElse(0) + " rows with filter: " +
-                objectMapper.writeValueAsString(formDto));
-        return new ResponseDto<>(pageDtoResult.getKey(), values);
     }
 
     public String validate(D dto) {
