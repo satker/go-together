@@ -112,10 +112,9 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
     }
 
     public D read(UUID uuid) {
-        Optional<E> entityById = repository.findById(uuid);
-        log.info("Read " + getServiceName() + " " + (entityById.isPresent() ? "1" : "0") + " row with id: " +
-                uuid.toString());
-        return entityById.map(mapper::entityToDto).orElse(null);
+        E entityById = repository.findByIdOrThrow(uuid);
+        log.info("Read " + getServiceName() + " row with id: " + uuid.toString());
+        return mapper.entityToDto(entityById);
     }
 
     public void delete(UUID uuid) {
