@@ -7,7 +7,6 @@ import org.go.together.find.dto.FieldMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,11 +46,11 @@ public class FieldCorrectorService implements FieldCorrector {
         if (splitByDotString.length > 1 && fieldMappers.containsKey(splitByDotString[0])) {
             Map.Entry<String, String> correctedComplexGroupFilterField =
                     getCorrectedComplexGroupFilterField(fieldMappers.get(splitByDotString[0]), searchField, splitByDotString);
-            return new AbstractMap.SimpleEntry<>(correctedComplexGroupFilterField.getKey(), correctedComplexGroupFilterField.getValue());
+            return Map.entry(correctedComplexGroupFilterField.getKey(), correctedComplexGroupFilterField.getValue());
         } else if (fieldMappers.containsKey(searchField)) {
             FieldMapper fieldMapper = fieldMappers.get(searchField);
             oldValueClass.put(searchField, fieldMapper.getFieldClass());
-            return new AbstractMap.SimpleEntry<>(searchField, fieldMapper.getCurrentServiceField());
+            return Map.entry(searchField, fieldMapper.getCurrentServiceField());
         } else {
             throw new IncorrectFindObject("Field " + searchField + " is unavailable for search.");
         }
@@ -70,7 +69,7 @@ public class FieldCorrectorService implements FieldCorrector {
                                                                           String[] splitByDotString) {
         if (fieldMapper.getInnerService() != null) {
             String changedField = getCorrectedComplexField(splitByDotString, fieldMapper);
-            return new AbstractMap.SimpleEntry<>(oldKey, changedField);
+            return Map.entry(oldKey, changedField);
         } else {
             throw new IncorrectFindObject("Field " + oldKey + " is unavailable for search.");
         }

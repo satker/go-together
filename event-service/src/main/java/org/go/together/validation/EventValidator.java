@@ -1,6 +1,5 @@
 package org.go.together.validation;
 
-import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
@@ -13,10 +12,7 @@ import org.go.together.enums.CrudOperation;
 import org.go.together.validation.dto.DateIntervalDto;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -38,23 +34,18 @@ public class EventValidator extends Validator<EventDto> {
 
     @Override
     public void getMapsForCheck(EventDto dto) {
-        super.STRINGS_FOR_BLANK_CHECK = ImmutableMap.<String, String>builder()
-                .put("event name", dto.getName())
-                .put("event description", dto.getDescription())
-                .build();
-        super.NUMBER_CORRECT_ZERO_OR_NEGATIVE_CHECK = ImmutableMap.<String, Number>builder()
-                .put("event people capacity", dto.getPeopleCount())
-                .build();
-        super.DATES_CORRECT_CHECK = ImmutableMap.<String, DateIntervalDto>builder()
-                .put("event dates", new DateIntervalDto(dto.getStartDate(), dto.getEndDate()))
-                .build();
-        super.OBJECT_NULL_CHECK = ImmutableMap.<String, Optional<Object>>builder()
-                .put("routes", Optional.ofNullable(dto.getRoute()))
-                .build();
-        super.COLLECTION_CORRECT_CHECK = ImmutableMap.<String, Collection<?>>builder()
-                .put("photos", dto.getGroupPhoto().getPhotos())
-                .put("routes", dto.getRoute().getLocations())
-                .build();
+        super.STRINGS_FOR_BLANK_CHECK = Map.of(
+                "event name", EventDto::getName,
+                "event description", EventDto::getDescription);
+        super.NUMBER_CORRECT_ZERO_OR_NEGATIVE_CHECK = Map.of(
+                "event people capacity", EventDto::getPeopleCount);
+        super.DATES_CORRECT_CHECK = Map.of(
+                "event dates", new DateIntervalDto(dto.getStartDate(), dto.getEndDate()));
+        super.OBJECT_NULL_CHECK = Map.of(
+                "routes", EventDto::getRoute);
+        super.COLLECTION_CORRECT_CHECK = Map.of(
+                "photos", testDto -> testDto.getGroupPhoto().getPhotos(),
+                "routes", testDto -> testDto.getRoute().getLocations());
     }
 
     @Override

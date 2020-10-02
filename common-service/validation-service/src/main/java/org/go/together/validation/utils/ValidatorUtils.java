@@ -2,55 +2,64 @@ package org.go.together.validation.utils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.SimpleDto;
+import org.go.together.interfaces.Dto;
 import org.go.together.validation.dto.DateIntervalDto;
 import org.go.together.validation.dto.NumberIntervalDto;
 import org.go.together.validation.dto.StringRegexDto;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ValidatorUtils {
-    public static String checkNullObject(Map<String, Optional<Object>> objectMap) {
+    public static <D extends Dto> String checkNullObject(Map<String, Function<D, Object>> objectMap, D dto) {
         final String message = "Field %s is null. ";
         return objectMap.entrySet().stream()
-                .map(string -> string.getValue().isEmpty() ?
+                .map(string -> Objects.isNull(string.getValue().apply(dto)) ?
                         String.format(message, string.getKey()) :
                         StringUtils.EMPTY)
                 .collect(Collectors.joining());
     }
 
-    public static String checkEmptyString(Map<String, String> stringsForCheck) {
+    public static <D extends Dto> String checkEmptyString(Map<String, Function<D, String>> stringsFunction, D dto) {
         final String message = "Field %s is empty or null. ";
-        return stringsForCheck.entrySet().stream()
-                .map(string -> StringUtils.isBlank(string.getValue()) ?
+        return stringsFunction.entrySet().stream()
+                .map(string -> StringUtils.isBlank(string.getValue().apply(dto)) ?
                         String.format(message, string.getKey()) :
                         StringUtils.EMPTY)
                 .collect(Collectors.joining());
 
     }
 
-    public static String checkZeroOrNegativeNumber(Map<String, Number> numbersForCheck) {
+    public static <D extends Dto> String checkZeroOrNegativeNumber(Map<String, Function<D, Number>> numbersForCheck, D dto) {
         final String message = "Number %s is zero or negative ";
         return numbersForCheck.entrySet().stream()
-                .map(number -> number.getValue().doubleValue() <= 0 ?
+                .map(number -> number.getValue().apply(dto).doubleValue() <= 0 ?
                         String.format(message, number.getKey()) :
                         StringUtils.EMPTY)
                 .collect(Collectors.joining());
     }
 
-    public static String checkEmptySimpleDto(Map<String, Collection<SimpleDto>> simpleDtoMap) {
+    public static <D extends Dto> String checkEmptySimpleDto(Map<String, Function<D, SimpleDto>> simpleDtoMap,
+                                                             D dto) {
         final String message = "Field %s is incorrect. ";
         return simpleDtoMap.entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), entry.getValue().apply(dto)))
                 .map(string -> string.getValue() == null || isCorrectSimpleDto(string.getValue()) ?
                         String.format(message, string.getKey()) :
                         StringUtils.EMPTY)
                 .collect(Collectors.joining());
     }
 
-    public static String checkCorrectCollection(Map<String, Collection<?>> collectionMap) {
+    public static <D extends Dto> String checkCorrectCollection(Map<String, Function<D, Collection<?>>> collectionMap,
+                                                                D dto) {
         final String message = "Collection %s is incorrect. ";
         return collectionMap.entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), entry.getValue().apply(dto)))
                 .map(string -> {
                     boolean b = string.getValue() == null || string.getValue().isEmpty() ||
                             string.getValue().stream().anyMatch(Objects::isNull);
@@ -72,14 +81,8 @@ public class ValidatorUtils {
     }
 
     public static String checkDateIntervalIsCorrect(Map<String, DateIntervalDto> dateIntervalMap) {
-        final String message = "Date interval for %s is incorrect. ";
-        Date currentDate = new Date();
         return dateIntervalMap.entrySet().stream()
-                .map(string -> (!(currentDate.before(string.getValue().getStartDate()) &&
-                        currentDate.before(string.getValue().getEndDate()))) ||
-                        string.getValue().getStartDate().after(string.getValue().getEndDate()) ?
-                        String.format(message, string.getKey()) :
-                        StringUtils.EMPTY)
+                .map(ValidatorUtils::checkDates)
                 .collect(Collectors.joining());
     }
 
@@ -93,20 +96,23 @@ public class ValidatorUtils {
                 .collect(Collectors.joining());
     }
 
-    public static String checkUUIDIsCorrect(Map<String, UUID> uuidMap) {
-        final String message = "Id %s is incorrect. ";
-        return uuidMap.entrySet().stream()
-                .map(uuid -> uuid.getValue() == null ?
-                        String.format(message, uuid.getKey()) :
-                        StringUtils.EMPTY)
-                .collect(Collectors.joining());
+    private static boolean isCorrectSimpleDto(SimpleDto simpleDto) {
+        return simpleDto == null || simpleDto.getId() == null || StringUtils.isBlank(simpleDto.getName());
     }
 
-    private static boolean isCorrectSimpleDto(Collection<SimpleDto> simpleDto) {
-        if (simpleDto.isEmpty()) {
-            return false;
+    private static String checkDates(Map.Entry<String, DateIntervalDto> dateIntervalDto) {
+        DateIntervalDto value = dateIntervalDto.getValue();
+        if (value.getStartDate() == null || value.getEndDate() == null) {
+            return "Dates is not entered. ";
         }
-        return simpleDto.stream().anyMatch(dto ->
-                dto == null || dto.getId() == null || StringUtils.isBlank(dto.getName()));
+
+        Date currentDate = new Date();
+        if ((!(currentDate.before(value.getStartDate()) &&
+                currentDate.before(value.getEndDate()))) ||
+                value.getStartDate().after(value.getEndDate())) {
+            return String.format("Number interval for %s is incorrect. ", dateIntervalDto.getKey());
+        } else {
+            return StringUtils.EMPTY;
+        }
     }
 }

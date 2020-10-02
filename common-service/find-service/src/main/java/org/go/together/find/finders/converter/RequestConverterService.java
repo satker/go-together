@@ -9,7 +9,6 @@ import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.utils.FindUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ public class RequestConverterService implements RequestConverter {
                 .client(fieldMapper.getRemoteServiceClient())
                 .mainIdFeild(remoteClientFormDto.getMainIdField())
                 .fieldDto(entry.getKey()).build();
-        return new AbstractMap.SimpleEntry<>(clientLocalFieldObject, remoteClientFormDto);
+        return Map.entry(clientLocalFieldObject, remoteClientFormDto);
     }
 
     private FormDto getRemoteClientFormDto(String anotherServiceSearchField,

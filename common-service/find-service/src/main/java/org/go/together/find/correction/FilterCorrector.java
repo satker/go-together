@@ -13,7 +13,6 @@ import org.go.together.find.dto.form.FilterDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,7 +46,7 @@ public class FilterCorrector implements CorrectedService {
     public Map<FieldDto, FilterDto> getRemoteFilters(Map<String, FilterDto> filters,
                                                      Map<String, FieldMapper> availableFields) {
         return filters.entrySet().stream()
-                .map(entry -> new AbstractMap.SimpleEntry<>(new FieldDto(entry.getKey()), entry.getValue()))
+                .map(entry -> Map.entry(new FieldDto(entry.getKey()), entry.getValue()))
                 .filter(entry -> getFieldMappersByFieldDto(availableFields, entry.getKey()).values().stream()
                         .noneMatch(fieldMapper -> fieldMapper.getRemoteServiceClient() == null))
                 .map(entry -> getRemoteFields(entry, getFieldMappersByFieldDto(availableFields, entry.getKey())))
@@ -58,7 +57,7 @@ public class FilterCorrector implements CorrectedService {
     public Map<FieldDto, FilterDto> getLocalFilters(Map<String, FilterDto> filters,
                                                     Map<String, FieldMapper> availableFields) {
         return filters.entrySet().stream()
-                .map(entry -> new AbstractMap.SimpleEntry<>(new FieldDto(entry.getKey()), entry.getValue()))
+                .map(entry -> Map.entry(new FieldDto(entry.getKey()), entry.getValue()))
                 .filter(entry -> getFieldMappersByFieldDto(availableFields, entry.getKey()).values().stream()
                         .allMatch(fieldMapper -> fieldMapper.getRemoteServiceClient() == null))
                 .map(entry -> getCorrectedLocalFields(entry, getFieldMappersByFieldDto(availableFields, entry.getKey())))
@@ -69,7 +68,7 @@ public class FilterCorrector implements CorrectedService {
     private Map.Entry<FieldDto, FilterDto> getRemoteFields(Map.Entry<FieldDto, FilterDto> entry,
                                                            Map<String, FieldMapper> fieldMappers) {
         CorrectedFieldDto localFieldForSearch = getCorrectedFieldDto(entry.getKey(), fieldMappers);
-        return new AbstractMap.SimpleEntry<>(localFieldForSearch.getFieldDto(), entry.getValue());
+        return Map.entry(localFieldForSearch.getFieldDto(), entry.getValue());
     }
 
     private Map.Entry<FieldDto, FilterDto> getCorrectedLocalFields(Map.Entry<FieldDto, FilterDto> entry,
@@ -79,7 +78,7 @@ public class FilterCorrector implements CorrectedService {
         Collection<Map<String, Object>> correctedValuesForSearch =
                 valuesCorrector.correct(localFieldForSearch, value.getValues());
         value.setValues(correctedValuesForSearch);
-        return new AbstractMap.SimpleEntry<>(localFieldForSearch.getFieldDto(), value);
+        return Map.entry(localFieldForSearch.getFieldDto(), value);
     }
 
     public CorrectedFieldDto getCorrectedFieldDto(FieldDto fieldDto,
