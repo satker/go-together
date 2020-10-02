@@ -21,7 +21,7 @@ public interface EventClient extends FindClient {
     IdDto updateEvent(@RequestBody EventDto eventDto);
 
     @DeleteMapping("/events/{eventId}")
-    void deleteEvent(@PathVariable("eventId") UUID eventId);
+    IdDto deleteEvent(@PathVariable("eventId") UUID eventId);
 
     @GetMapping("/events")
     Set<SimpleDto> autocompleteEvents(@RequestParam("name") String name);

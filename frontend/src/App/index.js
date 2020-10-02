@@ -15,8 +15,9 @@ import {FORM_ID as FORM_ID_PERSONAL_AREA} from "forms/PersonalArea/constants";
 import {FORM_ID as FORM_ID_NOTIFICATIONS} from "forms/Notifications/constants";
 
 import NavBar from "./NavBar";
-import Notifications from "../forms/Notifications";
+import Notifications from "forms/Notifications";
 import Notification from "forms/utils/components/Notification";
+import ModalWindow from "forms/utils/components/Modal";
 
 const routers = {
     '/events': () => <Events key={FORM_ID_EVENTS}/>,
@@ -49,6 +50,7 @@ const App = () => {
     return state.formId.value && <Context.Provider value={[state, onChange(state, setState)]}>
         <NavBar/>
         <Notification/>
+        <ModalWindow/>
         {route}
     </Context.Provider>;
 };
