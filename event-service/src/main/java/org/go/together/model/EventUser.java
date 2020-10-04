@@ -2,19 +2,21 @@ package org.go.together.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.go.together.dto.EventUserStatus;
-import org.go.together.interfaces.IdentifiedEntity;
+import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.*;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "event_user", schema = "event_service")
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventUser implements IdentifiedEntity {
+public class EventUser extends IdentifiedEntity {
     @Id
     @GeneratedValue
     @Column(columnDefinition = "uuid")

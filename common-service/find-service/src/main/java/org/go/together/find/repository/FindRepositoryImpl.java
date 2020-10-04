@@ -4,10 +4,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.find.dto.FieldDto;
 import org.go.together.find.dto.form.FilterDto;
 import org.go.together.find.dto.form.PageDto;
-import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.repository.CustomRepository;
 import org.go.together.repository.builder.SqlBuilder;
 import org.go.together.repository.builder.WhereBuilder;
+import org.go.together.repository.entities.IdentifiedEntity;
 
 import java.util.Collection;
 import java.util.Map;

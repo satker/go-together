@@ -1,9 +1,9 @@
 package org.go.together.repository;
 
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.repository.builder.SqlBuilder;
 import org.go.together.repository.builder.WhereBuilder;
+import org.go.together.repository.entities.IdentifiedEntity;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

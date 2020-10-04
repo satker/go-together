@@ -11,4 +11,5 @@ repositories {
 
 dependencies {
     compile project(":common-service:interfaces-service")
+    compile project(":common-service:repository-service")
 }

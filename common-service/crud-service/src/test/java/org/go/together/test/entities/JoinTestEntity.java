@@ -1,19 +1,12 @@
 package org.go.together.test.entities;
 
-import org.go.together.interfaces.IdentifiedEntity;
+import org.go.together.repository.entities.NamedIdentifiedEntity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.util.UUID;
 
 @Entity
-public class JoinTestEntity implements IdentifiedEntity {
-    @Id
-    @Column(columnDefinition = "uuid")
-    private UUID id;
-    private String name;
-
+public class JoinTestEntity extends NamedIdentifiedEntity {
     public JoinTestEntity() {
     }
 
@@ -24,22 +17,6 @@ public class JoinTestEntity implements IdentifiedEntity {
 
     public static JoinTestEntityBuilder builder() {
         return new JoinTestEntityBuilder();
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public boolean equals(final Object o) {

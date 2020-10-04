@@ -14,8 +14,8 @@ import org.go.together.find.finders.Finder;
 import org.go.together.find.repository.FindRepository;
 import org.go.together.find.repository.FindRepositoryImpl;
 import org.go.together.find.utils.FindUtils;
-import org.go.together.interfaces.IdentifiedEntity;
 import org.go.together.repository.CustomRepository;
+import org.go.together.repository.entities.IdentifiedEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;

@@ -1,18 +1,12 @@
 package org.go.together.test.entities;
 
-import org.go.together.interfaces.IdentifiedEntity;
+import org.go.together.repository.entities.NamedIdentifiedEntity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.util.UUID;
 
 @Entity
-public class ManyJoinEntity implements IdentifiedEntity {
-    @Id
-    @Column(columnDefinition = "uuid")
-    private UUID id;
-    private String name;
+public class ManyJoinEntity extends NamedIdentifiedEntity {
     private long number;
 
     ManyJoinEntity(UUID id, String name, long number) {
@@ -28,24 +22,8 @@ public class ManyJoinEntity implements IdentifiedEntity {
         return new ManyJoinEntityBuilder();
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public long getNumber() {
         return number;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setNumber(long number) {

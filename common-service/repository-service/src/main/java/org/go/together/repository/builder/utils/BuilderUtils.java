@@ -1,6 +1,6 @@
 package org.go.together.repository.builder.utils;
 
-import org.go.together.interfaces.IdentifiedEntity;
+import org.go.together.repository.entities.IdentifiedEntity;
 
 public class BuilderUtils {
     public static <E extends IdentifiedEntity> String getEntityLink(Class<E> clazz) {

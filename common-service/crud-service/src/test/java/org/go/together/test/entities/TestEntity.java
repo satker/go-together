@@ -1,6 +1,6 @@
 package org.go.together.test.entities;
 
-import org.go.together.interfaces.IdentifiedEntity;
+import org.go.together.repository.entities.NamedIdentifiedEntity;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -8,11 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-public class TestEntity implements IdentifiedEntity {
-    @Id
-    @Column(columnDefinition = "uuid")
-    private UUID id;
-    private String name;
+public class TestEntity extends NamedIdentifiedEntity {
     private long number;
     private Date date;
     private Date startDate;
@@ -64,20 +60,8 @@ public class TestEntity implements IdentifiedEntity {
         return new TestEntityBuilder();
     }
 
-    public UUID getId() {
-        return this.id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
     public long getNumber() {
         return this.number;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public Date getDate() {
@@ -158,10 +142,6 @@ public class TestEntity implements IdentifiedEntity {
 
     public Set<ManyJoinEntity> getManyJoinEntities() {
         return this.manyJoinEntities;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setElements(Set<UUID> elements) {

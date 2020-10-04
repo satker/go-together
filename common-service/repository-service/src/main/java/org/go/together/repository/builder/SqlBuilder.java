@@ -1,7 +1,7 @@
 package org.go.together.repository.builder;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.interfaces.IdentifiedEntity;
+import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;

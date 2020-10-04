@@ -1,20 +1,18 @@
 package org.go.together.model;
 
 import lombok.Data;
-import org.go.together.interfaces.IdentifiedEntity;
+import lombok.EqualsAndHashCode;
+import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.*;
 import java.util.Set;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Table(name = "event_like", schema = "user_service")
-public class EventLike implements IdentifiedEntity {
-    @Id
-    @Column(columnDefinition = "uuid")
-    private UUID id;
-
+public class EventLike extends IdentifiedEntity {
     @Column(unique = true, columnDefinition = "uuid")
     private UUID eventId;
 

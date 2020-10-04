@@ -1,20 +1,17 @@
 package org.go.together.model;
 
 import lombok.Data;
-import org.go.together.interfaces.IdentifiedEntity;
+import lombok.EqualsAndHashCode;
+import org.go.together.repository.entities.NamedIdentifiedEntity;
 
 import javax.persistence.*;
 import java.util.Set;
-import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "place", schema = "location_service")
-public class Place implements IdentifiedEntity {
-    @Id
-    @Column(columnDefinition = "uuid")
-    private UUID id;
-    private String name;
+public class Place extends NamedIdentifiedEntity {
     private String state;
 
     @ManyToOne(cascade = CascadeType.REFRESH)

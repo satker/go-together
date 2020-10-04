@@ -1,21 +1,19 @@
 package org.go.together.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.go.together.dto.PhotoCategory;
-import org.go.together.interfaces.IdentifiedEntity;
+import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.*;
 import java.util.Set;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "group_photo", schema = "content_service")
-public class GroupPhoto implements IdentifiedEntity {
-    @Id
-    @Column(columnDefinition = "uuid")
-    private UUID id;
-
+public class GroupPhoto extends IdentifiedEntity {
     @Column(columnDefinition = "uuid")
     private UUID groupId;
 
