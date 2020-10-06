@@ -158,21 +158,19 @@ public class ComparatorUtils {
 
         Set<String> changedElements = new HashSet<>();
 
-        if (idCompare) {
-            anotherCollectionIdsMap.forEach((key, value) -> {
-                Dto anotherComparableDto = value.iterator().next();
-                if (!collectionIdsMap.containsKey(key)) {
-                    addedElements.add(getMainField(anotherComparableDto));
-                } else {
-                    Set<String> resultComparing = new HashSet<>();
-                    Dto comparableDto = collectionIdsMap.get(key).iterator().next();
-                    compareDtos(resultComparing, fieldName, comparableDto, anotherComparableDto);
-                    if (!resultComparing.isEmpty()) {
-                        changedElements.add(StringUtils.join(resultComparing, ","));
-                    }
+        anotherCollectionIdsMap.forEach((key, value) -> {
+            Dto anotherComparableDto = value.iterator().next();
+            if (!collectionIdsMap.containsKey(key)) {
+                addedElements.add(getMainField(anotherComparableDto));
+            } else if (!idCompare) {
+                Set<String> resultComparing = new HashSet<>();
+                Dto comparableDto = collectionIdsMap.get(key).iterator().next();
+                compareDtos(resultComparing, fieldName, comparableDto, anotherComparableDto);
+                if (!resultComparing.isEmpty()) {
+                    changedElements.add(StringUtils.join(resultComparing, ","));
                 }
-            });
-        }
+            }
+        });
 
         collectionIdsMap.keySet().forEach(key -> {
             if (!anotherCollectionIdsMap.containsKey(key)) {

@@ -2,17 +2,14 @@ package org.go.together.client;
 
 import org.go.together.dto.IdDto;
 import org.go.together.dto.NotificationMessageDto;
+import org.go.together.find.client.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.UUID;
 
 @FeignClient(name = "notification-service")
-public interface NotificationClient {
-    @GetMapping("notifications/receivers/{receiverId}")
-    Collection<NotificationMessageDto> getReceiverNotifications(@PathVariable("receiverId") UUID receiverId);
-
+public interface NotificationClient extends FindClient {
     @PutMapping("notifications/receivers/{receiverId}/producers/{producerId}")
     void addReceiver(@PathVariable("producerId") UUID producerId,
                      @PathVariable("receiverId") UUID receiverId);

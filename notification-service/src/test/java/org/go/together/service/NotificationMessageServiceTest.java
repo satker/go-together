@@ -51,7 +51,6 @@ public class NotificationMessageServiceTest extends CrudServiceCommonTest<Notifi
         NotificationMessageDto createdEntityId = getCreatedEntityId(dto);
         NotificationMessageDto notificationMessageDto = new NotificationMessageDto();
         notificationMessageDto.setDate(new Date());
-        notificationMessageDto.setIsRead(null);
         notificationMessageDto.setNotificationId(createdEntityId.getNotificationId());
         notificationMessageDto.setMessage(updated);
         NotificationMessageDto createdNotificationMessageDto = getCreatedEntityId(notificationMessageDto);
@@ -75,7 +74,6 @@ public class NotificationMessageServiceTest extends CrudServiceCommonTest<Notifi
         notificationDto.setProducerId(UUID.randomUUID());
         IdDto notificationId = notificationService.create(notificationDto);
         notificationMessageDto.setNotificationId(notificationId.getId());
-        notificationMessageDto.setIsRead(null);
         return notificationMessageDto;
     }
 }

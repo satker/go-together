@@ -6,19 +6,27 @@ import Container from "forms/utils/components/Container/ContainerRow";
 import {NotificationObject} from "forms/utils/types";
 
 import Notification from "./Notification";
-import {readNotifications} from "./actions";
+import {getUserNotifications, readNotifications} from "./actions";
+import LoadableContent from "../utils/components/LoadableContent";
 
-const Notifications = ({userNotifications, readNotifications, userId}) => {
+const Notifications = ({userNotifications, readNotifications, userId, getUserNotifications}) => {
+    useEffect(() => {
+        if (userId) {
+            getUserNotifications(userId);
+        }
+    }, [getUserNotifications, userId]);
+
     useEffect(() => {
         if (userId) {
             readNotifications(userId);
         }
     }, [readNotifications, userId]);
-
     return <Container>
-        {userNotifications.map(notification =>
-            <Notification notification={notification} key={notification.id}/>
-        )}
+        <LoadableContent loadableData={userNotifications}>
+            {(userNotifications.response?.result || []).map(notification =>
+                <Notification notification={notification.notificationMessage} key={notification.id}/>
+            )}
+        </LoadableContent>
     </Container>
 };
 
@@ -30,7 +38,7 @@ Notifications.propTypes = {
 
 const mapStateToProps = state => ({
     userId: state.userId.value,
-    userNotifications: state.components.forms.notifications.userNotifications.response
+    userNotifications: state.components.forms.notifications.userNotifications
 });
 
-export default connect(mapStateToProps, {readNotifications})(Notifications);
+export default connect(mapStateToProps, {readNotifications, getUserNotifications})(Notifications);

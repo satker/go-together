@@ -11,6 +11,5 @@ public class NotificationMessageDto implements Dto {
     private UUID id;
     private String message;
     private Date date;
-    private Boolean isRead;
     private UUID notificationId;
 }

@@ -1,4 +1,4 @@
-package org.go.together.find.correction.path;
+package org.go.together.find.correction.path.dto;
 
 import lombok.Builder;
 import lombok.Getter;

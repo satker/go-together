@@ -1,4 +1,4 @@
-package org.go.together.find.correction.field;
+package org.go.together.find.correction.field.dto;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package org.go.together.find.correction.values;
 
-import org.go.together.find.correction.field.CorrectedFieldDto;
+import org.go.together.find.correction.field.dto.CorrectedFieldDto;
 
 import java.util.Collection;
 import java.util.Map;

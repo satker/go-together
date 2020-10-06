@@ -1,4 +1,4 @@
-package org.go.together.find.repository;
+package org.go.together.find.repository.sql;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -29,8 +29,7 @@ public class WhereBuilderCreator<E extends IdentifiedEntity> {
         WhereBuilder<E> whereBuilder = repository.createWhere();
         filters.forEach((key, value) -> {
             FindSqlOperator filterType = value.getFilterType();
-            String[] splitByDotString = key.getPaths();
-            String searchField = splitByDotString[splitByDotString.length - 1];
+            String searchField = key.getFilterFields();
             String[] groupFields = getSingleGroupFields(searchField);
             String suffix = key.getLocalField().replace(searchField, "");
             if (groupFields.length > 1) {

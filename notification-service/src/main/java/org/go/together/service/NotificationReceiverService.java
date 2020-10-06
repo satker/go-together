@@ -1,5 +1,6 @@
 package org.go.together.service;
 
+import com.google.common.collect.ImmutableMap;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.NotificationDto;
@@ -7,6 +8,7 @@ import org.go.together.dto.NotificationReceiverDto;
 import org.go.together.dto.NotificationReceiverMessageDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
+import org.go.together.find.dto.FieldMapper;
 import org.go.together.mapper.NotificationMapper;
 import org.go.together.mapper.NotificationMessageMapper;
 import org.go.together.model.Notification;
@@ -18,6 +20,7 @@ import org.go.together.repository.NotificationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -95,5 +98,14 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
     @Override
     public String getServiceName() {
         return "notificationReceiver";
+    }
+
+    @Override
+    public Map<String, FieldMapper> getMappingFields() {
+        return ImmutableMap.<String, FieldMapper>builder()
+                .put("id", FieldMapper.builder()
+                        .currentServiceField("userId")
+                        .fieldClass(UUID.class).build())
+                .build();
     }
 }

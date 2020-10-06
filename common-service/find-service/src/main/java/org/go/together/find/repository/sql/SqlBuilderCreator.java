@@ -1,4 +1,4 @@
-package org.go.together.find.repository;
+package org.go.together.find.repository.sql;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.exceptions.IncorrectFindObject;

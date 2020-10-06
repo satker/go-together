@@ -7,6 +7,7 @@ import org.go.together.test.entities.JoinTestEntity;
 import org.go.together.test.entities.ManyJoinEntity;
 import org.go.together.test.entities.TestEntity;
 import org.go.together.test.repository.TestRepository;
+import org.go.together.utils.ReflectionUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -189,7 +190,7 @@ class CustomRepositoryTest {
 
     @Test
     void getEntityClass() {
-        Class<TestEntity> entityClass = testRepository.getEntityClass();
+        Class<TestEntity> entityClass = ReflectionUtils.getParametrizedClass(testRepository.getClass(), 0);
 
         assertEquals(TestEntity.class, entityClass);
     }

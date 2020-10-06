@@ -7,14 +7,10 @@ import org.go.together.dto.NotificationReceiverDto;
 import org.go.together.dto.NotificationReceiverMessageDto;
 import org.go.together.model.NotificationReceiverMessage;
 import org.go.together.tests.CrudServiceCommonTest;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.Collection;
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 public class NotificationReceiverMessageServiceTest
@@ -30,38 +26,10 @@ public class NotificationReceiverMessageServiceTest
     @Autowired
     private NotificationReceiverService notificationReceiverService;
 
-    @Test
-    public void readNotifications() {
-        NotificationReceiverMessageDto createdEntityMessageDto = getCreatedEntityId(dto);
-        UUID userId = createdEntityMessageDto.getNotificationReceiver().getUserId();
-        boolean readResult = ((NotificationReceiverMessageService) crudService).readNotifications(userId);
-        assertTrue(readResult);
-
-        Collection<NotificationMessageDto> receiverNotifications =
-                ((NotificationReceiverMessageService) crudService).getReceiverNotifications(userId);
-
-        assertEquals(1, receiverNotifications.size());
-        assertEquals(CREATED, receiverNotifications.iterator().next().getMessage());
-        assertEquals(true, receiverNotifications.iterator().next().getIsRead());
-    }
-
-    @Test
-    public void getReceiverNotifications() {
-        NotificationReceiverMessageDto createdEntityMessageDto = getCreatedEntityId(dto);
-        UUID userId = createdEntityMessageDto.getNotificationReceiver().getUserId();
-
-        Collection<NotificationMessageDto> receiverNotifications =
-                ((NotificationReceiverMessageService) crudService).getReceiverNotifications(userId);
-
-        assertEquals(1, receiverNotifications.size());
-        assertEquals(CREATED, receiverNotifications.iterator().next().getMessage());
-        assertNull(receiverNotifications.iterator().next().getIsRead());
-    }
-
     @Override
     protected NotificationReceiverMessageDto createDto() {
         NotificationReceiverMessageDto notificationReceiverMessageDto = factory.manufacturePojo(NotificationReceiverMessageDto.class);
-        notificationReceiverMessageDto.setIsRead(null);
+        notificationReceiverMessageDto.setIsRead(false);
 
         NotificationMessageDto notificationMessageDto = factory.manufacturePojo(NotificationMessageDto.class);
         NotificationDto notificationDto = new NotificationDto();

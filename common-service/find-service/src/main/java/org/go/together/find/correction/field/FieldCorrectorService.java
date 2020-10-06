@@ -1,7 +1,8 @@
 package org.go.together.find.correction.field;
 
 import org.go.together.exceptions.IncorrectFindObject;
-import org.go.together.find.correction.FilterCorrector;
+import org.go.together.find.correction.field.dto.CorrectedFieldDto;
+import org.go.together.find.correction.fieldpath.FieldPathCorrector;
 import org.go.together.find.dto.FieldDto;
 import org.go.together.find.dto.FieldMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,15 @@ import static org.go.together.find.utils.FindUtils.getSingleGroupFields;
 
 @Component
 public class FieldCorrectorService implements FieldCorrector {
-    private FilterCorrector filterCorrector;
+    private FieldPathCorrector fieldPathCorrector;
 
     @Autowired
-    public void setFilterCorrector(FilterCorrector filterCorrector) {
-        this.filterCorrector = filterCorrector;
+    public void setFieldPathCorrector(FieldPathCorrector fieldPathCorrector) {
+        this.fieldPathCorrector = fieldPathCorrector;
     }
 
-    public CorrectedFieldDto correct(Map<String, FieldMapper> fieldMappers, String filterField) {
+    public CorrectedFieldDto correct(Map<String, FieldMapper> fieldMappers, FieldDto fieldDto) {
+        String filterField = fieldDto.getFilterFields();
         Map<String, String> oldNewFilterField = Stream.of(getSingleGroupFields(filterField))
                 .collect(Collectors.toMap(Function.identity(), Function.identity()));
         Map<String, Class> oldValueClass = new HashMap<>();
@@ -80,7 +82,7 @@ public class FieldCorrectorService implements FieldCorrector {
         List<String> fieldsForChange = List.of(splitByDotString).subList(1, splitByDotString.length);
         FieldDto fieldDto = new FieldDto(String.join(".", fieldsForChange));
         Map<String, FieldMapper> innerServiceMappingFields = fieldMapper.getInnerService().getMappingFields();
-        CorrectedFieldDto updatedFieldDto = filterCorrector.getCorrectedFieldDto(fieldDto, innerServiceMappingFields);
+        CorrectedFieldDto updatedFieldDto = fieldPathCorrector.getCorrectedFieldDto(fieldDto, innerServiceMappingFields);
         return changedField + "." + updatedFieldDto.getFieldDto().getLocalField();
     }
 }

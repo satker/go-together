@@ -6,14 +6,14 @@ import IconButton from "@material-ui/core/IconButton";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 
 import {connect} from "App/Context";
-import {getUserNotifications} from "forms/Notifications/actions";
+import {getUnreadUserNotifications} from "forms/Notifications/actions";
 
-const NotificationButton = ({menuId, userNotificationsSize, getUserNotifications, userId}) => {
+const NotificationButton = ({menuId, userNotificationsSize, getUnreadUserNotifications, userId}) => {
     useEffect(() => {
         if (userId) {
-            getUserNotifications(userId);
+            getUnreadUserNotifications(userId);
         }
-    }, [getUserNotifications, userId]);
+    }, [getUnreadUserNotifications, userId]);
 
     return <IconButton onClick={() => navigate('/notifications', true)}
                        key={menuId + '_notification'}
@@ -33,11 +33,14 @@ NotificationButton.propTypes = {
     userId: PropTypes.string
 };
 
-const mapStateToProps = state => ({
-    userNotificationsSize: state.components.forms.notifications.userNotifications.response
-        .filter(notificationMessage => !notificationMessage.isRead)
-        .length,
-    userId: state.userId.value
-});
+const mapStateToProps = state => {
+    const notifications = state.components.forms.notifications.unreadNotifications;
+    return ({
+        userNotificationsSize: (notifications.response?.result || [])
+            .filter(notificationMessage => !notificationMessage.isRead)
+            .length,
+        userId: state.userId.value
+    });
+}
 
-export default connect(mapStateToProps, {getUserNotifications})(NotificationButton);
+export default connect(mapStateToProps, {getUnreadUserNotifications})(NotificationButton);

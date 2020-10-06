@@ -94,7 +94,6 @@ public class NotificationReceiverServiceTest extends CrudServiceCommonTest<Notif
     private void createNotificationMessage() {
         NotificationMessageDto notificationMessageDto = new NotificationMessageDto();
         notificationMessageDto.setMessage(CREATED);
-        notificationMessageDto.setIsRead(null);
         notificationMessageDto.setNotificationId(dto.getNotification().getId());
         notificationMessageDto.setDate(new Date());
         notificationMessageService.create(notificationMessageDto);

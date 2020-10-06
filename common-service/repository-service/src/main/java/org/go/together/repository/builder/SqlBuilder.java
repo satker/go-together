@@ -1,13 +1,16 @@
 package org.go.together.repository.builder;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.go.together.repository.builder.utils.BuilderUtils.getEntityLink;
 
@@ -19,6 +22,7 @@ public class SqlBuilder<E extends IdentifiedEntity> {
     private final String select;
     private final String selectRow;
     private final StringBuilder havingCondition;
+    private String sortCondition;
 
     public SqlBuilder(Class<E> clazz, EntityManager entityManager, String selectRow, Integer havingCondition) {
         String entityLink = getEntityLink(clazz);
@@ -96,11 +100,16 @@ public class SqlBuilder<E extends IdentifiedEntity> {
     }
 
     public String getQuery() {
+        StringBuilder result = new StringBuilder();
         if (StringUtils.isNotEmpty(query)) {
-            return query.toString();
+            result.append(query.toString());
         } else {
-            return from;
+            result.append(from);
         }
+        if (StringUtils.isNotBlank(sortCondition)) {
+            result.append(sortCondition);
+        }
+        return result.toString();
     }
 
     public Number getCountRows() {
@@ -130,5 +139,12 @@ public class SqlBuilder<E extends IdentifiedEntity> {
             query.append(having);
         }
         return entityManager.createQuery(query.toString(), Number.class).getResultStream().count();
+    }
+
+    public SqlBuilder<E> sort(Map<String, Direction> sortMap) {
+        sortCondition = sortMap.entrySet().stream()
+                .map(entry -> getEntityLink(clazz) + "." + entry.getKey() + StringUtils.SPACE + entry.getValue().toString())
+                .collect(Collectors.joining(", ", " ORDER BY ", StringUtils.EMPTY));
+        return this;
     }
 }
