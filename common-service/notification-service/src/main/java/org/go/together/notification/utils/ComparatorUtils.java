@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 public class ComparatorUtils {
     private static final String CHANGED = "changed";
-    private static final String FROM = " " + CHANGED + ": ";
+    private static final String FROM = StringUtils.SPACE + CHANGED + ": ";
     private static final String TO = " -> ";
 
     public static String getMainField(Dto dto) {
@@ -36,7 +36,7 @@ public class ComparatorUtils {
 
     public static void compareObject(Collection<String> result, String fieldName, Object object, Object anotherObject) {
         if (object != anotherObject) {
-            String resultString = fieldName + " " + CHANGED;
+            String resultString = fieldName + StringUtils.SPACE + CHANGED;
             result.add(resultString);
         }
     }
@@ -113,7 +113,7 @@ public class ComparatorUtils {
         if (!strings.isEmpty()) {
             StringBuilder resultString = new StringBuilder()
                     .append(CHANGED.replaceFirst("c", "C"))
-                    .append(" ")
+                    .append(StringUtils.SPACE)
                     .append(fieldName);
             if (StringUtils.isNotBlank(mainField)) {
                 resultString.append(mainField);
@@ -180,7 +180,7 @@ public class ComparatorUtils {
         });
 
         if (!removedElements.isEmpty() || !addedElements.isEmpty() || !changedElements.isEmpty()) {
-            resultString.append(CHANGED).append(" ").append(fieldName).append(" (");
+            resultString.append(CHANGED).append(StringUtils.SPACE).append(fieldName).append(" (");
             StringBuilder removedElementsString = new StringBuilder();
             if (!removedElements.isEmpty()) {
                 String message = StringUtils.isBlank(removedElements.iterator().next()) ?

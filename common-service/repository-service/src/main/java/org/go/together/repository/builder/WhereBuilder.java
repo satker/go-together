@@ -5,9 +5,7 @@ import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.repository.sql.SqlOperator;
 
 import java.util.Map;
-import java.util.Optional;
 
-import static org.go.together.repository.builder.utils.BuilderUtils.getEntityField;
 import static org.go.together.repository.sql.ObjectStringParser.parseToString;
 
 public class WhereBuilder<E extends IdentifiedEntity> {
@@ -16,13 +14,11 @@ public class WhereBuilder<E extends IdentifiedEntity> {
     private final StringBuilder join;
     private final StringBuilder whereQuery;
     private final JoinBuilder<E> joinBuilder;
-    private final Class<E> clazz;
 
     public WhereBuilder(Boolean isGroup, Class<E> clazz) {
-        this.clazz = clazz;
-        joinBuilder = new JoinBuilder<>(clazz);
-        join = new StringBuilder();
-        whereQuery = new StringBuilder(isGroup ? StringUtils.EMPTY : " WHERE ");
+        this.joinBuilder = new JoinBuilder<>(clazz);
+        this.join = new StringBuilder();
+        this.whereQuery = new StringBuilder(isGroup ? StringUtils.EMPTY : " WHERE ");
     }
 
     public StringBuilder getWhereQuery() {
@@ -45,19 +41,14 @@ public class WhereBuilder<E extends IdentifiedEntity> {
     }
 
     private String getFieldWithJoin(String field) {
-        String fieldName = getEntityField(field, clazz);
-        Optional<Map.Entry<String, String>> joinTableNameOptional = joinBuilder.getJoinTables().entrySet().stream()
-                .filter(joinName -> field.startsWith(joinName.getKey()))
-                .findFirst();
-        if (joinTableNameOptional.isPresent()) {
-            Map.Entry<String, String> joinTableName = joinTableNameOptional.get();
-            String leftJoin = joinBuilder.createLeftJoin(joinTableName);
-            if (!join.toString().contains(leftJoin)) {
-                join.append(leftJoin);
-            }
-            fieldName = field.replaceFirst(joinTableName.getKey(), joinTableName.getValue());
+        return joinBuilder.getFieldWithJoin(field, this::enrichJoin);
+    }
+
+    private void enrichJoin(Map.Entry<String, String> joinTableName) {
+        String leftJoin = joinBuilder.createLeftJoin(joinTableName);
+        if (!this.join.toString().contains(leftJoin)) {
+            this.join.append(leftJoin);
         }
-        return fieldName;
     }
 
     public WhereBuilder<E> group(WhereBuilder<E> whereBuilder) {

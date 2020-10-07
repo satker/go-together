@@ -14,7 +14,7 @@ export const context = {
     formId: createContextValue(FORM_ID),
     csrfToken: createContextValue(CSRF_TOKEN, getCookie(CSRF_TOKEN) === 'null' ? null : getCookie(CSRF_TOKEN)),
     page: createContextValue(PAGE, 0),
-    pageSize: createContextValue(PAGE_SIZE, 9),
+    pageSize: createContextValue(PAGE_SIZE, 2),
     temporary,
     components: {...components}
 };

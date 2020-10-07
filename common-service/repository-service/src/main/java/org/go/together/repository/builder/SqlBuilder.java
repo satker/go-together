@@ -5,12 +5,10 @@ import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.go.together.repository.builder.utils.BuilderUtils.getEntityLink;
 
@@ -19,18 +17,21 @@ public class SqlBuilder<E extends IdentifiedEntity> {
     private final StringBuilder query;
     private final EntityManager entityManager;
     private final Class<E> clazz;
-    private final String select;
     private final String selectRow;
     private final StringBuilder havingCondition;
-    private String sortCondition;
+    private final StringBuilder sort;
+    private final StringBuilder join;
 
     public SqlBuilder(Class<E> clazz, EntityManager entityManager, String selectRow, Integer havingCondition) {
         String entityLink = getEntityLink(clazz);
-        String selectQuery = selectRow == null ? entityLink : entityLink + "." + selectRow;
+        String selectQuery = Optional.ofNullable(selectRow)
+                .map((row) -> entityLink + "." + selectRow)
+                .orElse(entityLink);
         this.selectRow = selectQuery;
-        select = "select distinct " + selectQuery;
-        from = " FROM " + clazz.getSimpleName() + " " + entityLink;
-        query = new StringBuilder();
+        this.from = " FROM " + clazz.getSimpleName() + StringUtils.SPACE + entityLink;
+        this.query = new StringBuilder();
+        this.sort = new StringBuilder();
+        this.join = new StringBuilder();
         this.entityManager = entityManager;
         this.clazz = clazz;
         if (havingCondition != null && selectRow != null) {
@@ -54,27 +55,27 @@ public class SqlBuilder<E extends IdentifiedEntity> {
     }
 
     public SqlBuilder<E> where(WhereBuilder<E> whereBuilder) {
-        String joinQuery = whereBuilder.getJoinQuery().toString();
-        if (StringUtils.isNotEmpty(joinQuery)) {
-            query.append(select);
-            query.append(from);
-            query.append(joinQuery);
-        } else {
-            if (!selectRow.equals(getEntityLink(clazz))) {
-                query.append("select ")
-                        .append(selectRow);
-            }
-            query.append(from);
-        }
+        join.append(whereBuilder.getJoinQuery());
         query.append(whereBuilder.getWhereQuery());
-        if (havingCondition != null) {
-            query.append(havingCondition);
-        }
         return this;
     }
 
+    private String getFirstQueryPart() {
+        final String SELECT = "select " + selectRow;
+        if (StringUtils.isNotEmpty(join)) {
+            return SELECT + from + join;
+        } else {
+            String result = StringUtils.EMPTY;
+            if (!selectRow.equals(getEntityLink(clazz))) {
+                result = result.concat(SELECT).concat(selectRow);
+            }
+            return result.concat(from);
+        }
+    }
+
     public Collection<E> fetchAll() {
-        return entityManager.createQuery(getQuery(), clazz).getResultList();
+        TypedQuery<E> query = entityManager.createQuery(getQuery(), clazz);
+        return getResult(query);
     }
 
     public Optional<E> fetchOne() {
@@ -85,29 +86,36 @@ public class SqlBuilder<E extends IdentifiedEntity> {
         TypedQuery<E> query = entityManager.createQuery(getQuery(), clazz);
         query.setFirstResult(start);
         query.setMaxResults(pageSize);
-        return query.getResultList();
+        return getResult(query);
     }
 
     public Collection<Object> fetchWithPageableNotDefined(int start, int pageSize) {
-        Query query = entityManager.createQuery(getQuery());
+        TypedQuery<Object> query = entityManager.createQuery(getQuery(), Object.class);
         query.setFirstResult(start);
         query.setMaxResults(pageSize);
-        return query.getResultList();
+        return getResult(query);
     }
 
     public Collection<Object> fetchAllNotDefined() {
-        return entityManager.createQuery(getQuery(), Object.class).getResultList();
+        TypedQuery<Object> query = entityManager.createQuery(getQuery(), Object.class);
+        return getResult(query);
+    }
+
+    private <T> Collection<T> getResult(TypedQuery<T> typedQuery) {
+        return typedQuery.getResultList();
     }
 
     public String getQuery() {
         StringBuilder result = new StringBuilder();
+        result.append(getFirstQueryPart());
         if (StringUtils.isNotEmpty(query)) {
             result.append(query.toString());
-        } else {
-            result.append(from);
         }
-        if (StringUtils.isNotBlank(sortCondition)) {
-            result.append(sortCondition);
+        if (havingCondition != null) {
+            result.append(havingCondition);
+        }
+        if (StringUtils.isNotBlank(sort)) {
+            result.append(sort);
         }
         return result.toString();
     }
@@ -118,7 +126,7 @@ public class SqlBuilder<E extends IdentifiedEntity> {
                 .append(getEntityLink(clazz))
                 .append(".id) FROM ")
                 .append(clazz.getSimpleName())
-                .append(" ")
+                .append(StringUtils.SPACE)
                 .append(getEntityLink(clazz));
         return entityManager.createQuery(query.toString(), Number.class)
                 .getResultStream().count();
@@ -130,9 +138,9 @@ public class SqlBuilder<E extends IdentifiedEntity> {
                 .append(selectRow)
                 .append(") FROM ")
                 .append(clazz.getSimpleName())
-                .append(" ")
+                .append(StringUtils.SPACE)
                 .append(getEntityLink(clazz))
-                .append(" ")
+                .append(StringUtils.SPACE)
                 .append(whereBuilder.getJoinQuery())
                 .append(whereBuilder.getWhereQuery());
         if (having != null && StringUtils.isNotBlank(selectRow)) {
@@ -142,9 +150,8 @@ public class SqlBuilder<E extends IdentifiedEntity> {
     }
 
     public SqlBuilder<E> sort(Map<String, Direction> sortMap) {
-        sortCondition = sortMap.entrySet().stream()
-                .map(entry -> getEntityLink(clazz) + "." + entry.getKey() + StringUtils.SPACE + entry.getValue().toString())
-                .collect(Collectors.joining(", ", " ORDER BY ", StringUtils.EMPTY));
+        SortBuilder<E> sortBuilder = new SortBuilder<>(join, clazz);
+        sort.append(sortBuilder.getSortQuery(sortMap));
         return this;
     }
 }
