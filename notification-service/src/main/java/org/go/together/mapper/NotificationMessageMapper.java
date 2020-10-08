@@ -3,7 +3,7 @@ package org.go.together.mapper;
 import org.go.together.dto.NotificationMessageDto;
 import org.go.together.model.Notification;
 import org.go.together.model.NotificationMessage;
-import org.go.together.repository.NotificationRepository;
+import org.go.together.repository.interfaces.NotificationRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

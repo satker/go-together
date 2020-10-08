@@ -14,9 +14,9 @@ import org.go.together.mapper.NotificationMessageMapper;
 import org.go.together.model.Notification;
 import org.go.together.model.NotificationReceiver;
 import org.go.together.model.NotificationReceiverMessage;
-import org.go.together.repository.NotificationMessageRepository;
-import org.go.together.repository.NotificationReceiverRepository;
-import org.go.together.repository.NotificationRepository;
+import org.go.together.repository.interfaces.NotificationMessageRepository;
+import org.go.together.repository.interfaces.NotificationReceiverRepository;
+import org.go.together.repository.interfaces.NotificationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;

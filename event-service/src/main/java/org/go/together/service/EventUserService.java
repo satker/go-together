@@ -9,8 +9,8 @@ import org.go.together.enums.NotificationStatus;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Event;
 import org.go.together.model.EventUser;
-import org.go.together.repository.EventRepository;
-import org.go.together.repository.EventUserRepository;
+import org.go.together.repository.interfaces.EventRepository;
+import org.go.together.repository.interfaces.EventUserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

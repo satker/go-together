@@ -4,7 +4,7 @@ import org.go.together.dto.PlaceDto;
 import org.go.together.model.Country;
 import org.go.together.model.Location;
 import org.go.together.model.Place;
-import org.go.together.repository.LocationRepository;
+import org.go.together.repository.interfaces.LocationRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

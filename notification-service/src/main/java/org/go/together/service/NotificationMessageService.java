@@ -9,7 +9,7 @@ import org.go.together.enums.CrudOperation;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.mapper.NotificationReceiverMapper;
 import org.go.together.model.NotificationMessage;
-import org.go.together.repository.NotificationReceiverRepository;
+import org.go.together.repository.interfaces.NotificationReceiverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

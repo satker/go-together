@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.*;
 
-public abstract class FindServiceImpl<E extends IdentifiedEntity> implements FindService {
+public abstract class FindServiceImpl<E extends IdentifiedEntity> implements FindService<E> {
     protected CustomRepository<E> repository;
     private Finder remoteFindService;
     private CorrectorService correctorRemoteFiltersService;

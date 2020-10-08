@@ -5,8 +5,8 @@ import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.UserDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.repository.InterestRepository;
-import org.go.together.repository.LanguageRepository;
+import org.go.together.repository.interfaces.InterestRepository;
+import org.go.together.repository.interfaces.LanguageRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

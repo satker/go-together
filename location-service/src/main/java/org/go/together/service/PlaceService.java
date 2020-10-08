@@ -7,7 +7,7 @@ import org.go.together.dto.SimpleDto;
 import org.go.together.mapper.CountryMapper;
 import org.go.together.model.Country;
 import org.go.together.model.Place;
-import org.go.together.repository.PlaceRepository;
+import org.go.together.repository.interfaces.PlaceRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;

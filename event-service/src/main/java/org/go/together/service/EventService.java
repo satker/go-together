@@ -10,7 +10,7 @@ import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Event;
-import org.go.together.repository.EventRepository;
+import org.go.together.repository.interfaces.EventRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

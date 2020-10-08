@@ -3,7 +3,7 @@ package org.go.together.validation;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventUserDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.repository.EventRepository;
+import org.go.together.repository.interfaces.EventRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -13,7 +13,8 @@ public class EventUserValidator extends Validator<EventUserDto> {
     private final UserClient userClient;
     private final EventRepository eventRepository;
 
-    public EventUserValidator(UserClient userClient, EventRepository eventRepository) {
+    public EventUserValidator(UserClient userClient,
+                              EventRepository eventRepository) {
         this.userClient = userClient;
         this.eventRepository = eventRepository;
     }

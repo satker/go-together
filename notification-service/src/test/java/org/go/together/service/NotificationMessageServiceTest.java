@@ -5,8 +5,7 @@ import org.go.together.dto.IdDto;
 import org.go.together.dto.NotificationDto;
 import org.go.together.dto.NotificationMessageDto;
 import org.go.together.model.NotificationMessage;
-import org.go.together.repository.NotificationMessageRepository;
-import org.go.together.repository.NotificationRepository;
+import org.go.together.repository.interfaces.NotificationMessageRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 public class NotificationMessageServiceTest extends CrudServiceCommonTest<NotificationMessage, NotificationMessageDto> {
-    @Autowired
-    private NotificationMessageService notificationMessageService;
-
-    @Autowired
-    private NotificationRepository notificationRepository;
-
     @Autowired
     private NotificationMessageRepository notificationMessageRepository;
 

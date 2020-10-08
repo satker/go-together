@@ -25,7 +25,7 @@ public class SqlBuilderCreator<E extends IdentifiedEntity> {
             if (havingCondition.length > 1) {
                 return getHavingSqlBuilder(havingCondition);
             } else {
-                return repository.createQuery(mainKeyToSort, null);
+                return repository.createQuery(mainKeyToSort);
             }
         } else {
             return repository.createQuery();

@@ -5,7 +5,7 @@ import org.go.together.dto.EventPaidThingDto;
 import org.go.together.mapper.PaidThingMapper;
 import org.go.together.model.EventPaidThing;
 import org.go.together.model.PaidThing;
-import org.go.together.repository.PaidThingRepository;
+import org.go.together.repository.interfaces.PaidThingRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;

@@ -5,7 +5,7 @@ import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.NotificationReceiverMessageDto;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.NotificationReceiverMessage;
-import org.go.together.repository.NotificationReceiverMessageRepository;
+import org.go.together.repository.interfaces.NotificationReceiverMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,15 +40,6 @@ public class NotificationReceiverMessageService extends CrudServiceImpl<Notifica
                 .forEach(super::update);
         return true;
     }
-
-    /*public Collection<NotificationReceiverMessageDto> getReceiverNotifications(UUID receiverId) {
-        return getNotificationReceiverMessageIdsByReceiverId(receiverId)
-                .stream()
-                .map(mapper::entityToDto)
-                .sorted(Comparator.comparing(dto -> dto.getNotificationMessage().getDate(),
-                        Comparator.nullsLast(Comparator.reverseOrder())))
-                .collect(Collectors.toList());
-    }*/
 
     public Collection<NotificationReceiverMessage> getNotificationReceiverMessageIdsByReceiverId(UUID receiverId) {
         return ((NotificationReceiverMessageRepository) repository).findByReceiverId(receiverId);

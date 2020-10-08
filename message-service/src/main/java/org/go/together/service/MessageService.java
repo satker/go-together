@@ -7,7 +7,7 @@ import org.go.together.dto.MessageType;
 import org.go.together.enums.CrudOperation;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Message;
-import org.go.together.repository.MessageRepository;
+import org.go.together.repository.interfaces.MessageRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

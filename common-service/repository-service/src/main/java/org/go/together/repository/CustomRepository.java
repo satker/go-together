@@ -1,78 +1,33 @@
 package org.go.together.repository;
 
-import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.repository.builder.SqlBuilder;
 import org.go.together.repository.builder.WhereBuilder;
 import org.go.together.repository.entities.IdentifiedEntity;
-import org.go.together.utils.ReflectionUtils;
-import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
-@Repository
-public abstract class CustomRepository<E extends IdentifiedEntity> {
-    @PersistenceContext
-    private EntityManager entityManager;
+public interface CustomRepository<E extends IdentifiedEntity> {
+    E create();
 
-    private final Class<E> clazz = ReflectionUtils.getParametrizedClass(this.getClass(), 0);
+    E save(E entity);
 
-    @Transactional
-    public E create() {
-        E entity;
-        try {
-            entity = clazz.getConstructor().newInstance();
-        } catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
-            throw new RuntimeException("Cannot create instance entity");
-        }
-        entity.setId(UUID.randomUUID());
-        return entityManager.merge(entity);
-    }
+    void delete(E entity);
 
-    @Transactional
-    public E save(E entity) {
-        return entityManager.merge(entity);
-    }
+    Optional<E> findById(UUID uuid);
 
-    @Transactional
-    public void delete(E entity) {
-        entityManager.remove(entity);
-    }
+    E findByIdOrThrow(UUID uuid);
 
-    @Transactional
-    public Optional<E> findById(UUID uuid) {
-        return Optional.ofNullable(entityManager.find(clazz, uuid));
-    }
+    Collection<E> findAll();
 
-    @Transactional
-    public E findByIdOrThrow(UUID uuid) {
-        return Optional.ofNullable(entityManager.find(clazz, uuid))
-                .orElseThrow(() -> new CannotFindEntityException("Cannot find " + clazz.getSimpleName() + " by id " + uuid));
-    }
+    SqlBuilder<E> createQuery();
 
-    @Transactional
-    public Collection<E> findAll() {
-        return createQuery().fetchAll();
-    }
+    SqlBuilder<E> createQuery(String selectRow);
 
-    public SqlBuilder<E> createQuery() {
-        return new SqlBuilder<>(clazz, entityManager, null, null);
-    }
+    SqlBuilder<E> createQuery(String selectRow, Integer havingCondition);
 
-    public SqlBuilder<E> createQuery(String selectRow, Integer havingCondition) {
-        return new SqlBuilder<>(clazz, entityManager, selectRow, havingCondition);
-    }
+    WhereBuilder<E> createWhere();
 
-    public WhereBuilder<E> createWhere() {
-        return new WhereBuilder<>(false, clazz);
-    }
-
-    public WhereBuilder<E> createGroup() {
-        return new WhereBuilder<>(true, clazz);
-    }
+    WhereBuilder<E> createGroup();
 }

@@ -4,7 +4,7 @@ import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.NotificationDto;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.model.Notification;
-import org.go.together.repository.NotificationRepository;
+import org.go.together.repository.interfaces.NotificationRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;

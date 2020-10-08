@@ -1,12 +1,11 @@
 package org.go.together.base;
 
 import org.go.together.dto.IdDto;
-import org.go.together.find.FindService;
 import org.go.together.interfaces.Dto;
 
 import java.util.UUID;
 
-public interface CrudService<D extends Dto> extends FindService {
+public interface CrudService<D extends Dto> {
     IdDto create(D dto);
 
     IdDto update(D dto);

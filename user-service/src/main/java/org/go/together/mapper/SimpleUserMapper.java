@@ -3,7 +3,7 @@ package org.go.together.mapper;
 import org.go.together.client.ContentClient;
 import org.go.together.dto.SimpleUserDto;
 import org.go.together.model.SystemUser;
-import org.go.together.repository.UserRepository;
+import org.go.together.repository.interfaces.UserRepository;
 import org.springframework.stereotype.Component;
 
 @Component

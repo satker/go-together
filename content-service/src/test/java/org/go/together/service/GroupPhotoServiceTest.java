@@ -6,7 +6,7 @@ import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
 import org.go.together.model.GroupPhoto;
 import org.go.together.model.Photo;
-import org.go.together.repository.PhotoRepository;
+import org.go.together.repository.interfaces.PhotoRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

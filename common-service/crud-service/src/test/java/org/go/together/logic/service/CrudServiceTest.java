@@ -15,8 +15,8 @@ import org.go.together.test.dto.TestDto;
 import org.go.together.test.entities.TestEntity;
 import org.go.together.test.mapper.JoinTestMapper;
 import org.go.together.test.mapper.ManyJoinMapper;
-import org.go.together.test.repository.JoinTestRepository;
-import org.go.together.test.repository.ManyJoinRepository;
+import org.go.together.test.repository.interfaces.JoinTestRepository;
+import org.go.together.test.repository.interfaces.ManyJoinRepository;
 import org.go.together.test.service.TestService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.go.together.validation.Validator;
@@ -212,7 +212,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -235,7 +235,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -263,7 +263,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -294,7 +294,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
                     pageDto.setSort(Collections.emptyList());
                     pageDto.setTotalSize(0L);
                     formDto.setPage(pageDto);
-                    crudService.find(formDto);
+                    findService.find(formDto);
                 });
     }
 
@@ -314,7 +314,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -343,7 +343,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -368,7 +368,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(0, objectResponseDto.getResult().size());
         assertEquals(0, objectResponseDto.getPage().getTotalSize());
@@ -391,7 +391,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -418,7 +418,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -448,7 +448,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -482,7 +482,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -512,7 +512,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -538,7 +538,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -567,7 +567,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -598,7 +598,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());
@@ -629,7 +629,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(0, objectResponseDto.getResult().size());
         assertEquals(0, objectResponseDto.getPage().getTotalSize());
@@ -654,7 +654,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         pageDto.setSort(Collections.emptyList());
         pageDto.setTotalSize(0L);
         formDto.setPage(pageDto);
-        ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+        ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
         assertEquals(1, objectResponseDto.getPage().getTotalSize());

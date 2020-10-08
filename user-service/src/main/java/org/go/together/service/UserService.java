@@ -12,7 +12,7 @@ import org.go.together.find.dto.FieldMapper;
 import org.go.together.mapper.SimpleUserMapper;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
-import org.go.together.repository.UserRepository;
+import org.go.together.repository.interfaces.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 

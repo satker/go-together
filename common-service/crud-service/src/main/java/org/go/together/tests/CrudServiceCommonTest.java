@@ -4,6 +4,7 @@ import org.go.together.base.CrudService;
 import org.go.together.dto.IdDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
+import org.go.together.find.FindService;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.find.dto.ResponseDto;
 import org.go.together.find.dto.form.FilterDto;
@@ -39,6 +40,9 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
 
     @Autowired
     protected CrudService<D> crudService;
+
+    @Autowired
+    protected FindService<E> findService;
 
     @Autowired
     protected CustomRepository<E> repository;
@@ -108,14 +112,14 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
         E savedEntity = repository.findByIdOrThrow(createdDto.getId());
 
 
-        Map<String, FieldMapper> mappingFields = crudService.getMappingFields();
+        Map<String, FieldMapper> mappingFields = findService.getMappingFields();
         if (mappingFields != null) {
             Map<String, FilterDto> findMap = createFilter(savedEntity, mappingFields);
             if (findMap.size() != 0) {
                 FormDto formDto = new FormDto();
                 formDto.setFilters(findMap);
-                formDto.setMainIdField(crudService.getServiceName());
-                ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+                formDto.setMainIdField(findService.getServiceName());
+                ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
                 assertEquals(1, objectResponseDto.getResult().size());
                 objectResponseDto.getResult().stream()

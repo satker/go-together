@@ -12,7 +12,7 @@ import org.go.together.enums.CrudOperation;
 import org.go.together.mapper.PaidThingMapper;
 import org.go.together.model.Event;
 import org.go.together.model.PaidThing;
-import org.go.together.repository.PaidThingRepository;
+import org.go.together.repository.interfaces.PaidThingRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
