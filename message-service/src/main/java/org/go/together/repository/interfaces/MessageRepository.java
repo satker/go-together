@@ -9,6 +9,5 @@ import java.util.UUID;
 
 public interface MessageRepository extends CustomRepository<Message> {
     Collection<Message> findReviewsByRecipientId(UUID recipientId, MessageType messageType);
-
     Collection<Message> findReviewsByEventId(UUID recipientId, MessageType messageType);
 }

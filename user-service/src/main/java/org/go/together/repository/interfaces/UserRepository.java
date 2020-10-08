@@ -10,8 +10,6 @@ import java.util.UUID;
 
 public interface UserRepository extends CustomRepository<SystemUser> {
     Optional<SystemUser> findUserByLogin(String login);
-
     Collection<SystemUser> findUserByMail(String mail);
-
     Collection<SystemUser> findAllByIds(Set<UUID> userIds);
 }

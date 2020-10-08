@@ -67,7 +67,7 @@ public class SqlBuilder<E extends IdentifiedEntity> {
         } else {
             String result = StringUtils.EMPTY;
             if (!selectRow.equals(getEntityLink(clazz))) {
-                result = result.concat(SELECT).concat(selectRow);
+                result = SELECT;
             }
             return result.concat(from);
         }
@@ -121,14 +121,13 @@ public class SqlBuilder<E extends IdentifiedEntity> {
     }
 
     public Number getCountRows() {
-        StringBuilder query = new StringBuilder();
-        query.append("SELECT COUNT (DISTINCT ")
-                .append(getEntityLink(clazz))
-                .append(".id) FROM ")
-                .append(clazz.getSimpleName())
-                .append(StringUtils.SPACE)
-                .append(getEntityLink(clazz));
-        return entityManager.createQuery(query.toString(), Number.class)
+        String query = "SELECT COUNT (DISTINCT " +
+                getEntityLink(clazz) +
+                ".id) FROM " +
+                clazz.getSimpleName() +
+                StringUtils.SPACE +
+                getEntityLink(clazz);
+        return entityManager.createQuery(query, Number.class)
                 .getResultStream().count();
     }
 

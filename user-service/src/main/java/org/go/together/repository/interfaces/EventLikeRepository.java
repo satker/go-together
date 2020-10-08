@@ -9,6 +9,5 @@ import java.util.UUID;
 
 public interface EventLikeRepository extends CustomRepository<EventLike> {
     Optional<EventLike> findByEventId(UUID eventId);
-
     Collection<EventLike> findByUserId(UUID userId);
 }

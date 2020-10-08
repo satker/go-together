@@ -6,6 +6,7 @@ import org.go.together.repository.sql.SqlOperator;
 import org.go.together.test.entities.JoinTestEntity;
 import org.go.together.test.entities.ManyJoinEntity;
 import org.go.together.test.entities.TestEntity;
+import org.go.together.test.repository.impl.TestRepositoryImpl;
 import org.go.together.test.repository.interfaces.TestRepository;
 import org.go.together.utils.ReflectionUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -108,7 +109,7 @@ class CustomRepositoryImplTest {
     void createQueryWhereEqualsConditionsElementCollection() {
         UUID findElement = testEntity.getElements().iterator().next();
 
-        String expectedSql = "select distinct te FROM TestEntity te left join te.elements te_elements WHERE te_elements = '"
+        String expectedSql = "select te FROM TestEntity te left join te.elements te_elements WHERE te_elements = '"
                 + findElement.toString() + "'";
         SqlBuilder<TestEntity> sqlBuilder = testRepository.createQuery()
                 .where(testRepository.createWhere().condition("elements", SqlOperator.EQUAL, findElement));
@@ -124,7 +125,7 @@ class CustomRepositoryImplTest {
     void createQueryWhereEqualsConditionsOneToManyJoin() {
         String joinNameCondition = testEntity.getJoinTestEntities().iterator().next().getName();
 
-        String expectedSql = "select distinct te FROM TestEntity te left join te.joinTestEntities te_joinTestEntities " +
+        String expectedSql = "select te FROM TestEntity te left join te.joinTestEntities te_joinTestEntities " +
                 "WHERE te_joinTestEntities.name = '" + joinNameCondition + "'";
 
         SqlBuilder<TestEntity> sqlBuilder = testRepository.createQuery()
@@ -142,7 +143,7 @@ class CustomRepositoryImplTest {
     void createQueryWhereEqualsConditionsManyToManyJoin() {
         String manyJoinNameCondition = testEntity.getManyJoinEntities().iterator().next().getName();
 
-        String expectedSql = "select distinct te FROM TestEntity te left join te.manyJoinEntities te_manyJoinEntities " +
+        String expectedSql = "select te FROM TestEntity te left join te.manyJoinEntities te_manyJoinEntities " +
                 "WHERE te_manyJoinEntities.name = '" + manyJoinNameCondition + "'";
 
         SqlBuilder<TestEntity> sqlBuilder = testRepository.createQuery()
@@ -162,7 +163,7 @@ class CustomRepositoryImplTest {
         String joinNameCondition = testEntity.getJoinTestEntities().iterator().next().getName();
         UUID findElement = testEntity.getElements().iterator().next();
 
-        String expectedSql = "select distinct te FROM TestEntity te left join te.manyJoinEntities te_manyJoinEntities " +
+        String expectedSql = "select te FROM TestEntity te left join te.manyJoinEntities te_manyJoinEntities " +
                 "left join te.joinTestEntities te_joinTestEntities " +
                 "left join te.elements te_elements " +
                 "WHERE te_manyJoinEntities.name = '" + manyJoinNameCondition + "' " +
@@ -190,7 +191,7 @@ class CustomRepositoryImplTest {
 
     @Test
     void getEntityClass() {
-        Class<TestEntity> entityClass = ReflectionUtils.getParametrizedClass(testRepository.getClass(), 0);
+        Class<TestEntity> entityClass = ReflectionUtils.getParametrizedClass(TestRepositoryImpl.class, 0);
 
         assertEquals(TestEntity.class, entityClass);
     }
