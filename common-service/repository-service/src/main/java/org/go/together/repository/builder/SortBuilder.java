@@ -8,12 +8,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SortBuilder<E extends IdentifiedEntity> {
-    private final JoinBuilder<E> joinBuilder;
-    private final StringBuilder join;
+    private final Class<E> clazz;
+    private JoinBuilder<E> joinBuilder;
+    private StringBuilder join;
 
-    public SortBuilder(StringBuilder join, Class<E> clazz) {
-        this.joinBuilder = new JoinBuilder<>(clazz);
+    public SortBuilder(Class<E> clazz) {
+        this.clazz = clazz;
+    }
+
+    public SortBuilder<E> builder(StringBuilder join) {
+        this.joinBuilder = new JoinBuilder<>(clazz).builder();
         this.join = join;
+        return this;
     }
 
     public String getSortQuery(Map<String, Direction> sortMap) {

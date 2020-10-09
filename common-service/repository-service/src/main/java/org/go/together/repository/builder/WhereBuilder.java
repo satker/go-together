@@ -1,6 +1,7 @@
 package org.go.together.repository.builder;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.repository.builder.dto.WhereDto;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.repository.sql.SqlOperator;
 
@@ -11,22 +12,24 @@ import static org.go.together.repository.sql.ObjectStringParser.parseToString;
 public class WhereBuilder<E extends IdentifiedEntity> {
     private static final String AND = " and ";
     private static final String OR = " or ";
-    private final StringBuilder join;
-    private final StringBuilder whereQuery;
-    private final JoinBuilder<E> joinBuilder;
+    private final Class<E> clazz;
+    private StringBuilder join;
+    private StringBuilder whereQuery;
+    private JoinBuilder<E> joinBuilder;
 
-    public WhereBuilder(Boolean isGroup, Class<E> clazz) {
-        this.joinBuilder = new JoinBuilder<>(clazz);
+    public WhereBuilder(Class<E> clazz) {
+        this.clazz = clazz;
+    }
+
+    public WhereBuilder<E> builder(Boolean isGroup) {
+        this.joinBuilder = new JoinBuilder<>(clazz).builder();
         this.join = new StringBuilder();
         this.whereQuery = new StringBuilder(isGroup ? StringUtils.EMPTY : " WHERE ");
+        return this;
     }
 
-    public StringBuilder getWhereQuery() {
-        return whereQuery;
-    }
-
-    public StringBuilder getJoinQuery() {
-        return join;
+    public WhereDto build() {
+        return WhereDto.builder().join(join).whereQuery(whereQuery).build();
     }
 
     public void addJoin(StringBuilder join) {
@@ -53,7 +56,7 @@ public class WhereBuilder<E extends IdentifiedEntity> {
 
     public WhereBuilder<E> group(WhereBuilder<E> whereBuilder) {
         whereQuery.append("(")
-                .append(whereBuilder.getWhereQuery())
+                .append(whereBuilder.build().getWhereQuery())
                 .append(")");
         return this;
     }

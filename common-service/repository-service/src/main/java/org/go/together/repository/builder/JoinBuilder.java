@@ -23,6 +23,9 @@ public class JoinBuilder<E extends IdentifiedEntity> {
 
     public JoinBuilder(Class<E> clazz) {
         this.clazz = clazz;
+    }
+
+    public JoinBuilder<E> builder() {
         Arrays.stream(clazz.getDeclaredFields())
                 .filter(field ->
                         field.getAnnotation(ElementCollection.class) != null ||
@@ -32,6 +35,7 @@ public class JoinBuilder<E extends IdentifiedEntity> {
                 )
                 .map(Field::getName)
                 .forEach(fieldName -> joinTables.put(fieldName, getJoinTableName(fieldName, clazz)));
+        return this;
     }
 
     private String getJoinTableName(String fieldName, Class<E> clazz) {

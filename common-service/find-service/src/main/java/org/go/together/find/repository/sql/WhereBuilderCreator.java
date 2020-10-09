@@ -43,7 +43,7 @@ public class WhereBuilderCreator<E extends IdentifiedEntity> {
                         field = suffix + field;
                     }
                     addCondition(filterValues, filterType, groupWhere, field);
-                    join.append(groupWhere.getJoinQuery());
+                    join.append(groupWhere.build().getJoin());
                     whereBuilder.group(groupWhere).and();
                 });
             }
@@ -73,13 +73,15 @@ public class WhereBuilderCreator<E extends IdentifiedEntity> {
                 addDelimiter(key, whereAdd, field);
             });
             if (filterDto.getValues().size() > 1) {
-                if (!join.toString().contains(innerGroup.getJoinQuery())) {
-                    join.append(innerGroup.getJoinQuery());
+                StringBuilder buildJoin = innerGroup.build().getJoin();
+                if (!this.join.toString().contains(buildJoin)) {
+                    this.join.append(buildJoin);
                 }
                 groupWhere.group(innerGroup).or();
             } else {
-                if (!join.toString().contains(groupWhere.getJoinQuery())) {
-                    join.append(groupWhere.getJoinQuery());
+                StringBuilder buildJoin = groupWhere.build().getJoin();
+                if (!this.join.toString().contains(buildJoin)) {
+                    this.join.append(buildJoin);
                 }
             }
         });

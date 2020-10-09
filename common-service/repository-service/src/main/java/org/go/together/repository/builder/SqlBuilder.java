@@ -1,6 +1,7 @@
 package org.go.together.repository.builder;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.repository.builder.dto.WhereDto;
 import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
 
@@ -13,16 +14,21 @@ import java.util.Optional;
 import static org.go.together.repository.builder.utils.BuilderUtils.getEntityLink;
 
 public class SqlBuilder<E extends IdentifiedEntity> {
-    private final String from;
-    private final StringBuilder query;
+    private String from;
+    private StringBuilder query;
     private final EntityManager entityManager;
     private final Class<E> clazz;
-    private final String selectRow;
-    private final StringBuilder havingCondition;
-    private final StringBuilder sort;
-    private final StringBuilder join;
+    private String selectRow;
+    private StringBuilder havingCondition;
+    private StringBuilder sort;
+    private StringBuilder join;
 
-    public SqlBuilder(Class<E> clazz, EntityManager entityManager, String selectRow, Integer havingCondition) {
+    public SqlBuilder(Class<E> clazz, EntityManager entityManager) {
+        this.entityManager = entityManager;
+        this.clazz = clazz;
+    }
+
+    public SqlBuilder<E> builder(String selectRow, Integer havingCondition) {
         String entityLink = getEntityLink(clazz);
         String selectQuery = Optional.ofNullable(selectRow)
                 .map((row) -> entityLink + "." + selectRow)
@@ -32,8 +38,6 @@ public class SqlBuilder<E extends IdentifiedEntity> {
         this.query = new StringBuilder();
         this.sort = new StringBuilder();
         this.join = new StringBuilder();
-        this.entityManager = entityManager;
-        this.clazz = clazz;
         if (havingCondition != null && selectRow != null) {
             this.havingCondition = new StringBuilder().append(" group by ")
                     .append(selectQuery)
@@ -44,6 +48,7 @@ public class SqlBuilder<E extends IdentifiedEntity> {
         } else {
             this.havingCondition = new StringBuilder();
         }
+        return this;
     }
 
     public String getHaving() {
@@ -55,8 +60,9 @@ public class SqlBuilder<E extends IdentifiedEntity> {
     }
 
     public SqlBuilder<E> where(WhereBuilder<E> whereBuilder) {
-        join.append(whereBuilder.getJoinQuery());
-        query.append(whereBuilder.getWhereQuery());
+        WhereDto buildWhere = whereBuilder.build();
+        join.append(buildWhere.getJoin());
+        query.append(buildWhere.getWhereQuery());
         return this;
     }
 
@@ -132,6 +138,7 @@ public class SqlBuilder<E extends IdentifiedEntity> {
     }
 
     public Number getCountRowsWhere(WhereBuilder<E> whereBuilder, String selectRow, String having) {
+        WhereDto buildWhere = whereBuilder.build();
         StringBuilder query = new StringBuilder();
         query.append("SELECT COUNT (DISTINCT ")
                 .append(selectRow)
@@ -140,8 +147,8 @@ public class SqlBuilder<E extends IdentifiedEntity> {
                 .append(StringUtils.SPACE)
                 .append(getEntityLink(clazz))
                 .append(StringUtils.SPACE)
-                .append(whereBuilder.getJoinQuery())
-                .append(whereBuilder.getWhereQuery());
+                .append(buildWhere.getJoin())
+                .append(buildWhere.getWhereQuery());
         if (having != null && StringUtils.isNotBlank(selectRow)) {
             query.append(having);
         }
@@ -149,7 +156,7 @@ public class SqlBuilder<E extends IdentifiedEntity> {
     }
 
     public SqlBuilder<E> sort(Map<String, Direction> sortMap) {
-        SortBuilder<E> sortBuilder = new SortBuilder<>(join, clazz);
+        SortBuilder<E> sortBuilder = new SortBuilder<>(clazz).builder(join);
         sort.append(sortBuilder.getSortQuery(sortMap));
         return this;
     }
