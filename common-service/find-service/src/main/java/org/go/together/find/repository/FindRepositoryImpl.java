@@ -12,7 +12,8 @@ import org.go.together.find.repository.sql.SqlBuilderCreator;
 import org.go.together.find.repository.sql.WhereBuilderCreator;
 import org.go.together.repository.CustomRepository;
 import org.go.together.repository.builder.SqlBuilder;
-import org.go.together.repository.builder.WhereBuilder;
+import org.go.together.repository.builder.Where;
+import org.go.together.repository.builder.dto.SqlDto;
 import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
 
@@ -46,11 +47,12 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
         if (filters == null || filters.isEmpty()) {
             countRows = (long) query.getCountRows();
         } else {
-            WhereBuilder<E> whereBuilder = whereBuilderCreator.getWhereBuilder(filters);
-            query.where(whereBuilder);
-            countRows = (long) repository.createQuery().getCountRowsWhere(whereBuilder,
-                    query.getSelectRow(),
-                    query.getHaving());
+            Where.WhereBuilder where = whereBuilderCreator.getWhereBuilder(filters);
+            query.where(where);
+            SqlDto buildSql = query.build();
+            countRows = (long) repository.createQuery().getCountRowsWhere(where,
+                    buildSql.getSelectRow(),
+                    buildSql.getHavingCondition());
         }
         PageDto page = formDto.getPage();
         Map<String, Direction> sortMappers = getSortMappers(page);
@@ -58,7 +60,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
             query.sort(sortMappers);
         }
         PageDto pageDto = getPageDto(page, countRows);
-        System.out.println(query.getQuery());
+        System.out.println(query.build().getQuery());
         Collection<Object> result = getResult(page, query);
         return Pair.of(pageDto, result);
     }

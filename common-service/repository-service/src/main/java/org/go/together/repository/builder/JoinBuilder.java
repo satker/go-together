@@ -1,6 +1,5 @@
 package org.go.together.repository.builder;
 
-import org.apache.commons.lang3.StringUtils;
 import org.go.together.repository.builder.utils.BuilderUtils;
 import org.go.together.repository.entities.IdentifiedEntity;
 
@@ -38,24 +37,20 @@ public class JoinBuilder<E extends IdentifiedEntity> {
         return this;
     }
 
-    private String getJoinTableName(String fieldName, Class<E> clazz) {
-        return BuilderUtils.getEntityLink(clazz) + "_" + fieldName;
-    }
-
-    public Optional<Map.Entry<String, String>> getJoin(String field) {
-        return joinTables.entrySet().stream()
-                .filter(joinName -> field.startsWith(joinName.getKey()))
-                .findFirst();
-    }
-
-    public String createLeftJoin(Map.Entry<String, String> joinTableName) {
-        return " left join " + BuilderUtils.getEntityField(joinTableName.getKey(), clazz) + StringUtils.SPACE + joinTableName.getValue();
-    }
-
     public String getFieldWithJoin(String field, Consumer<Map.Entry<String, String>> enrichFunction) {
         return getJoin(field).map(entry -> {
             enrichFunction.accept(entry);
             return field.replaceFirst(entry.getKey(), entry.getValue());
         }).orElse(getEntityField(field, clazz));
+    }
+
+    private String getJoinTableName(String fieldName, Class<E> clazz) {
+        return BuilderUtils.getEntityLink(clazz) + "_" + fieldName;
+    }
+
+    private Optional<Map.Entry<String, String>> getJoin(String field) {
+        return joinTables.entrySet().stream()
+                .filter(joinName -> field.startsWith(joinName.getKey()))
+                .findFirst();
     }
 }

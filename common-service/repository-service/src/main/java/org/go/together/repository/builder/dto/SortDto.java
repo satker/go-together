@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class WhereDto {
+public class SortDto {
     private final StringBuilder join;
-    private final StringBuilder whereQuery;
+    private final String sortQuery;
 }

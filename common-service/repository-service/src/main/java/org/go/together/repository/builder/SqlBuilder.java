@@ -1,7 +1,8 @@
 package org.go.together.repository.builder;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.repository.builder.dto.WhereDto;
+import org.go.together.repository.builder.dto.SortDto;
+import org.go.together.repository.builder.dto.SqlDto;
 import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
 
@@ -51,32 +52,18 @@ public class SqlBuilder<E extends IdentifiedEntity> {
         return this;
     }
 
-    public String getHaving() {
-        return havingCondition.toString();
+    public SqlDto build() {
+        return SqlDto.builder().havingCondition(havingCondition.toString())
+                .selectRow(selectRow)
+                .query(getQuery())
+                .build();
     }
 
-    public String getSelectRow() {
-        return selectRow;
-    }
-
-    public SqlBuilder<E> where(WhereBuilder<E> whereBuilder) {
-        WhereDto buildWhere = whereBuilder.build();
+    public SqlBuilder<E> where(Where.WhereBuilder<E> where) {
+        Where buildWhere = where.build();
         join.append(buildWhere.getJoin());
         query.append(buildWhere.getWhereQuery());
         return this;
-    }
-
-    private String getFirstQueryPart() {
-        final String SELECT = "select " + selectRow;
-        if (StringUtils.isNotEmpty(join)) {
-            return SELECT + from + join;
-        } else {
-            String result = StringUtils.EMPTY;
-            if (!selectRow.equals(getEntityLink(clazz))) {
-                result = SELECT;
-            }
-            return result.concat(from);
-        }
     }
 
     public Collection<E> fetchAll() {
@@ -107,25 +94,6 @@ public class SqlBuilder<E extends IdentifiedEntity> {
         return getResult(query);
     }
 
-    private <T> Collection<T> getResult(TypedQuery<T> typedQuery) {
-        return typedQuery.getResultList();
-    }
-
-    public String getQuery() {
-        StringBuilder result = new StringBuilder();
-        result.append(getFirstQueryPart());
-        if (StringUtils.isNotEmpty(query)) {
-            result.append(query.toString());
-        }
-        if (havingCondition != null) {
-            result.append(havingCondition);
-        }
-        if (StringUtils.isNotBlank(sort)) {
-            result.append(sort);
-        }
-        return result.toString();
-    }
-
     public Number getCountRows() {
         String query = "SELECT COUNT (DISTINCT " +
                 getEntityLink(clazz) +
@@ -137,8 +105,8 @@ public class SqlBuilder<E extends IdentifiedEntity> {
                 .getResultStream().count();
     }
 
-    public Number getCountRowsWhere(WhereBuilder<E> whereBuilder, String selectRow, String having) {
-        WhereDto buildWhere = whereBuilder.build();
+    public Number getCountRowsWhere(Where.WhereBuilder<E> where, String selectRow, String having) {
+        Where buildWhere = where.build();
         StringBuilder query = new StringBuilder();
         query.append("SELECT COUNT (DISTINCT ")
                 .append(selectRow)
@@ -156,8 +124,41 @@ public class SqlBuilder<E extends IdentifiedEntity> {
     }
 
     public SqlBuilder<E> sort(Map<String, Direction> sortMap) {
-        SortBuilder<E> sortBuilder = new SortBuilder<>(clazz).builder(join);
-        sort.append(sortBuilder.getSortQuery(sortMap));
+        SortDto sortDto = new SortBuilder<>(clazz).builder(join).sortQuery(sortMap).build();
+        sort.append(sortDto.getSortQuery());
+        join.append(sortDto.getJoin());
         return this;
+    }
+
+    private <T> Collection<T> getResult(TypedQuery<T> typedQuery) {
+        return typedQuery.getResultList();
+    }
+
+    private String getQuery() {
+        StringBuilder result = new StringBuilder();
+        result.append(getFirstQueryPart());
+        if (StringUtils.isNotEmpty(query)) {
+            result.append(query.toString());
+        }
+        if (havingCondition != null) {
+            result.append(havingCondition);
+        }
+        if (StringUtils.isNotBlank(sort)) {
+            result.append(sort);
+        }
+        return result.toString();
+    }
+
+    private String getFirstQueryPart() {
+        final String SELECT = "select " + selectRow;
+        if (StringUtils.isNotEmpty(join)) {
+            return SELECT + from + join;
+        } else {
+            String result = StringUtils.EMPTY;
+            if (!selectRow.equals(getEntityLink(clazz))) {
+                result = SELECT;
+            }
+            return result.concat(from);
+        }
     }
 }

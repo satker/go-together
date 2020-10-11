@@ -2,7 +2,7 @@ package org.go.together.repository;
 
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.repository.builder.SqlBuilder;
-import org.go.together.repository.builder.WhereBuilder;
+import org.go.together.repository.builder.Where;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.utils.ReflectionUtils;
 
@@ -79,12 +79,12 @@ public abstract class CustomRepositoryImpl<E extends IdentifiedEntity> implement
     }
 
     @Override
-    public WhereBuilder<E> createWhere() {
-        return new WhereBuilder<>(clazz).builder(false);
+    public Where.WhereBuilder<E> createWhere() {
+        return Where.builder(clazz, false);
     }
 
     @Override
-    public WhereBuilder<E> createGroup() {
-        return new WhereBuilder<>(clazz).builder(true);
+    public Where.WhereBuilder<E> createGroup() {
+        return Where.builder(clazz, true);
     }
 }

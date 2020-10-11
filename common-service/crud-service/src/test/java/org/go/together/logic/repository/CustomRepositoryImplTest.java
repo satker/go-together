@@ -100,7 +100,7 @@ class CustomRepositoryImplTest {
 
         Optional<TestEntity> entity = sqlBuilder.fetchOne();
 
-        assertEquals(expectedSql, sqlBuilder.getQuery());
+        assertEquals(expectedSql, sqlBuilder.build().getQuery());
         assertTrue(entity.isPresent());
         assertEquals(testEntity.getName(), entity.get().getName());
     }
@@ -116,7 +116,7 @@ class CustomRepositoryImplTest {
 
         Optional<TestEntity> entity = sqlBuilder.fetchOne();
 
-        assertEquals(expectedSql, sqlBuilder.getQuery());
+        assertEquals(expectedSql, sqlBuilder.build().getQuery());
         assertTrue(entity.isPresent());
         assertTrue(testEntity.getElements().stream().anyMatch(element -> element.equals(findElement)));
     }
@@ -133,7 +133,7 @@ class CustomRepositoryImplTest {
 
         Optional<TestEntity> entity = sqlBuilder.fetchOne();
 
-        assertEquals(expectedSql, sqlBuilder.getQuery());
+        assertEquals(expectedSql, sqlBuilder.build().getQuery());
         assertTrue(entity.isPresent());
         assertTrue(entity.get().getJoinTestEntities().stream()
                 .anyMatch(joinTestEntity -> joinTestEntity.getName().equals(joinNameCondition)));
@@ -151,7 +151,7 @@ class CustomRepositoryImplTest {
 
         Optional<TestEntity> entity = sqlBuilder.fetchOne();
 
-        assertEquals(expectedSql, sqlBuilder.getQuery());
+        assertEquals(expectedSql, sqlBuilder.build().getQuery());
         assertTrue(entity.isPresent());
         assertTrue(entity.get().getManyJoinEntities().stream()
                 .anyMatch(manyJoinEntity -> manyJoinEntity.getName().equals(manyJoinNameCondition)));
@@ -180,7 +180,7 @@ class CustomRepositoryImplTest {
 
         Optional<TestEntity> entity = sqlBuilder.fetchOne();
 
-        assertEquals(expectedSql, sqlBuilder.getQuery());
+        assertEquals(expectedSql, sqlBuilder.build().getQuery());
         assertTrue(entity.isPresent());
         assertTrue(entity.get().getManyJoinEntities().stream()
                 .anyMatch(manyJoinEntity -> manyJoinEntity.getName().equals(manyJoinNameCondition)));
