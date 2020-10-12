@@ -19,6 +19,7 @@ import org.go.together.repository.entities.IdentifiedEntity;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepository {
@@ -45,12 +46,12 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
         SqlBuilder<E> query = sqlBuilderCreator.getSqlBuilder(formDto.getMainIdField());
         long countRows;
         if (filters == null || filters.isEmpty()) {
-            countRows = (long) query.getCountRows();
+            countRows = query.getCountRows();
         } else {
-            Where.WhereBuilder where = whereBuilderCreator.getWhereBuilder(filters);
+            Where.WhereBuilder<E> where = whereBuilderCreator.getWhereBuilder(filters);
             query.where(where);
             SqlDto buildSql = query.build();
-            countRows = (long) repository.createQuery().getCountRowsWhere(where,
+            countRows = repository.createQuery().getCountRowsWhere(where,
                     buildSql.getSelectRow(),
                     buildSql.getHavingCondition());
         }
@@ -82,20 +83,13 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
     }
 
     private Collection<Object> getResult(PageDto page, SqlBuilder<E> query) {
-        Collection<Object> result;
-        if (page != null) {
-            result = query.fetchWithPageableNotDefined(page.getPage() * page.getSize(), page.getSize());
-        } else {
-            result = query.fetchAllNotDefined();
-        }
-        return result;
+        return Optional.ofNullable(page)
+                .map(pageDto -> query.fetchWithPageableNotDefined(page.getPage() * page.getSize(), page.getSize()))
+                .orElse(query.fetchAllNotDefined());
     }
 
     private PageDto getPageDto(PageDto page, long countRows) {
-        PageDto pageDto = null;
-        if (page != null) {
-            pageDto = new PageDto(page.getPage(), page.getSize(), countRows, page.getSort());
-        }
-        return pageDto;
+        return Optional.ofNullable(page).map(pageDto -> new PageDto(pageDto.getPage(),
+                pageDto.getSize(), countRows, pageDto.getSort())).orElse(null);
     }
 }

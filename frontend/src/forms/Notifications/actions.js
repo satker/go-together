@@ -2,7 +2,7 @@ import {NOTIFICATION_PAGE, READ_NOTIFICATIONS, UNREAD_USER_NOTIFICATIONS, USER_N
 import {NOTIFICATION_SERVICE_URL} from "forms/utils/constants";
 import {POST} from "App/utils/api/constants";
 
-export const getUserNotifications = (userId) => (dispatch) => {
+export const getUserNotifications = (userId, page = 0) => (dispatch) => {
     dispatch({
         type: USER_NOTIFICATIONS,
         method: POST,
@@ -17,7 +17,7 @@ export const getUserNotifications = (userId) => (dispatch) => {
                     }]
                 }
             },
-            page: {...NOTIFICATION_PAGE}
+            page: {...NOTIFICATION_PAGE, page}
         }
     });
 };

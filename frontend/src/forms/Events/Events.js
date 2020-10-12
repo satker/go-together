@@ -49,7 +49,7 @@ const Events = ({pageSize, postFindEvents, findEvents, getEventsLikes, filter, s
     const onDelete = (id) => showModal("Do you really want delete this event?", deleteAction(id));
 
     const pageCount = findEvents.response.page ?
-        findEvents.response.page.totalSize / findEvents.response.page.size : 0;
+        Math.ceil(findEvents.response.page.totalSize / findEvents.response.page.size) : 0;
 
     return <>
         <ItemContainer>

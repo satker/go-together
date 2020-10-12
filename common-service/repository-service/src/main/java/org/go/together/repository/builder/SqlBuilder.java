@@ -7,6 +7,7 @@ import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import java.util.Collection;
 import java.util.Map;
@@ -94,18 +95,17 @@ public class SqlBuilder<E extends IdentifiedEntity> {
         return getResult(query);
     }
 
-    public Number getCountRows() {
+    public Long getCountRows() {
         String query = "SELECT COUNT (DISTINCT " +
                 getEntityLink(clazz) +
                 ".id) FROM " +
                 clazz.getSimpleName() +
                 StringUtils.SPACE +
                 getEntityLink(clazz);
-        return entityManager.createQuery(query, Number.class)
-                .getResultStream().count();
+        return entityManager.createQuery(query, Long.class).getSingleResult();
     }
 
-    public Number getCountRowsWhere(Where.WhereBuilder<E> where, String selectRow, String having) {
+    public Long getCountRowsWhere(Where.WhereBuilder<E> where, String selectRow, String having) {
         Where buildWhere = where.build();
         StringBuilder query = new StringBuilder();
         query.append("SELECT COUNT (DISTINCT ")
@@ -120,7 +120,11 @@ public class SqlBuilder<E extends IdentifiedEntity> {
         if (having != null && StringUtils.isNotBlank(selectRow)) {
             query.append(having);
         }
-        return entityManager.createQuery(query.toString(), Number.class).getResultStream().count();
+        try {
+            return entityManager.createQuery(query.toString(), Long.class).getSingleResult();
+        } catch (NoResultException e) {
+            return 0L;
+        }
     }
 
     public SqlBuilder<E> sort(Map<String, Direction> sortMap) {

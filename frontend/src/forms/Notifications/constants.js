@@ -6,7 +6,7 @@ export const READ_NOTIFICATIONS = 'READ_NOTIFICATIONS';
 
 export const NOTIFICATION_PAGE = {
     page: 0,
-    size: 40,
+    size: 20,
     totalSize: 0,
     sort: [{
         field: 'message.date',

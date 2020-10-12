@@ -153,7 +153,7 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
                 values = values.stream()
                         .map(value -> (E) value)
                         .map(mapper::entityToDto)
-                        .collect(Collectors.toSet());
+                        .collect(Collectors.toList());
             }
             log.info("Find in '" + getServiceName() + "' " + Optional.ofNullable(values)
                     .map(Collection::size)
