@@ -75,16 +75,16 @@ public abstract class CustomRepositoryImpl<E extends IdentifiedEntity> implement
 
     @Override
     public Sql.SqlBuilder<E> createQuery(String selectRow, Integer havingCondition) {
-        return Sql.builder(clazz, entityManager).having(havingCondition).select(selectRow);
+        return Sql.<E>builder().clazz(clazz).entityManager(entityManager).having(havingCondition).select(selectRow);
     }
 
     @Override
     public Where.WhereBuilder<E> createWhere() {
-        return Where.builder(clazz, false);
+        return Where.<E>builder().clazz(clazz);
     }
 
     @Override
     public Where.WhereBuilder<E> createGroup() {
-        return Where.builder(clazz, true);
+        return Where.<E>builder().clazz(clazz).isGroup(true);
     }
 }

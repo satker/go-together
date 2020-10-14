@@ -1,0 +1,68 @@
+package org.go.together.repository.builder;
+
+import org.go.together.repository.builder.utils.BuilderUtils;
+import org.go.together.repository.entities.IdentifiedEntity;
+
+import javax.persistence.ElementCollection;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+import static org.go.together.repository.builder.utils.BuilderUtils.getEntityField;
+
+public class Join<E extends IdentifiedEntity> {
+    private final Map<String, String> joinTables;
+    private final Class<E> clazz;
+
+    private Join(Map<String, String> joinTables, Class<E> clazz) {
+        this.joinTables = joinTables;
+        this.clazz = clazz;
+    }
+
+    public static <E extends IdentifiedEntity> JoinBuilder<E> builder() {
+        return new JoinBuilder<>();
+    }
+
+    public String getFieldWithJoin(String field, Consumer<Map.Entry<String, String>> enrichFunction) {
+        return getJoin(field).map(entry -> {
+            enrichFunction.accept(entry);
+            return field.replaceFirst(entry.getKey(), entry.getValue());
+        }).orElse(getEntityField(field, clazz));
+    }
+
+    private Optional<Map.Entry<String, String>> getJoin(String field) {
+        return joinTables.entrySet().stream()
+                .filter(joinName -> field.startsWith(joinName.getKey()))
+                .findFirst();
+    }
+
+    public static class JoinBuilder<B extends IdentifiedEntity> {
+        private Map<String, String> joinTables;
+        private Class<B> clazz;
+
+        public JoinBuilder<B> clazz(Class<B> clazz) {
+            this.clazz = clazz;
+            joinTables = new HashMap<>();
+            Arrays.stream(clazz.getDeclaredFields())
+                    .filter(field ->
+                            field.getAnnotation(ElementCollection.class) != null ||
+                                    field.getAnnotation(ManyToMany.class) != null ||
+                                    field.getAnnotation(ManyToOne.class) != null ||
+                                    field.getAnnotation(OneToMany.class) != null
+                    )
+                    .map(Field::getName)
+                    .forEach(fieldName -> joinTables.put(fieldName, BuilderUtils.getEntityLink(clazz) + "_" + fieldName));
+            return this;
+        }
+
+        public Join<B> build() {
+            return new Join<>(joinTables, clazz);
+        }
+    }
+}

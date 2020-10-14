@@ -1,7 +1,6 @@
 package org.go.together.repository.builder;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.repository.builder.dto.SortDto;
 import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
 
@@ -27,8 +26,8 @@ public class Sql<E extends IdentifiedEntity> {
         this.countQuery = countQuery;
     }
 
-    public static <E extends IdentifiedEntity> SqlBuilder<E> builder(Class<E> clazz, EntityManager entityManager) {
-        return new SqlBuilder<>(clazz, entityManager);
+    public static <E extends IdentifiedEntity> SqlBuilder<E> builder() {
+        return new SqlBuilder<>();
     }
 
     public String getQuery() {
@@ -76,23 +75,31 @@ public class Sql<E extends IdentifiedEntity> {
     }
 
     public static class SqlBuilder<B extends IdentifiedEntity> {
-        private final String from;
-        private final Class<B> clazz;
-        private final EntityManager entityManager;
+        private String from;
+        private Class<B> clazz;
+        private EntityManager entityManager;
         private String selectRow;
         private String havingCondition;
         private StringBuilder join;
         private StringBuilder query;
         private StringBuilder sort;
 
-        private SqlBuilder(Class<B> clazz, EntityManager entityManager) {
+        private SqlBuilder() {
             this.join = new StringBuilder();
             this.query = new StringBuilder();
             this.sort = new StringBuilder();
+        }
+
+        public SqlBuilder<B> clazz(Class<B> clazz) {
             this.clazz = clazz;
             this.selectRow = getEntityLink(clazz);
+            this.from = " FROM " + clazz.getSimpleName() + StringUtils.SPACE + getEntityLink(clazz);
+            return this;
+        }
+
+        public SqlBuilder<B> entityManager(EntityManager entityManager) {
             this.entityManager = entityManager;
-            this.from = " FROM " + clazz.getSimpleName() + StringUtils.SPACE + selectRow;
+            return this;
         }
 
         public SqlBuilder<B> having(Integer havingCondition) {
@@ -121,7 +128,7 @@ public class Sql<E extends IdentifiedEntity> {
         }
 
         public SqlBuilder<B> sort(Map<String, Direction> sortMap) {
-            SortDto sortDto = new SortBuilder<>(clazz).builder(join).sortQuery(sortMap).build();
+            Sort sortDto = Sort.<B>builder().clazz(clazz).join(join).sort(sortMap).build();
             sort.append(sortDto.getSortQuery());
             join.append(sortDto.getJoin());
             return this;

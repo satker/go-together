@@ -18,8 +18,8 @@ public class Where {
         this.whereQuery = whereQuery;
     }
 
-    public static <E extends IdentifiedEntity> WhereBuilder<E> builder(Class<E> clazz, Boolean isGroup) {
-        return new WhereBuilder<>(isGroup, clazz);
+    public static <E extends IdentifiedEntity> WhereBuilder<E> builder() {
+        return new WhereBuilder<>();
     }
 
     public StringBuilder getWhereQuery() {
@@ -34,16 +34,27 @@ public class Where {
         private static final String AND = " and ";
         private static final String OR = " or ";
 
-        private final Class<E> clazz;
+        private Class<E> clazz;
         private final StringBuilder join;
-        private final StringBuilder whereQuery;
-        private final JoinBuilder<E> joinBuilder;
+        private StringBuilder whereQuery;
+        private Join<E> joinBuilder;
 
-        private WhereBuilder(Boolean isGroup, Class<E> clazz) {
-            this.clazz = clazz;
+        private WhereBuilder() {
             this.join = new StringBuilder();
-            this.whereQuery = new StringBuilder(isGroup ? StringUtils.EMPTY : " WHERE ");
-            this.joinBuilder = new JoinBuilder<>(clazz).builder();
+            this.whereQuery = new StringBuilder(" WHERE ");
+        }
+
+        public WhereBuilder<E> clazz(Class<E> clazz) {
+            this.clazz = clazz;
+            this.joinBuilder = Join.<E>builder().clazz(clazz).build();
+            return this;
+        }
+
+        public WhereBuilder<E> isGroup(boolean isGroup) {
+            if (isGroup) {
+                this.whereQuery = new StringBuilder(StringUtils.EMPTY);
+            }
+            return this;
         }
 
         public void addJoin(StringBuilder join) {
