@@ -1,10 +1,10 @@
-package org.go.together.repository.builder.query;
+package org.go.together.repository.builder;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.repository.builder.interfaces.Query;
-import org.go.together.repository.builder.interfaces.SortBuilder;
 import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
+import org.go.together.repository.interfaces.Query;
+import org.go.together.repository.interfaces.SortBuilder;
 
 import java.util.Map;
 import java.util.Optional;

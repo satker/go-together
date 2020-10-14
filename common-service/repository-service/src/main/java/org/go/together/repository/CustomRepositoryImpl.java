@@ -1,11 +1,11 @@
 package org.go.together.repository;
 
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.repository.builder.interfaces.SqlBuilder;
-import org.go.together.repository.builder.interfaces.WhereBuilder;
-import org.go.together.repository.builder.query.Sql;
-import org.go.together.repository.builder.query.Where;
+import org.go.together.repository.builder.Sql;
+import org.go.together.repository.builder.Where;
 import org.go.together.repository.entities.IdentifiedEntity;
+import org.go.together.repository.interfaces.SqlBuilder;
+import org.go.together.repository.interfaces.WhereBuilder;
 import org.go.together.utils.ReflectionUtils;
 
 import javax.persistence.EntityManager;

@@ -1,11 +1,11 @@
-package org.go.together.repository.builder.query;
+package org.go.together.repository.builder;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.repository.builder.interfaces.Query;
-import org.go.together.repository.builder.interfaces.SqlBuilder;
-import org.go.together.repository.builder.interfaces.WhereBuilder;
 import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
+import org.go.together.repository.interfaces.Query;
+import org.go.together.repository.interfaces.SqlBuilder;
+import org.go.together.repository.interfaces.WhereBuilder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;

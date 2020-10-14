@@ -1,4 +1,4 @@
-package org.go.together.repository.builder.interfaces;
+package org.go.together.repository.interfaces;
 
 import org.go.together.repository.entities.IdentifiedEntity;
 

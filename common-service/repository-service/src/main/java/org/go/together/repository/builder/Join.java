@@ -1,9 +1,9 @@
-package org.go.together.repository.builder.query;
+package org.go.together.repository.builder;
 
-import org.go.together.repository.builder.interfaces.JoinBuilder;
-import org.go.together.repository.builder.interfaces.Query;
 import org.go.together.repository.builder.utils.BuilderUtils;
 import org.go.together.repository.entities.IdentifiedEntity;
+import org.go.together.repository.interfaces.JoinBuilder;
+import org.go.together.repository.interfaces.Query;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.ManyToMany;

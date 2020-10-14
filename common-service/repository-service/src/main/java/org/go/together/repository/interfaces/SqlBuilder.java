@@ -1,6 +1,6 @@
-package org.go.together.repository.builder.interfaces;
+package org.go.together.repository.interfaces;
 
-import org.go.together.repository.builder.query.Sql;
+import org.go.together.repository.builder.Sql;
 import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
 

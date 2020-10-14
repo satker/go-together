@@ -7,8 +7,8 @@ import org.go.together.find.dto.form.FilterDto;
 import org.go.together.find.dto.utils.FindSqlOperator;
 import org.go.together.find.utils.FindUtils;
 import org.go.together.repository.CustomRepository;
-import org.go.together.repository.builder.interfaces.WhereBuilder;
 import org.go.together.repository.entities.IdentifiedEntity;
+import org.go.together.repository.interfaces.WhereBuilder;
 
 import java.util.Map;
 import java.util.Optional;

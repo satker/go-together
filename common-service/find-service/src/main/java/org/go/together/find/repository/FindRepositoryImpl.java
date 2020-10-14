@@ -11,11 +11,11 @@ import org.go.together.find.dto.form.PageDto;
 import org.go.together.find.repository.sql.SqlBuilderCreator;
 import org.go.together.find.repository.sql.WhereBuilderCreator;
 import org.go.together.repository.CustomRepository;
-import org.go.together.repository.builder.interfaces.SqlBuilder;
-import org.go.together.repository.builder.interfaces.WhereBuilder;
-import org.go.together.repository.builder.query.Sql;
+import org.go.together.repository.builder.Sql;
 import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
+import org.go.together.repository.interfaces.SqlBuilder;
+import org.go.together.repository.interfaces.WhereBuilder;
 
 import java.util.Collection;
 import java.util.Map;

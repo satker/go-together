@@ -3,8 +3,8 @@ package org.go.together.find.repository.sql;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.repository.CustomRepository;
-import org.go.together.repository.builder.interfaces.SqlBuilder;
 import org.go.together.repository.entities.IdentifiedEntity;
+import org.go.together.repository.interfaces.SqlBuilder;
 
 import static org.go.together.find.utils.FindUtils.DOT;
 import static org.go.together.find.utils.FindUtils.getHavingCondition;
