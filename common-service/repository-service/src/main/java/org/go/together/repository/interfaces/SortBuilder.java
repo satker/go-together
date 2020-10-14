@@ -9,5 +9,5 @@ import java.util.Map;
 public interface SortBuilder<E extends IdentifiedEntity> extends QueryBuilder<E> {
     SortBuilder<E> sort(Map<String, Direction> sortMap);
 
-    Sort build();
+    Sort<E> build();
 }

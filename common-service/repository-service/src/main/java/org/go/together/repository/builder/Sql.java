@@ -83,9 +83,9 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
         private EntityManager entityManager;
         private String selectRow;
         private String havingCondition;
-        private StringBuilder join;
-        private StringBuilder query;
-        private StringBuilder sort;
+        private final StringBuilder join;
+        private final StringBuilder query;
+        private final StringBuilder sort;
 
         private SqlBuilderImpl() {
             this.join = new StringBuilder();
@@ -124,14 +124,14 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
         }
 
         public SqlBuilderImpl<B> where(WhereBuilder<B> where) {
-            Where buildWhere = where.build();
+            Where<B> buildWhere = where.build();
             join.append(buildWhere.getJoin());
             query.append(buildWhere.getWhereQuery());
             return this;
         }
 
         public SqlBuilderImpl<B> sort(Map<String, Direction> sortMap) {
-            Sort sortDto = Sort.<B>builder().clazz(clazz).join(join).sort(sortMap).build();
+            Sort<B> sortDto = Sort.<B>builder().clazz(clazz).join(join).sort(sortMap).build();
             sort.append(sortDto.getSortQuery());
             join.append(sortDto.getJoin());
             return this;

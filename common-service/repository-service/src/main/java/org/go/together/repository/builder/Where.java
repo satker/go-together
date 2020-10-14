@@ -11,7 +11,7 @@ import java.util.Map;
 import static org.go.together.repository.builder.utils.BuilderUtils.createLeftJoin;
 import static org.go.together.repository.sql.ObjectStringParser.parseToString;
 
-public class Where implements Query {
+public class Where<E extends IdentifiedEntity> implements Query<E> {
     private final StringBuilder join;
     private final StringBuilder whereQuery;
 
@@ -32,28 +32,28 @@ public class Where implements Query {
         return join;
     }
 
-    public static class WhereBuilderImpl<E extends IdentifiedEntity>
-            implements WhereBuilder<E> {
+    public static class WhereBuilderImpl<B extends IdentifiedEntity>
+            implements WhereBuilder<B> {
         private static final String AND = " and ";
         private static final String OR = " or ";
 
-        private Class<E> clazz;
+        private Class<B> clazz;
         private final StringBuilder join;
         private StringBuilder whereQuery;
-        private Join<E> joinBuilder;
+        private Join<B> joinBuilder;
 
         private WhereBuilderImpl() {
             this.join = new StringBuilder();
             this.whereQuery = new StringBuilder(" WHERE ");
         }
 
-        public WhereBuilderImpl<E> clazz(Class<E> clazz) {
+        public WhereBuilderImpl<B> clazz(Class<B> clazz) {
             this.clazz = clazz;
-            this.joinBuilder = Join.<E>builder().clazz(clazz).build();
+            this.joinBuilder = Join.<B>builder().clazz(clazz).build();
             return this;
         }
 
-        public WhereBuilderImpl<E> isGroup(boolean isGroup) {
+        public WhereBuilderImpl<B> isGroup(boolean isGroup) {
             if (isGroup) {
                 this.whereQuery = new StringBuilder(StringUtils.EMPTY);
             }
@@ -64,7 +64,7 @@ public class Where implements Query {
             this.join.append(join);
         }
 
-        public WhereBuilder<E> condition(String field, SqlOperator sqlOperator, Object value) {
+        public WhereBuilder<B> condition(String field, SqlOperator sqlOperator, Object value) {
             String parsedValue = parseToString(value);
             String fieldName = getFieldWithJoin(field);
             whereQuery.append(sqlOperator.getBiFunction().apply(fieldName, parsedValue));
@@ -82,19 +82,19 @@ public class Where implements Query {
             }
         }
 
-        public WhereBuilderImpl<E> group(WhereBuilder<E> where) {
+        public WhereBuilderImpl<B> group(WhereBuilder<B> where) {
             whereQuery.append("(")
                     .append(where.build().getWhereQuery())
                     .append(")");
             return this;
         }
 
-        public WhereBuilderImpl<E> and() {
+        public WhereBuilderImpl<B> and() {
             whereQuery.append(AND);
             return this;
         }
 
-        public WhereBuilderImpl<E> or() {
+        public WhereBuilderImpl<B> or() {
             whereQuery.append(OR);
             return this;
         }
@@ -111,8 +111,8 @@ public class Where implements Query {
             }
         }
 
-        public Where build() {
-            return new Where(join, whereQuery);
+        public Where<B> build() {
+            return new Where<>(join, whereQuery);
         }
     }
 }

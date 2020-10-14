@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import static org.go.together.repository.builder.utils.BuilderUtils.createLeftJoin;
 
-public class Sort implements Query {
+public class Sort<E extends IdentifiedEntity> implements Query<E> {
     private final String join;
     private final String sortQuery;
 
@@ -57,8 +57,8 @@ public class Sort implements Query {
             return this;
         }
 
-        public Sort build() {
-            return new Sort(Optional.ofNullable(join).map(StringBuilder::toString).orElse(StringUtils.EMPTY), sortQuery);
+        public Sort<B> build() {
+            return new Sort<>(Optional.ofNullable(join).map(StringBuilder::toString).orElse(StringUtils.EMPTY), sortQuery);
         }
 
         private String getJoinQuery(String field) {

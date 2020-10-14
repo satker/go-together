@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepository {
     private final SqlBuilderCreator<E> sqlBuilderCreator;
     private final WhereBuilderCreator<E> whereBuilderCreator;
-    private final CustomRepository<E> repository;
     private final Map<String, FieldMapper> fieldMappers;
     private final FieldPathCorrector fieldPathCorrector;
 
@@ -35,7 +34,6 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
                               FieldPathCorrector fieldPathCorrector) {
         this.sqlBuilderCreator = new SqlBuilderCreator<>(repository, serviceName);
         this.whereBuilderCreator = new WhereBuilderCreator<>(repository);
-        this.repository = repository;
         this.fieldMappers = fieldMappers;
         this.fieldPathCorrector = fieldPathCorrector;
     }

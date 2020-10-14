@@ -19,5 +19,5 @@ public interface WhereBuilder<E extends IdentifiedEntity> extends QueryBuilder<E
 
     void cutLastOr();
 
-    Where build();
+    Where<E> build();
 }
