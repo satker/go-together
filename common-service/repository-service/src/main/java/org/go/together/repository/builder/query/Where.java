@@ -1,6 +1,8 @@
-package org.go.together.repository.builder;
+package org.go.together.repository.builder.query;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.repository.builder.interfaces.Query;
+import org.go.together.repository.builder.interfaces.WhereBuilder;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.repository.sql.SqlOperator;
 
@@ -9,7 +11,7 @@ import java.util.Map;
 import static org.go.together.repository.builder.utils.BuilderUtils.createLeftJoin;
 import static org.go.together.repository.sql.ObjectStringParser.parseToString;
 
-public class Where {
+public class Where implements Query {
     private final StringBuilder join;
     private final StringBuilder whereQuery;
 
@@ -18,8 +20,8 @@ public class Where {
         this.whereQuery = whereQuery;
     }
 
-    public static <E extends IdentifiedEntity> WhereBuilder<E> builder() {
-        return new WhereBuilder<>();
+    public static <E extends IdentifiedEntity> WhereBuilderImpl<E> builder() {
+        return new WhereBuilderImpl<>();
     }
 
     public StringBuilder getWhereQuery() {
@@ -30,7 +32,8 @@ public class Where {
         return join;
     }
 
-    public static class WhereBuilder<E extends IdentifiedEntity> {
+    public static class WhereBuilderImpl<E extends IdentifiedEntity>
+            implements WhereBuilder<E> {
         private static final String AND = " and ";
         private static final String OR = " or ";
 
@@ -39,18 +42,18 @@ public class Where {
         private StringBuilder whereQuery;
         private Join<E> joinBuilder;
 
-        private WhereBuilder() {
+        private WhereBuilderImpl() {
             this.join = new StringBuilder();
             this.whereQuery = new StringBuilder(" WHERE ");
         }
 
-        public WhereBuilder<E> clazz(Class<E> clazz) {
+        public WhereBuilderImpl<E> clazz(Class<E> clazz) {
             this.clazz = clazz;
             this.joinBuilder = Join.<E>builder().clazz(clazz).build();
             return this;
         }
 
-        public WhereBuilder<E> isGroup(boolean isGroup) {
+        public WhereBuilderImpl<E> isGroup(boolean isGroup) {
             if (isGroup) {
                 this.whereQuery = new StringBuilder(StringUtils.EMPTY);
             }
@@ -79,19 +82,19 @@ public class Where {
             }
         }
 
-        public WhereBuilder<E> group(WhereBuilder<E> where) {
+        public WhereBuilderImpl<E> group(WhereBuilder<E> where) {
             whereQuery.append("(")
                     .append(where.build().getWhereQuery())
                     .append(")");
             return this;
         }
 
-        public WhereBuilder<E> and() {
+        public WhereBuilderImpl<E> and() {
             whereQuery.append(AND);
             return this;
         }
 
-        public WhereBuilder<E> or() {
+        public WhereBuilderImpl<E> or() {
             whereQuery.append(OR);
             return this;
         }

@@ -1,7 +1,7 @@
 package org.go.together.find.dto.utils;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.go.together.repository.builder.Where;
+import org.go.together.repository.builder.interfaces.WhereBuilder;
 import org.go.together.repository.sql.SqlOperator;
 
 import java.util.function.BiConsumer;
@@ -25,13 +25,13 @@ public enum FindSqlOperator {
         }
     });
 
-    private final BiConsumer<Pair<String, Object>, Where.WhereBuilder> getSearchObjectFromDtos;
+    private final BiConsumer<Pair<String, Object>, WhereBuilder> getSearchObjectFromDtos;
 
-    FindSqlOperator(BiConsumer<Pair<String, Object>, Where.WhereBuilder> getSearchObjectFromDtos) {
+    FindSqlOperator(BiConsumer<Pair<String, Object>, WhereBuilder> getSearchObjectFromDtos) {
         this.getSearchObjectFromDtos = getSearchObjectFromDtos;
     }
 
-    public BiConsumer<Pair<String, Object>, Where.WhereBuilder> getSearchObjectFromDtos() {
+    public BiConsumer<Pair<String, Object>, WhereBuilder> getSearchObjectFromDtos() {
         return getSearchObjectFromDtos;
     }
 }

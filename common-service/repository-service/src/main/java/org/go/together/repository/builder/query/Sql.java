@@ -1,6 +1,9 @@
-package org.go.together.repository.builder;
+package org.go.together.repository.builder.query;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.repository.builder.interfaces.Query;
+import org.go.together.repository.builder.interfaces.SqlBuilder;
+import org.go.together.repository.builder.interfaces.WhereBuilder;
 import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
 
@@ -13,7 +16,7 @@ import java.util.Optional;
 
 import static org.go.together.repository.builder.utils.BuilderUtils.getEntityLink;
 
-public class Sql<E extends IdentifiedEntity> {
+public class Sql<E extends IdentifiedEntity> implements Query<E> {
     private final EntityManager entityManager;
     private final Class<E> clazz;
     private final String query;
@@ -26,8 +29,8 @@ public class Sql<E extends IdentifiedEntity> {
         this.countQuery = countQuery;
     }
 
-    public static <E extends IdentifiedEntity> SqlBuilder<E> builder() {
-        return new SqlBuilder<>();
+    public static <E extends IdentifiedEntity> SqlBuilderImpl<E> builder() {
+        return new SqlBuilderImpl<>();
     }
 
     public String getQuery() {
@@ -74,7 +77,7 @@ public class Sql<E extends IdentifiedEntity> {
         return typedQuery.getResultList();
     }
 
-    public static class SqlBuilder<B extends IdentifiedEntity> {
+    public static class SqlBuilderImpl<B extends IdentifiedEntity> implements SqlBuilder<B> {
         private String from;
         private Class<B> clazz;
         private EntityManager entityManager;
@@ -84,25 +87,25 @@ public class Sql<E extends IdentifiedEntity> {
         private StringBuilder query;
         private StringBuilder sort;
 
-        private SqlBuilder() {
+        private SqlBuilderImpl() {
             this.join = new StringBuilder();
             this.query = new StringBuilder();
             this.sort = new StringBuilder();
         }
 
-        public SqlBuilder<B> clazz(Class<B> clazz) {
+        public SqlBuilderImpl<B> clazz(Class<B> clazz) {
             this.clazz = clazz;
             this.selectRow = getEntityLink(clazz);
             this.from = " FROM " + clazz.getSimpleName() + StringUtils.SPACE + getEntityLink(clazz);
             return this;
         }
 
-        public SqlBuilder<B> entityManager(EntityManager entityManager) {
+        public SqlBuilderImpl<B> entityManager(EntityManager entityManager) {
             this.entityManager = entityManager;
             return this;
         }
 
-        public SqlBuilder<B> having(Integer havingCondition) {
+        public SqlBuilderImpl<B> having(Integer havingCondition) {
             if (havingCondition != null && selectRow != null) {
                 this.havingCondition = " group by " + selectRow +
                         " having count(" + selectRow + ") = " + havingCondition;
@@ -112,7 +115,7 @@ public class Sql<E extends IdentifiedEntity> {
             return this;
         }
 
-        public SqlBuilder<B> select(String selectRow) {
+        public SqlBuilderImpl<B> select(String selectRow) {
             String entityLink = getEntityLink(clazz);
             this.selectRow = Optional.ofNullable(selectRow)
                     .map((row) -> entityLink + "." + selectRow)
@@ -120,14 +123,14 @@ public class Sql<E extends IdentifiedEntity> {
             return this;
         }
 
-        public SqlBuilder<B> where(Where.WhereBuilder<B> where) {
+        public SqlBuilderImpl<B> where(WhereBuilder<B> where) {
             Where buildWhere = where.build();
             join.append(buildWhere.getJoin());
             query.append(buildWhere.getWhereQuery());
             return this;
         }
 
-        public SqlBuilder<B> sort(Map<String, Direction> sortMap) {
+        public SqlBuilderImpl<B> sort(Map<String, Direction> sortMap) {
             Sort sortDto = Sort.<B>builder().clazz(clazz).join(join).sort(sortMap).build();
             sort.append(sortDto.getSortQuery());
             join.append(sortDto.getJoin());

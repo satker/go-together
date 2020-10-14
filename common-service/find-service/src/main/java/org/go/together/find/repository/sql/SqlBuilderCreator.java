@@ -3,7 +3,7 @@ package org.go.together.find.repository.sql;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.repository.CustomRepository;
-import org.go.together.repository.builder.Sql;
+import org.go.together.repository.builder.interfaces.SqlBuilder;
 import org.go.together.repository.entities.IdentifiedEntity;
 
 import static org.go.together.find.utils.FindUtils.DOT;
@@ -18,7 +18,7 @@ public class SqlBuilderCreator<E extends IdentifiedEntity> {
         this.serviceName = serviceName;
     }
 
-    public Sql.SqlBuilder<E> getSqlBuilder(String mainField) {
+    public SqlBuilder<E> getSqlBuilder(String mainField) {
         String mainKeyToSort = mainField.replaceAll(serviceName + DOT, "");
         if (StringUtils.isNotBlank(mainKeyToSort) && !mainKeyToSort.equals(serviceName)) {
             String[] havingCondition = getHavingCondition(mainKeyToSort);
@@ -32,7 +32,7 @@ public class SqlBuilderCreator<E extends IdentifiedEntity> {
         }
     }
 
-    private Sql.SqlBuilder<E> getHavingSqlBuilder(String[] havingCondition) {
+    private SqlBuilder<E> getHavingSqlBuilder(String[] havingCondition) {
         try {
             int havingNumber = Integer.parseInt(havingCondition[1]);
             return repository.createQuery(havingCondition[0], havingNumber);

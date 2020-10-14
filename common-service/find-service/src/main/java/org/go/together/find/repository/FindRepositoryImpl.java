@@ -11,8 +11,9 @@ import org.go.together.find.dto.form.PageDto;
 import org.go.together.find.repository.sql.SqlBuilderCreator;
 import org.go.together.find.repository.sql.WhereBuilderCreator;
 import org.go.together.repository.CustomRepository;
-import org.go.together.repository.builder.Sql;
-import org.go.together.repository.builder.Where;
+import org.go.together.repository.builder.interfaces.SqlBuilder;
+import org.go.together.repository.builder.interfaces.WhereBuilder;
+import org.go.together.repository.builder.query.Sql;
 import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
 
@@ -42,12 +43,12 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
     @Override
     public Pair<PageDto, Collection<Object>> getResult(FormDto formDto,
                                                        Map<FieldDto, FilterDto> filters) {
-        Sql.SqlBuilder<E> query = sqlBuilderCreator.getSqlBuilder(formDto.getMainIdField());
+        SqlBuilder<E> query = sqlBuilderCreator.getSqlBuilder(formDto.getMainIdField());
         long countRows;
         if (filters == null || filters.isEmpty()) {
             countRows = query.build().getCountRows();
         } else {
-            Where.WhereBuilder<E> where = whereBuilderCreator.getWhereBuilder(filters);
+            WhereBuilder<E> where = whereBuilderCreator.getWhereBuilder(filters);
             query.where(where);
             countRows = query.build().getCountRows();
         }
@@ -78,7 +79,7 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
         return correctedFieldDto.getFieldDto().getLocalField();
     }
 
-    private Collection<Object> getResult(PageDto page, Sql.SqlBuilder<E> query) {
+    private Collection<Object> getResult(PageDto page, SqlBuilder<E> query) {
         Sql<E> buildSql = query.build();
         return Optional.ofNullable(page)
                 .map(pageDto -> buildSql.fetchWithPageableNotDefined(page.getPage() * page.getSize(), page.getSize()))

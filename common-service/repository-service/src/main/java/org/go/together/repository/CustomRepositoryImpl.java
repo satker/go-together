@@ -1,8 +1,10 @@
 package org.go.together.repository;
 
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.repository.builder.Sql;
-import org.go.together.repository.builder.Where;
+import org.go.together.repository.builder.interfaces.SqlBuilder;
+import org.go.together.repository.builder.interfaces.WhereBuilder;
+import org.go.together.repository.builder.query.Sql;
+import org.go.together.repository.builder.query.Where;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.utils.ReflectionUtils;
 
@@ -64,27 +66,27 @@ public abstract class CustomRepositoryImpl<E extends IdentifiedEntity> implement
     }
 
     @Override
-    public Sql.SqlBuilder<E> createQuery() {
+    public SqlBuilder<E> createQuery() {
         return createQuery(null, null);
     }
 
     @Override
-    public Sql.SqlBuilder<E> createQuery(String selectRow) {
+    public SqlBuilder<E> createQuery(String selectRow) {
         return createQuery(selectRow, null);
     }
 
     @Override
-    public Sql.SqlBuilder<E> createQuery(String selectRow, Integer havingCondition) {
+    public SqlBuilder<E> createQuery(String selectRow, Integer havingCondition) {
         return Sql.<E>builder().clazz(clazz).entityManager(entityManager).having(havingCondition).select(selectRow);
     }
 
     @Override
-    public Where.WhereBuilder<E> createWhere() {
+    public WhereBuilder<E> createWhere() {
         return Where.<E>builder().clazz(clazz);
     }
 
     @Override
-    public Where.WhereBuilder<E> createGroup() {
+    public WhereBuilder<E> createGroup() {
         return Where.<E>builder().clazz(clazz).isGroup(true);
     }
 }

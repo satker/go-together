@@ -1,7 +1,7 @@
 package org.go.together.logic.repository;
 
 import org.go.together.context.RepositoryContext;
-import org.go.together.repository.builder.Sql;
+import org.go.together.repository.builder.query.Sql;
 import org.go.together.repository.sql.SqlOperator;
 import org.go.together.test.entities.JoinTestEntity;
 import org.go.together.test.entities.ManyJoinEntity;

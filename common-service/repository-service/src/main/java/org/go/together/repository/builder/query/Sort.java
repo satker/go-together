@@ -1,6 +1,8 @@
-package org.go.together.repository.builder;
+package org.go.together.repository.builder.query;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.repository.builder.interfaces.Query;
+import org.go.together.repository.builder.interfaces.SortBuilder;
 import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
 
@@ -10,7 +12,7 @@ import java.util.stream.Collectors;
 
 import static org.go.together.repository.builder.utils.BuilderUtils.createLeftJoin;
 
-public class Sort {
+public class Sort implements Query {
     private final String join;
     private final String sortQuery;
 
@@ -19,8 +21,8 @@ public class Sort {
         this.sortQuery = sortQuery;
     }
 
-    public static <E extends IdentifiedEntity> SortBuilder<E> builder() {
-        return new SortBuilder<>();
+    public static <E extends IdentifiedEntity> SortBuilderImpl<E> builder() {
+        return new SortBuilderImpl<>();
     }
 
     public String getSortQuery() {
@@ -31,24 +33,24 @@ public class Sort {
         return join;
     }
 
-    public static class SortBuilder<B extends IdentifiedEntity> {
+    public static class SortBuilderImpl<B extends IdentifiedEntity> implements SortBuilder<B> {
         private Class<B> clazz;
         private Join<B> joinBuilder;
         private StringBuilder join;
         private String sortQuery;
 
-        public SortBuilder<B> clazz(Class<B> clazz) {
+        public SortBuilderImpl<B> clazz(Class<B> clazz) {
             this.clazz = clazz;
             this.joinBuilder = Join.<B>builder().clazz(clazz).build();
             return this;
         }
 
-        public SortBuilder<B> join(StringBuilder join) {
+        public SortBuilderImpl<B> join(StringBuilder join) {
             this.join = join;
             return this;
         }
 
-        public SortBuilder<B> sort(Map<String, Direction> sortMap) {
+        public SortBuilderImpl<B> sort(Map<String, Direction> sortMap) {
             this.sortQuery = sortMap.entrySet().stream()
                     .map(entry -> getJoinQuery(entry.getKey()) + StringUtils.SPACE + entry.getValue().toString())
                     .collect(Collectors.joining(", ", " ORDER BY ", StringUtils.EMPTY));

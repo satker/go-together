@@ -1,5 +1,7 @@
-package org.go.together.repository.builder;
+package org.go.together.repository.builder.query;
 
+import org.go.together.repository.builder.interfaces.JoinBuilder;
+import org.go.together.repository.builder.interfaces.Query;
 import org.go.together.repository.builder.utils.BuilderUtils;
 import org.go.together.repository.entities.IdentifiedEntity;
 
@@ -16,7 +18,7 @@ import java.util.function.Consumer;
 
 import static org.go.together.repository.builder.utils.BuilderUtils.getEntityField;
 
-public class Join<E extends IdentifiedEntity> {
+public class Join<E extends IdentifiedEntity> implements Query<E> {
     private final Map<String, String> joinTables;
     private final Class<E> clazz;
 
@@ -25,8 +27,8 @@ public class Join<E extends IdentifiedEntity> {
         this.clazz = clazz;
     }
 
-    public static <E extends IdentifiedEntity> JoinBuilder<E> builder() {
-        return new JoinBuilder<>();
+    public static <E extends IdentifiedEntity> JoinBuilderImpl<E> builder() {
+        return new JoinBuilderImpl<>();
     }
 
     public String getFieldWithJoin(String field, Consumer<Map.Entry<String, String>> enrichFunction) {
@@ -42,11 +44,11 @@ public class Join<E extends IdentifiedEntity> {
                 .findFirst();
     }
 
-    public static class JoinBuilder<B extends IdentifiedEntity> {
+    public static class JoinBuilderImpl<B extends IdentifiedEntity> implements JoinBuilder<B> {
         private Map<String, String> joinTables;
         private Class<B> clazz;
 
-        public JoinBuilder<B> clazz(Class<B> clazz) {
+        public JoinBuilderImpl<B> clazz(Class<B> clazz) {
             this.clazz = clazz;
             joinTables = new HashMap<>();
             Arrays.stream(clazz.getDeclaredFields())
