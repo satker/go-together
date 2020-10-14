@@ -1,7 +1,7 @@
 package org.go.together.logic.repository;
 
 import org.go.together.context.RepositoryContext;
-import org.go.together.repository.builder.SqlBuilder;
+import org.go.together.repository.builder.Sql;
 import org.go.together.repository.sql.SqlOperator;
 import org.go.together.test.entities.JoinTestEntity;
 import org.go.together.test.entities.ManyJoinEntity;
@@ -95,12 +95,12 @@ class CustomRepositoryImplTest {
     @Test
     void createQueryWhereEqualsConditionsString() {
         String expectedSql = " FROM TestEntity te WHERE te.name = '" + testEntity.getName() + "'";
-        SqlBuilder<TestEntity> sqlBuilder = testRepository.createQuery()
-                .where(testRepository.createWhere().condition("name", SqlOperator.EQUAL, testEntity.getName()));
+        Sql<TestEntity> sql = testRepository.createQuery()
+                .where(testRepository.createWhere().condition("name", SqlOperator.EQUAL, testEntity.getName())).build();
 
-        Optional<TestEntity> entity = sqlBuilder.fetchOne();
+        Optional<TestEntity> entity = sql.fetchOne();
 
-        assertEquals(expectedSql, sqlBuilder.build().getQuery());
+        assertEquals(expectedSql, sql.getQuery());
         assertTrue(entity.isPresent());
         assertEquals(testEntity.getName(), entity.get().getName());
     }
@@ -111,12 +111,12 @@ class CustomRepositoryImplTest {
 
         String expectedSql = "select distinct te FROM TestEntity te left join te.elements te_elements WHERE te_elements = '"
                 + findElement.toString() + "'";
-        SqlBuilder<TestEntity> sqlBuilder = testRepository.createQuery()
-                .where(testRepository.createWhere().condition("elements", SqlOperator.EQUAL, findElement));
+        Sql<TestEntity> sql = testRepository.createQuery()
+                .where(testRepository.createWhere().condition("elements", SqlOperator.EQUAL, findElement)).build();
 
-        Optional<TestEntity> entity = sqlBuilder.fetchOne();
+        Optional<TestEntity> entity = sql.fetchOne();
 
-        assertEquals(expectedSql, sqlBuilder.build().getQuery());
+        assertEquals(expectedSql, sql.getQuery());
         assertTrue(entity.isPresent());
         assertTrue(testEntity.getElements().stream().anyMatch(element -> element.equals(findElement)));
     }
@@ -128,12 +128,13 @@ class CustomRepositoryImplTest {
         String expectedSql = "select distinct te FROM TestEntity te left join te.joinTestEntities te_joinTestEntities " +
                 "WHERE te_joinTestEntities.name = '" + joinNameCondition + "'";
 
-        SqlBuilder<TestEntity> sqlBuilder = testRepository.createQuery()
-                .where(testRepository.createWhere().condition("joinTestEntities.name", SqlOperator.EQUAL, joinNameCondition));
+        Sql<TestEntity> sql = testRepository.createQuery()
+                .where(testRepository.createWhere().condition("joinTestEntities.name", SqlOperator.EQUAL, joinNameCondition))
+                .build();
 
-        Optional<TestEntity> entity = sqlBuilder.fetchOne();
+        Optional<TestEntity> entity = sql.fetchOne();
 
-        assertEquals(expectedSql, sqlBuilder.build().getQuery());
+        assertEquals(expectedSql, sql.getQuery());
         assertTrue(entity.isPresent());
         assertTrue(entity.get().getJoinTestEntities().stream()
                 .anyMatch(joinTestEntity -> joinTestEntity.getName().equals(joinNameCondition)));
@@ -146,12 +147,14 @@ class CustomRepositoryImplTest {
         String expectedSql = "select distinct te FROM TestEntity te left join te.manyJoinEntities te_manyJoinEntities " +
                 "WHERE te_manyJoinEntities.name = '" + manyJoinNameCondition + "'";
 
-        SqlBuilder<TestEntity> sqlBuilder = testRepository.createQuery()
-                .where(testRepository.createWhere().condition("manyJoinEntities.name", SqlOperator.EQUAL, manyJoinNameCondition));
+        Sql<TestEntity> sql = testRepository.createQuery()
+                .where(testRepository.createWhere()
+                        .condition("manyJoinEntities.name", SqlOperator.EQUAL, manyJoinNameCondition))
+                .build();
 
-        Optional<TestEntity> entity = sqlBuilder.fetchOne();
+        Optional<TestEntity> entity = sql.fetchOne();
 
-        assertEquals(expectedSql, sqlBuilder.build().getQuery());
+        assertEquals(expectedSql, sql.getQuery());
         assertTrue(entity.isPresent());
         assertTrue(entity.get().getManyJoinEntities().stream()
                 .anyMatch(manyJoinEntity -> manyJoinEntity.getName().equals(manyJoinNameCondition)));
@@ -170,17 +173,18 @@ class CustomRepositoryImplTest {
                 "and te_joinTestEntities.name = '" + joinNameCondition + "' " +
                 "and te_elements = '" + findElement + "'";
 
-        SqlBuilder<TestEntity> sqlBuilder = testRepository.createQuery()
+        Sql<TestEntity> sql = testRepository.createQuery()
                 .where(testRepository.createWhere()
                         .condition("manyJoinEntities.name", SqlOperator.EQUAL, manyJoinNameCondition)
                         .and()
                         .condition("joinTestEntities.name", SqlOperator.EQUAL, joinNameCondition)
                         .and()
-                        .condition("elements", SqlOperator.EQUAL, findElement));
+                        .condition("elements", SqlOperator.EQUAL, findElement))
+                .build();
 
-        Optional<TestEntity> entity = sqlBuilder.fetchOne();
+        Optional<TestEntity> entity = sql.fetchOne();
 
-        assertEquals(expectedSql, sqlBuilder.build().getQuery());
+        assertEquals(expectedSql, sql.getQuery());
         assertTrue(entity.isPresent());
         assertTrue(entity.get().getManyJoinEntities().stream()
                 .anyMatch(manyJoinEntity -> manyJoinEntity.getName().equals(manyJoinNameCondition)));

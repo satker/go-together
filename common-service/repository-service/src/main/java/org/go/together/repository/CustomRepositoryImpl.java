@@ -1,7 +1,7 @@
 package org.go.together.repository;
 
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.repository.builder.SqlBuilder;
+import org.go.together.repository.builder.Sql;
 import org.go.together.repository.builder.Where;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.utils.ReflectionUtils;
@@ -60,22 +60,22 @@ public abstract class CustomRepositoryImpl<E extends IdentifiedEntity> implement
     @Override
     @Transactional
     public Collection<E> findAll() {
-        return createQuery().fetchAll();
+        return createQuery().build().fetchAll();
     }
 
     @Override
-    public SqlBuilder<E> createQuery() {
+    public Sql.SqlBuilder<E> createQuery() {
         return createQuery(null, null);
     }
 
     @Override
-    public SqlBuilder<E> createQuery(String selectRow) {
+    public Sql.SqlBuilder<E> createQuery(String selectRow) {
         return createQuery(selectRow, null);
     }
 
     @Override
-    public SqlBuilder<E> createQuery(String selectRow, Integer havingCondition) {
-        return new SqlBuilder<>(clazz, entityManager).builder(selectRow, havingCondition);
+    public Sql.SqlBuilder<E> createQuery(String selectRow, Integer havingCondition) {
+        return Sql.builder(clazz, entityManager).having(havingCondition).select(selectRow);
     }
 
     @Override

@@ -16,6 +16,7 @@ public class NotificationReceiverMessageRepositoryImpl extends CustomRepositoryI
     public Collection<NotificationReceiverMessage> findByReceiverId(UUID receiverId) {
         return createQuery()
                 .where(createWhere().condition("notificationReceiver.userId", SqlOperator.EQUAL, receiverId))
+                .build()
                 .fetchAll();
     }
 }

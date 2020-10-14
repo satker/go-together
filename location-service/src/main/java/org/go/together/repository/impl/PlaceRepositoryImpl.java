@@ -15,7 +15,7 @@ public class PlaceRepositoryImpl extends CustomRepositoryImpl<Place> implements 
     @Override
     public Collection<Place> findLocationByName(String location, int start, int pageSize) {
         return createQuery()
-                .where(createWhere().condition("name", SqlOperator.LIKE_LOWER_CASE, location))
+                .where(createWhere().condition("name", SqlOperator.LIKE_LOWER_CASE, location)).build()
                 .fetchWithPageable(start, pageSize);
     }
 
@@ -24,7 +24,7 @@ public class PlaceRepositoryImpl extends CustomRepositoryImpl<Place> implements 
                                                               int start, int pageSize) {
         return createQuery()
                 .where(createWhere().condition("name", SqlOperator.LIKE_LOWER_CASE, location)
-                        .and().condition("country.id", SqlOperator.IN, countryIds))
+                        .and().condition("country.id", SqlOperator.IN, countryIds)).build()
                 .fetchWithPageable(start, pageSize);
     }
 
@@ -35,14 +35,14 @@ public class PlaceRepositoryImpl extends CustomRepositoryImpl<Place> implements 
         return createQuery()
                 .where(createWhere().condition("name", SqlOperator.LIKE_LOWER_CASE, location.toLowerCase())
                         .and().condition("state", SqlOperator.LIKE_LOWER_CASE, state.toLowerCase())
-                        .and().condition("country.id", SqlOperator.EQUAL, countryId))
+                        .and().condition("country.id", SqlOperator.EQUAL, countryId)).build()
                 .fetchOne();
     }
 
     @Override
     public Optional<Place> findByLocationId(UUID locationId) {
         return createQuery()
-                .where(createWhere().condition("locations.id", SqlOperator.EQUAL, locationId))
+                .where(createWhere().condition("locations.id", SqlOperator.EQUAL, locationId)).build()
                 .fetchOne();
     }
 }

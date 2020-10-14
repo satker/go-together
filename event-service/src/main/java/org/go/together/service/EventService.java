@@ -76,7 +76,7 @@ public class EventService extends CrudServiceImpl<EventDto, Event> {
         if (StringUtils.isNotBlank(name)) {
             events = ((EventRepository) repository).findEventsByNameLike(name, 0, 5);
         } else {
-            events = repository.createQuery().fetchWithPageable(0, 5);
+            events = repository.createQuery().build().fetchWithPageable(0, 5);
         }
         return events.stream()
                 .map(event -> new SimpleDto(event.getId().toString(), event.getName()))

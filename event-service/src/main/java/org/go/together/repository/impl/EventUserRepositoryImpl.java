@@ -14,6 +14,6 @@ public class EventUserRepositoryImpl extends CustomRepositoryImpl<EventUser> imp
     @Override
     public Optional<EventUser> findEventUserByUserIdAndEventId(UUID userId, UUID eventId) {
         return createQuery().where(createWhere().condition("userId", SqlOperator.EQUAL, userId).and()
-                .condition("eventId", SqlOperator.EQUAL, eventId)).fetchOne();
+                .condition("eventId", SqlOperator.EQUAL, eventId)).build().fetchOne();
     }
 }

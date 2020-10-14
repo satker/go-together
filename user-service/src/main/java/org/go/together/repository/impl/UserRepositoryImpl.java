@@ -17,6 +17,7 @@ public class UserRepositoryImpl extends CustomRepositoryImpl<SystemUser> impleme
     public Optional<SystemUser> findUserByLogin(String login) {
         return createQuery()
                 .where(createWhere().condition("login", SqlOperator.EQUAL, login))
+                .build()
                 .fetchOne();
     }
 
@@ -24,12 +25,14 @@ public class UserRepositoryImpl extends CustomRepositoryImpl<SystemUser> impleme
     public Collection<SystemUser> findUserByMail(String mail) {
         return createQuery()
                 .where(createWhere().condition("mail", SqlOperator.EQUAL, mail))
+                .build()
                 .fetchAll();
     }
 
     @Override
     public Collection<SystemUser> findAllByIds(Set<UUID> userIds) {
         return createQuery().where(createWhere().condition("id", SqlOperator.IN, userIds))
+                .build()
                 .fetchAll();
     }
 }

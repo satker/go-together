@@ -15,6 +15,6 @@ public class NotificationMessageRepositoryImpl extends CustomRepositoryImpl<Noti
     @Override
     public Collection<NotificationMessage> findByNotificationId(UUID notificationId) {
         return createQuery().where(createWhere()
-                .condition("notification.id", SqlOperator.EQUAL, notificationId)).fetchAll();
+                .condition("notification.id", SqlOperator.EQUAL, notificationId)).build().fetchAll();
     }
 }

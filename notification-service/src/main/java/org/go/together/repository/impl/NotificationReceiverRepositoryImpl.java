@@ -14,11 +14,15 @@ public class NotificationReceiverRepositoryImpl extends CustomRepositoryImpl<Not
         implements NotificationReceiverRepository {
     @Override
     public Collection<NotificationReceiver> findByNotificationId(UUID notificationId) {
-        return createQuery().where(createWhere().condition("notification.id", SqlOperator.EQUAL, notificationId)).fetchAll();
+        return createQuery().where(createWhere().condition("notification.id", SqlOperator.EQUAL, notificationId))
+                .build()
+                .fetchAll();
     }
 
     @Override
     public Collection<NotificationReceiver> findByProducerId(UUID producerId) {
-        return createQuery().where(createWhere().condition("notification.producerId", SqlOperator.EQUAL, producerId)).fetchAll();
+        return createQuery().where(createWhere().condition("notification.producerId", SqlOperator.EQUAL, producerId))
+                .build()
+                .fetchAll();
     }
 }

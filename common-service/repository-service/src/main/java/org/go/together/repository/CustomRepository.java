@@ -1,6 +1,6 @@
 package org.go.together.repository;
 
-import org.go.together.repository.builder.SqlBuilder;
+import org.go.together.repository.builder.Sql;
 import org.go.together.repository.builder.Where;
 import org.go.together.repository.entities.IdentifiedEntity;
 
@@ -21,11 +21,11 @@ public interface CustomRepository<E extends IdentifiedEntity> {
 
     Collection<E> findAll();
 
-    SqlBuilder<E> createQuery();
+    Sql.SqlBuilder<E> createQuery();
 
-    SqlBuilder<E> createQuery(String selectRow);
+    Sql.SqlBuilder<E> createQuery(String selectRow);
 
-    SqlBuilder<E> createQuery(String selectRow, Integer havingCondition);
+    Sql.SqlBuilder<E> createQuery(String selectRow, Integer havingCondition);
 
     Where.WhereBuilder<E> createWhere();
 

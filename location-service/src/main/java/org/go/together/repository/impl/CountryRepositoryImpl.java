@@ -15,6 +15,7 @@ public class CountryRepositoryImpl extends CustomRepositoryImpl<Country> impleme
     public Optional<Country> findByName(String name) {
         return createQuery()
                 .where(createWhere().condition("name", SqlOperator.EQUAL, name.split("\\(")[0].trim().toUpperCase()))
+                .build()
                 .fetchOne();
     }
 
@@ -22,6 +23,7 @@ public class CountryRepositoryImpl extends CustomRepositoryImpl<Country> impleme
     public Collection<Country> findCountriesLike(String countryName) {
         return createQuery()
                 .where(createWhere().condition("name", SqlOperator.LIKE, countryName.toUpperCase()))
+                .build()
                 .fetchAll();
     }
 }

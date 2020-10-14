@@ -18,7 +18,7 @@ public class MessageRepositoryImpl extends CustomRepositoryImpl<Message> impleme
                 .where(createWhere()
                         .condition("recipientId", SqlOperator.EQUAL, recipientId)
                         .and()
-                        .condition("messageType", SqlOperator.EQUAL, messageType)).fetchAll();
+                        .condition("messageType", SqlOperator.EQUAL, messageType)).build().fetchAll();
     }
 
     @Override
@@ -29,6 +29,6 @@ public class MessageRepositoryImpl extends CustomRepositoryImpl<Message> impleme
                                 .or()
                                 .condition("authorId", SqlOperator.EQUAL, recipientId))
                         .and()
-                        .condition("messageType", SqlOperator.EQUAL, messageType)).fetchAll();
+                        .condition("messageType", SqlOperator.EQUAL, messageType)).build().fetchAll();
     }
 }

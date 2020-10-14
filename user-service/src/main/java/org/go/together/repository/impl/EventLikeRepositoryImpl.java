@@ -15,12 +15,14 @@ public class EventLikeRepositoryImpl extends CustomRepositoryImpl<EventLike> imp
     @Override
     public Optional<EventLike> findByEventId(UUID eventId) {
         return createQuery().where(createWhere().condition("eventId", SqlOperator.EQUAL, eventId))
+                .build()
                 .fetchOne();
     }
 
     @Override
     public Collection<EventLike> findByUserId(UUID userId) {
         return createQuery().where(createWhere().condition("users.id", SqlOperator.EQUAL, userId))
+                .build()
                 .fetchAll();
     }
 }

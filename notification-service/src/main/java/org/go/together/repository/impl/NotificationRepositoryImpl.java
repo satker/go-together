@@ -14,6 +14,7 @@ public class NotificationRepositoryImpl extends CustomRepositoryImpl<Notificatio
     @Override
     public Optional<Notification> findByProducerId(UUID producerId) {
         return createQuery().where(createWhere().condition("producerId", SqlOperator.EQUAL, producerId))
+                .build()
                 .fetchOne();
     }
 }

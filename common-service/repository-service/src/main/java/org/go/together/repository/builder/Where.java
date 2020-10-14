@@ -19,7 +19,7 @@ public class Where {
     }
 
     public static <E extends IdentifiedEntity> WhereBuilder<E> builder(Class<E> clazz, Boolean isGroup) {
-        return new WhereBuilder<E>(isGroup, clazz);
+        return new WhereBuilder<>(isGroup, clazz);
     }
 
     public StringBuilder getWhereQuery() {

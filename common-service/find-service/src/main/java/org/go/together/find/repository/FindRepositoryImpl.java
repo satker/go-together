@@ -11,9 +11,8 @@ import org.go.together.find.dto.form.PageDto;
 import org.go.together.find.repository.sql.SqlBuilderCreator;
 import org.go.together.find.repository.sql.WhereBuilderCreator;
 import org.go.together.repository.CustomRepository;
-import org.go.together.repository.builder.SqlBuilder;
+import org.go.together.repository.builder.Sql;
 import org.go.together.repository.builder.Where;
-import org.go.together.repository.builder.dto.SqlDto;
 import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
 
@@ -43,17 +42,14 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
     @Override
     public Pair<PageDto, Collection<Object>> getResult(FormDto formDto,
                                                        Map<FieldDto, FilterDto> filters) {
-        SqlBuilder<E> query = sqlBuilderCreator.getSqlBuilder(formDto.getMainIdField());
+        Sql.SqlBuilder<E> query = sqlBuilderCreator.getSqlBuilder(formDto.getMainIdField());
         long countRows;
         if (filters == null || filters.isEmpty()) {
-            countRows = query.getCountRows();
+            countRows = query.build().getCountRows();
         } else {
             Where.WhereBuilder<E> where = whereBuilderCreator.getWhereBuilder(filters);
             query.where(where);
-            SqlDto buildSql = query.build();
-            countRows = repository.createQuery().getCountRowsWhere(where,
-                    buildSql.getSelectRow(),
-                    buildSql.getHavingCondition());
+            countRows = query.build().getCountRows();
         }
         PageDto page = formDto.getPage();
         Map<String, Direction> sortMappers = getSortMappers(page);
@@ -82,10 +78,11 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
         return correctedFieldDto.getFieldDto().getLocalField();
     }
 
-    private Collection<Object> getResult(PageDto page, SqlBuilder<E> query) {
+    private Collection<Object> getResult(PageDto page, Sql.SqlBuilder<E> query) {
+        Sql<E> buildSql = query.build();
         return Optional.ofNullable(page)
-                .map(pageDto -> query.fetchWithPageableNotDefined(page.getPage() * page.getSize(), page.getSize()))
-                .orElse(query.fetchAllNotDefined());
+                .map(pageDto -> buildSql.fetchWithPageableNotDefined(page.getPage() * page.getSize(), page.getSize()))
+                .orElse(buildSql.fetchAllNotDefined());
     }
 
     private PageDto getPageDto(PageDto page, long countRows) {

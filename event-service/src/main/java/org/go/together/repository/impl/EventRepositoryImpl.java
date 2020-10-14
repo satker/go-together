@@ -13,7 +13,7 @@ public class EventRepositoryImpl extends CustomRepositoryImpl<Event> implements 
     @Override
     public Collection<Event> findEventsByNameLike(String name, int start, int pageSize) {
         return createQuery()
-                .where(createWhere().condition("name", SqlOperator.LIKE, name))
+                .where(createWhere().condition("name", SqlOperator.LIKE, name)).build()
                 .fetchWithPageable(start, pageSize);
     }
 }

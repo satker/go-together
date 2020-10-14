@@ -51,7 +51,7 @@ public class PlaceService extends CrudServiceImpl<PlaceDto, Place> {
 
             places = ((PlaceRepository) repository).findLocationByNameAndByCountryId(splitedLocation, countryIds, 0, 5);
         } else {
-            places = repository.createQuery().fetchWithPageable(0, 5);
+            places = repository.createQuery().build().fetchWithPageable(0, 5);
         }
         return places.stream()
                 .map(loc -> new SimpleDto(loc.getId().toString(), loc.getName() + ", " +
