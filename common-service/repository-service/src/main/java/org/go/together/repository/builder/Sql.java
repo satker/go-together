@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -83,9 +84,10 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
         private EntityManager entityManager;
         private String selectRow;
         private String havingCondition;
-        private final StringBuilder join;
+        private StringBuilder join;
         private final StringBuilder query;
         private final StringBuilder sort;
+        private Map<String, Direction> sortMap = new HashMap<>();
 
         private SqlBuilderImpl() {
             this.join = new StringBuilder();
@@ -130,11 +132,15 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
             return this;
         }
 
-        public SqlBuilderImpl<B> sort(Map<String, Direction> sortMap) {
+        public SqlBuilderImpl<B> sort(String key, Direction direction) {
+            this.sortMap.put(key, direction);
+            return this;
+        }
+
+        private void enrichBySort() {
             Sort<B> sortDto = Sort.<B>builder().clazz(clazz).join(join).sort(sortMap).build();
             sort.append(sortDto.getSortQuery());
-            join.append(sortDto.getJoin());
-            return this;
+            join = new StringBuilder(sortDto.getJoin());
         }
 
         private String getCountQuery() {
@@ -154,6 +160,9 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
         }
 
         public Sql<B> build() {
+            if (!sortMap.isEmpty()) {
+                enrichBySort();
+            }
             return new Sql<>(clazz, entityManager, getQuery(), getCountQuery());
         }
 
@@ -173,13 +182,13 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
         }
 
         private String getFirstQueryPart() {
-            final String SELECT = "select distinct " + selectRow;
+            final String SELECT = "select ";
             if (StringUtils.isNotEmpty(join)) {
-                return SELECT + from + join;
+                return SELECT + "distinct " + selectRow + from + join;
             } else {
                 String result = StringUtils.EMPTY;
                 if (!selectRow.equals(getEntityLink(clazz))) {
-                    result = SELECT;
+                    result = SELECT + selectRow;
                 }
                 return result.concat(from);
             }

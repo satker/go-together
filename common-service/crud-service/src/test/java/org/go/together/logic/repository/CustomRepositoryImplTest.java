@@ -2,11 +2,13 @@ package org.go.together.logic.repository;
 
 import org.go.together.context.RepositoryContext;
 import org.go.together.repository.builder.Sql;
+import org.go.together.repository.entities.Direction;
 import org.go.together.repository.sql.SqlOperator;
 import org.go.together.test.entities.JoinTestEntity;
 import org.go.together.test.entities.ManyJoinEntity;
 import org.go.together.test.entities.TestEntity;
 import org.go.together.test.repository.impl.TestRepositoryImpl;
+import org.go.together.test.repository.interfaces.ManyJoinRepository;
 import org.go.together.test.repository.interfaces.TestRepository;
 import org.go.together.utils.ReflectionUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -34,25 +36,37 @@ class CustomRepositoryImplTest {
     private TestRepository testRepository;
     @Autowired
     private EntityManager entityManager;
+    @Autowired
+    private ManyJoinRepository manyJoinRepository;
 
     @BeforeEach
     public void init() {
-        UUID id = UUID.randomUUID();
+        for (int i = 0; i < 10; i++) {
+            getTestEntity(UUID.randomUUID(),
+                    "many entity" + i,
+                    "join entity" + i,
+                    "name" + i,
+                    i);
+            testRepository.save(testEntity);
+        }
+    }
+
+    private void getTestEntity(UUID id, String manyEntityName, String joinEntityName, String testName, int testNumber) {
         Set<ManyJoinEntity> manyJoinEntities = new HashSet<>();
         for (int i = 0; i < 10; i++) {
             ManyJoinEntity manyEntity = ManyJoinEntity.builder()
                     .id(UUID.randomUUID())
-                    .name("many entity" + i)
+                    .name(manyEntityName + i)
                     .number(i)
                     .build();
-            entityManager.merge(manyEntity);
+            manyJoinRepository.save(manyEntity);
             manyJoinEntities.add(manyEntity);
         }
         Set<JoinTestEntity> joinTestEntities = new HashSet<>();
         for (int i = 0; i < 5; i++) {
             JoinTestEntity joinTestEntity = JoinTestEntity.builder()
                     .id(UUID.randomUUID())
-                    .name("join entity" + i).build();
+                    .name(joinEntityName + i).build();
             entityManager.merge(joinTestEntity);
             joinTestEntities.add(joinTestEntity);
         }
@@ -61,14 +75,13 @@ class CustomRepositoryImplTest {
             elements.add(UUID.randomUUID());
         }
         testEntity = TestEntity.builder().id(id)
-                .name("name")
-                .number(1)
+                .name(testName)
+                .number(testNumber)
                 .date(new Date())
                 .elements(elements)
                 .manyJoinEntities(manyJoinEntities)
                 .joinTestEntities(joinTestEntities)
                 .build();
-        testRepository.save(testEntity);
     }
 
     @AfterEach
@@ -89,7 +102,7 @@ class CustomRepositoryImplTest {
     void findAll() {
         Collection<TestEntity> testEntities = testRepository.findAll();
 
-        assertEquals(1, testEntities.size());
+        assertEquals(10, testEntities.size());
     }
 
     @Test
@@ -138,6 +151,40 @@ class CustomRepositoryImplTest {
         assertTrue(entity.isPresent());
         assertTrue(entity.get().getJoinTestEntities().stream()
                 .anyMatch(joinTestEntity -> joinTestEntity.getName().equals(joinNameCondition)));
+    }
+
+    @Test
+    void createQueryWhereEqualsConditionsOneToManyJoinAndSort() {
+        String expectedSql = " FROM ManyJoinEntity mje ORDER BY mje.number ASC";
+
+        Sql<ManyJoinEntity> sql = manyJoinRepository.createQuery()
+                .sort("number", Direction.DESC)
+                .sort("number", Direction.ASC)
+                .build();
+
+        Collection<ManyJoinEntity> entities = sql.fetchAll();
+
+        assertEquals(expectedSql, sql.getQuery());
+        assertFalse(entities.isEmpty());
+        assertEquals(100, entities.size());
+    }
+
+    @Test
+    void createQueryMultpleResultsAndSort() {
+        String expectedSql = "select distinct te FROM TestEntity te left join te.joinTestEntities te_joinTestEntities " +
+                "WHERE te_joinTestEntities.name like '%join%' ORDER BY te.date ASC, te.name DESC";
+
+        Sql<TestEntity> sql = testRepository.createQuery()
+                .where(testRepository.createWhere().condition("joinTestEntities.name", SqlOperator.LIKE, "join"))
+                .sort("date", Direction.ASC)
+                .sort("name", Direction.DESC)
+                .build();
+
+        Collection<TestEntity> entities = sql.fetchAll();
+
+        assertEquals(expectedSql, sql.getQuery());
+        assertFalse(entities.isEmpty());
+        assertEquals(10, entities.size());
     }
 
     @Test

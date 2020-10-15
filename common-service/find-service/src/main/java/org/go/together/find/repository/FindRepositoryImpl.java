@@ -12,7 +12,6 @@ import org.go.together.find.repository.sql.SqlBuilderCreator;
 import org.go.together.find.repository.sql.WhereBuilderCreator;
 import org.go.together.repository.CustomRepository;
 import org.go.together.repository.builder.Sql;
-import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.repository.interfaces.SqlBuilder;
 import org.go.together.repository.interfaces.WhereBuilder;
@@ -20,7 +19,6 @@ import org.go.together.repository.interfaces.WhereBuilder;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepository {
     private final SqlBuilderCreator<E> sqlBuilderCreator;
@@ -50,15 +48,17 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
 
         Sql<E> sql = query.build();
         long countRows = sql.getCountRows();
+        System.out.println(sql.getQuery());
         PageDto pageDto = getPageDto(page, countRows);
         Collection<Object> result = getResult(page, sql);
         return Pair.of(pageDto, result);
     }
 
     private void enrichSort(SqlBuilder<E> query, PageDto page) {
-        Map<String, Direction> sortMappers = getSortMappers(page);
-        if (sortMappers != null && !sortMappers.isEmpty()) {
-            query.sort(sortMappers);
+        if (page != null) {
+            page.getSort().stream()
+                    .map(sortDto -> Map.entry(getSortField(sortDto.getField()), sortDto.getDirection()))
+                    .forEach(entry -> query.sort(entry.getKey(), entry.getValue()));
         }
     }
 
@@ -67,16 +67,6 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
             WhereBuilder<E> where = whereBuilderCreator.getWhereBuilder(filters);
             query.where(where);
         }
-    }
-
-    private Map<String, Direction> getSortMappers(PageDto pageDto) {
-        if (pageDto == null) {
-            return null;
-        }
-
-        return pageDto.getSort().stream()
-                .map(sortDto -> Map.entry(getSortField(sortDto.getField()), sortDto.getDirection()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private String getSortField(String field) {
