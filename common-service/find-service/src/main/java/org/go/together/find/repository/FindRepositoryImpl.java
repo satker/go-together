@@ -42,23 +42,31 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
     public Pair<PageDto, Collection<Object>> getResult(FormDto formDto,
                                                        Map<FieldDto, FilterDto> filters) {
         SqlBuilder<E> query = sqlBuilderCreator.getSqlBuilder(formDto.getMainIdField());
-        long countRows;
-        if (filters == null || filters.isEmpty()) {
-            countRows = query.build().getCountRows();
-        } else {
-            WhereBuilder<E> where = whereBuilderCreator.getWhereBuilder(filters);
-            query.where(where);
-            countRows = query.build().getCountRows();
-        }
+
+        enrichWhere(filters, query);
+
         PageDto page = formDto.getPage();
+        enrichSort(query, page);
+
+        Sql<E> sql = query.build();
+        long countRows = sql.getCountRows();
+        PageDto pageDto = getPageDto(page, countRows);
+        Collection<Object> result = getResult(page, sql);
+        return Pair.of(pageDto, result);
+    }
+
+    private void enrichSort(SqlBuilder<E> query, PageDto page) {
         Map<String, Direction> sortMappers = getSortMappers(page);
         if (sortMappers != null && !sortMappers.isEmpty()) {
             query.sort(sortMappers);
         }
-        PageDto pageDto = getPageDto(page, countRows);
-        System.out.println(query.build().getQuery());
-        Collection<Object> result = getResult(page, query);
-        return Pair.of(pageDto, result);
+    }
+
+    private void enrichWhere(Map<FieldDto, FilterDto> filters, SqlBuilder<E> query) {
+        if (filters != null && !filters.isEmpty()) {
+            WhereBuilder<E> where = whereBuilderCreator.getWhereBuilder(filters);
+            query.where(where);
+        }
     }
 
     private Map<String, Direction> getSortMappers(PageDto pageDto) {
@@ -67,21 +75,20 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
         }
 
         return pageDto.getSort().stream()
-                .map(sortDto -> Map.entry(correctedField(sortDto.getField()), sortDto.getDirection()))
+                .map(sortDto -> Map.entry(getSortField(sortDto.getField()), sortDto.getDirection()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    private String correctedField(String field) {
+    private String getSortField(String field) {
         FieldDto fieldDto = new FieldDto(field);
         CorrectedFieldDto correctedFieldDto = fieldPathCorrector.getCorrectedFieldDto(fieldDto, fieldMappers);
         return correctedFieldDto.getFieldDto().getLocalField();
     }
 
-    private Collection<Object> getResult(PageDto page, SqlBuilder<E> query) {
-        Sql<E> buildSql = query.build();
+    private Collection<Object> getResult(PageDto page, Sql<E> sql) {
         return Optional.ofNullable(page)
-                .map(pageDto -> buildSql.fetchWithPageableNotDefined(page.getPage() * page.getSize(), page.getSize()))
-                .orElse(buildSql.fetchAllNotDefined());
+                .map(pageDto -> sql.fetchWithPageableNotDefined(page.getPage() * page.getSize(), page.getSize()))
+                .orElse(sql.fetchAllNotDefined());
     }
 
     private PageDto getPageDto(PageDto page, long countRows) {

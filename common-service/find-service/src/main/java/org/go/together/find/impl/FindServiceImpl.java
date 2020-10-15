@@ -1,7 +1,6 @@
 package org.go.together.find.impl;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.go.together.exceptions.IncorrectDtoException;
 import org.go.together.find.FindService;
 import org.go.together.find.correction.CorrectorService;
 import org.go.together.find.correction.fieldpath.FieldPathCorrector;
@@ -10,17 +9,17 @@ import org.go.together.find.dto.FieldMapper;
 import org.go.together.find.dto.form.FilterDto;
 import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.dto.form.PageDto;
-import org.go.together.find.dto.utils.FindSqlOperator;
 import org.go.together.find.finders.Finder;
 import org.go.together.find.repository.FindRepository;
 import org.go.together.find.repository.FindRepositoryImpl;
-import org.go.together.find.utils.FindUtils;
 import org.go.together.repository.CustomRepository;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.*;
+
+import static org.go.together.find.utils.FindUtils.mergeFilters;
 
 public abstract class FindServiceImpl<E extends IdentifiedEntity> implements FindService<E> {
     protected CustomRepository<E> repository;
@@ -87,28 +86,5 @@ public abstract class FindServiceImpl<E extends IdentifiedEntity> implements Fin
         }
         Map<FieldDto, FilterDto> localFilters = correctorLocalFiltersService.getCorrectedFilters(formDto.getFilters(), mappingFields);
         return mergeFilters(resultRemoteFilters, localFilters);
-    }
-
-    private Map<FieldDto, FilterDto> mergeFilters(Map<FieldDto, Collection<Object>> remoteFilters,
-                                                  Map<FieldDto, FilterDto> localFilters) {
-        boolean isNotFound = remoteFilters.values().stream().anyMatch(Collection::isEmpty);
-        if (isNotFound) {
-            return null;
-        }
-        remoteFilters.forEach((key, values) -> {
-            FilterDto filterDto = new FilterDto(FindSqlOperator.IN,
-                    Collections.singleton(Collections.singletonMap(getCorrectFilterValuesKey(key), values)));
-            localFilters.remove(key);
-            localFilters.put(key, filterDto);
-        });
-
-        return localFilters;
-    }
-
-    private String getCorrectFilterValuesKey(FieldDto fieldDto) {
-        return Optional.ofNullable(fieldDto.getLocalField())
-                .map(FindUtils::getParsedFields)
-                .map(splitByDotString -> splitByDotString[splitByDotString.length - 1])
-                .orElseThrow(() -> new IncorrectDtoException("Incorrect search field"));
     }
 }

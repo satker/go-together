@@ -16,6 +16,7 @@ import org.go.together.find.dto.form.PageDto;
 import org.go.together.find.impl.FindServiceImpl;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.Dto;
+import org.go.together.interfaces.Identified;
 import org.go.together.interfaces.NotificationService;
 import org.go.together.mapper.Mapper;
 import org.go.together.repository.entities.IdentifiedEntity;
@@ -151,7 +152,7 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
                     && !values.isEmpty()
                     && values.iterator().next() instanceof IdentifiedEntity) {
                 values = values.stream()
-                        .map(value -> (E) value)
+                        .map(Identified::<E>cast)
                         .map(mapper::entityToDto)
                         .collect(Collectors.toList());
             }

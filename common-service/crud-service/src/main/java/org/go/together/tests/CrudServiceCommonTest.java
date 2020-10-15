@@ -11,6 +11,7 @@ import org.go.together.find.dto.form.FilterDto;
 import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.dto.utils.FindSqlOperator;
 import org.go.together.interfaces.Dto;
+import org.go.together.interfaces.Identified;
 import org.go.together.mapper.Mapper;
 import org.go.together.repository.CustomRepository;
 import org.go.together.repository.entities.IdentifiedEntity;
@@ -123,7 +124,7 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
 
                 assertEquals(1, objectResponseDto.getResult().size());
                 objectResponseDto.getResult().stream()
-                        .map(foundDto -> (D) foundDto)
+                        .map(Identified::<D>cast)
                         .forEach(foundDto -> checkDtos(foundDto, dto, CrudOperation.CREATE));
             }
         }

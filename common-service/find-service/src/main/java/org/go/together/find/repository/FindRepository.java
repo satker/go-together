@@ -10,6 +10,5 @@ import java.util.Collection;
 import java.util.Map;
 
 public interface FindRepository {
-    Pair<PageDto, Collection<Object>> getResult(FormDto formDto,
-                                                Map<FieldDto, FilterDto> filters);
+    Pair<PageDto, Collection<Object>> getResult(FormDto formDto, Map<FieldDto, FilterDto> filters);
 }
