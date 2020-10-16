@@ -10,11 +10,10 @@ import org.go.together.repository.interfaces.WhereBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import static org.go.together.repository.builder.utils.BuilderUtils.createLeftJoin;
 import static org.go.together.repository.builder.utils.BuilderUtils.getEntityLink;
 
 public class Sql<E extends IdentifiedEntity> implements Query<E> {
@@ -84,15 +83,14 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
         private EntityManager entityManager;
         private String selectRow;
         private String havingCondition;
-        private StringBuilder join;
+        private final Map<String, String> joinMap;
         private final StringBuilder query;
-        private final StringBuilder sort;
-        private Map<String, Direction> sortMap = new HashMap<>();
+        private final Map<String, Direction> sortMap = new HashMap<>();
+        private final Map<String, Direction> currentFixedSortMap = new HashMap<>();
 
         private SqlBuilderImpl() {
-            this.join = new StringBuilder();
+            this.joinMap = new HashMap<>();
             this.query = new StringBuilder();
-            this.sort = new StringBuilder();
         }
 
         public SqlBuilderImpl<B> clazz(Class<B> clazz) {
@@ -127,7 +125,7 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
 
         public SqlBuilderImpl<B> where(WhereBuilder<B> where) {
             Where<B> buildWhere = where.build();
-            join.append(buildWhere.getJoin());
+            joinMap.putAll(buildWhere.getJoin());
             query.append(buildWhere.getWhereQuery());
             return this;
         }
@@ -138,9 +136,9 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
         }
 
         private void enrichBySort() {
-            Sort<B> sortDto = Sort.<B>builder().clazz(clazz).join(join).sort(sortMap).build();
-            sort.append(sortDto.getSortQuery());
-            join = new StringBuilder(sortDto.getJoin());
+            Sort<B> sortDto = Sort.<B>builder().clazz(clazz).join(joinMap).sort(sortMap).build();
+            currentFixedSortMap.putAll(sortDto.getSortMap());
+            joinMap.putAll(sortDto.getJoin());
         }
 
         private String getCountQuery() {
@@ -151,7 +149,7 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
                     .append(StringUtils.SPACE)
                     .append(getEntityLink(clazz))
                     .append(StringUtils.SPACE)
-                    .append((StringUtils.isNotBlank(join) ? join : StringUtils.EMPTY))
+                    .append(getJoinQuery())
                     .append(StringUtils.isNotBlank(this.query) ? this.query : StringUtils.EMPTY);
             if (havingCondition != null && StringUtils.isNotBlank(selectRow)) {
                 query.append(havingCondition);
@@ -175,16 +173,14 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
             if (StringUtils.isNotBlank(havingCondition)) {
                 result.append(havingCondition);
             }
-            if (StringUtils.isNotBlank(sort)) {
-                result.append(sort);
-            }
+            result.append(getSortQuery());
             return result.toString();
         }
 
         private String getFirstQueryPart() {
             final String SELECT = "select ";
-            if (StringUtils.isNotEmpty(join)) {
-                return SELECT + "distinct " + selectRow + from + join;
+            if (!joinMap.isEmpty()) {
+                return SELECT + "distinct " + selectRow + from + getJoinQueryWithOrderBy();
             } else {
                 String result = StringUtils.EMPTY;
                 if (!selectRow.equals(getEntityLink(clazz))) {
@@ -192,6 +188,30 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
                 }
                 return result.concat(from);
             }
+        }
+
+        private String getJoinQueryWithOrderBy() {
+            Set<String> searchAliasTableNames = currentFixedSortMap.keySet().stream()
+                    .map(searchField -> searchField.split("\\.")[0])
+                    .collect(Collectors.toSet());
+            return joinMap.entrySet().stream()
+                    .map(join -> createLeftJoin(join, clazz, searchAliasTableNames.contains(join.getValue())))
+                    .collect(Collectors.joining());
+        }
+
+        private String getJoinQuery() {
+            return joinMap.entrySet().stream()
+                    .map(join -> createLeftJoin(join, clazz, false))
+                    .collect(Collectors.joining());
+        }
+
+        private String getSortQuery() {
+            if (currentFixedSortMap.isEmpty()) {
+                return StringUtils.EMPTY;
+            }
+            return currentFixedSortMap.entrySet().stream()
+                    .map(entry -> entry.getKey() + StringUtils.SPACE + entry.getValue().toString())
+                    .collect(Collectors.joining(", ", " ORDER BY ", StringUtils.EMPTY));
         }
     }
 }

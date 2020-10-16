@@ -6,17 +6,17 @@ import org.go.together.repository.interfaces.Query;
 import org.go.together.repository.interfaces.WhereBuilder;
 import org.go.together.repository.sql.SqlOperator;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import static org.go.together.repository.builder.utils.BuilderUtils.createLeftJoin;
 import static org.go.together.repository.sql.ObjectStringParser.parseToString;
 
 public class Where<E extends IdentifiedEntity> implements Query<E> {
-    private final StringBuilder join;
+    private final Map<String, String> joinMap;
     private final StringBuilder whereQuery;
 
-    private Where(StringBuilder join, StringBuilder whereQuery) {
-        this.join = join;
+    private Where(Map<String, String> joinMap, StringBuilder whereQuery) {
+        this.joinMap = joinMap;
         this.whereQuery = whereQuery;
     }
 
@@ -28,8 +28,8 @@ public class Where<E extends IdentifiedEntity> implements Query<E> {
         return whereQuery;
     }
 
-    public StringBuilder getJoin() {
-        return join;
+    public Map<String, String> getJoin() {
+        return joinMap;
     }
 
     public static class WhereBuilderImpl<B extends IdentifiedEntity>
@@ -37,18 +37,16 @@ public class Where<E extends IdentifiedEntity> implements Query<E> {
         private static final String AND = " and ";
         private static final String OR = " or ";
 
-        private Class<B> clazz;
-        private final StringBuilder join;
+        private final Map<String, String> joinMap;
         private StringBuilder whereQuery;
         private Join<B> joinBuilder;
 
         private WhereBuilderImpl() {
-            this.join = new StringBuilder();
+            this.joinMap = new HashMap<>();
             this.whereQuery = new StringBuilder(" WHERE ");
         }
 
         public WhereBuilderImpl<B> clazz(Class<B> clazz) {
-            this.clazz = clazz;
             this.joinBuilder = Join.<B>builder().clazz(clazz).build();
             return this;
         }
@@ -60,8 +58,8 @@ public class Where<E extends IdentifiedEntity> implements Query<E> {
             return this;
         }
 
-        public void addJoin(StringBuilder join) {
-            this.join.append(join);
+        public void addJoin(Map<String, String> joinMap) {
+            this.joinMap.putAll(joinMap);
         }
 
         public WhereBuilder<B> condition(String field, SqlOperator sqlOperator, Object value) {
@@ -72,14 +70,7 @@ public class Where<E extends IdentifiedEntity> implements Query<E> {
         }
 
         private String getFieldWithJoin(String field) {
-            return joinBuilder.getFieldWithJoin(field, this::enrichJoin);
-        }
-
-        private void enrichJoin(Map.Entry<String, String> joinTableName) {
-            String leftJoin = createLeftJoin(joinTableName, clazz);
-            if (!this.join.toString().contains(leftJoin)) {
-                this.join.append(leftJoin);
-            }
+            return joinBuilder.getFieldWithJoin(field);
         }
 
         public WhereBuilderImpl<B> group(WhereBuilder<B> where) {
@@ -112,7 +103,8 @@ public class Where<E extends IdentifiedEntity> implements Query<E> {
         }
 
         public Where<B> build() {
-            return new Where<>(join, whereQuery);
+            joinMap.putAll(joinBuilder.getJoinTables());
+            return new Where<>(joinMap, whereQuery);
         }
     }
 }

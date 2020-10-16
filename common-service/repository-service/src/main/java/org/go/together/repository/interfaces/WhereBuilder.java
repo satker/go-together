@@ -4,8 +4,10 @@ import org.go.together.repository.builder.Where;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.repository.sql.SqlOperator;
 
+import java.util.Map;
+
 public interface WhereBuilder<E extends IdentifiedEntity> extends QueryBuilder<E> {
-    void addJoin(StringBuilder join);
+    void addJoin(Map<String, String> joinMap);
 
     WhereBuilder<E> condition(String field, SqlOperator sqlOperator, Object value);
 

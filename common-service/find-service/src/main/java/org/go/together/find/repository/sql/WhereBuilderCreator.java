@@ -10,6 +10,7 @@ import org.go.together.repository.CustomRepository;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.repository.interfaces.WhereBuilder;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -18,11 +19,11 @@ import static org.go.together.find.utils.FindUtils.getSingleGroupFields;
 
 public class WhereBuilderCreator<E extends IdentifiedEntity> {
     private final CustomRepository<E> repository;
-    private final StringBuilder join;
+    private final Map<String, String> joinMap;
 
     public WhereBuilderCreator(CustomRepository<E> repository) {
         this.repository = repository;
-        this.join = new StringBuilder();
+        this.joinMap = new HashMap<>();
     }
 
     public WhereBuilder<E> getWhereBuilder(Map<FieldDto, FilterDto> filters) {
@@ -43,15 +44,15 @@ public class WhereBuilderCreator<E extends IdentifiedEntity> {
                         field = suffix + field;
                     }
                     addCondition(filterValues, filterType, groupWhere, field);
-                    join.append(groupWhere.build().getJoin());
+                    joinMap.putAll(groupWhere.build().getJoin());
                     where.group(groupWhere).and();
                 });
             }
         });
 
         where.cutLastAnd();
-        if (StringUtils.isNotBlank(join)) {
-            where.addJoin(join);
+        if (!joinMap.isEmpty()) {
+            where.addJoin(joinMap);
         }
         return where;
     }
@@ -73,16 +74,10 @@ public class WhereBuilderCreator<E extends IdentifiedEntity> {
                 addDelimiter(key, whereAdd, field);
             });
             if (filterDto.getValues().size() > 1) {
-                StringBuilder buildJoin = innerGroup.build().getJoin();
-                if (!this.join.toString().contains(buildJoin)) {
-                    this.join.append(buildJoin);
-                }
+                this.joinMap.putAll(innerGroup.build().getJoin());
                 groupWhere.group(innerGroup).or();
             } else {
-                StringBuilder buildJoin = groupWhere.build().getJoin();
-                if (!this.join.toString().contains(buildJoin)) {
-                    this.join.append(buildJoin);
-                }
+                this.joinMap.putAll(groupWhere.build().getJoin());
             }
         });
         groupWhere.cutLastOr();

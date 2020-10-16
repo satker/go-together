@@ -21,8 +21,12 @@ public class BuilderUtils {
         return getEntityLink(clazz) + "." + field;
     }
 
-    public static <E extends IdentifiedEntity> String createLeftJoin(Map.Entry<String, String> joinTableName, Class<E> clazz) {
-        return " left join " + BuilderUtils.getEntityField(joinTableName.getKey(), clazz) +
+    public static <E extends IdentifiedEntity> String createLeftJoin(Map.Entry<String, String> joinTableName,
+                                                                     Class<E> clazz,
+                                                                     boolean isNeedFetch) {
+        final String LEFT_JOIN = " left join ";
+        String fetchJoin = isNeedFetch ? "fetch " : StringUtils.EMPTY;
+        return LEFT_JOIN + fetchJoin + BuilderUtils.getEntityField(joinTableName.getKey(), clazz) +
                 StringUtils.SPACE + joinTableName.getValue();
     }
 }

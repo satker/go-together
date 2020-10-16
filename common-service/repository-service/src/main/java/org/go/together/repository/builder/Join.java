@@ -14,16 +14,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import static org.go.together.repository.builder.utils.BuilderUtils.getEntityField;
 
 public class Join<E extends IdentifiedEntity> implements Query<E> {
     private final Map<String, String> joinTables;
+    private final Map<String, String> currentJoinTables;
     private final Class<E> clazz;
 
     private Join(Map<String, String> joinTables, Class<E> clazz) {
         this.joinTables = joinTables;
+        this.currentJoinTables = new HashMap<>();
         this.clazz = clazz;
     }
 
@@ -31,9 +32,9 @@ public class Join<E extends IdentifiedEntity> implements Query<E> {
         return new JoinBuilderImpl<>();
     }
 
-    public String getFieldWithJoin(String field, Consumer<Map.Entry<String, String>> enrichFunction) {
+    public String getFieldWithJoin(String field) {
         return getJoin(field).map(entry -> {
-            enrichFunction.accept(entry);
+            currentJoinTables.put(entry.getKey(), entry.getValue());
             return field.replaceFirst(entry.getKey(), entry.getValue());
         }).orElse(getEntityField(field, clazz));
     }
@@ -42,6 +43,10 @@ public class Join<E extends IdentifiedEntity> implements Query<E> {
         return joinTables.entrySet().stream()
                 .filter(joinName -> field.startsWith(joinName.getKey()))
                 .findFirst();
+    }
+
+    public Map<String, String> getJoinTables() {
+        return currentJoinTables;
     }
 
     public static class JoinBuilderImpl<B extends IdentifiedEntity> implements JoinBuilder<B> {
