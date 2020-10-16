@@ -25,7 +25,7 @@ public class MessageRepositoryImpl extends CustomRepositoryImpl<Message> impleme
     public Collection<Message> findReviewsByEventId(UUID recipientId, MessageType messageType) {
         return createQuery()
                 .where(createWhere()
-                        .group(createGroup().condition("recipientId", SqlOperator.EQUAL, recipientId)
+                        .group(createWhere().condition("recipientId", SqlOperator.EQUAL, recipientId)
                                 .or()
                                 .condition("authorId", SqlOperator.EQUAL, recipientId))
                         .and()

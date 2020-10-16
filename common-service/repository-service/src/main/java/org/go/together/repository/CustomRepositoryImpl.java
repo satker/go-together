@@ -84,9 +84,4 @@ public abstract class CustomRepositoryImpl<E extends IdentifiedEntity> implement
     public WhereBuilder<E> createWhere() {
         return Where.<E>builder().clazz(clazz);
     }
-
-    @Override
-    public WhereBuilder<E> createGroup() {
-        return Where.<E>builder().clazz(clazz).isGroup(true);
-    }
 }

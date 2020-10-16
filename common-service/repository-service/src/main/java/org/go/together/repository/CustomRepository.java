@@ -28,6 +28,4 @@ public interface CustomRepository<E extends IdentifiedEntity> {
     SqlBuilder<E> createQuery(String selectRow, Integer havingCondition);
 
     WhereBuilder<E> createWhere();
-
-    WhereBuilder<E> createGroup();
 }

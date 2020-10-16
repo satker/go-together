@@ -126,6 +126,9 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
         public SqlBuilderImpl<B> where(WhereBuilder<B> where) {
             Where<B> buildWhere = where.build();
             joinMap.putAll(buildWhere.getJoin());
+            if (StringUtils.isNotBlank(query)) {
+                query.append(" and ");
+            }
             query.append(buildWhere.getWhereQuery());
             return this;
         }
@@ -150,7 +153,7 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
                     .append(getEntityLink(clazz))
                     .append(StringUtils.SPACE)
                     .append(getJoinQuery())
-                    .append(StringUtils.isNotBlank(this.query) ? this.query : StringUtils.EMPTY);
+                    .append(getWhereQuery());
             if (havingCondition != null && StringUtils.isNotBlank(selectRow)) {
                 query.append(havingCondition);
             }
@@ -167,14 +170,19 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
         private String getQuery() {
             StringBuilder result = new StringBuilder();
             result.append(getFirstQueryPart());
-            if (StringUtils.isNotBlank(query)) {
-                result.append(query);
-            }
+            result.append(getWhereQuery());
             if (StringUtils.isNotBlank(havingCondition)) {
                 result.append(havingCondition);
             }
             result.append(getSortQuery());
             return result.toString();
+        }
+
+        private String getWhereQuery() {
+            if (StringUtils.isNotBlank(query)) {
+                return " WHERE " + query;
+            }
+            return StringUtils.EMPTY;
         }
 
         private String getFirstQueryPart() {

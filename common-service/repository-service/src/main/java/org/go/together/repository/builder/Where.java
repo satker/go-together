@@ -1,6 +1,5 @@
 package org.go.together.repository.builder;
 
-import org.apache.commons.lang3.StringUtils;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.repository.interfaces.Query;
 import org.go.together.repository.interfaces.WhereBuilder;
@@ -37,24 +36,12 @@ public class Where<E extends IdentifiedEntity> implements Query<E> {
         private static final String AND = " and ";
         private static final String OR = " or ";
 
-        private final Map<String, String> joinMap;
-        private StringBuilder whereQuery;
+        private final Map<String, String> joinMap = new HashMap<>();
+        private final StringBuilder whereQuery = new StringBuilder();
         private Join<B> joinBuilder;
-
-        private WhereBuilderImpl() {
-            this.joinMap = new HashMap<>();
-            this.whereQuery = new StringBuilder(" WHERE ");
-        }
 
         public WhereBuilderImpl<B> clazz(Class<B> clazz) {
             this.joinBuilder = Join.<B>builder().clazz(clazz).build();
-            return this;
-        }
-
-        public WhereBuilderImpl<B> isGroup(boolean isGroup) {
-            if (isGroup) {
-                this.whereQuery = new StringBuilder(StringUtils.EMPTY);
-            }
             return this;
         }
 

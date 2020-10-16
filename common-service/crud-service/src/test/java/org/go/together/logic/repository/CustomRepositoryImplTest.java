@@ -171,13 +171,12 @@ class CustomRepositoryImplTest {
 
     @Test
     void createQueryMultpleResultsAndSort() {
-        String expectedSql = "select distinct te FROM TestEntity te left join te.manyJoinEntities te_manyJoinEntities left join fetch te.joinTestEntities te_joinTestEntities " +
+        String expectedSql = "select distinct te FROM TestEntity te left join fetch te.joinTestEntities te_joinTestEntities left join te.manyJoinEntities te_manyJoinEntities " +
                 "WHERE te_joinTestEntities.name like '%join%' and te_manyJoinEntities.name like '%many%' ORDER BY te.name DESC, te.date ASC, te_joinTestEntities.name DESC";
 
         Sql<TestEntity> sql = testRepository.createQuery()
-                .where(testRepository.createWhere().condition("joinTestEntities.name", SqlOperator.LIKE, "join")
-                        .and()
-                        .condition("manyJoinEntities.name", SqlOperator.LIKE, "many"))
+                .where(testRepository.createWhere().condition("joinTestEntities.name", SqlOperator.LIKE, "join"))
+                .where(testRepository.createWhere().condition("manyJoinEntities.name", SqlOperator.LIKE, "many"))
                 .sort("date", Direction.ASC)
                 .sort("name", Direction.DESC)
                 .sort("joinTestEntities.name", Direction.DESC)
