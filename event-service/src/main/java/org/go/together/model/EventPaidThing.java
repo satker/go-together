@@ -1,16 +1,18 @@
 package org.go.together.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.go.together.dto.CashCategory;
-import org.go.together.interfaces.IdentifiedEntity;
+import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.*;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "event_paid_thing", schema = "event_service")
-public class EventPaidThing implements IdentifiedEntity {
+public class EventPaidThing extends IdentifiedEntity {
     @Id
     @GeneratedValue
     @Column(columnDefinition = "uuid")

@@ -1,5 +1,15 @@
 package org.go.together.find.utils;
 
+import org.go.together.exceptions.IncorrectDtoException;
+import org.go.together.find.dto.FieldDto;
+import org.go.together.find.dto.form.FilterDto;
+import org.go.together.find.dto.utils.FindSqlOperator;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+
 public class FindUtils {
     public static final String DELIMITER = "\\?";
     public static final String HAVING_COUNT = ":";
@@ -42,5 +52,28 @@ public class FindUtils {
             return delimiter;
         }
         return null;
+    }
+
+    public static Map<FieldDto, FilterDto> mergeFilters(Map<FieldDto, Collection<Object>> remoteFilters,
+                                                        Map<FieldDto, FilterDto> localFilters) {
+        boolean isNotFound = remoteFilters.values().stream().anyMatch(Collection::isEmpty);
+        if (isNotFound) {
+            return null;
+        }
+        remoteFilters.forEach((key, values) -> {
+            FilterDto filterDto = new FilterDto(FindSqlOperator.IN,
+                    Collections.singleton(Collections.singletonMap(getCorrectFilterValuesKey(key), values)));
+            localFilters.remove(key);
+            localFilters.put(key, filterDto);
+        });
+
+        return localFilters;
+    }
+
+    private static String getCorrectFilterValuesKey(FieldDto fieldDto) {
+        return Optional.ofNullable(fieldDto.getLocalField())
+                .map(FindUtils::getParsedFields)
+                .map(splitByDotString -> splitByDotString[splitByDotString.length - 1])
+                .orElseThrow(() -> new IncorrectDtoException("Incorrect search field"));
     }
 }

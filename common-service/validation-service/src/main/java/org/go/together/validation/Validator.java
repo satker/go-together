@@ -12,16 +12,16 @@ import org.go.together.validation.utils.ValidatorUtils;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
+import java.util.function.Function;
 
 public abstract class Validator<D extends Dto> {
-    public Map<String, String> STRINGS_FOR_BLANK_CHECK = new HashMap<>();
-    public Map<String, Collection<SimpleDto>> SIMPLE_DTO_CORRECT_CHECK = new HashMap<>();
-    public Map<String, Number> NUMBER_CORRECT_ZERO_OR_NEGATIVE_CHECK = new HashMap<>();
-    public Map<String, Collection<?>> COLLECTION_CORRECT_CHECK = new HashMap<>();
+    public Map<String, Function<D, String>> STRINGS_FOR_BLANK_CHECK = new HashMap<>();
+    public Map<String, Function<D, SimpleDto>> SIMPLE_DTO_CORRECT_CHECK = new HashMap<>();
+    public Map<String, Function<D, Number>> NUMBER_CORRECT_ZERO_OR_NEGATIVE_CHECK = new HashMap<>();
+    public Map<String, Function<D, Collection<?>>> COLLECTION_CORRECT_CHECK = new HashMap<>();
     public Map<String, StringRegexDto> REGEX_STRING_CORRECT_CHECK = new HashMap<>();
     public Map<String, DateIntervalDto> DATES_CORRECT_CHECK = new HashMap<>();
-    public Map<String, Optional<Object>> OBJECT_NULL_CHECK = new HashMap<>();
+    public Map<String, Function<D, Object>> OBJECT_NULL_CHECK = new HashMap<>();
     public Map<String, NumberIntervalDto> NUMBER_INTERVAL_CORRECT_CHECK = new HashMap<>();
 
     public String validate(D dto, CrudOperation crudOperation) {
@@ -31,13 +31,13 @@ public abstract class Validator<D extends Dto> {
         getMapsForCheck(dto);
         StringBuilder errors = new StringBuilder();
 
-        errors.append(ValidatorUtils.checkEmptyString(STRINGS_FOR_BLANK_CHECK))
-                .append(ValidatorUtils.checkEmptySimpleDto(SIMPLE_DTO_CORRECT_CHECK))
-                .append(ValidatorUtils.checkZeroOrNegativeNumber(NUMBER_CORRECT_ZERO_OR_NEGATIVE_CHECK))
-                .append(ValidatorUtils.checkCorrectCollection(COLLECTION_CORRECT_CHECK))
+        errors.append(ValidatorUtils.checkEmptyString(STRINGS_FOR_BLANK_CHECK, dto))
+                .append(ValidatorUtils.checkEmptySimpleDto(SIMPLE_DTO_CORRECT_CHECK, dto))
+                .append(ValidatorUtils.checkZeroOrNegativeNumber(NUMBER_CORRECT_ZERO_OR_NEGATIVE_CHECK, dto))
+                .append(ValidatorUtils.checkCorrectCollection(COLLECTION_CORRECT_CHECK, dto))
                 .append(ValidatorUtils.checkStringByRegex(REGEX_STRING_CORRECT_CHECK))
                 .append(ValidatorUtils.checkDateIntervalIsCorrect(DATES_CORRECT_CHECK))
-                .append(ValidatorUtils.checkNullObject(OBJECT_NULL_CHECK))
+                .append(ValidatorUtils.checkNullObject(OBJECT_NULL_CHECK, dto))
                 .append(ValidatorUtils.checkNumberIntervalIsCorrect(NUMBER_INTERVAL_CORRECT_CHECK));
         if (StringUtils.isBlank(errors)) {
             errors.append(commonValidation(dto, crudOperation));

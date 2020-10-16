@@ -5,7 +5,6 @@ import org.go.together.context.RepositoryContext;
 import org.go.together.dto.ContentDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.model.Photo;
-import org.go.together.repository.PhotoRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,9 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
-    @Autowired
-    private PhotoRepository photoRepository;
-
     @Value("${photo.store.path}")
     private String storePath;
 
@@ -38,7 +34,7 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
     @BeforeEach
     public void init() {
         super.init();
-        PhotoDto photoDto = null;
+        PhotoDto photoDto;
         try {
             photoDto = getPhotoDto("photos/1.jpg");
         } catch (IOException e) {
@@ -54,14 +50,14 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
         } catch (IOException e) {
             throw new RuntimeException("Cannot get file in content-service");
         }
-        photoRepository.findAll().forEach(photoRepository::delete);
+        repository.findAll().forEach(repository::delete);
     }
 
     @Test
     void saveOrUpdatePhotosWithOldPhotos() throws IOException {
         PhotoDto photoDto2 = getPhotoDto("photos/2.jpg");
         PhotoDto photoDto3 = getPhotoDto("photos/3.jpg");
-        Set<Photo> photoRepositoryAll = Set.copyOf(photoRepository.findAll());
+        Set<Photo> photoRepositoryAll = Set.copyOf(repository.findAll());
         Set<Photo> result = photoService.savePhotos(Set.of(photoDto2, photoDto3), photoRepositoryAll);
 
         List<String> files = checkSavedPhotosToDirectory(result);
@@ -108,7 +104,7 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
                 .collect(Collectors.toList());
         assertEquals(2, files.size());
 
-        Set<Photo> repositoryAll = Set.copyOf(photoRepository.findAll());
+        Set<Photo> repositoryAll = Set.copyOf(repository.findAll());
 
         repositoryAll.stream().map(Photo::getId).forEach(photoService::delete);
 

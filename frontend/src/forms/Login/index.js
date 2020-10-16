@@ -15,10 +15,10 @@ import {CSRF_TOKEN} from "App/Context/constants";
 import {getLoginId, postLogin, setCsrfToken, setUserId} from "./actions";
 import './style.css'
 
-const FormLogin = ({
-                       formId, postLogin, handleMenuClose, loginId, getLoginId,
-                       setUserId, setCsrfToken, loginToken
-                   }) => {
+const Login = ({
+                   formId, postLogin, handleMenuClose, loginId, getLoginId,
+                   setUserId, setCsrfToken, loginToken
+               }) => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
 
@@ -86,7 +86,7 @@ const FormLogin = ({
     </ContainerColumn>;
 };
 
-FormLogin.propTypes = {
+Login.propTypes = {
     formId: PropTypes.string.isRequired,
     postLogin: PropTypes.func.isRequired,
     handleMenuClose: PropTypes.func.isRequired
@@ -98,4 +98,4 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps,
-    {postLogin, getLoginId, setUserId, setCsrfToken})(FormLogin);
+    {postLogin, getLoginId, setUserId, setCsrfToken})(Login);

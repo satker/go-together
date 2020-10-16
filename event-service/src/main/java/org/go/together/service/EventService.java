@@ -10,7 +10,7 @@ import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Event;
-import org.go.together.repository.EventRepository;
+import org.go.together.repository.interfaces.EventRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -76,7 +76,7 @@ public class EventService extends CrudServiceImpl<EventDto, Event> {
         if (StringUtils.isNotBlank(name)) {
             events = ((EventRepository) repository).findEventsByNameLike(name, 0, 5);
         } else {
-            events = repository.createQuery().fetchWithPageable(0, 5);
+            events = repository.createQuery().build().fetchWithPageable(0, 5);
         }
         return events.stream()
                 .map(event -> new SimpleDto(event.getId().toString(), event.getName()))

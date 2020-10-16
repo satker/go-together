@@ -9,8 +9,8 @@ import EventLikes from "forms/utils/components/Event/EventLikes";
 import {connect} from "App/Context";
 
 const ItemEvent = ({event, onDelete, userId, eventIds}) => <Card>
-    <CardActionArea href={'/events/' + event.id}>
         {event.author.id === userId && <DeleteIcon onDelete={() => onDelete(event.id)}/>}
+    <CardActionArea href={'/events/' + event.id}>
         <CardMedia
             component="img"
             height="250"
@@ -31,7 +31,7 @@ const ItemEvent = ({event, onDelete, userId, eventIds}) => <Card>
             <Typography>With {event.peopleCount} friends</Typography>
             <Typography>Live by {event.housingType}</Typography>
         </CardContent>
-        </CardActionArea>
+    </CardActionArea>
         <CardActions>
             {userId && userId !== event.author.id &&
             <EventLikes eventId={event.id} eventIds={eventIds}/>}

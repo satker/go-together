@@ -1,13 +1,13 @@
 package org.go.together.find.correction.field;
 
 import org.go.together.exceptions.IncorrectFindObject;
-import org.go.together.find.correction.FilterCorrector;
+import org.go.together.find.correction.field.dto.CorrectedFieldDto;
+import org.go.together.find.correction.fieldpath.FieldPathCorrector;
 import org.go.together.find.dto.FieldDto;
 import org.go.together.find.dto.FieldMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,14 +20,15 @@ import static org.go.together.find.utils.FindUtils.getSingleGroupFields;
 
 @Component
 public class FieldCorrectorService implements FieldCorrector {
-    private FilterCorrector filterCorrector;
+    private FieldPathCorrector fieldPathCorrector;
 
     @Autowired
-    public void setFilterCorrector(FilterCorrector filterCorrector) {
-        this.filterCorrector = filterCorrector;
+    public void setFieldPathCorrector(FieldPathCorrector fieldPathCorrector) {
+        this.fieldPathCorrector = fieldPathCorrector;
     }
 
-    public CorrectedFieldDto correct(Map<String, FieldMapper> fieldMappers, String filterField) {
+    public CorrectedFieldDto correct(Map<String, FieldMapper> fieldMappers, FieldDto fieldDto) {
+        String filterField = fieldDto.getFilterFields();
         Map<String, String> oldNewFilterField = Stream.of(getSingleGroupFields(filterField))
                 .collect(Collectors.toMap(Function.identity(), Function.identity()));
         Map<String, Class> oldValueClass = new HashMap<>();
@@ -47,11 +48,11 @@ public class FieldCorrectorService implements FieldCorrector {
         if (splitByDotString.length > 1 && fieldMappers.containsKey(splitByDotString[0])) {
             Map.Entry<String, String> correctedComplexGroupFilterField =
                     getCorrectedComplexGroupFilterField(fieldMappers.get(splitByDotString[0]), searchField, splitByDotString);
-            return new AbstractMap.SimpleEntry<>(correctedComplexGroupFilterField.getKey(), correctedComplexGroupFilterField.getValue());
+            return Map.entry(correctedComplexGroupFilterField.getKey(), correctedComplexGroupFilterField.getValue());
         } else if (fieldMappers.containsKey(searchField)) {
             FieldMapper fieldMapper = fieldMappers.get(searchField);
             oldValueClass.put(searchField, fieldMapper.getFieldClass());
-            return new AbstractMap.SimpleEntry<>(searchField, fieldMapper.getCurrentServiceField());
+            return Map.entry(searchField, fieldMapper.getCurrentServiceField());
         } else {
             throw new IncorrectFindObject("Field " + searchField + " is unavailable for search.");
         }
@@ -70,7 +71,7 @@ public class FieldCorrectorService implements FieldCorrector {
                                                                           String[] splitByDotString) {
         if (fieldMapper.getInnerService() != null) {
             String changedField = getCorrectedComplexField(splitByDotString, fieldMapper);
-            return new AbstractMap.SimpleEntry<>(oldKey, changedField);
+            return Map.entry(oldKey, changedField);
         } else {
             throw new IncorrectFindObject("Field " + oldKey + " is unavailable for search.");
         }
@@ -81,7 +82,7 @@ public class FieldCorrectorService implements FieldCorrector {
         List<String> fieldsForChange = List.of(splitByDotString).subList(1, splitByDotString.length);
         FieldDto fieldDto = new FieldDto(String.join(".", fieldsForChange));
         Map<String, FieldMapper> innerServiceMappingFields = fieldMapper.getInnerService().getMappingFields();
-        CorrectedFieldDto updatedFieldDto = filterCorrector.getCorrectedFieldDto(fieldDto, innerServiceMappingFields);
+        CorrectedFieldDto updatedFieldDto = fieldPathCorrector.getCorrectedFieldDto(fieldDto, innerServiceMappingFields);
         return changedField + "." + updatedFieldDto.getFieldDto().getLocalField();
     }
 }

@@ -7,10 +7,6 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 const AccountButton = ({menuId}) => {
     return <IconButton
         key={menuId + '_account'}
-        edge="end"
-        aria-label="account of current user"
-        aria-controls={menuId}
-        aria-haspopup="true"
         onClick={() => navigate('/home', true)}
         color="inherit"
     >

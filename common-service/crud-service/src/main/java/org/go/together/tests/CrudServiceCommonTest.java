@@ -4,15 +4,17 @@ import org.go.together.base.CrudService;
 import org.go.together.dto.IdDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
+import org.go.together.find.FindService;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.find.dto.ResponseDto;
 import org.go.together.find.dto.form.FilterDto;
 import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.dto.utils.FindSqlOperator;
 import org.go.together.interfaces.Dto;
-import org.go.together.interfaces.IdentifiedEntity;
+import org.go.together.interfaces.Identified;
 import org.go.together.mapper.Mapper;
 import org.go.together.repository.CustomRepository;
+import org.go.together.repository.entities.IdentifiedEntity;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +41,9 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
 
     @Autowired
     protected CrudService<D> crudService;
+
+    @Autowired
+    protected FindService<E> findService;
 
     @Autowired
     protected CustomRepository<E> repository;
@@ -108,18 +113,18 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
         E savedEntity = repository.findByIdOrThrow(createdDto.getId());
 
 
-        Map<String, FieldMapper> mappingFields = crudService.getMappingFields();
+        Map<String, FieldMapper> mappingFields = findService.getMappingFields();
         if (mappingFields != null) {
             Map<String, FilterDto> findMap = createFilter(savedEntity, mappingFields);
             if (findMap.size() != 0) {
                 FormDto formDto = new FormDto();
                 formDto.setFilters(findMap);
-                formDto.setMainIdField(crudService.getServiceName());
-                ResponseDto<Object> objectResponseDto = crudService.find(formDto);
+                formDto.setMainIdField(findService.getServiceName());
+                ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
                 assertEquals(1, objectResponseDto.getResult().size());
                 objectResponseDto.getResult().stream()
-                        .map(foundDto -> (D) foundDto)
+                        .map(Identified::<D>cast)
                         .forEach(foundDto -> checkDtos(foundDto, dto, CrudOperation.CREATE));
             }
         }

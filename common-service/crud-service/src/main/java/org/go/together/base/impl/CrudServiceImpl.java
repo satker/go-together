@@ -16,9 +16,10 @@ import org.go.together.find.dto.form.PageDto;
 import org.go.together.find.impl.FindServiceImpl;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.Dto;
-import org.go.together.interfaces.IdentifiedEntity;
+import org.go.together.interfaces.Identified;
 import org.go.together.interfaces.NotificationService;
 import org.go.together.mapper.Mapper;
+import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,16 +89,16 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
         if (StringUtils.isBlank(validate)) {
             E entityById = repository.findByIdOrThrow(dto.getId());
             D entityToDto = mapper.entityToDto(entityById);
-            E entity = mapper.dtoToEntity(dto);
+            E mappedEntity = mapper.dtoToEntity(dto);
             E createdEntity;
             try {
-                E enrichedEntity = enrichEntity(entity, dto, crudOperation);
+                E enrichedEntity = enrichEntity(mappedEntity, dto, crudOperation);
                 createdEntity = repository.save(enrichedEntity);
             } catch (Exception e) {
                 log.error("Cannot update " + getServiceName() + ": " + e.getMessage());
-                log.error("Try rollback update " + getServiceName() + " id = " + entity.getId());
+                log.error("Try rollback update " + getServiceName() + " id = " + mappedEntity.getId());
                 enrichEntity(entityById, entityToDto, crudOperation);
-                log.error("Rollback successful update " + getServiceName() + " id = " + entity.getId());
+                log.error("Rollback successful update " + getServiceName() + " id = " + mappedEntity.getId());
                 throw new ApplicationException(e);
             }
             if (dto instanceof ComparableDto) {
@@ -112,10 +113,9 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
     }
 
     public D read(UUID uuid) {
-        Optional<E> entityById = repository.findById(uuid);
-        log.info("Read " + getServiceName() + " " + (entityById.isPresent() ? "1" : "0") + " row with id: " +
-                uuid.toString());
-        return entityById.map(mapper::entityToDto).orElse(null);
+        E entityById = repository.findByIdOrThrow(uuid);
+        log.info("Read " + getServiceName() + " row with id: " + uuid.toString());
+        return mapper.entityToDto(entityById);
     }
 
     public void delete(UUID uuid) {
@@ -144,22 +144,26 @@ public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
     public ResponseDto<Object> find(FormDto formDto) {
         log.info("Started find in '" + getServiceName() + "' with filter: " +
                 objectMapper.writeValueAsString(formDto));
-        Pair<PageDto, Collection<Object>> pageDtoResult = super.findByFormDto(formDto);
+        try {
+            Pair<PageDto, Collection<Object>> pageDtoResult = super.findByFormDto(formDto);
 
-        Collection<Object> values = pageDtoResult.getValue();
-        if (values != null
-                && !values.isEmpty()
-                && values.iterator().next() instanceof IdentifiedEntity) {
-            values = values.stream()
-                    .map(value -> (E) value)
-                    .map(mapper::entityToDto)
-                    .collect(Collectors.toSet());
+            Collection<Object> values = pageDtoResult.getValue();
+            if (values != null
+                    && !values.isEmpty()
+                    && values.iterator().next() instanceof IdentifiedEntity) {
+                values = values.stream()
+                        .map(Identified::<E>cast)
+                        .map(mapper::entityToDto)
+                        .collect(Collectors.toList());
+            }
+            log.info("Find in '" + getServiceName() + "' " + Optional.ofNullable(values)
+                    .map(Collection::size)
+                    .orElse(0) + " rows with filter: " +
+                    objectMapper.writeValueAsString(formDto));
+            return new ResponseDto<>(pageDtoResult.getKey(), values);
+        } catch (Exception exception) {
+            throw new ApplicationException(exception);
         }
-        log.info("Find in '" + getServiceName() + "' " + Optional.ofNullable(values)
-                .map(Collection::size)
-                .orElse(0) + " rows with filter: " +
-                objectMapper.writeValueAsString(formDto));
-        return new ResponseDto<>(pageDtoResult.getKey(), values);
     }
 
     public String validate(D dto) {

@@ -1,5 +1,6 @@
-import {FORM, VALIDATION} from './constants';
+import {FORM, SUBMIT_DATA, VALIDATION} from './constants';
 import {onChange} from "forms/utils/utils";
+import {POST} from "App/utils/api/constants";
 
 export const updateValue = (FORM_ID) => (path, value) => (dispatch, state) => {
     let updatedValue = null;
@@ -18,6 +19,15 @@ export const updateValidation = (FORM_ID, validation) => (fields) => (dispatch) 
     dispatch({
         type: FORM + FORM_ID + VALIDATION,
         value: validatedValues
+    })
+};
+
+export const onSubmit = (FORM_ID, url, method = POST, dataConverter = (data) => data) => () => (dispatch, state) => {
+    dispatch({
+        type: FORM + FORM_ID + SUBMIT_DATA,
+        url,
+        method,
+        data: dataConverter(state.components.utils.input[FORM_ID].value)
     })
 };
 

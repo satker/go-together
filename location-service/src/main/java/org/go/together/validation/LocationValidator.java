@@ -1,6 +1,5 @@
 package org.go.together.validation;
 
-import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Strings;
 import org.go.together.dto.LocationDto;
@@ -9,7 +8,7 @@ import org.go.together.mapper.CountryMapper;
 import org.go.together.model.Country;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import java.util.Map;
 
 @Component
 public class LocationValidator extends Validator<LocationDto> {
@@ -24,15 +23,13 @@ public class LocationValidator extends Validator<LocationDto> {
 
     @Override
     public void getMapsForCheck(LocationDto locationDto) {
-        super.STRINGS_FOR_BLANK_CHECK = ImmutableMap.<String, String>builder()
-                .put("address", locationDto.getAddress())
-                .put("city name", locationDto.getPlace().getName())
-                .build();
-        super.OBJECT_NULL_CHECK = ImmutableMap.<String, Optional<Object>>builder()
-                .put("place", Optional.ofNullable(locationDto.getPlace()))
-                .put("end location", Optional.ofNullable(locationDto.getIsEnd()))
-                .put("start location", Optional.ofNullable(locationDto.getIsStart()))
-                .build();
+        super.STRINGS_FOR_BLANK_CHECK = Map.of(
+                "address", LocationDto::getAddress,
+                "city name", dto -> dto.getPlace().getName());
+        super.OBJECT_NULL_CHECK = Map.of(
+                "place", LocationDto::getPlace,
+                "end location", LocationDto::getIsEnd,
+                "start location", LocationDto::getIsStart);
     }
 
     @Override

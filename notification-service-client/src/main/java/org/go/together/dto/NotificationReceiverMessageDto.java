@@ -1,5 +1,6 @@
 package org.go.together.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.go.together.interfaces.Dto;
 
@@ -10,4 +11,7 @@ public class NotificationReceiverMessageDto implements Dto {
     private UUID id;
     private Boolean isRead;
     private NotificationMessageDto notificationMessage;
+
+    @JsonIgnore
+    private NotificationReceiverDto notificationReceiver;
 }

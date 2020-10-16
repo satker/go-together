@@ -1,14 +1,15 @@
 package org.go.together.validation;
 
-import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.UserDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.repository.InterestRepository;
-import org.go.together.repository.LanguageRepository;
+import org.go.together.repository.interfaces.InterestRepository;
+import org.go.together.repository.interfaces.LanguageRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public class UserValidator extends Validator<UserDto> {
@@ -60,12 +61,11 @@ public class UserValidator extends Validator<UserDto> {
 
     @Override
     public void getMapsForCheck(UserDto dto) {
-        super.STRINGS_FOR_BLANK_CHECK = ImmutableMap.<String, String>builder()
-                .put("first name", dto.getFirstName())
-                .put("last name", dto.getLastName())
-                .put("description", dto.getDescription())
-                .put("login", dto.getLogin())
-                .put("mail", dto.getMail())
-                .build();
+        super.STRINGS_FOR_BLANK_CHECK = Map.of(
+                "first name", UserDto::getFirstName,
+                "last name", UserDto::getLastName,
+                "description", UserDto::getDescription,
+                "login", UserDto::getLogin,
+                "mail", UserDto::getMail);
     }
 }

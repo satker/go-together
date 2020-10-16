@@ -1,7 +1,7 @@
 import React from 'react';
 
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
-import {NotificationObject} from "forms/utils/types";
+import {NotificationMessage} from "forms/utils/types";
 import {getCorrectDateFromString} from "forms/utils/utils";
 
 const Notification = ({notification}) => {
@@ -11,7 +11,7 @@ const Notification = ({notification}) => {
 }
 
 Notification.propTypes = {
-    notification: NotificationObject.isRequired
+    notification: NotificationMessage.isRequired
 }
 
 export default Notification;

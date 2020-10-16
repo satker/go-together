@@ -3,7 +3,7 @@ package org.go.together.service;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.CountryDto;
 import org.go.together.model.Country;
-import org.go.together.repository.CountryRepository;
+import org.go.together.repository.interfaces.CountryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;

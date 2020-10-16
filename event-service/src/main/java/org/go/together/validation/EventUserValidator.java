@@ -1,30 +1,29 @@
 package org.go.together.validation;
 
-import com.google.common.collect.ImmutableMap;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventUserDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.repository.EventRepository;
+import org.go.together.repository.interfaces.EventRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import java.util.Map;
 
 @Component
 public class EventUserValidator extends Validator<EventUserDto> {
     private final UserClient userClient;
     private final EventRepository eventRepository;
 
-    public EventUserValidator(UserClient userClient, EventRepository eventRepository) {
+    public EventUserValidator(UserClient userClient,
+                              EventRepository eventRepository) {
         this.userClient = userClient;
         this.eventRepository = eventRepository;
     }
 
     @Override
     public void getMapsForCheck(EventUserDto dto) {
-        super.OBJECT_NULL_CHECK = ImmutableMap.<String, Optional<Object>>builder()
-                .put("user id", Optional.ofNullable(dto.getUser().getId()))
-                .put("user status", Optional.ofNullable(dto.getUserStatus()))
-                .build();
+        super.OBJECT_NULL_CHECK = Map.of(
+                "user id", testDto -> testDto.getUser().getId(),
+                "user status", EventUserDto::getUserStatus);
     }
 
     @Override

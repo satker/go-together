@@ -5,17 +5,19 @@ import CreateButton from "App/NavBar/Buttons/CreateButton";
 import NotificationButton from "App/NavBar/Buttons/NotificationButton";
 import AccountButton from "App/NavBar/Buttons/AccountButton";
 import LogoutButton from "App/NavBar/Buttons/LogoutButton";
+import EditButton from "App/NavBar/Buttons/EditButton";
 import {connect} from "App/Context";
-import FormLogin from "forms/Login";
+import Login from "forms/Login";
 
 const ToolbarButtons = ({userId, menuId, handleMenuClose}) => {
     return userId !== null ? <>
+            <EditButton menuId={menuId}/>
             <CreateButton menuId={menuId}/>
             <NotificationButton menuId={menuId}/>
             <AccountButton menuId={menuId}/>
             <LogoutButton menuId={menuId}/>
         </> :
-        <FormLogin formId={menuId} handleMenuClose={handleMenuClose}/>
+        <Login formId={menuId} handleMenuClose={handleMenuClose}/>
 };
 
 ToolbarButtons.propTypes = {

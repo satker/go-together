@@ -15,7 +15,8 @@ import org.springframework.context.annotation.Import;
 @EnableAutoConfiguration
 @Configuration
 @Import(H2HibernateConfig.class)
-@ComponentScan(value = {"org.go.together.service",
+@ComponentScan(value = {
+        "org.go.together.service",
         "org.go.together.mapper",
         "org.go.together.model",
         "org.go.together.find",

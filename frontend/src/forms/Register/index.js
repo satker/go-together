@@ -3,7 +3,7 @@ import {navigate} from 'hookrouter';
 
 import {connect} from "App/Context";
 
-import {getAllInterests, getAllLanguages, getCheckMail, getCheckUserName, regUser} from "./actions";
+import {getAllInterests, getAllLanguages, getCheckMail, getCheckUserName} from "./actions";
 import PhotoField from "forms/utils/components/Form/fields/PhotoField";
 import {createReduxForm} from "forms/utils/components/Form";
 import {FORM_ID, PATTERN_TO_CHECK_MAIL, PATTERN_TO_CHECK_NAME} from "./constants";
@@ -19,11 +19,14 @@ import {
 } from "forms/utils/validation";
 import SelectBoxLoadableField from "forms/utils/components/Form/fields/SelectBoxLoadableField";
 import AutocompleteLocationField from "forms/utils/components/Form/fields/AutocompleteLocationField";
+import {USER_SERVICE_URL} from "forms/utils/constants";
+import {PUT} from "App/utils/api/constants";
+import {showNotification} from "forms/utils/components/Notification/actions";
 
 const FormRegister = ({
                           allLanguages, allInterests, getAllInterests, getAllLanguages,
-                          registeredUser, regUser, getCheckUserName, getCheckMail,
-                          checkedMail, checkedUserName
+                          registeredUser, getCheckUserName, getCheckMail,
+                          checkedMail, checkedUserName, showNotification
                       }) => {
 
     useEffect(() => {
@@ -44,7 +47,10 @@ const FormRegister = ({
     const moveToMainPage = () => navigate('/');
 
     return <RegisterForm onClose={moveToMainPage}
-                         onSubmit={regUser}>
+                         onSubmitOk={() => {
+                             showNotification("Registration successful")
+                             moveToMainPage();
+                         }}>
         <TextField name='login'
                    checkValue={getCheckUserName}
                    checked={checkedUserName}
@@ -99,13 +105,33 @@ const validation = (fields) => {
     }
 }
 
-const RegisterForm = createReduxForm({FORM_ID, validation});
+const onDataConverter = (data) => {
+    const location = {
+        ...data.location,
+        category: 'USER',
+        locations: [{
+            ...data.location.locations[0],
+            routeNumber: 1,
+            isStart: true,
+            isEnd: false
+        }]
+    }
+    return {...data, location}
+};
+
+const RegisterForm = createReduxForm({
+    FORM_ID,
+    validation,
+    url: USER_SERVICE_URL + "/users",
+    method: PUT,
+    dataConverter: onDataConverter
+});
 
 export default connect(mapStateToProps,
     {
         getAllLanguages,
         getAllInterests,
-        regUser,
         getCheckUserName,
-        getCheckMail
+        getCheckMail,
+        showNotification
     })(FormRegister);

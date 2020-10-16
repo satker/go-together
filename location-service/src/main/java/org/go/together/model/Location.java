@@ -1,22 +1,17 @@
 package org.go.together.model;
 
 import lombok.Data;
-import org.go.together.interfaces.IdentifiedEntity;
+import lombok.EqualsAndHashCode;
+import org.go.together.repository.entities.IdentifiedEntity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "location", schema = "location_service")
-public class Location implements IdentifiedEntity {
-    @Id
-    @Column(columnDefinition = "uuid")
-    private UUID id;
-
+public class Location extends IdentifiedEntity {
     private String address;
     private double latitude;
     private int routeNumber;

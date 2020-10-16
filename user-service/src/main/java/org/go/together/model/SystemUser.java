@@ -2,21 +2,20 @@ package org.go.together.model;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.go.together.dto.Role;
-import org.go.together.interfaces.IdentifiedEntity;
+import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Table(name = "system_user", schema = "user_service")
-public class SystemUser implements IdentifiedEntity {
-    @Id
-    @Column(columnDefinition = "uuid")
-    private UUID id;
+public class SystemUser extends IdentifiedEntity {
     @Column(unique = true)
     private String login;
     @Column(unique = true)

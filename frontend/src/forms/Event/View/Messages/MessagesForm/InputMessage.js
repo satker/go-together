@@ -1,43 +1,34 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-import SendIcon from "@material-ui/icons/Send";
 
 import {connect} from "App/Context";
 import LabeledInput from "forms/utils/components/LabeledInput";
 import {Review} from "forms/utils/types";
-import CustomButton from "forms/utils/components/CustomButton";
 
 import {putNewMessage} from "../actions";
+import SendButtonIcon from "forms/utils/components/Icon/Sent";
 
 const InputMessage = ({
-                          userId, eventId, setMessages, messages,
-                          userRecipientId, putNewMessage, readOnly, createOffer,
-                          sentRtcMessage
+                          userId, event, setMessages, messages, putNewMessage, readOnly, userMessageId
                       }) => {
     const [message, setMessage] = useState('');
-
-    useEffect(() => {
-        createOffer();
-    }, [createOffer]);
 
     const sendMessage = () => {
         const date = moment();
         setMessage('');
         const newMessage = {
             message,
-            authorId: userId,
-            recipientId: userRecipientId,
+            authorId: userId === event.author.id ? event.id : userId,
+            recipientId: userId === event.author.id ? userMessageId : event.id,
             date
         };
         setMessages([...messages, newMessage]);
         setMessage('');
-        sentRtcMessage(newMessage);
-        putNewMessage(eventId, newMessage);
+        putNewMessage(event.id, newMessage);
     };
 
     return <div className='container-input'>
-        <CustomButton onClick={createOffer} text='create offer'/>
         <LabeledInput
             id="message"
             label="Enter message"
@@ -47,8 +38,7 @@ const InputMessage = ({
             value={message}
             onChange={setMessage}
         />
-        <SendIcon className='send-message-icon'
-                  onClick={sendMessage}/>
+        <SendButtonIcon onAction={sendMessage}/>
     </div>
 };
 
@@ -57,7 +47,6 @@ InputMessage.propTypes = {
     setMessages: PropTypes.func.isRequired,
     eventId: PropTypes.string.isRequired,
     userId: PropTypes.string,
-    eventUserId: PropTypes.string,
     userMessageId: PropTypes.string,
     putNewMessage: PropTypes.func.isRequired,
     readOnly: PropTypes.bool
@@ -65,7 +54,7 @@ InputMessage.propTypes = {
 
 const mapStateToProps = state => ({
     userId: state.userId.value,
-    eventId: state.components.forms.event.eventView.event.response.id
+    event: state.components.forms.event.eventView.event.response
 });
 
 export default connect(mapStateToProps, {putNewMessage})(InputMessage);

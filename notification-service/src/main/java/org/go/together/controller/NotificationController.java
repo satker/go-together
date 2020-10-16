@@ -4,31 +4,37 @@ import org.go.together.client.NotificationClient;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.NotificationDto;
 import org.go.together.dto.NotificationMessageDto;
+import org.go.together.find.controller.FindController;
+import org.go.together.find.dto.ResponseDto;
+import org.go.together.find.dto.form.FormDto;
 import org.go.together.service.NotificationMessageService;
+import org.go.together.service.NotificationReceiverMessageService;
 import org.go.together.service.NotificationReceiverService;
 import org.go.together.service.NotificationService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
 import java.util.UUID;
 
 @RestController
-public class NotificationController implements NotificationClient {
+public class NotificationController extends FindController implements NotificationClient {
     private final NotificationMessageService notificationMessageService;
     private final NotificationReceiverService notificationReceiverService;
+    private final NotificationReceiverMessageService notificationReceiverMessageService;
     private final NotificationService notificationService;
 
     public NotificationController(NotificationMessageService notificationMessageService,
                                   NotificationReceiverService notificationReceiverService,
+                                  NotificationReceiverMessageService notificationReceiverMessageService,
                                   NotificationService notificationService) {
         this.notificationMessageService = notificationMessageService;
         this.notificationReceiverService = notificationReceiverService;
+        this.notificationReceiverMessageService = notificationReceiverMessageService;
         this.notificationService = notificationService;
     }
 
     @Override
-    public Collection<NotificationMessageDto> getReceiverNotifications(UUID receiverId) {
-        return notificationReceiverService.getReceiverNotifications(receiverId);
+    public ResponseDto<Object> find(FormDto formDto) {
+        return super.find(formDto);
     }
 
     @Override
@@ -59,6 +65,6 @@ public class NotificationController implements NotificationClient {
 
     @Override
     public boolean readNotifications(UUID receiverId) {
-        return notificationReceiverService.readNotifications(receiverId);
+        return notificationReceiverMessageService.readNotifications(receiverId);
     }
 }

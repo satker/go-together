@@ -1,9 +1,17 @@
 import {EVENT_SERVICE_URL, FORM_DTO, USER_SERVICE_URL} from "forms/utils/constants";
-import {POST} from "App/utils/api/constants";
+import {DELETE, POST} from "App/utils/api/constants";
 import {PAGE} from "App/Context/constants";
 
-import {EVENTS_FIND_EVENTS, EVENTS_INTERESTS, EVENTS_LANGUAGES, FILTER} from "./constants";
+import {DELETE_EVENT, EVENTS_FIND_EVENTS, EVENTS_INTERESTS, EVENTS_LANGUAGES, FILTER} from "./constants";
 import {updateFormDto} from "../utils/utils";
+
+export const deleteEvent = (id) => (dispatch) => {
+    dispatch({
+        type: DELETE_EVENT,
+        url: EVENT_SERVICE_URL + '/events/' + id,
+        method: DELETE
+    });
+};
 
 export const postFindEvents = (filterObject) => (dispatch) => {
     dispatch({

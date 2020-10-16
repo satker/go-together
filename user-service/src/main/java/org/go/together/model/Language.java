@@ -1,23 +1,18 @@
 package org.go.together.model;
 
 import lombok.Data;
-import org.go.together.interfaces.IdentifiedEntity;
+import lombok.EqualsAndHashCode;
+import org.go.together.repository.entities.NamedIdentifiedEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Table(name = "language", schema = "user_service")
-public class Language implements IdentifiedEntity {
-    @Id
-    @Column(columnDefinition = "uuid")
-    private UUID id;
-    @Column(unique = true)
-    private String name;
+public class Language extends NamedIdentifiedEntity {
     @Column(unique = true)
     private String code;
 }

@@ -6,7 +6,7 @@ import org.go.together.dto.EventLikeDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.EventLike;
-import org.go.together.repository.EventLikeRepository;
+import org.go.together.repository.interfaces.EventLikeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  database:
+    container_name: postgres
+    image: postgres
+    ports:
+      - 5432:5432
+    env_file:
+      - database.env
+    volumes:
+      - database-data:/var/lib/postgresql/data/
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+volumes:
+  database-data:

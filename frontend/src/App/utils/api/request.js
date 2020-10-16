@@ -2,6 +2,7 @@ import {findPath} from "App/utils/utils";
 import {context} from "App/Context";
 
 import {GET} from "./constants";
+import {NOTIFICATION} from "forms/utils/components/Notification/constants";
 
 const resolveStatus = (pathData, isToken, setResult) => (response) => {
     if (isToken) {
@@ -17,13 +18,11 @@ const resolveStatus = (pathData, isToken, setResult) => (response) => {
     if (response.status >= 200 && response.status < 300) {
         return Promise.resolve(response)
     } else {
-        return Promise.reject(new Error(response.statusText))
+        return Promise.reject(response)
     }
 };
 
-const resolveJson = (response) => {
-    return response.json();
-};
+const resolveJson = (response) => response.json();
 
 export const fetchAndSet = (url,
                             setResult,
@@ -31,7 +30,8 @@ export const fetchAndSet = (url,
                             data = {},
                             headers = {},
                             type,
-                            isToken) => {
+                            isToken,
+                            setNotificationMessage) => {
     const pathData = findPath(type, null, context);
     pathData.data.inProcess = true;
     setResult(pathData);
@@ -52,15 +52,14 @@ export const fetchAndSet = (url,
             pathData.data.response = response;
             pathData.data.inProcess = false;
             setResult(pathData);
-        }).catch(errorMessage => {
-        if (errorMessage.name === 'SyntaxError') {
-            return;
-        }
-        pathData.data.error = errorMessage;
-        pathData.data.inProcess = false;
-        setResult(pathData);
-        alert(errorMessage);
-    });
+        }).catch(errorMessage => Promise.resolve(errorMessage)
+        .then(error => error.json())
+        .then(exception => {
+            pathData.data.error = exception;
+            pathData.data.inProcess = false;
+            setResult(pathData);
+            setNotificationMessage(exception.message);
+        }));
 };
 
 const setGlobalState = (type, value, setToContext) => {
@@ -72,6 +71,10 @@ const setGlobalState = (type, value, setToContext) => {
     }
     setToContext(pathData);
 };
+
+const setNotificationMessage = (setToContext) => (message) => {
+    setGlobalState(NOTIFICATION, {isOpen: true, message}, setToContext)
+}
 
 export const fetchAndSetToken = (token) =>
     (setToContext) => ({type, url, method = GET, data = {}, value, isToken = false}) => {
@@ -85,7 +88,7 @@ export const fetchAndSetToken = (token) =>
         };
 
         if (token) {
-                headers['Authorization'] = token;
-            }
-        fetchAndSet(url, setToContext, method, data, headers, type, isToken);
-        };
+            headers['Authorization'] = token;
+        }
+        fetchAndSet(url, setToContext, method, data, headers, type, isToken, setNotificationMessage(setToContext));
+    };

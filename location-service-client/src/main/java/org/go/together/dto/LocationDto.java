@@ -21,10 +21,8 @@ public class LocationDto implements Dto {
     @ComparingField(value = "address", isMain = true)
     private String address;
 
-    @ComparingField("latitude")
     private Double latitude;
 
-    @ComparingField("longitude")
     private Double longitude;
 
     private Boolean isStart;

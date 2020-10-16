@@ -1,4 +1,4 @@
-export const HOST = '192.168.1.49';
+export const HOST = 'localhost';
 export const GATEWAY_URL = 'http://' + HOST + ':8080';
 export const GATEWAY_SERVICES_URL = GATEWAY_URL + '/services';
 export const AUTH_URL = 'http://' + HOST + ':8088';

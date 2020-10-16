@@ -1,21 +1,19 @@
 package org.go.together.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.go.together.dto.LocationCategory;
-import org.go.together.interfaces.IdentifiedEntity;
+import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.*;
 import java.util.Set;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "group_location", schema = "location_service")
-public class GroupLocation implements IdentifiedEntity {
-    @Id
-    @Column(columnDefinition = "uuid")
-    private UUID id;
-
+public class GroupLocation extends IdentifiedEntity {
     private UUID groupId;
     private LocationCategory category;
 

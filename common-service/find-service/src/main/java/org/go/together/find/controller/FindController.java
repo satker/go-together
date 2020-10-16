@@ -10,10 +10,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class FindController {
-    private Set<FindService> services;
+    private Set<FindService<?>> services;
 
     @Autowired
-    public void setServices(Set<FindService> services) {
+    public void setServices(Set<FindService<?>> services) {
         this.services = services;
     }
 

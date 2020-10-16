@@ -10,10 +10,13 @@ import CustomPagination from "forms/utils/components/Pagination";
 import {ResponseData, SearchObject} from "forms/utils/types";
 import CustomButton from "forms/utils/components/CustomButton";
 
-import {postFindEvents} from "./actions";
+import {deleteEvent, postFindEvents} from "./actions";
 import Map from "./Map";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import {showModal} from "forms/utils/components/Modal/actions";
+import {showNotification} from "forms/utils/components/Notification/actions";
 
-const Events = ({pageSize, postFindEvents, findEvents, getEventsLikes, filter}) => {
+const Events = ({pageSize, postFindEvents, findEvents, getEventsLikes, filter, showModal, deleteEvent, deletedEvent, showNotification}) => {
     const [page, setPage] = useState(1);
     const [isMap, setIsMap] = useState(false);
 
@@ -30,7 +33,7 @@ const Events = ({pageSize, postFindEvents, findEvents, getEventsLikes, filter}) 
 
     useEffect(() => {
         postFindEvents(filter);
-    }, [postFindEvents, filter]);
+    }, [postFindEvents, filter, deletedEvent]);
 
     const onClickNextPage = page => {
         filter.page.page = page - 1;
@@ -38,13 +41,20 @@ const Events = ({pageSize, postFindEvents, findEvents, getEventsLikes, filter}) 
         postFindEvents(filter);
     };
 
-    const onDelete = () => null;
+    const deleteAction = (id) => () => {
+        deleteEvent(id);
+        showNotification("Successfully deleted!")
+    }
+
+    const onDelete = (id) => showModal("Do you really want delete this event?", deleteAction(id));
 
     const pageCount = findEvents.response.page ?
-        findEvents.response.page.totalSize / findEvents.response.page.size : 0;
+        Math.ceil(findEvents.response.page.totalSize / findEvents.response.page.size) : 0;
 
     return <>
-        <CustomButton onClick={() => setIsMap(!isMap)} text={isMap ? 'Hide map' : 'Show map'}/>
+        <ItemContainer>
+            <CustomButton onClick={() => setIsMap(!isMap)} text={isMap ? 'Hide map' : 'Show map'}/>
+        </ItemContainer>
         <LoadableContent loadableData={findEvents}>
             {isMap ?
                 <Map events={findEvents.response.result}/>
@@ -70,9 +80,10 @@ Events.propTypes = {
 const mapStateToProps = state => ({
     pageSize: state.pageSize.value,
     findEvents: state.components.forms.events.findEvents,
-    filter: state.components.forms.events.filter.response
+    filter: state.components.forms.events.filter.response,
+    deletedEvent: state.components.forms.events.deletedEvent
 });
 
 export default connect(mapStateToProps,
-    {postFindEvents, getEventsLikes})
+    {postFindEvents, getEventsLikes, showModal, deleteEvent, showNotification})
 (Events);
