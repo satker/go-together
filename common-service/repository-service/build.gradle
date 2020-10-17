@@ -1,3 +1,16 @@
+buildscript {
+    ext {
+        springBootVersion = '2.3.0.RELEASE'
+        lombokVersion='1.18.16'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
 apply plugin: 'java'
 
 group 'org.go.together'
@@ -18,8 +31,7 @@ dependencies {
             "org.junit.jupiter:junit-jupiter-engine:5.2.0",
 
             "org.projectlombok:lombok:${lombokVersion}",
-            "com.google.guava:guava:${guavaVersion}",
-            "com.h2database:h2",
+            "com.h2database:h2:1.4.200",
 
             'org.apache.commons:commons-lang3:3.9'
     )

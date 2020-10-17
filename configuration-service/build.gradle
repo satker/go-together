@@ -1,3 +1,11 @@
+buildscript {
+    ext {
+        springCloudVersion = '2.2.2.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+}
 plugins {
     id 'java'
 }

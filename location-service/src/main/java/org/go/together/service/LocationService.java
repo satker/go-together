@@ -1,6 +1,5 @@
 package org.go.together.service;
 
-import com.google.common.collect.ImmutableMap;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.LocationDto;
@@ -105,14 +104,13 @@ public class LocationService extends CrudServiceImpl<LocationDto, Location> {
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return ImmutableMap.<String, FieldMapper>builder()
-                .put("isStart", FieldMapper.builder()
+        return Map.of("isStart", FieldMapper.builder()
                         .currentServiceField("isStart")
-                        .fieldClass(Boolean.class).build())
-                .put("isEnd", FieldMapper.builder()
+                        .fieldClass(Boolean.class).build(),
+                "isEnd", FieldMapper.builder()
                         .currentServiceField("isEnd")
-                        .fieldClass(Boolean.class).build())
-                .put("latitude,longitude", FieldMapper.builder()
-                        .currentServiceField("latitude,longitude").build()).build();
+                        .fieldClass(Boolean.class).build(),
+                "latitude,longitude", FieldMapper.builder()
+                        .currentServiceField("latitude,longitude").build());
     }
 }

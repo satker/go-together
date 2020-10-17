@@ -1,6 +1,5 @@
 package org.go.together.service;
 
-import com.google.common.collect.ImmutableMap;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.EventLikeDto;
 import org.go.together.enums.CrudOperation;
@@ -24,10 +23,9 @@ public class EventLikeService extends CrudServiceImpl<EventLikeDto, EventLike> {
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return ImmutableMap.<String, FieldMapper>builder()
-                .put("eventId", FieldMapper.builder()
-                        .currentServiceField("eventId")
-                        .fieldClass(UUID.class).build()).build();
+        return Map.of("eventId", FieldMapper.builder()
+                .currentServiceField("eventId")
+                .fieldClass(UUID.class).build());
     }
 
     @Override

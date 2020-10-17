@@ -1,6 +1,5 @@
 package org.go.together.service;
 
-import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.client.ContentClient;
@@ -174,14 +173,12 @@ public class UserService extends CrudServiceImpl<UserDto, SystemUser> {
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return ImmutableMap.<String, FieldMapper>builder()
-                .put("languages", FieldMapper.builder()
+        return Map.of("languages", FieldMapper.builder()
                         .innerService(languageService)
-                        .currentServiceField("languages").build())
-                .put("interests", FieldMapper.builder()
+                        .currentServiceField("languages").build(),
+                "interests", FieldMapper.builder()
                         .innerService(interestService)
-                        .currentServiceField("interests").build())
-                .build();
+                        .currentServiceField("interests").build());
     }
 
     public String findLoginById(UUID id) {

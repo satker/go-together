@@ -1,6 +1,5 @@
 package org.go.together.service;
 
-import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.client.ContentClient;
@@ -90,31 +89,29 @@ public class EventService extends CrudServiceImpl<EventDto, Event> {
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return ImmutableMap.<String, FieldMapper>builder()
-                .put("name", FieldMapper.builder()
+        return Map.of("name", FieldMapper.builder()
                         .currentServiceField("name")
-                        .fieldClass(String.class).build())
-                .put("authorId", FieldMapper.builder()
+                        .fieldClass(String.class).build(),
+                "authorId", FieldMapper.builder()
                         .currentServiceField("authorId")
-                        .fieldClass(UUID.class).build())
-                .put("author", FieldMapper.builder()
+                        .fieldClass(UUID.class).build(),
+                "author", FieldMapper.builder()
                         .currentServiceField("authorId")
                         .remoteServiceClient(userClient)
                         .remoteServiceName("user")
                         .remoteServiceFieldGetter("id")
-                        .fieldClass(UUID.class).build())
-                .put("idEventRoutes", FieldMapper.builder()
+                        .fieldClass(UUID.class).build(),
+                "idEventRoutes", FieldMapper.builder()
                         .currentServiceField("id")
                         .remoteServiceClient(locationClient)
                         .remoteServiceName("groupLocation")
                         .remoteServiceFieldGetter("groupId")
-                        .fieldClass(UUID.class).build())
-                .put("startDate", FieldMapper.builder()
+                        .fieldClass(UUID.class).build(),
+                "startDate", FieldMapper.builder()
                         .currentServiceField("startDate")
-                        .fieldClass(Date.class).build())
-                .put("endDate", FieldMapper.builder()
+                        .fieldClass(Date.class).build(),
+                "endDate", FieldMapper.builder()
                         .fieldClass(Date.class)
-                        .currentServiceField("endDate").build())
-                .build();
+                        .currentServiceField("endDate").build());
     }
 }

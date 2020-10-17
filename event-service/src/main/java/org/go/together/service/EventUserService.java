@@ -1,6 +1,5 @@
 package org.go.together.service;
 
-import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.client.UserClient;
@@ -65,9 +64,8 @@ public class EventUserService extends CrudServiceImpl<EventUserDto, EventUser> {
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return ImmutableMap.<String, FieldMapper>builder()
-                .put("eventId", FieldMapper.builder()
-                        .currentServiceField("eventId")
-                        .fieldClass(UUID.class).build()).build();
+        return Map.of("eventId", FieldMapper.builder()
+                .currentServiceField("eventId")
+                .fieldClass(UUID.class).build());
     }
 }

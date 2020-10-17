@@ -1,3 +1,19 @@
+buildscript {
+    ext {
+        springBootVersion = '2.3.0.RELEASE'
+        springCloudVersion = '2.2.2.RELEASE'
+        lombokVersion='1.18.16'
+        jsonWebTokenVersion = '0.9.1'
+        postgresDriver='42.2.18'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
 plugins {
     id 'java'
 }
@@ -14,7 +30,7 @@ repositories {
 
 dependencies {
     compile(
-            "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-security",
             "com.h2database:h2:1.4.200",
 
             "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}",

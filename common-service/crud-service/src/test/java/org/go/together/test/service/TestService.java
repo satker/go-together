@@ -1,6 +1,5 @@
 package org.go.together.test.service;
 
-import com.google.common.collect.ImmutableMap;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.find.dto.ResponseDto;
@@ -41,41 +40,39 @@ public class TestService extends CrudServiceImpl<TestDto, TestEntity> {
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return ImmutableMap.<String, FieldMapper>builder()
-                .put("name", FieldMapper.builder()
+        return Map.of("name", FieldMapper.builder()
                         .currentServiceField("name")
-                        .fieldClass(String.class).build())
-                .put("number", FieldMapper.builder()
+                        .fieldClass(String.class).build(),
+                "number", FieldMapper.builder()
                         .currentServiceField("number")
-                        .fieldClass(Number.class).build())
-                .put("names", FieldMapper.builder()
+                        .fieldClass(Number.class).build(),
+                "names", FieldMapper.builder()
                         .currentServiceField("name")
-                        .fieldClass(String.class).build())
-                .put("numbers", FieldMapper.builder()
+                        .fieldClass(String.class).build(),
+                "numbers", FieldMapper.builder()
                         .currentServiceField("number")
-                        .fieldClass(Number.class).build())
-                .put("manyJoinEntities", FieldMapper.builder()
+                        .fieldClass(Number.class).build(),
+                "manyJoinEntities", FieldMapper.builder()
                         .innerService(manyJoinService)
-                        .currentServiceField("manyJoinEntities").build())
-                .put("elements", FieldMapper.builder()
+                        .currentServiceField("manyJoinEntities").build(),
+                "elements", FieldMapper.builder()
                         .currentServiceField("elements")
                         .remoteServiceClient(anotherClient)
                         .remoteServiceName("element")
                         .remoteServiceFieldGetter("id")
-                        .fieldClass(UUID.class).build())
-                .put("joinTestEntities", FieldMapper.builder()
+                        .fieldClass(UUID.class).build(),
+                "joinTestEntities", FieldMapper.builder()
                         .currentServiceField("joinTestEntities")
                         .innerService(joinTestService)
                         .remoteServiceClient(anotherClient)
                         .remoteServiceName("join")
                         .remoteServiceFieldGetter("id")
-                        .fieldClass(UUID.class).build())
-                .put("elementss", FieldMapper.builder()
+                        .fieldClass(UUID.class).build(),
+                "elementss", FieldMapper.builder()
                         .currentServiceField("elements")
                         .remoteServiceClient(anotherClient)
                         .remoteServiceName("element")
                         .remoteServiceFieldGetter("id")
-                        .fieldClass(UUID.class).build())
-                .build();
+                        .fieldClass(UUID.class).build());
     }
 }

@@ -1,19 +1,2 @@
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
-
-buildscript {
-    ext {
-        springBootVersion = '2.3.0.RELEASE'
-        springCloudVersion = '2.2.2.RELEASE'
-        lombokVersion='1.18.12'
-        jsonWebTokenVersion = '0.9.1'
-        guavaVersion='29.0-jre'
-        postgresDriver='42.2.12'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
-}

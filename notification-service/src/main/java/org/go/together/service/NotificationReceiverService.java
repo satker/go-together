@@ -1,6 +1,5 @@
 package org.go.together.service;
 
-import com.google.common.collect.ImmutableMap;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.NotificationDto;
@@ -102,10 +101,8 @@ public class NotificationReceiverService extends CrudServiceImpl<NotificationRec
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return ImmutableMap.<String, FieldMapper>builder()
-                .put("id", FieldMapper.builder()
-                        .currentServiceField("userId")
-                        .fieldClass(UUID.class).build())
-                .build();
+        return Map.of("id", FieldMapper.builder()
+                .currentServiceField("userId")
+                .fieldClass(UUID.class).build());
     }
 }

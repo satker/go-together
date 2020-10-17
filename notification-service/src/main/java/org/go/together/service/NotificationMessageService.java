@@ -1,6 +1,5 @@
 package org.go.together.service;
 
-import com.google.common.collect.ImmutableMap;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.dto.NotificationMessageDto;
 import org.go.together.dto.NotificationReceiverDto;
@@ -61,10 +60,8 @@ public class NotificationMessageService extends CrudServiceImpl<NotificationMess
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return ImmutableMap.<String, FieldMapper>builder()
-                .put("date", FieldMapper.builder()
-                        .currentServiceField("date")
-                        .fieldClass(Date.class).build())
-                .build();
+        return Map.of("date", FieldMapper.builder()
+                .currentServiceField("date")
+                .fieldClass(Date.class).build());
     }
 }

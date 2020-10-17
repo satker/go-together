@@ -1,6 +1,5 @@
 package org.go.together.test.service;
 
-import com.google.common.collect.ImmutableMap;
 import org.go.together.base.impl.CrudServiceImpl;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.test.dto.JoinTestDto;
@@ -19,13 +18,11 @@ public class JoinTestService extends CrudServiceImpl<JoinTestDto, JoinTestEntity
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return ImmutableMap.<String, FieldMapper>builder()
-                .put("id", FieldMapper.builder()
+        return Map.of("id", FieldMapper.builder()
                         .currentServiceField("id")
-                        .fieldClass(UUID.class).build())
-                .put("name", FieldMapper.builder()
+                        .fieldClass(UUID.class).build(),
+                "name", FieldMapper.builder()
                         .currentServiceField("name")
-                        .fieldClass(String.class).build())
-                .build();
+                        .fieldClass(String.class).build());
     }
 }

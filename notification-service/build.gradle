@@ -1,3 +1,18 @@
+buildscript {
+    ext {
+        springBootVersion = '2.3.0.RELEASE'
+        springCloudVersion = '2.2.2.RELEASE'
+        lombokVersion='1.18.16'
+        postgresDriver='42.2.18'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
 plugins {
     id 'java'
 }
@@ -22,8 +37,7 @@ dependencies {
             "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
             "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}",
 
-            "org.projectlombok:lombok:${lombokVersion}",
-            "com.google.guava:guava:${guavaVersion}",
+            "org.projectlombok:lombok:${lombokVersion}"
     )
 
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"

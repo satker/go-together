@@ -1,3 +1,16 @@
+buildscript {
+    ext {
+        springBootVersion = '2.3.0.RELEASE'
+        lombokVersion='1.18.16'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
 plugins {
     id 'java'
 }
@@ -21,8 +34,7 @@ dependencies {
             "uk.co.jemos.podam:podam:7.2.3.RELEASE",
 
             "org.projectlombok:lombok:${lombokVersion}",
-            "com.google.guava:guava:${guavaVersion}",
-            "com.h2database:h2",
+            "com.h2database:h2:1.4.200",
     )
     compile project(":common-service:find-service")
     compile project(":common-service:validation-service")
