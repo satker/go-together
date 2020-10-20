@@ -1,31 +1,15 @@
-import React, {useEffect} from "react";
+import React from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import PropTypes from "prop-types";
 
-import {set as setCookie} from "js-cookie";
-import {USER_ID} from "forms/utils/constants";
 import {connect} from "App/Context";
-import {cleanToken, cleanUserId} from "../actions";
-import {CSRF_TOKEN} from "App/Context/constants";
+import {cleanAuth} from "../actions";
 
-const LogoutButton = ({menuId, cleanUserId, cleanToken, userId}) => {
-    const logout = () => {
-        setCookie(USER_ID, null);
-        cleanUserId();
-    };
-
-    useEffect(() => {
-        if (!userId) {
-            setCookie(CSRF_TOKEN, null);
-            cleanToken();
-        }
-    }, [userId, cleanToken]);
-
-
+const LogoutButton = ({menuId, cleanAuth}) => {
     return <IconButton key={menuId + '_logout'}
-                       onClick={logout}
+                       onClick={cleanAuth}
                        color="inherit">
         <Badge color="secondary">
             <ExitToAppIcon/>
@@ -38,7 +22,7 @@ LogoutButton.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    userId: state.userId.value
+    userId: state.auth.value.userId
 });
 
-export default connect(mapStateToProps, {cleanUserId, cleanToken})(LogoutButton);
+export default connect(mapStateToProps, {cleanAuth})(LogoutButton);

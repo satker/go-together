@@ -1,15 +1,14 @@
-import {CONTEXT_USER_ID, CSRF_TOKEN} from "App/Context/constants";
+import {CSRF_TOKEN, USER_ID} from "App/Context/constants";
+import {AUTH} from "../Context/constants";
 
-export const cleanUserId = () => (dispatch) => {
+export const cleanAuth = () => (dispatch) => {
+    localStorage.removeItem(USER_ID);
+    localStorage.removeItem(CSRF_TOKEN);
     dispatch({
-        type: CONTEXT_USER_ID,
-        value: null
-    })
-};
-
-export const cleanToken = () => (dispatch) => {
-    dispatch({
-        type: CSRF_TOKEN,
-        value: null
+        type: AUTH,
+        value: {
+            userId: null,
+            csrfToken: null
+        }
     })
 };

@@ -27,7 +27,7 @@ ToolbarButtons.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    userId: state.userId.value
+    userId: state.auth.value.userId
 });
 
 export default connect(mapStateToProps, null)(ToolbarButtons);

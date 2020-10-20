@@ -1,29 +1,27 @@
 import {LOGIN_URL, USER_SERVICE_URL} from "forms/utils/constants";
-import {CONTEXT_USER_ID, CSRF_TOKEN} from "App/Context/constants";
+import {AUTH, CSRF_TOKEN, USER_ID} from "App/Context/constants";
 import {POST} from "App/utils/api/constants";
 
 import {LOGIN_HEADERS, LOGIN_ID} from "./constants";
 
-export const setUserId = (userId) => (dispatch) => {
+export const setAuth = (userId, token) => (dispatch) => {
+    localStorage.setItem(CSRF_TOKEN, token);
+    localStorage.setItem(USER_ID, userId);
     dispatch({
-        type: CONTEXT_USER_ID,
-        value: userId
+        type: AUTH,
+        value: {
+            userId,
+            csrfToken: token
+        }
     })
 };
 
-export const setCsrfToken = (token) => (dispatch) => {
-    dispatch({
-        type: CSRF_TOKEN,
-        value: token
-    })
-};
-
-export const postLogin = (login, password) => (dispatch) => {
+export const postLogin = (username, password) => (dispatch) => {
     dispatch({
         type: LOGIN_HEADERS,
         url: LOGIN_URL,
         method: POST,
-        data: {username: login, password: password},
+        data: {username, password},
         isToken: true
     });
 };

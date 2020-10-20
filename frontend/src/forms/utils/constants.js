@@ -11,8 +11,6 @@ export const NOTIFICATION_SERVICE_URL = GATEWAY_SERVICES_URL + '/notification-se
 export const LOCATION_SERVICE_URL = GATEWAY_SERVICES_URL + '/location-service';
 export const LOGIN_URL = AUTH_URL + "/auth/";
 
-export const USER_ID = 'USER_ID';
-
 export const EVENTS_URL = EVENT_SERVICE_URL + '/events';
 
 export const DEFAULT_MAIN_INFO = {

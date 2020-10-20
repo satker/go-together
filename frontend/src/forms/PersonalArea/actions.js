@@ -10,7 +10,7 @@ const URLtoCheck = USER_SERVICE_URL + '/users/check/mail/_mail_';
 export const getUserInfo = () => (dispatch, state) => {
     dispatch({
         type: PERSONAL_AREA_USER_INFO,
-        url: URL_USER_ID.replace('_id_', state.userId.value)
+        url: URL_USER_ID.replace('_id_', state.auth.value.userId)
     });
 };
 

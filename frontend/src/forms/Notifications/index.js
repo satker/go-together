@@ -47,7 +47,7 @@ Notifications.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    userId: state.userId.value,
+    userId: state.auth.value.userId,
     userNotifications: state.components.forms.notifications.userNotifications
 });
 

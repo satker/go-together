@@ -2,40 +2,34 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from "prop-types";
 import MenuItem from "@material-ui/core/MenuItem";
 import {connect} from "App/Context";
-import {set as setCookie} from "js-cookie";
 import {navigate} from "hookrouter";
 
 import LabeledInput from "forms/utils/components/LabeledInput";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import CustomButton from "forms/utils/components/CustomButton";
-import {USER_ID} from "forms/utils/constants";
-import {CSRF_TOKEN} from "App/Context/constants";
 
-import {getLoginId, postLogin, setCsrfToken, setUserId} from "./actions";
+import {getLoginId, postLogin, setAuth} from "./actions";
 import './style.css'
 
 const Login = ({
                    formId, postLogin, handleMenuClose, loginId, getLoginId,
-                   setUserId, setCsrfToken, loginToken
+                   setAuth, loginToken
                }) => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
 
     useEffect(() => {
         if (loginToken.token && !loginToken.inProcess && login && login !== "") {
-            setCookie(CSRF_TOKEN, loginToken.token);
-            setCsrfToken(loginToken.token);
             getLoginId(login);
         }
-    }, [loginToken, getLoginId, login, setCsrfToken]);
+    }, [loginToken, getLoginId, login]);
 
     useEffect(() => {
         if (loginId.response.id) {
-            setCookie(USER_ID, loginId.response.id);
-            setUserId(loginId.response.id);
+            setAuth(loginId.response.id, loginToken.token);
         }
-    }, [loginId, setUserId]);
+    }, [loginId, setAuth]);
 
     const handleSubmit = () => {
         postLogin(login, password);
@@ -98,4 +92,4 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps,
-    {postLogin, getLoginId, setUserId, setCsrfToken})(Login);
+    {postLogin, getLoginId, setAuth})(Login);

@@ -9,6 +9,7 @@ const AUTHOR_ID = 'authorId';
 
 const MyEvents = ({filter, setFilter, userId}) => {
     const authorId = filter.filters[AUTHOR_ID];
+    console.log(userId)
 
     const onChange = (value) => {
         if (value) {
@@ -28,7 +29,7 @@ const MyEvents = ({filter, setFilter, userId}) => {
 
 const mapStateToProps = state => ({
     filter: state.components.forms.events.filter.response,
-    userId: state.userId.value
+    userId: state.auth.value.userId
 });
 
 export default connect(mapStateToProps, {setFilter})(MyEvents);

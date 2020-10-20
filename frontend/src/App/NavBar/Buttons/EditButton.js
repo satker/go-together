@@ -23,7 +23,7 @@ const EditButton = ({eventAuthorId, userId, menuId, eventId, formName}) => {
 
 const mapStateToProps = (state) => ({
     formName: state.formId.value,
-    userId: state.userId.value,
+    userId: state.auth.value.userId,
     eventAuthorId: state.components.forms.event.eventView.event.response.author?.id,
     eventId: state.components.forms.event.eventView.event.response.id
 });

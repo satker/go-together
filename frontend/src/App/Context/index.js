@@ -1,18 +1,18 @@
 import React from "react";
-import {get as getCookie} from 'js-cookie';
 
 import {fetchAndSetToken} from "App/utils/api/request";
-import {USER_ID} from "forms/utils/constants";
 import {components} from "forms/reducers";
 import {createContextValue} from "App/utils/utils";
-import {CONTEXT_USER_ID, CSRF_TOKEN, EVENT_ID, FORM_ID, PAGE, PAGE_SIZE} from "./constants";
+import {AUTH, CSRF_TOKEN, EVENT_ID, FORM_ID, PAGE, PAGE_SIZE, USER_ID} from "./constants";
 import {temporary} from "App/TemporaryTimer/reducers";
 
 export const context = {
-    userId: createContextValue(CONTEXT_USER_ID, getCookie(USER_ID) === 'null' ? null : getCookie(USER_ID)),
+    auth: createContextValue(AUTH, {
+        userId: localStorage.getItem(USER_ID),
+        csrfToken: localStorage.getItem(CSRF_TOKEN)
+    }),
     eventId: createContextValue(EVENT_ID),
     formId: createContextValue(FORM_ID),
-    csrfToken: createContextValue(CSRF_TOKEN, getCookie(CSRF_TOKEN) === 'null' ? null : getCookie(CSRF_TOKEN)),
     page: createContextValue(PAGE, 0),
     pageSize: createContextValue(PAGE_SIZE, 9),
     temporary,
@@ -32,7 +32,7 @@ const wrapActions = (actions, state, setState, ACTIONS_ID) => {
     const FORM_ID = ACTIONS_ID || state.formId.value;
 
     const result = {};
-    const dispatch = fetchAndSetToken(state.csrfToken.value)(setToContext(setState));
+    const dispatch = fetchAndSetToken(state.auth.value.csrfToken)(setToContext(setState));
     for (const action in actions) {
         if (!(actionsStore[FORM_ID] && actionsStore[FORM_ID][action])) {
             result[action] = (...args) => actions[action](...args)(dispatch, state);

@@ -12,7 +12,7 @@ import Languages from "./Languages";
 import Dates from "./Dates";
 import MyEvents from "./MyEvents";
 
-const Filter = ({cleanFilter}) => {
+const Filter = ({cleanFilter, setPage}) => {
     const clearFilters = () => {
         cleanFilter();
         setPage(0);
