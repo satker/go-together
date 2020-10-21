@@ -13,4 +13,6 @@ public interface CrudService<D extends Dto> {
     D read(UUID uuid);
 
     void delete(UUID uuid);
+
+    String validate(D dto);
 }

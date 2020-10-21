@@ -6,6 +6,7 @@ import org.go.together.dto.NotificationDto;
 import org.go.together.dto.NotificationMessageDto;
 import org.go.together.model.NotificationMessage;
 import org.go.together.repository.interfaces.NotificationMessageRepository;
+import org.go.together.service.interfaces.NotificationService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

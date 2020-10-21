@@ -6,7 +6,7 @@ import org.go.together.dto.MessageDto;
 import org.go.together.find.controller.FindController;
 import org.go.together.find.dto.ResponseDto;
 import org.go.together.find.dto.form.FormDto;
-import org.go.together.service.MessageService;
+import org.go.together.service.interfaces.MessageService;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;

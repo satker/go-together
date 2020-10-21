@@ -9,6 +9,6 @@ import java.util.Map;
 public class NotificationMessageValidator extends Validator<NotificationMessageDto> {
     @Override
     public void getMapsForCheck(NotificationMessageDto dto) {
-        super.STRINGS_FOR_BLANK_CHECK = Map.of("messsage", NotificationMessageDto::getMessage);
+        super.STRINGS_FOR_BLANK_CHECK = Map.of("message", NotificationMessageDto::getMessage);
     }
 }

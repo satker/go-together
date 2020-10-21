@@ -6,6 +6,7 @@ import org.go.together.dto.EventUserDto;
 import org.go.together.model.Event;
 import org.go.together.model.EventUser;
 import org.go.together.repository.interfaces.EventRepository;
+import org.go.together.service.interfaces.EventUserService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

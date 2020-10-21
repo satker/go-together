@@ -7,10 +7,10 @@ import org.go.together.dto.NotificationMessageDto;
 import org.go.together.find.controller.FindController;
 import org.go.together.find.dto.ResponseDto;
 import org.go.together.find.dto.form.FormDto;
-import org.go.together.service.NotificationMessageService;
-import org.go.together.service.NotificationReceiverMessageService;
-import org.go.together.service.NotificationReceiverService;
-import org.go.together.service.NotificationService;
+import org.go.together.service.interfaces.NotificationMessageService;
+import org.go.together.service.interfaces.NotificationReceiverMessageService;
+import org.go.together.service.interfaces.NotificationReceiverService;
+import org.go.together.service.interfaces.NotificationService;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;

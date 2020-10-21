@@ -5,6 +5,7 @@ import org.go.together.context.RepositoryContext;
 import org.go.together.dto.ContentDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.model.Photo;
+import org.go.together.service.interfaces.PhotoService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

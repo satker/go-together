@@ -8,6 +8,7 @@ import org.go.together.mapper.CountryMapper;
 import org.go.together.model.Country;
 import org.go.together.model.Place;
 import org.go.together.repository.interfaces.CountryRepository;
+import org.go.together.service.interfaces.PlaceService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -10,6 +10,7 @@ import org.go.together.mapper.LanguageMapper;
 import org.go.together.model.SystemUser;
 import org.go.together.repository.interfaces.InterestRepository;
 import org.go.together.repository.interfaces.LanguageRepository;
+import org.go.together.service.interfaces.UserService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

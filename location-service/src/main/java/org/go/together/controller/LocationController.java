@@ -1,12 +1,15 @@
 package org.go.together.controller;
 
 import org.go.together.client.LocationClient;
-import org.go.together.dto.*;
+import org.go.together.dto.GroupLocationDto;
+import org.go.together.dto.IdDto;
+import org.go.together.dto.PlaceDto;
+import org.go.together.dto.SimpleDto;
 import org.go.together.find.controller.FindController;
-import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.dto.ResponseDto;
-import org.go.together.service.GroupLocationService;
-import org.go.together.service.PlaceService;
+import org.go.together.find.dto.form.FormDto;
+import org.go.together.service.interfaces.GroupLocationService;
+import org.go.together.service.interfaces.PlaceService;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;

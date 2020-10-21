@@ -10,6 +10,9 @@ import org.go.together.model.NotificationReceiverMessage;
 import org.go.together.repository.interfaces.NotificationMessageRepository;
 import org.go.together.repository.interfaces.NotificationReceiverMessageRepository;
 import org.go.together.repository.interfaces.NotificationRepository;
+import org.go.together.service.interfaces.NotificationMessageService;
+import org.go.together.service.interfaces.NotificationReceiverService;
+import org.go.together.service.interfaces.NotificationService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,10 +74,20 @@ public class NotificationReceiverServiceTest extends CrudServiceCommonTest<Notif
         ((NotificationReceiverService) crudService).addReceiver(dto.getNotification().getProducerId(), receiverId);
 
         Collection<NotificationReceiverMessage> notificationReceiverMessages = notificationReceiverMessageRepository.findAll();
+        int receiverMessagesSize = notificationReceiverMessageRepository.findByReceiverId(receiverId).size();
 
-        assertEquals(2, notificationReceiverMessages.size());
+        assertEquals(1, notificationReceiverMessages.size());
+        assertEquals(0, receiverMessagesSize);
 
-        assertFalse(notificationReceiverMessages.iterator().next().getIsRead());
+        createNotificationMessage();
+
+        int receiverAddMessagesSize = notificationReceiverMessageRepository.findByReceiverId(receiverId).size();
+        Collection<NotificationReceiverMessage> notificationReceiverNewMessages = notificationReceiverMessageRepository.findAll();
+
+        assertEquals(1, receiverAddMessagesSize);
+        assertEquals(3, notificationReceiverNewMessages.size());
+
+        assertFalse(notificationReceiverNewMessages.iterator().next().getIsRead());
         assertEquals(CREATED, notificationReceiverMessages.iterator().next().getNotificationMessage().getMessage());
     }
 

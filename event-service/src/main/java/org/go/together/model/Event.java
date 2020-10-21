@@ -31,10 +31,6 @@ public class Event extends NamedIdentifiedEntity {
     @Column(columnDefinition = "uuid")
     private UUID groupPhotoId;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "event_id")
-    private Set<EventUser> users;
-
     @Column(columnDefinition = "uuid")
     private UUID routeId;
 

@@ -4,9 +4,9 @@ import org.go.together.client.ContentClient;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.IdDto;
 import org.go.together.find.controller.FindController;
-import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.dto.ResponseDto;
-import org.go.together.service.GroupPhotoService;
+import org.go.together.find.dto.form.FormDto;
+import org.go.together.service.interfaces.GroupPhotoService;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;

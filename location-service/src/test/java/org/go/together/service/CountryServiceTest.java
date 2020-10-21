@@ -4,6 +4,7 @@ import org.go.together.context.RepositoryContext;
 import org.go.together.dto.CountryDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.model.Country;
+import org.go.together.service.interfaces.CountryService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;

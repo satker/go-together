@@ -3,6 +3,7 @@ package org.go.together.service;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.NotificationDto;
 import org.go.together.model.Notification;
+import org.go.together.service.interfaces.NotificationService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
