@@ -6,12 +6,13 @@ import org.go.together.dto.LocationDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.mapper.CountryMapper;
 import org.go.together.model.Country;
+import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 @Component
-public class LocationValidator extends Validator<LocationDto> {
+public class LocationValidator extends CommonValidator<LocationDto> {
     private final CountryMapper countryMapper;
     private final PlaceValidator placeValidator;
 

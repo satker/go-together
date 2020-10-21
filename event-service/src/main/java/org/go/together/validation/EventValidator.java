@@ -10,13 +10,14 @@ import org.go.together.dto.EventPaidThingDto;
 import org.go.together.dto.UserDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.validation.dto.DateIntervalDto;
+import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class EventValidator extends Validator<EventDto> {
+public class EventValidator extends CommonValidator<EventDto> {
     private final UserClient userClient;
     private final ContentClient contentClient;
     private final LocationClient locationClient;

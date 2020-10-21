@@ -3,16 +3,16 @@ package org.go.together.test.validation;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.enums.CrudOperation;
 import org.go.together.test.dto.TestDto;
-import org.go.together.validation.Validator;
 import org.go.together.validation.dto.DateIntervalDto;
 import org.go.together.validation.dto.NumberIntervalDto;
 import org.go.together.validation.dto.StringRegexDto;
+import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 @Component
-public class TestValidator extends Validator<TestDto> {
+public class TestValidator extends CommonValidator<TestDto> {
     private final ManyJoinValidator manyJoinValidator;
     private final JoinTestValidator joinTestValidator;
 

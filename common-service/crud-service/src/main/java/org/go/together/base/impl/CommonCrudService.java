@@ -13,7 +13,7 @@ import org.go.together.exceptions.ValidationException;
 import org.go.together.find.dto.ResponseDto;
 import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.dto.form.PageDto;
-import org.go.together.find.impl.FindServiceImpl;
+import org.go.together.find.impl.CommonFindService;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.Identified;
@@ -30,8 +30,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public abstract class CrudServiceImpl<D extends Dto, E extends IdentifiedEntity>
-        extends FindServiceImpl<E> implements CrudService<D> {
+public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntity>
+        extends CommonFindService<E> implements CrudService<D> {
     protected final Logger log = LoggerFactory.getLogger(getClass());
     protected Mapper<D, E> mapper;
     protected Validator<D> validator;

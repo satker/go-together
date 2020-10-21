@@ -1,6 +1,6 @@
 package org.go.together.service.impl;
 
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.LocationDto;
 import org.go.together.dto.PlaceDto;
@@ -18,7 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class LocationServiceImpl extends CrudServiceImpl<LocationDto, Location> implements LocationService {
+public class LocationServiceImpl extends CommonCrudService<LocationDto, Location> implements LocationService {
     private final PlaceService placeService;
     private final PlaceMapper placeMapper;
 

@@ -1,6 +1,6 @@
 package org.go.together.test.service.impl;
 
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.find.dto.ResponseDto;
 import org.go.together.test.client.AnotherClient;
@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class TestServiceImpl extends CrudServiceImpl<TestDto, TestEntity> implements TestService {
+public class TestServiceImpl extends CommonCrudService<TestDto, TestEntity> implements TestService {
     private final AnotherClient anotherClient;
     private final ManyJoinService manyJoinService;
     private final JoinTestService joinTestService;

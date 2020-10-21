@@ -1,6 +1,6 @@
 package org.go.together.service.impl;
 
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.dto.NotificationReceiverMessageDto;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.NotificationReceiverMessage;
@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class NotificationReceiverMessageServiceImpl extends CrudServiceImpl<NotificationReceiverMessageDto, NotificationReceiverMessage>
+public class NotificationReceiverMessageServiceImpl extends CommonCrudService<NotificationReceiverMessageDto, NotificationReceiverMessage>
         implements NotificationReceiverMessageService {
     private NotificationReceiverService notificationReceiverService;
     private NotificationMessageService notificationMessageService;

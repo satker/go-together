@@ -1,6 +1,6 @@
 package org.go.together.logic.service;
 
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.SimpleDto;
 import org.go.together.enums.CrudOperation;
@@ -66,12 +66,12 @@ class CrudServiceRevertTest {
     @Autowired
     private TestMapper testMapper;
 
-    private CrudServiceImpl<TestDto, TestEntity> testServiceOverride;
+    private CommonCrudService<TestDto, TestEntity> testServiceOverride;
 
     @BeforeEach
     public void init() {
         MockitoAnnotations.initMocks(this);
-        testServiceOverride = new CrudServiceImpl<>() {
+        testServiceOverride = new CommonCrudService<>() {
             @Override
             protected TestEntity enrichEntity(TestEntity entity, TestDto dto, CrudOperation crudOperation) {
                 if (crudOperation == CrudOperation.CREATE) {

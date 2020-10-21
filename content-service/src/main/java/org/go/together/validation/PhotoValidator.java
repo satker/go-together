@@ -3,12 +3,13 @@ package org.go.together.validation;
 import org.assertj.core.util.Strings;
 import org.go.together.dto.PhotoDto;
 import org.go.together.enums.CrudOperation;
+import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
 
 @Component
-public class PhotoValidator extends Validator<PhotoDto> {
+public class PhotoValidator extends CommonValidator<PhotoDto> {
     private static final String REGEX_CHECK_URL =
             "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
 

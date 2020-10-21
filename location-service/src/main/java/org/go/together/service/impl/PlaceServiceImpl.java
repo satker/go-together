@@ -1,7 +1,7 @@
 package org.go.together.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.dto.PlaceDto;
 import org.go.together.dto.SimpleDto;
 import org.go.together.mapper.CountryMapper;
@@ -19,7 +19,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class PlaceServiceImpl extends CrudServiceImpl<PlaceDto, Place> implements PlaceService {
+public class PlaceServiceImpl extends CommonCrudService<PlaceDto, Place> implements PlaceService {
     private final CountryService countryService;
     private final CountryMapper countryMapper;
 

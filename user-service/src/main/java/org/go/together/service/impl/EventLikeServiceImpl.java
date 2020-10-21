@@ -1,6 +1,6 @@
 package org.go.together.service.impl;
 
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.dto.EventLikeDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.find.dto.FieldMapper;
@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class EventLikeServiceImpl extends CrudServiceImpl<EventLikeDto, EventLike> implements EventLikeService {
+public class EventLikeServiceImpl extends CommonCrudService<EventLikeDto, EventLike> implements EventLikeService {
     @Override
     public String getServiceName() {
         return "eventLike";

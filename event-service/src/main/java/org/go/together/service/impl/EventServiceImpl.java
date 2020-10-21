@@ -1,7 +1,7 @@
 package org.go.together.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class EventServiceImpl extends CrudServiceImpl<EventDto, Event> implements EventService {
+public class EventServiceImpl extends CommonCrudService<EventDto, Event> implements EventService {
     private final LocationClient locationClient;
     private final ContentClient contentClient;
     private final UserClient userClient;

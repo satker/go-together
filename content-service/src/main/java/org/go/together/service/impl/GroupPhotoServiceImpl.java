@@ -1,6 +1,6 @@
 package org.go.together.service.impl;
 
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.model.GroupPhoto;
@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class GroupPhotoServiceImpl extends CrudServiceImpl<GroupPhotoDto, GroupPhoto> implements GroupPhotoService {
+public class GroupPhotoServiceImpl extends CommonCrudService<GroupPhotoDto, GroupPhoto> implements GroupPhotoService {
     private PhotoService photoService;
 
     @Autowired

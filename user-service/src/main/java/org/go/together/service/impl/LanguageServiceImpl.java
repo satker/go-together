@@ -1,6 +1,6 @@
 package org.go.together.service.impl;
 
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.dto.LanguageDto;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Language;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class LanguageServiceImpl extends CrudServiceImpl<LanguageDto, Language> implements LanguageService {
+public class LanguageServiceImpl extends CommonCrudService<LanguageDto, Language> implements LanguageService {
     @Override
     public String getServiceName() {
         return "language";

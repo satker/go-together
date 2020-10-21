@@ -1,7 +1,7 @@
 package org.go.together.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventUserDto;
 import org.go.together.enums.NotificationStatus;
@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class EventUserServiceImpl extends CrudServiceImpl<EventUserDto, EventUser> implements EventUserService {
+public class EventUserServiceImpl extends CommonCrudService<EventUserDto, EventUser> implements EventUserService {
     private final UserClient userClient;
     private final EventRepository eventRepository;
 

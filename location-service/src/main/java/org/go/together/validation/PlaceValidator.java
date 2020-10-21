@@ -3,12 +3,13 @@ package org.go.together.validation;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.PlaceDto;
 import org.go.together.enums.CrudOperation;
+import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 @Component
-public class PlaceValidator extends Validator<PlaceDto> {
+public class PlaceValidator extends CommonValidator<PlaceDto> {
     private final CountryValidator countryValidator;
 
     public PlaceValidator(CountryValidator countryValidator) {

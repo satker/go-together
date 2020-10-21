@@ -21,7 +21,7 @@ import java.util.*;
 
 import static org.go.together.find.utils.FindUtils.mergeFilters;
 
-public abstract class FindServiceImpl<E extends IdentifiedEntity> implements FindService<E> {
+public abstract class CommonFindService<E extends IdentifiedEntity> implements FindService<E> {
     protected CustomRepository<E> repository;
     private Finder remoteFindService;
     private CorrectorService correctorRemoteFiltersService;

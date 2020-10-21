@@ -1,7 +1,7 @@
 package org.go.together.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.*;
@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl extends CrudServiceImpl<UserDto, SystemUser> implements UserService {
+public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> implements UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ContentClient contentClient;
     private final SimpleUserMapper simpleUserMapper;

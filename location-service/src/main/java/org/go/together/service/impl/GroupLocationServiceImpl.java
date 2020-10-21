@@ -1,6 +1,6 @@
 package org.go.together.service.impl;
 
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.dto.GroupLocationDto;
 import org.go.together.dto.LocationDto;
 import org.go.together.enums.CrudOperation;
@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class GroupLocationServiceImpl extends CrudServiceImpl<GroupLocationDto, GroupLocation>
+public class GroupLocationServiceImpl extends CommonCrudService<GroupLocationDto, GroupLocation>
         implements GroupLocationService {
     private final LocationService locationService;
 

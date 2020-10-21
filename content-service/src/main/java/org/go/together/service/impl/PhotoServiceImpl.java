@@ -2,7 +2,7 @@ package org.go.together.service.impl;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.enums.CrudOperation;
@@ -20,7 +20,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class PhotoServiceImpl extends CrudServiceImpl<PhotoDto, Photo> implements PhotoService {
+public class PhotoServiceImpl extends CommonCrudService<PhotoDto, Photo> implements PhotoService {
     private final String photoPath;
 
     public PhotoServiceImpl(@Value("${photo.store.path}") String photoPath) {

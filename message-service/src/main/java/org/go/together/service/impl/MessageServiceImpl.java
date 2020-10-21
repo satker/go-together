@@ -1,6 +1,6 @@
 package org.go.together.service.impl;
 
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.dto.MessageDto;
 import org.go.together.dto.MessageType;
 import org.go.together.enums.CrudOperation;
@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class MessageServiceImpl extends CrudServiceImpl<MessageDto, Message> implements MessageService {
+public class MessageServiceImpl extends CommonCrudService<MessageDto, Message> implements MessageService {
     @Override
     public Set<MessageDto> getReceiverMessages(UUID recipientId, MessageType messageType) {
         return ((MessageRepository) repository).findReviewsByRecipientId(recipientId, messageType).stream()

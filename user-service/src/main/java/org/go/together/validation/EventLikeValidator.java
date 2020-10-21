@@ -5,10 +5,11 @@ import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.model.EventLike;
 import org.go.together.repository.interfaces.EventLikeRepository;
+import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EventLikeValidator extends Validator<EventLikeDto> {
+public class EventLikeValidator extends CommonValidator<EventLikeDto> {
     private final EventLikeRepository eventLikeRepository;
 
     public EventLikeValidator(EventLikeRepository eventLikeRepository) {

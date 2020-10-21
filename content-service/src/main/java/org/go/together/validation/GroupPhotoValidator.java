@@ -3,10 +3,11 @@ package org.go.together.validation;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.enums.CrudOperation;
+import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GroupPhotoValidator extends Validator<GroupPhotoDto> {
+public class GroupPhotoValidator extends CommonValidator<GroupPhotoDto> {
     private final PhotoValidator photoValidator;
 
     public GroupPhotoValidator(PhotoValidator photoValidator) {

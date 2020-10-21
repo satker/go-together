@@ -1,6 +1,6 @@
 package org.go.together.service.impl;
 
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.dto.NotificationMessageDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.find.dto.FieldMapper;
@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.Map;
 
 @Service
-public class NotificationMessageServiceImpl extends CrudServiceImpl<NotificationMessageDto, NotificationMessage>
+public class NotificationMessageServiceImpl extends CommonCrudService<NotificationMessageDto, NotificationMessage>
         implements NotificationMessageService {
     private NotificationReceiverService notificationReceiverService;
 

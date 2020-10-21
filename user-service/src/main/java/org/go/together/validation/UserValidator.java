@@ -7,12 +7,13 @@ import org.go.together.dto.UserDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.repository.interfaces.InterestRepository;
 import org.go.together.repository.interfaces.LanguageRepository;
+import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
 @Service
-public class UserValidator extends Validator<UserDto> {
+public class UserValidator extends CommonValidator<UserDto> {
     private final LocationClient locationClient;
     private final LanguageRepository languageRepository;
     private final InterestRepository interestRepository;

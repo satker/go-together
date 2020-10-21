@@ -1,6 +1,6 @@
 package org.go.together.service.impl;
 
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.dto.NotificationDto;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.model.Notification;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public class NotificationServiceImpl extends CrudServiceImpl<NotificationDto, Notification>
+public class NotificationServiceImpl extends CommonCrudService<NotificationDto, Notification>
         implements NotificationService {
     @Override
     public NotificationDto getNotificationByProducerId(UUID producerId) {

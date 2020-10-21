@@ -1,6 +1,6 @@
 package org.go.together.service.impl;
 
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.dto.InterestDto;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Interest;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class InterestServiceImpl extends CrudServiceImpl<InterestDto, Interest> implements InterestService {
+public class InterestServiceImpl extends CommonCrudService<InterestDto, Interest> implements InterestService {
     @Override
     public String getServiceName() {
         return "interest";

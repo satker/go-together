@@ -5,6 +5,7 @@ import org.go.together.dto.GroupLocationDto;
 import org.go.together.dto.LocationCategory;
 import org.go.together.dto.LocationDto;
 import org.go.together.enums.CrudOperation;
+import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Component
-public class GroupLocationValidator extends Validator<GroupLocationDto> {
+public class GroupLocationValidator extends CommonValidator<GroupLocationDto> {
     private final LocationValidator locationValidator;
 
     public GroupLocationValidator(LocationValidator locationValidator) {

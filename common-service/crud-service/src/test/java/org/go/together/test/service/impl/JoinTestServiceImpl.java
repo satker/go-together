@@ -1,6 +1,6 @@
 package org.go.together.test.service.impl;
 
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.entities.JoinTestEntity;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class JoinTestServiceImpl extends CrudServiceImpl<JoinTestDto, JoinTestEntity> implements JoinTestService {
+public class JoinTestServiceImpl extends CommonCrudService<JoinTestDto, JoinTestEntity> implements JoinTestService {
     @Override
     public String getServiceName() {
         return "joinTest";

@@ -1,6 +1,6 @@
 package org.go.together.test.service.impl;
 
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.impl.CommonCrudService;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.entities.ManyJoinEntity;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class ManyJoinServiceImpl extends CrudServiceImpl<ManyJoinDto, ManyJoinEntity> implements ManyJoinService {
+public class ManyJoinServiceImpl extends CommonCrudService<ManyJoinDto, ManyJoinEntity> implements ManyJoinService {
     @Override
     public String getServiceName() {
         return "manyJoin";
