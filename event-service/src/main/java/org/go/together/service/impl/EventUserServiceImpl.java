@@ -1,5 +1,6 @@
 package org.go.together.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.impl.CommonCrudService;
 import org.go.together.client.UserClient;
@@ -18,15 +19,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class EventUserServiceImpl extends CommonCrudService<EventUserDto, EventUser> implements EventUserService {
     private final UserClient userClient;
     private final EventRepository eventRepository;
-
-    protected EventUserServiceImpl(UserClient userClient,
-                                   EventRepository eventRepository) {
-        this.userClient = userClient;
-        this.eventRepository = eventRepository;
-    }
 
     @Override
     public boolean deleteEventUserByEventId(EventUserDto eventUserDto) {

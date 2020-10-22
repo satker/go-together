@@ -1,30 +1,24 @@
 package org.go.together.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventDto;
+import org.go.together.dto.EventPaidThingDto;
 import org.go.together.model.Event;
+import org.go.together.model.EventPaidThing;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 
 @Component
+@RequiredArgsConstructor
 public class EventMapper implements Mapper<EventDto, Event> {
     private final UserClient userClient;
     private final LocationClient locationClient;
-    private final EventPaidThingMapper eventPaidThingMapper;
+    private final Mapper<EventPaidThingDto, EventPaidThing> eventPaidThingMapper;
     private final ContentClient contentClient;
-
-    public EventMapper(UserClient userClient,
-                       LocationClient locationClient,
-                       EventPaidThingMapper eventPaidThingMapper,
-                       ContentClient contentClient) {
-        this.userClient = userClient;
-        this.locationClient = locationClient;
-        this.eventPaidThingMapper = eventPaidThingMapper;
-        this.contentClient = contentClient;
-    }
 
     @Override
     public EventDto entityToDto(Event entity) {

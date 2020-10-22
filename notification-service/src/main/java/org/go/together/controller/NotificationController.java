@@ -1,5 +1,6 @@
 package org.go.together.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.client.NotificationClient;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.NotificationDto;
@@ -16,21 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 public class NotificationController extends FindController implements NotificationClient {
     private final NotificationMessageService notificationMessageService;
     private final NotificationReceiverService notificationReceiverService;
     private final NotificationReceiverMessageService notificationReceiverMessageService;
     private final NotificationService notificationService;
-
-    public NotificationController(NotificationMessageService notificationMessageService,
-                                  NotificationReceiverService notificationReceiverService,
-                                  NotificationReceiverMessageService notificationReceiverMessageService,
-                                  NotificationService notificationService) {
-        this.notificationMessageService = notificationMessageService;
-        this.notificationReceiverService = notificationReceiverService;
-        this.notificationReceiverMessageService = notificationReceiverMessageService;
-        this.notificationService = notificationService;
-    }
 
     @Override
     public ResponseDto<Object> find(FormDto formDto) {

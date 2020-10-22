@@ -3,7 +3,7 @@ package org.go.together.logic.validation;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.SimpleDto;
 import org.go.together.test.dto.TestDto;
-import org.go.together.test.validation.TestValidator;
+import org.go.together.validation.Validator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ContextConfiguration(classes = RepositoryContext.class)
 class ValidatorTest {
     @Autowired
-    private TestValidator testValidator;
+    private Validator<TestDto> testValidator;
 
     TestDto testDto;
 

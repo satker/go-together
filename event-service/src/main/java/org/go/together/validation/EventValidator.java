@@ -1,5 +1,6 @@
 package org.go.together.validation;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
@@ -17,21 +18,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class EventValidator extends CommonValidator<EventDto> {
     private final UserClient userClient;
     private final ContentClient contentClient;
     private final LocationClient locationClient;
-    private final EventPaidThingValidator eventPaidThingValidator;
-
-    public EventValidator(UserClient userClient,
-                          ContentClient contentClient,
-                          LocationClient locationClient,
-                          EventPaidThingValidator eventPaidThingValidator) {
-        this.userClient = userClient;
-        this.contentClient = contentClient;
-        this.locationClient = locationClient;
-        this.eventPaidThingValidator = eventPaidThingValidator;
-    }
+    private final Validator<EventPaidThingDto> eventPaidThingValidator;
 
     @Override
     public void getMapsForCheck(EventDto dto) {

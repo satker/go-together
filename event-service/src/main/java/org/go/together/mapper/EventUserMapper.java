@@ -1,5 +1,6 @@
 package org.go.together.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventUserDto;
 import org.go.together.model.EventUser;
@@ -8,12 +9,9 @@ import org.springframework.stereotype.Component;
 import java.util.Collections;
 
 @Component
+@RequiredArgsConstructor
 public class EventUserMapper implements Mapper<EventUserDto, EventUser> {
     private final UserClient userClient;
-
-    public EventUserMapper(UserClient userClient) {
-        this.userClient = userClient;
-    }
 
     @Override
     public EventUserDto entityToDto(EventUser entity) {

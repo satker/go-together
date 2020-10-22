@@ -1,5 +1,6 @@
 package org.go.together.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.base.impl.CommonCrudService;
 import org.go.together.dto.GroupLocationDto;
 import org.go.together.dto.LocationDto;
@@ -17,13 +18,10 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class GroupLocationServiceImpl extends CommonCrudService<GroupLocationDto, GroupLocation>
         implements GroupLocationService {
     private final LocationService locationService;
-
-    protected GroupLocationServiceImpl(LocationService locationService) {
-        this.locationService = locationService;
-    }
 
     @Override
     protected GroupLocation enrichEntity(GroupLocation entity, GroupLocationDto dto, CrudOperation crudOperation) {

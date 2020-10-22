@@ -6,15 +6,17 @@ import org.go.together.dto.SimpleDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.ApplicationException;
 import org.go.together.exceptions.ValidationException;
+import org.go.together.mapper.Mapper;
+import org.go.together.test.dto.JoinTestDto;
+import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.dto.TestDto;
+import org.go.together.test.entities.JoinTestEntity;
+import org.go.together.test.entities.ManyJoinEntity;
 import org.go.together.test.entities.TestEntity;
-import org.go.together.test.mapper.JoinTestMapper;
-import org.go.together.test.mapper.ManyJoinMapper;
-import org.go.together.test.mapper.TestMapper;
 import org.go.together.test.repository.interfaces.JoinTestRepository;
 import org.go.together.test.repository.interfaces.ManyJoinRepository;
 import org.go.together.test.repository.interfaces.TestRepository;
-import org.go.together.test.validation.TestValidator;
+import org.go.together.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,10 +48,10 @@ class CrudServiceRevertTest {
     private static final String CREATED_TEST_NAME = "create test name";
 
     @Autowired
-    private JoinTestMapper joinTestMapper;
+    private Mapper<JoinTestDto, JoinTestEntity> joinTestMapper;
 
     @Autowired
-    private ManyJoinMapper manyJoinMapper;
+    private Mapper<ManyJoinDto, ManyJoinEntity> manyJoinMapper;
 
     @Autowired
     private ManyJoinRepository manyJoinRepository;
@@ -61,10 +63,10 @@ class CrudServiceRevertTest {
     private TestRepository testRepository;
 
     @Autowired
-    private TestValidator testValidator;
+    private Validator<TestDto> testValidator;
 
     @Autowired
-    private TestMapper testMapper;
+    private Mapper<TestDto, TestEntity> testMapper;
 
     private CommonCrudService<TestDto, TestEntity> testServiceOverride;
 

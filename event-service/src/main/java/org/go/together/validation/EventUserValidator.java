@@ -1,5 +1,6 @@
 package org.go.together.validation;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventUserDto;
 import org.go.together.enums.CrudOperation;
@@ -10,15 +11,10 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class EventUserValidator extends CommonValidator<EventUserDto> {
     private final UserClient userClient;
     private final EventRepository eventRepository;
-
-    public EventUserValidator(UserClient userClient,
-                              EventRepository eventRepository) {
-        this.userClient = userClient;
-        this.eventRepository = eventRepository;
-    }
 
     @Override
     public void getMapsForCheck(EventUserDto dto) {

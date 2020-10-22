@@ -1,10 +1,13 @@
 package org.go.together.validation;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Strings;
+import org.go.together.dto.CountryDto;
 import org.go.together.dto.LocationDto;
+import org.go.together.dto.PlaceDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.mapper.CountryMapper;
+import org.go.together.mapper.Mapper;
 import org.go.together.model.Country;
 import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
@@ -12,15 +15,10 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class LocationValidator extends CommonValidator<LocationDto> {
-    private final CountryMapper countryMapper;
-    private final PlaceValidator placeValidator;
-
-    public LocationValidator(CountryMapper countryMapper,
-                             PlaceValidator placeValidator) {
-        this.countryMapper = countryMapper;
-        this.placeValidator = placeValidator;
-    }
+    private final Mapper<CountryDto, Country> countryMapper;
+    private final Validator<PlaceDto> placeValidator;
 
     @Override
     public void getMapsForCheck(LocationDto locationDto) {

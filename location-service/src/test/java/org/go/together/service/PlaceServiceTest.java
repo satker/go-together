@@ -4,7 +4,7 @@ import org.go.together.context.RepositoryContext;
 import org.go.together.dto.CountryDto;
 import org.go.together.dto.PlaceDto;
 import org.go.together.dto.SimpleDto;
-import org.go.together.mapper.CountryMapper;
+import org.go.together.mapper.Mapper;
 import org.go.together.model.Country;
 import org.go.together.model.Place;
 import org.go.together.repository.interfaces.CountryRepository;
@@ -25,7 +25,7 @@ class PlaceServiceTest extends CrudServiceCommonTest<Place, PlaceDto> {
     private CountryRepository countryRepository;
 
     @Autowired
-    private CountryMapper countryMapper;
+    private Mapper<CountryDto, Country> countryMapper;
 
     @Test
     void getLocationsByName() {

@@ -1,5 +1,6 @@
 package org.go.together.validation;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
@@ -13,21 +14,12 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class UserValidator extends CommonValidator<UserDto> {
     private final LocationClient locationClient;
     private final LanguageRepository languageRepository;
     private final InterestRepository interestRepository;
     private final ContentClient contentClient;
-
-    public UserValidator(LocationClient locationClient,
-                         LanguageRepository languageRepository,
-                         ContentClient contentClient,
-                         InterestRepository interestRepository) {
-        this.locationClient = locationClient;
-        this.contentClient = contentClient;
-        this.languageRepository = languageRepository;
-        this.interestRepository = interestRepository;
-    }
 
     @Override
     public String commonValidation(UserDto dto, CrudOperation crudOperation) {

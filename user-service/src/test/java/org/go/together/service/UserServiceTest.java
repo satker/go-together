@@ -5,8 +5,9 @@ import org.go.together.client.LocationClient;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.mapper.InterestMapper;
-import org.go.together.mapper.LanguageMapper;
+import org.go.together.mapper.Mapper;
+import org.go.together.model.Interest;
+import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
 import org.go.together.repository.interfaces.InterestRepository;
 import org.go.together.repository.interfaces.LanguageRepository;
@@ -36,13 +37,13 @@ class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
     private InterestRepository interestRepository;
 
     @Autowired
-    private InterestMapper interestMapper;
+    private Mapper<InterestDto, Interest> interestMapper;
 
     @Autowired
     private LanguageRepository languageRepository;
 
     @Autowired
-    private LanguageMapper languageMapper;
+    private Mapper<LanguageDto, Language> languageMapper;
 
     @BeforeEach
     public void init() {

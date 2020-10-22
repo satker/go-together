@@ -2,7 +2,10 @@ package org.go.together.test.validation;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.enums.CrudOperation;
+import org.go.together.test.dto.JoinTestDto;
+import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.dto.TestDto;
+import org.go.together.validation.Validator;
 import org.go.together.validation.dto.DateIntervalDto;
 import org.go.together.validation.dto.NumberIntervalDto;
 import org.go.together.validation.dto.StringRegexDto;
@@ -13,11 +16,11 @@ import java.util.Map;
 
 @Component
 public class TestValidator extends CommonValidator<TestDto> {
-    private final ManyJoinValidator manyJoinValidator;
-    private final JoinTestValidator joinTestValidator;
+    private final Validator<ManyJoinDto> manyJoinValidator;
+    private final Validator<JoinTestDto> joinTestValidator;
 
-    public TestValidator(ManyJoinValidator manyJoinValidator,
-                         JoinTestValidator joinTestValidator) {
+    public TestValidator(Validator<ManyJoinDto> manyJoinValidator,
+                         Validator<JoinTestDto> joinTestValidator) {
         this.manyJoinValidator = manyJoinValidator;
         this.joinTestValidator = joinTestValidator;
     }

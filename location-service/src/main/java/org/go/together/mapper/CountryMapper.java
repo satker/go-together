@@ -1,5 +1,6 @@
 package org.go.together.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.dto.CountryDto;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.model.Country;
@@ -7,12 +8,9 @@ import org.go.together.repository.interfaces.CountryRepository;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class CountryMapper implements Mapper<CountryDto, Country> {
     private final CountryRepository countryRepository;
-
-    public CountryMapper(CountryRepository countryRepository) {
-        this.countryRepository = countryRepository;
-    }
 
     public CountryDto entityToDto(Country country) {
         CountryDto countryDto = new CountryDto();

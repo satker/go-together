@@ -1,19 +1,19 @@
 package org.go.together.mapper;
 
+import lombok.RequiredArgsConstructor;
+import org.go.together.dto.NotificationMessageDto;
+import org.go.together.dto.NotificationReceiverDto;
 import org.go.together.dto.NotificationReceiverMessageDto;
+import org.go.together.model.NotificationMessage;
+import org.go.together.model.NotificationReceiver;
 import org.go.together.model.NotificationReceiverMessage;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class NotificationReceiverMessageMapper implements Mapper<NotificationReceiverMessageDto, NotificationReceiverMessage> {
-    private final NotificationMessageMapper notificationMessageMapper;
-    private final NotificationReceiverMapper notificationReceiverMapper;
-
-    public NotificationReceiverMessageMapper(NotificationMessageMapper notificationMessageMapper,
-                                             NotificationReceiverMapper notificationReceiverMapper) {
-        this.notificationMessageMapper = notificationMessageMapper;
-        this.notificationReceiverMapper = notificationReceiverMapper;
-    }
+    private final Mapper<NotificationMessageDto, NotificationMessage> notificationMessageMapper;
+    private final Mapper<NotificationReceiverDto, NotificationReceiver> notificationReceiverMapper;
 
     @Override
     public NotificationReceiverMessageDto entityToDto(NotificationReceiverMessage entity) {

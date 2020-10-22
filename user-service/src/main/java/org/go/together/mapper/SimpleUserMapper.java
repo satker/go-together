@@ -1,5 +1,6 @@
 package org.go.together.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.client.ContentClient;
 import org.go.together.dto.SimpleUserDto;
 import org.go.together.model.SystemUser;
@@ -7,14 +8,10 @@ import org.go.together.repository.interfaces.UserRepository;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class SimpleUserMapper implements Mapper<SimpleUserDto, SystemUser> {
     private final ContentClient contentClient;
     private final UserRepository userRepository;
-
-    public SimpleUserMapper(ContentClient contentClient, UserRepository userRepository) {
-        this.contentClient = contentClient;
-        this.userRepository = userRepository;
-    }
 
     @Override
     public SimpleUserDto entityToDto(SystemUser entity) {

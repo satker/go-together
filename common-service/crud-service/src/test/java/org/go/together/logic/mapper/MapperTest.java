@@ -4,13 +4,13 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.SimpleDto;
 import org.go.together.interfaces.Identified;
+import org.go.together.mapper.Mapper;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.dto.TestDto;
 import org.go.together.test.entities.JoinTestEntity;
 import org.go.together.test.entities.ManyJoinEntity;
 import org.go.together.test.entities.TestEntity;
-import org.go.together.test.mapper.TestMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ContextConfiguration(classes = RepositoryContext.class)
 class MapperTest {
     @Autowired
-    private TestMapper testMapper;
+    private Mapper<TestDto, TestEntity> testMapper;
 
     TestDto testDto;
     TestEntity testEntity;

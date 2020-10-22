@@ -1,5 +1,6 @@
 package org.go.together.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.client.UserClient;
 import org.go.together.dto.*;
 import org.go.together.find.controller.FindController;
@@ -15,15 +16,10 @@ import java.util.Set;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 class UserController extends FindController implements UserClient {
     private final UserService userService;
     private final EventLikeService eventLikeService;
-
-    public UserController(UserService userService,
-                          EventLikeService eventLikeService) {
-        this.userService = userService;
-        this.eventLikeService = eventLikeService;
-    }
 
     @Override
     public ResponseDto<Object> find(FormDto formDto) {

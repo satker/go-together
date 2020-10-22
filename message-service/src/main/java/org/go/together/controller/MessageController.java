@@ -1,5 +1,6 @@
 package org.go.together.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.client.MessageClient;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.MessageDto;
@@ -16,12 +17,9 @@ import java.util.UUID;
 import static org.go.together.dto.MessageType.TO_EVENT;
 
 @RestController
+@RequiredArgsConstructor
 public class MessageController extends FindController implements MessageClient {
     private final MessageService messageService;
-
-    public MessageController(MessageService messageService) {
-        this.messageService = messageService;
-    }
 
     @Override
     public Map<UUID, MessageDto> getAllChatsByEvent(UUID eventId) {

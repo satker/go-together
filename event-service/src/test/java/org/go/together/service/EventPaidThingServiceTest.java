@@ -2,7 +2,8 @@ package org.go.together.service;
 
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.EventPaidThingDto;
-import org.go.together.mapper.PaidThingMapper;
+import org.go.together.dto.PaidThingDto;
+import org.go.together.mapper.Mapper;
 import org.go.together.model.EventPaidThing;
 import org.go.together.model.PaidThing;
 import org.go.together.repository.interfaces.PaidThingRepository;
@@ -16,7 +17,7 @@ class EventPaidThingServiceTest extends CrudServiceCommonTest<EventPaidThing, Ev
     private PaidThingRepository paidThingRepository;
 
     @Autowired
-    private PaidThingMapper paidThingMapper;
+    private Mapper<PaidThingDto, PaidThing> paidThingMapper;
 
     @Override
     protected EventPaidThingDto createDto() {

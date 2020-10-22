@@ -4,12 +4,9 @@ import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.EventDto;
-import org.go.together.dto.EventPaidThingDto;
-import org.go.together.dto.IdDto;
-import org.go.together.dto.SimpleDto;
+import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
-import org.go.together.mapper.PaidThingMapper;
+import org.go.together.mapper.Mapper;
 import org.go.together.model.Event;
 import org.go.together.model.PaidThing;
 import org.go.together.repository.interfaces.PaidThingRepository;
@@ -41,7 +38,7 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
     private ContentClient contentClient;
 
     @Autowired
-    private PaidThingMapper paidThingMapper;
+    private Mapper<PaidThingDto, PaidThing> paidThingMapper;
 
     @Autowired
     private PaidThingRepository paidThingRepository;

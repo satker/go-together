@@ -1,5 +1,6 @@
 package org.go.together.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.impl.CommonCrudService;
 import org.go.together.client.ContentClient;
@@ -17,18 +18,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class EventServiceImpl extends CommonCrudService<EventDto, Event> implements EventService {
     private final LocationClient locationClient;
     private final ContentClient contentClient;
     private final UserClient userClient;
-
-    protected EventServiceImpl(LocationClient locationClient,
-                               ContentClient contentClient,
-                               UserClient userClient) {
-        this.locationClient = locationClient;
-        this.contentClient = contentClient;
-        this.userClient = userClient;
-    }
 
     @Override
     protected Event enrichEntity(Event entity, EventDto dto, CrudOperation crudOperation) {

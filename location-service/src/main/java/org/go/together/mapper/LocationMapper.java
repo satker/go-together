@@ -1,26 +1,19 @@
 package org.go.together.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.dto.LocationDto;
+import org.go.together.dto.PlaceDto;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.model.Location;
 import org.go.together.model.Place;
 import org.go.together.repository.interfaces.PlaceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class LocationMapper implements Mapper<LocationDto, Location> {
     private final PlaceRepository placeRepository;
-    private PlaceMapper placeMapper;
-
-    public LocationMapper(PlaceRepository placeRepository) {
-        this.placeRepository = placeRepository;
-    }
-
-    @Autowired
-    public void setPlaceMapper(PlaceMapper placeMapper) {
-        this.placeMapper = placeMapper;
-    }
+    private final Mapper<PlaceDto, Place> placeMapper;
 
     public LocationDto entityToDto(Location location) {
         Place place = placeRepository.findByLocationId(location.getId())

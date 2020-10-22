@@ -1,7 +1,10 @@
 package org.go.together.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.dto.EventLikeDto;
+import org.go.together.dto.SimpleUserDto;
 import org.go.together.model.EventLike;
+import org.go.together.model.SystemUser;
 import org.go.together.repository.interfaces.EventLikeRepository;
 import org.springframework.stereotype.Component;
 
@@ -9,15 +12,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class EventLikeMapper implements Mapper<EventLikeDto, EventLike> {
     private final EventLikeRepository eventLikeRepository;
-    private final SimpleUserMapper simpleUserMapper;
-
-    public EventLikeMapper(EventLikeRepository eventLikeRepository,
-                           SimpleUserMapper simpleUserMapper) {
-        this.eventLikeRepository = eventLikeRepository;
-        this.simpleUserMapper = simpleUserMapper;
-    }
+    private final Mapper<SimpleUserDto, SystemUser> simpleUserMapper;
 
     @Override
     public EventLikeDto entityToDto(EventLike entity) {

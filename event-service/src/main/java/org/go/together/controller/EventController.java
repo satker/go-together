@@ -1,5 +1,6 @@
 package org.go.together.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.client.EventClient;
 import org.go.together.dto.*;
 import org.go.together.find.controller.FindController;
@@ -16,15 +17,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RestController
+@RequiredArgsConstructor
 public class EventController extends FindController implements EventClient {
     private final EventService eventService;
     private final EventUserService eventUserService;
-
-    public EventController(EventService eventService,
-                           EventUserService eventUserService) {
-        this.eventService = eventService;
-        this.eventUserService = eventUserService;
-    }
 
     @Override
     public EventDto getEventById(UUID eventId) {

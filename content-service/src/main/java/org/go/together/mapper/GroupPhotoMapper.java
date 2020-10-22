@@ -1,20 +1,19 @@
 package org.go.together.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.model.GroupPhoto;
+import org.go.together.model.Photo;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class GroupPhotoMapper implements Mapper<GroupPhotoDto, GroupPhoto> {
-    private final PhotoMapper photoMapper;
-
-    public GroupPhotoMapper(PhotoMapper photoMapper) {
-        this.photoMapper = photoMapper;
-    }
+    private final Mapper<PhotoDto, Photo> photoMapper;
 
     @Override
     public GroupPhotoDto entityToDto(GroupPhoto entity) {

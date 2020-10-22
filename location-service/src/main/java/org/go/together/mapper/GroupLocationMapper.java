@@ -1,18 +1,18 @@
 package org.go.together.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.dto.GroupLocationDto;
+import org.go.together.dto.LocationDto;
 import org.go.together.model.GroupLocation;
+import org.go.together.model.Location;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class GroupLocationMapper implements Mapper<GroupLocationDto, GroupLocation> {
-    private final LocationMapper locationMapper;
-
-    public GroupLocationMapper(LocationMapper locationMapper) {
-        this.locationMapper = locationMapper;
-    }
+    private final Mapper<LocationDto, Location> locationMapper;
 
     @Override
     public GroupLocationDto entityToDto(GroupLocation entity) {

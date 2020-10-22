@@ -1,5 +1,6 @@
 package org.go.together.validation;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.dto.EventLikeDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
@@ -9,12 +10,9 @@ import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class EventLikeValidator extends CommonValidator<EventLikeDto> {
     private final EventLikeRepository eventLikeRepository;
-
-    public EventLikeValidator(EventLikeRepository eventLikeRepository) {
-        this.eventLikeRepository = eventLikeRepository;
-    }
 
     @Override
     public void getMapsForCheck(EventLikeDto dto) {

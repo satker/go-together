@@ -1,5 +1,6 @@
 package org.go.together.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.client.ContentClient;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.IdDto;
@@ -12,12 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 public class ContentController extends FindController implements ContentClient {
     private final GroupPhotoService groupPhotoService;
-
-    public ContentController(GroupPhotoService groupPhotoService) {
-        this.groupPhotoService = groupPhotoService;
-    }
 
     @Override
     public IdDto createGroup(GroupPhotoDto groupPhotoDto) {

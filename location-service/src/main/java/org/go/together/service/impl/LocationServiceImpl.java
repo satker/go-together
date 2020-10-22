@@ -1,5 +1,6 @@
 package org.go.together.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.base.impl.CommonCrudService;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.LocationDto;
@@ -7,7 +8,7 @@ import org.go.together.dto.PlaceDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.find.dto.FieldMapper;
-import org.go.together.mapper.PlaceMapper;
+import org.go.together.mapper.Mapper;
 import org.go.together.model.Location;
 import org.go.together.model.Place;
 import org.go.together.service.interfaces.LocationService;
@@ -18,15 +19,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class LocationServiceImpl extends CommonCrudService<LocationDto, Location> implements LocationService {
     private final PlaceService placeService;
-    private final PlaceMapper placeMapper;
-
-    public LocationServiceImpl(PlaceService placeService,
-                               PlaceMapper placeMapper) {
-        this.placeService = placeService;
-        this.placeMapper = placeMapper;
-    }
+    private final Mapper<PlaceDto, Place> placeMapper;
 
     public Set<Location> saveOrUpdateEventRoutes(Set<LocationDto> locationDtos, Set<Location> presentedLocations) {
         Set<UUID> presentedEventLocations = presentedLocations.stream()

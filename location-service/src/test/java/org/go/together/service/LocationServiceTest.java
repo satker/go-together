@@ -5,7 +5,7 @@ import org.go.together.dto.CountryDto;
 import org.go.together.dto.LocationDto;
 import org.go.together.dto.PlaceDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.mapper.CountryMapper;
+import org.go.together.mapper.Mapper;
 import org.go.together.model.Country;
 import org.go.together.model.Location;
 import org.go.together.repository.interfaces.CountryRepository;
@@ -25,7 +25,7 @@ class LocationServiceTest extends CrudServiceCommonTest<Location, LocationDto> {
     private CountryRepository countryRepository;
 
     @Autowired
-    private CountryMapper countryMapper;
+    private Mapper<CountryDto, Country> countryMapper;
 
     @Autowired
     private PlaceRepository placeRepository;

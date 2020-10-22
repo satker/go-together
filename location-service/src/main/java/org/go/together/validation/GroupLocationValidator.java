@@ -1,5 +1,6 @@
 package org.go.together.validation;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.GroupLocationDto;
 import org.go.together.dto.LocationCategory;
@@ -14,12 +15,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Component
+@RequiredArgsConstructor
 public class GroupLocationValidator extends CommonValidator<GroupLocationDto> {
-    private final LocationValidator locationValidator;
-
-    public GroupLocationValidator(LocationValidator locationValidator) {
-        this.locationValidator = locationValidator;
-    }
+    private final Validator<LocationDto> locationValidator;
 
     @Override
     public void getMapsForCheck(GroupLocationDto dto) {

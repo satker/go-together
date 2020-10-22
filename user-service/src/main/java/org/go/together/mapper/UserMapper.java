@@ -1,29 +1,25 @@
 package org.go.together.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
+import org.go.together.dto.InterestDto;
+import org.go.together.dto.LanguageDto;
 import org.go.together.dto.UserDto;
+import org.go.together.model.Interest;
+import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class UserMapper implements Mapper<UserDto, SystemUser> {
     private final LocationClient locationClient;
     private final ContentClient contentClient;
-    private final LanguageMapper languageMapper;
-    private final InterestMapper interestMapper;
-
-    public UserMapper(LocationClient locationClient,
-                      ContentClient contentClient,
-                      LanguageMapper languageMapper,
-                      InterestMapper interestMapper) {
-        this.locationClient = locationClient;
-        this.contentClient = contentClient;
-        this.languageMapper = languageMapper;
-        this.interestMapper = interestMapper;
-    }
+    private final Mapper<LanguageDto, Language> languageMapper;
+    private final Mapper<InterestDto, Interest> interestMapper;
 
     @Override
     public UserDto entityToDto(SystemUser entity) {

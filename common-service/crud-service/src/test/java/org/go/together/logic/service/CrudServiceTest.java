@@ -9,12 +9,13 @@ import org.go.together.find.dto.ResponseDto;
 import org.go.together.find.dto.form.FilterDto;
 import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.dto.form.PageDto;
+import org.go.together.mapper.Mapper;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.dto.TestDto;
+import org.go.together.test.entities.JoinTestEntity;
+import org.go.together.test.entities.ManyJoinEntity;
 import org.go.together.test.entities.TestEntity;
-import org.go.together.test.mapper.JoinTestMapper;
-import org.go.together.test.mapper.ManyJoinMapper;
 import org.go.together.test.repository.interfaces.JoinTestRepository;
 import org.go.together.test.repository.interfaces.ManyJoinRepository;
 import org.go.together.test.service.interfaces.TestService;
@@ -39,10 +40,10 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
     TestDto testDto;
 
     @Autowired
-    private JoinTestMapper joinTestMapper;
+    private Mapper<JoinTestDto, JoinTestEntity> joinTestMapper;
 
     @Autowired
-    private ManyJoinMapper manyJoinMapper;
+    private Mapper<ManyJoinDto, ManyJoinEntity> manyJoinMapper;
 
     @Autowired
     private ManyJoinRepository manyJoinRepository;

@@ -1,5 +1,6 @@
 package org.go.together.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.impl.CommonCrudService;
 import org.go.together.client.ContentClient;
@@ -8,7 +9,7 @@ import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.find.dto.FieldMapper;
-import org.go.together.mapper.SimpleUserMapper;
+import org.go.together.mapper.Mapper;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
 import org.go.together.repository.interfaces.UserRepository;
@@ -23,30 +24,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> implements UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ContentClient contentClient;
-    private final SimpleUserMapper simpleUserMapper;
+    private final Mapper<SimpleUserDto, SystemUser> simpleUserMapper;
     private final LanguageService languageService;
     private final InterestService interestService;
     private final EventLikeService eventLikeService;
     private final LocationClient locationClient;
-
-    public UserServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder,
-                           ContentClient contentClient,
-                           SimpleUserMapper simpleUserMapper,
-                           LanguageService languageService,
-                           InterestService interestService,
-                           EventLikeService eventLikeService,
-                           LocationClient locationClient) {
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.contentClient = contentClient;
-        this.simpleUserMapper = simpleUserMapper;
-        this.languageService = languageService;
-        this.interestService = interestService;
-        this.eventLikeService = eventLikeService;
-        this.locationClient = locationClient;
-    }
 
     @Override
     public AuthUserDto findAuthUserByLogin(String login) {

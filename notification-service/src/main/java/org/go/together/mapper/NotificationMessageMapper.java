@@ -1,5 +1,6 @@
 package org.go.together.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.dto.NotificationMessageDto;
 import org.go.together.model.Notification;
 import org.go.together.model.NotificationMessage;
@@ -9,12 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class NotificationMessageMapper implements Mapper<NotificationMessageDto, NotificationMessage> {
     private final NotificationRepository notificationRepository;
-
-    public NotificationMessageMapper(NotificationRepository notificationRepository) {
-        this.notificationRepository = notificationRepository;
-    }
 
     public NotificationMessageDto entityToDto(NotificationMessage entity) {
         NotificationMessageDto notificationMessageDto = new NotificationMessageDto();

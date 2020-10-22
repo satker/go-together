@@ -1,16 +1,16 @@
 package org.go.together.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.dto.EventPaidThingDto;
+import org.go.together.dto.PaidThingDto;
 import org.go.together.model.EventPaidThing;
+import org.go.together.model.PaidThing;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class EventPaidThingMapper implements Mapper<EventPaidThingDto, EventPaidThing> {
-    private final PaidThingMapper paidThingMapper;
-
-    public EventPaidThingMapper(PaidThingMapper paidThingMapper) {
-        this.paidThingMapper = paidThingMapper;
-    }
+    private final Mapper<PaidThingDto, PaidThing> paidThingMapper;
 
     @Override
     public EventPaidThingDto entityToDto(EventPaidThing entity) {

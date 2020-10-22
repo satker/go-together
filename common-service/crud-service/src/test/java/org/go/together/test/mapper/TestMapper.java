@@ -2,7 +2,11 @@ package org.go.together.test.mapper;
 
 import org.go.together.dto.SimpleDto;
 import org.go.together.mapper.Mapper;
+import org.go.together.test.dto.JoinTestDto;
+import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.dto.TestDto;
+import org.go.together.test.entities.JoinTestEntity;
+import org.go.together.test.entities.ManyJoinEntity;
 import org.go.together.test.entities.TestEntity;
 import org.springframework.stereotype.Component;
 
@@ -10,11 +14,11 @@ import java.util.stream.Collectors;
 
 @Component
 public class TestMapper implements Mapper<TestDto, TestEntity> {
-    private final ManyJoinMapper manyJoinMapper;
-    private final JoinTestMapper joinTestMapper;
+    private final Mapper<ManyJoinDto, ManyJoinEntity> manyJoinMapper;
+    private final Mapper<JoinTestDto, JoinTestEntity> joinTestMapper;
 
-    public TestMapper(ManyJoinMapper manyJoinMapper,
-                      JoinTestMapper joinTestMapper) {
+    public TestMapper(Mapper<ManyJoinDto, ManyJoinEntity> manyJoinMapper,
+                      Mapper<JoinTestDto, JoinTestEntity> joinTestMapper) {
         this.manyJoinMapper = manyJoinMapper;
         this.joinTestMapper = joinTestMapper;
     }

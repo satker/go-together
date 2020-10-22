@@ -1,10 +1,12 @@
 package org.go.together.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.impl.CommonCrudService;
+import org.go.together.dto.CountryDto;
 import org.go.together.dto.PlaceDto;
 import org.go.together.dto.SimpleDto;
-import org.go.together.mapper.CountryMapper;
+import org.go.together.mapper.Mapper;
 import org.go.together.model.Country;
 import org.go.together.model.Place;
 import org.go.together.repository.interfaces.PlaceRepository;
@@ -19,15 +21,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PlaceServiceImpl extends CommonCrudService<PlaceDto, Place> implements PlaceService {
     private final CountryService countryService;
-    private final CountryMapper countryMapper;
-
-    public PlaceServiceImpl(CountryService countryService,
-                            CountryMapper countryMapper) {
-        this.countryService = countryService;
-        this.countryMapper = countryMapper;
-    }
+    private final Mapper<CountryDto, Country> countryMapper;
 
     @Override
     public Optional<Place> getPlaceEquals(PlaceDto anotherPlaceDto) {

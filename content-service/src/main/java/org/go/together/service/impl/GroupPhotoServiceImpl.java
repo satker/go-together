@@ -1,5 +1,6 @@
 package org.go.together.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.base.impl.CommonCrudService;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.enums.CrudOperation;
@@ -7,7 +8,6 @@ import org.go.together.model.GroupPhoto;
 import org.go.together.model.Photo;
 import org.go.together.service.interfaces.GroupPhotoService;
 import org.go.together.service.interfaces.PhotoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -15,13 +15,9 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class GroupPhotoServiceImpl extends CommonCrudService<GroupPhotoDto, GroupPhoto> implements GroupPhotoService {
-    private PhotoService photoService;
-
-    @Autowired
-    public void setPhotoService(PhotoService photoService) {
-        this.photoService = photoService;
-    }
+    private final PhotoService photoService;
 
     @Override
     protected GroupPhoto enrichEntity(GroupPhoto entity, GroupPhotoDto dto, CrudOperation crudOperation) {

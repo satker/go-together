@@ -3,7 +3,7 @@ package org.go.together.service;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
-import org.go.together.mapper.CountryMapper;
+import org.go.together.mapper.Mapper;
 import org.go.together.model.Country;
 import org.go.together.model.GroupLocation;
 import org.go.together.repository.interfaces.CountryRepository;
@@ -29,7 +29,7 @@ class GroupLocationServiceTest extends CrudServiceCommonTest<GroupLocation, Grou
     private CountryRepository countryRepository;
 
     @Autowired
-    private CountryMapper countryMapper;
+    private Mapper<CountryDto, Country> countryMapper;
 
     @Autowired
     private LocationRepository locationRepository;

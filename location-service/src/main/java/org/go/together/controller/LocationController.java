@@ -1,5 +1,6 @@
 package org.go.together.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.GroupLocationDto;
 import org.go.together.dto.IdDto;
@@ -16,15 +17,10 @@ import java.util.Set;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 public class LocationController extends FindController implements LocationClient {
     private final PlaceService placeService;
     private final GroupLocationService groupLocationService;
-
-    public LocationController(PlaceService placeService,
-                              GroupLocationService groupLocationService) {
-        this.placeService = placeService;
-        this.groupLocationService = groupLocationService;
-    }
 
     @Override
     public GroupLocationDto getRouteById(UUID routeId) {

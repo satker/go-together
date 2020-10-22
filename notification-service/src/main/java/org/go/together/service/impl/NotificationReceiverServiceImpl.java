@@ -8,7 +8,7 @@ import org.go.together.dto.NotificationReceiverMessageDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.find.dto.FieldMapper;
-import org.go.together.mapper.NotificationMapper;
+import org.go.together.mapper.Mapper;
 import org.go.together.model.Notification;
 import org.go.together.model.NotificationMessage;
 import org.go.together.model.NotificationReceiver;
@@ -30,11 +30,11 @@ public class NotificationReceiverServiceImpl extends CommonCrudService<Notificat
         implements NotificationReceiverService {
     private final NotificationMessageService notificationMessageService;
     private final NotificationRepository notificationRepository;
-    private final NotificationMapper notificationMapper;
+    private final Mapper<NotificationDto, Notification> notificationMapper;
     private NotificationReceiverMessageService notificationReceiverMessageService;
 
     protected NotificationReceiverServiceImpl(NotificationRepository notificationRepository,
-                                              NotificationMapper notificationMapper,
+                                              Mapper<NotificationDto, Notification> notificationMapper,
                                               NotificationMessageService notificationMessageService) {
         this.notificationRepository = notificationRepository;
         this.notificationMapper = notificationMapper;
