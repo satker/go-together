@@ -4,24 +4,6 @@ import {context} from "App/Context";
 import {GET} from "./constants";
 import {NOTIFICATION} from "forms/utils/components/Notification/constants";
 
-const resolveStatus = (pathData, isToken, setResult) => (response) => {
-    if (isToken) {
-        response.headers
-            .forEach(value => {
-                if (value.startsWith('Bearer ')) {
-                    pathData.data.token = value;
-                    pathData.data.inProcess = false;
-                    setResult(pathData);
-                }
-            });
-    }
-    if (response.status >= 200 && response.status < 300) {
-        return Promise.resolve(response)
-    } else {
-        return Promise.reject(response)
-    }
-};
-
 const resolveJson = (response) => response.json();
 
 export const fetchAndSet = (url,
@@ -30,7 +12,6 @@ export const fetchAndSet = (url,
                             data = {},
                             headers = {},
                             type,
-                            isToken,
                             setNotificationMessage) => {
     const pathData = findPath(type, null, context);
     pathData.data.inProcess = true;
@@ -46,7 +27,6 @@ export const fetchAndSet = (url,
         ...additionalParams
     };
     fetch(url, requestParams)
-        .then(resolveStatus(pathData, isToken, setResult))
         .then(resolveJson)
         .then(response => {
             pathData.data.response = response;
@@ -77,7 +57,7 @@ const setNotificationMessage = (setToContext) => (message) => {
 }
 
 export const fetchAndSetToken = (token) =>
-    (setToContext) => ({type, url, method = GET, data = {}, value, isToken = false}) => {
+    (setToContext) => ({type, url, method = GET, data = {}, value}) => {
         if (!url) {
             setGlobalState(type, value, setToContext);
             return;
@@ -90,5 +70,5 @@ export const fetchAndSetToken = (token) =>
         if (token) {
             headers['Authorization'] = token;
         }
-        fetchAndSet(url, setToContext, method, data, headers, type, isToken, setNotificationMessage(setToContext));
+        fetchAndSet(url, setToContext, method, data, headers, type, setNotificationMessage(setToContext));
     };

@@ -20,14 +20,14 @@ const Login = ({
     const [password, setPassword] = useState('');
 
     useEffect(() => {
-        if (loginToken.token && !loginToken.inProcess && login && login !== "") {
+        if (loginToken.response.token && !loginToken.inProcess && login && login !== "") {
             getLoginId(login);
         }
     }, [loginToken, getLoginId, login]);
 
     useEffect(() => {
         if (loginId.response.id) {
-            setAuth(loginId.response.id, loginToken.token);
+            setAuth(loginId.response.id, loginToken.response.token);
         }
     }, [loginId, setAuth]);
 

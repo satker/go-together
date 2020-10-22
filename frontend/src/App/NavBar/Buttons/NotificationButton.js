@@ -10,9 +10,7 @@ import {getUnreadUserNotifications} from "forms/Notifications/actions";
 
 const NotificationButton = ({menuId, userNotificationsSize, getUnreadUserNotifications, userId}) => {
     useEffect(() => {
-        if (userId) {
-            getUnreadUserNotifications(userId);
-        }
+        userId && getUnreadUserNotifications(userId);
     }, [getUnreadUserNotifications, userId]);
 
     return <IconButton onClick={() => navigate('/notifications', true)}
