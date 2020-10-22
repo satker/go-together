@@ -37,7 +37,7 @@ const mapStateToProps = state => {
         userNotificationsSize: (notifications.response?.result || [])
             .filter(notificationMessage => !notificationMessage.isRead)
             .length,
-        userId: state.auth.value.userId
+        userId: state.auth.response.userId
     });
 }
 

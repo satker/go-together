@@ -76,7 +76,7 @@ UserChats.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    userId: state.auth.value.userId,
+    userId: state.auth.response.userId,
     messages: state.components.forms.event.eventView.messages.chats,
     usersInfo: state.components.forms.event.eventView.messages.usersInfo,
     event: state.components.forms.event.eventView.event.response,

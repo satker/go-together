@@ -65,7 +65,7 @@ CommonInfo.propTypes = {
 const mapStateToProps = state => ({
     event: state.components.forms.event.eventView.event.response,
     users: state.components.forms.event.eventView.users,
-    userId: state.auth.value.userId
+    userId: state.auth.response.userId
 });
 
 export default connect(mapStateToProps, {getEventsLikes, getUsers})(CommonInfo);

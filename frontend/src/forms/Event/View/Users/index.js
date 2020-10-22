@@ -67,7 +67,7 @@ Users.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    userId: state.auth.value.userId,
+    userId: state.auth.response.userId,
     userStatus: state.components.forms.event.eventView.usersParticipation.userStatus,
     statuses: state.components.forms.event.eventView.statuses,
     users: state.components.forms.event.eventView.users,

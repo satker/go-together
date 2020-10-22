@@ -27,7 +27,7 @@ const Notifications = ({userNotifications, readNotifications, userId, getUserNot
 
     const pageCount = userNotifications.response.page ?
         Math.ceil(userNotifications.response.page.totalSize / userNotifications.response.page.size) : 0;
-    console.log(pageCount)
+
     return <Container>
         <LoadableContent loadableData={userNotifications}>
             {(userNotifications.response?.result || []).map(notification =>
@@ -47,7 +47,7 @@ Notifications.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    userId: state.auth.value.userId,
+    userId: state.auth.response.userId,
     userNotifications: state.components.forms.notifications.userNotifications
 });
 

@@ -73,7 +73,7 @@ EditForm.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    userId: state.auth.value.userId,
+    userId: state.auth.response.userId,
     updatedEvent: state.components.forms.event.eventEdit.updatedEvent,
     newEvent: state.components.forms.event.eventEdit.newEvent,
     event: state.components.forms.event.eventEdit.event.response

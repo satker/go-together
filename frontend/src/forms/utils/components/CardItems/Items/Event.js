@@ -46,7 +46,7 @@ ItemEvent.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    userId: state.auth.value.userId
+    userId: state.auth.response.userId
 });
 
 export default connect(mapStateToProps, null)(ItemEvent);

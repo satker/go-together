@@ -9,7 +9,7 @@ export const isEmptyValidation = (fields, pathNames) => {
         pathNames.forEach(emptyPath => result[emptyPath] = '* Field is empty');
         return result;
     }
-    console.log(fields, pathNames)
+
     pathNames
         .filter(path => !get(fields, path))
         .forEach(emptyPath => result[emptyPath] = '* Field is empty');

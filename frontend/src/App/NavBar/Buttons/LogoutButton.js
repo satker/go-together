@@ -6,10 +6,15 @@ import PropTypes from "prop-types";
 
 import {connect} from "App/Context";
 import {cleanAuth} from "../actions";
+import {clearTimers} from "App/TemporaryTimer/actions";
 
-const LogoutButton = ({menuId, cleanAuth}) => {
+const LogoutButton = ({menuId, cleanAuth, clearTimers}) => {
+    const logout = () => {
+        clearTimers();
+        cleanAuth();
+    }
     return <IconButton key={menuId + '_logout'}
-                       onClick={cleanAuth}
+                       onClick={logout}
                        color="inherit">
         <Badge color="secondary">
             <ExitToAppIcon/>
@@ -22,7 +27,7 @@ LogoutButton.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    userId: state.auth.value.userId
+    userId: state.auth.response.userId
 });
 
-export default connect(mapStateToProps, {cleanAuth})(LogoutButton);
+export default connect(mapStateToProps, {cleanAuth, clearTimers})(LogoutButton);

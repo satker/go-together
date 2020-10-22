@@ -56,7 +56,7 @@ ParticipationButton.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    userId: state.auth.value.userId,
+    userId: state.auth.response.userId,
     meToList: state.components.forms.event.eventView.participationButton.meToList,
     meFromList: state.components.forms.event.eventView.participationButton.meFromList
 });
