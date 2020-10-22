@@ -49,15 +49,6 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
     }
 
     @Override
-    public UserDto findUserByLogin(String login) {
-        Optional<SystemUser> userByLogin = ((UserRepository) repository).findUserByLogin(login);
-        if (userByLogin.isPresent()) {
-            return mapper.entityToDto(userByLogin.get());
-        }
-        throw new CannotFindEntityException("Cannot find user by login");
-    }
-
-    @Override
     public AuthUserDto findAuthUserByLogin(String login) {
         Optional<SystemUser> userByLogin = ((UserRepository) repository).findUserByLogin(login);
         if (userByLogin.isPresent()) {

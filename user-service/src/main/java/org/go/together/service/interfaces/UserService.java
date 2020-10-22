@@ -13,8 +13,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface UserService extends CrudService<UserDto>, FindService<SystemUser> {
-    UserDto findUserByLogin(String login);
-
     String findLoginById(UUID id);
 
     Collection<SimpleUserDto> findSimpleUserDtosByUserIds(Set<UUID> userIds);

@@ -42,16 +42,16 @@ const Users = ({event, users, statuses, userId, postUserStatus, userStatus, getU
 
     return <>
         <LoadableContent loadableData={statuses}>
-                {userId === event.author.id && <ElementTabs elements={users.response.result}
-                                                            onClick={updateUserStatus('APPROVED')}
-                                                            onDelete={updateUserStatus('REJECTED')}
-                                                            onAction={setUserMessageId}
-                                                            isUsers={true}
-                                                            elementsFieldTab={"userStatus"}
-                                                            tabs={statuses.response}/>}
+            {userId === event.author.id && <ElementTabs elements={users.response.result}
+                                                        onClick={updateUserStatus('APPROVED')}
+                                                        onDelete={updateUserStatus('REJECTED')}
+                                                        onAction={setUserMessageId}
+                                                        isUsers={true}
+                                                        elementsFieldTab={"userStatus"}
+                                                        tabs={statuses.response}/>}
         </LoadableContent>
-        <Messages userMessageId={userMessageId}
-                  setUserMessageId={setUserMessageId}/>
+        {userId && <Messages userMessageId={userMessageId}
+                             setUserMessageId={setUserMessageId}/>}
     </>;
 };
 

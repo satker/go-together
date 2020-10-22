@@ -52,14 +52,6 @@ class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
     }
 
     @Test
-    public void findUserByLogin() {
-        UserDto createdDto = getCreatedEntityId(dto);
-        UserDto userByLogin = ((UserService) crudService).findUserByLogin(createdDto.getLogin());
-
-        assertEquals(createdDto, userByLogin);
-    }
-
-    @Test
     public void findAuthUserByLogin() {
         UserDto createdDto = getCreatedEntityId(dto);
 

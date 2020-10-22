@@ -12,9 +12,6 @@ import java.util.UUID;
 
 @FeignClient(name = "user-service")
 public interface UserClient extends FindClient {
-    @GetMapping("/users")
-    UserDto findUserByLogin(@RequestParam("login") String login);
-
     @GetMapping("/users/auth")
     AuthUserDto findAuthUserByLogin(@RequestParam("login") String login);
 
