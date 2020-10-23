@@ -1,14 +1,16 @@
-package org.go.together.find.repository.sql;
+package org.go.together.find.repository.sql.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.find.dto.FieldDto;
 import org.go.together.find.dto.form.FilterDto;
 import org.go.together.find.dto.utils.FindSqlOperator;
+import org.go.together.find.repository.sql.interfaces.WhereBuilderCreator;
 import org.go.together.find.utils.FindUtils;
 import org.go.together.repository.CustomRepository;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.repository.interfaces.WhereBuilder;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,18 +19,12 @@ import java.util.stream.Stream;
 
 import static org.go.together.find.utils.FindUtils.getSingleGroupFields;
 
-public class WhereBuilderCreator<E extends IdentifiedEntity> {
-    private final CustomRepository<E> repository;
-    private final Map<String, String> joinMap;
-
-    public WhereBuilderCreator(CustomRepository<E> repository) {
-        this.repository = repository;
-        this.joinMap = new HashMap<>();
-    }
-
-    public WhereBuilder<E> getWhereBuilder(Map<FieldDto, FilterDto> filters) {
+@Component
+public class WhereBuilderCreatorImpl<E extends IdentifiedEntity> implements WhereBuilderCreator<E> {
+    public WhereBuilder<E> getWhereBuilder(Map<FieldDto, FilterDto> filters, CustomRepository<E> repository) {
+        Map<String, String> joinMap = new HashMap<>();
         WhereBuilder<E> where = repository.createWhere();
-        filters.entrySet().parallelStream().map(this::createWhereByFilter)
+        filters.entrySet().parallelStream().map(entry -> createWhereByFilter(entry, repository, joinMap))
                 .forEach(createdWhere -> where.group(createdWhere).and());
         where.cutLastAnd();
         if (!joinMap.isEmpty()) {
@@ -37,17 +33,22 @@ public class WhereBuilderCreator<E extends IdentifiedEntity> {
         return where;
     }
 
-    private WhereBuilder<E> createWhereByFilter(Map.Entry<FieldDto, FilterDto> entry) {
+    private WhereBuilder<E> createWhereByFilter(Map.Entry<FieldDto,
+            FilterDto> entry,
+                                                CustomRepository<E> repository,
+                                                Map<String, String> joinMap) {
         String searchField = entry.getKey().getFilterFields();
         String[] groupFields = getSingleGroupFields(searchField);
         String suffix = entry.getKey().getLocalField().replace(searchField, "");
-        return addGroups(suffix, searchField, entry.getValue(), groupFields);
+        return addGroups(suffix, searchField, entry.getValue(), groupFields, repository, joinMap);
     }
 
     private WhereBuilder<E> addGroups(String suffix,
                                       String key,
                                       FilterDto filterDto,
-                                      String[] groupFields) {
+                                      String[] groupFields,
+                                      CustomRepository<E> repository,
+                                      Map<String, String> joinMap) {
         WhereBuilder<E> groupWhere = repository.createWhere();
         filterDto.getValues().forEach(filterValues -> {
             WhereBuilder<E> whereAdd = filterDto.getValues().size() > 1 ? repository.createWhere() : groupWhere;
@@ -64,7 +65,7 @@ public class WhereBuilderCreator<E extends IdentifiedEntity> {
             if (filterDto.getValues().size() > 1) {
                 groupWhere.group(whereAdd).or();
             }
-            this.joinMap.putAll(whereAdd.build().getJoin());
+            joinMap.putAll(whereAdd.build().getJoin());
         });
         groupWhere.cutLastOr();
         return groupWhere;

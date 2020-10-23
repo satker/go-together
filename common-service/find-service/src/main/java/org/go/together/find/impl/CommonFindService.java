@@ -1,32 +1,42 @@
 package org.go.together.find.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.tuple.Pair;
+import org.go.together.exceptions.ApplicationException;
 import org.go.together.find.FindService;
-import org.go.together.find.correction.CorrectorService;
-import org.go.together.find.correction.fieldpath.FieldPathCorrector;
-import org.go.together.find.dto.FieldDto;
-import org.go.together.find.dto.FieldMapper;
-import org.go.together.find.dto.form.FilterDto;
+import org.go.together.find.dto.ResponseDto;
 import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.dto.form.PageDto;
-import org.go.together.find.finders.Finder;
-import org.go.together.find.repository.FindRepository;
-import org.go.together.find.repository.FindRepositoryImpl;
+import org.go.together.find.logic.interfaces.BaseFindService;
+import org.go.together.find.logic.interfaces.BaseResultMapper;
+import org.go.together.interfaces.Dto;
+import org.go.together.mapper.Mapper;
 import org.go.together.repository.CustomRepository;
 import org.go.together.repository.entities.IdentifiedEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
 
-import static org.go.together.find.utils.FindUtils.mergeFilters;
-
-public abstract class CommonFindService<E extends IdentifiedEntity> implements FindService<E> {
+public abstract class CommonFindService<D extends Dto, E extends IdentifiedEntity> implements FindService<E> {
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+    protected Mapper<D, E> mapper;
+    protected BaseFindService<E> baseFindService;
     protected CustomRepository<E> repository;
-    private Finder remoteFindService;
-    private CorrectorService correctorRemoteFiltersService;
-    private CorrectorService correctorLocalFiltersService;
-    private FieldPathCorrector fieldPathCorrector;
+    private BaseResultMapper<D, E> resultMapper;
+
+    @Autowired
+    public void setResultMapper(BaseResultMapper<D, E> resultMapper) {
+        this.resultMapper = resultMapper;
+    }
+
+    @Autowired
+    public void setMapper(Mapper<D, E> mapper) {
+        this.mapper = mapper;
+    }
 
     @Autowired
     public void setRepository(CustomRepository<E> repository) {
@@ -34,57 +44,30 @@ public abstract class CommonFindService<E extends IdentifiedEntity> implements F
     }
 
     @Autowired
-    public void setRemoteFindService(Finder finder) {
-        this.remoteFindService = finder;
+    public void setMapper(BaseFindService<E> baseFindService) {
+        this.baseFindService = baseFindService;
     }
 
-    @Autowired
-    public void setRemoteCorrectedService(@Qualifier("remoteFilters") CorrectorService correctorRemoteFiltersService) {
-        this.correctorRemoteFiltersService = correctorRemoteFiltersService;
-    }
+    @SneakyThrows
+    public ResponseDto<Object> find(FormDto formDto) {
+        final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Autowired
-    public void setLocalCorrectedService(@Qualifier("localFilters") CorrectorService correctorLocalFiltersService) {
-        this.correctorLocalFiltersService = correctorLocalFiltersService;
-    }
+        log.info("Started find in '" + getServiceName() + "' with filter: " +
+                objectMapper.writeValueAsString(formDto));
+        try {
+            Pair<PageDto, Collection<Object>> pageDtoResult = baseFindService.find(repository,
+                    formDto,
+                    getServiceName(),
+                    getMappingFields());
 
-    @Autowired
-    public void setFieldPathCorrector(FieldPathCorrector fieldPathCorrector) {
-        this.fieldPathCorrector = fieldPathCorrector;
-    }
-
-    public Pair<PageDto, Collection<Object>> findByFormDto(FormDto formDto) {
-        FindRepository findRepository = new FindRepositoryImpl<>(getServiceName(),
-                repository,
-                getMappingFields(),
-                fieldPathCorrector);
-
-        if (Optional.ofNullable(formDto.getFilters()).map(Map::isEmpty).orElse(true)) {
-            return findRepository.getResult(formDto, null);
+            Collection<Object> values = resultMapper.getParsedResult(pageDtoResult, mapper);
+            log.info("Find in '" + getServiceName() + "' " + Optional.ofNullable(values)
+                    .map(Collection::size)
+                    .orElse(0) + " rows with filter: " +
+                    objectMapper.writeValueAsString(formDto));
+            return new ResponseDto<>(pageDtoResult.getKey(), values);
+        } catch (Exception exception) {
+            throw new ApplicationException(exception);
         }
-        Map<FieldDto, FilterDto> commonService = getFilters(formDto);
-        if (commonService == null) {
-            PageDto notFoundPageDto = null;
-            if (formDto.getPage() != null) {
-                notFoundPageDto = new PageDto(0, formDto.getPage().getSize(), 0L, formDto.getPage().getSort());
-            }
-            return Pair.of(notFoundPageDto, Collections.emptyList());
-        }
-
-        return findRepository.getResult(formDto, commonService);
-    }
-
-    private Map<FieldDto, FilterDto> getFilters(FormDto formDto) {
-        Map<String, FieldMapper> mappingFields = getMappingFields();
-        Map<FieldDto, FilterDto> remoteFilters = correctorRemoteFiltersService.getCorrectedFilters(formDto.getFilters(), mappingFields);
-        Map<FieldDto, Collection<Object>> resultRemoteFilters = new HashMap<>();
-        if (!remoteFilters.isEmpty()) {
-            resultRemoteFilters = remoteFindService.getFilters(remoteFilters, mappingFields);
-        }
-        if (resultRemoteFilters == null) {
-            return null;
-        }
-        Map<FieldDto, FilterDto> localFilters = correctorLocalFiltersService.getCorrectedFilters(formDto.getFilters(), mappingFields);
-        return mergeFilters(resultRemoteFilters, localFilters);
     }
 }

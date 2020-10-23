@@ -1,47 +1,30 @@
 package org.go.together.base.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.base.CrudService;
 import org.go.together.dto.IdDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.enums.NotificationStatus;
 import org.go.together.exceptions.ApplicationException;
 import org.go.together.exceptions.ValidationException;
-import org.go.together.find.dto.ResponseDto;
-import org.go.together.find.dto.form.FormDto;
-import org.go.together.find.dto.form.PageDto;
 import org.go.together.find.impl.CommonFindService;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.Dto;
-import org.go.together.interfaces.Identified;
 import org.go.together.interfaces.NotificationService;
-import org.go.together.mapper.Mapper;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntity>
-        extends CommonFindService<E> implements CrudService<D> {
+        extends CommonFindService<D, E> implements CrudService<D> {
     protected final Logger log = LoggerFactory.getLogger(getClass());
-    protected Mapper<D, E> mapper;
     protected Validator<D> validator;
-    private final ObjectMapper objectMapper = new ObjectMapper();
     protected NotificationService<D> notificationService;
-
-    @Autowired
-    public void setMapper(Mapper<D, E> mapper) {
-        this.mapper = mapper;
-    }
 
     @Autowired
     public void setValidator(Validator<D> validator) {
@@ -137,32 +120,6 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
         } else {
             String message = "Cannot find entity " + getServiceName() + "  by id " + uuid;
             log.warn(message);
-        }
-    }
-
-    @SneakyThrows
-    public ResponseDto<Object> find(FormDto formDto) {
-        log.info("Started find in '" + getServiceName() + "' with filter: " +
-                objectMapper.writeValueAsString(formDto));
-        try {
-            Pair<PageDto, Collection<Object>> pageDtoResult = super.findByFormDto(formDto);
-
-            Collection<Object> values = pageDtoResult.getValue();
-            if (values != null
-                    && !values.isEmpty()
-                    && values.iterator().next() instanceof IdentifiedEntity) {
-                values = values.stream()
-                        .map(Identified::<E>cast)
-                        .map(mapper::entityToDto)
-                        .collect(Collectors.toList());
-            }
-            log.info("Find in '" + getServiceName() + "' " + Optional.ofNullable(values)
-                    .map(Collection::size)
-                    .orElse(0) + " rows with filter: " +
-                    objectMapper.writeValueAsString(formDto));
-            return new ResponseDto<>(pageDtoResult.getKey(), values);
-        } catch (Exception exception) {
-            throw new ApplicationException(exception);
         }
     }
 

@@ -58,7 +58,7 @@ public class FindUtils {
                                                         Map<FieldDto, FilterDto> localFilters) {
         boolean isNotFound = remoteFilters.values().stream().anyMatch(Collection::isEmpty);
         if (isNotFound) {
-            return null;
+            return Collections.emptyMap();
         }
         remoteFilters.forEach((key, values) -> {
             FilterDto filterDto = new FilterDto(FindSqlOperator.IN,

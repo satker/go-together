@@ -1,29 +1,24 @@
-package org.go.together.find.repository.sql;
+package org.go.together.find.repository.sql.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.exceptions.IncorrectFindObject;
+import org.go.together.find.repository.sql.interfaces.SqlBuilderCreator;
 import org.go.together.repository.CustomRepository;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.repository.interfaces.SqlBuilder;
+import org.springframework.stereotype.Component;
 
 import static org.go.together.find.utils.FindUtils.DOT;
 import static org.go.together.find.utils.FindUtils.getHavingCondition;
 
-public class SqlBuilderCreator<E extends IdentifiedEntity> {
-    private final CustomRepository<E> repository;
-    private final String serviceName;
-
-    public SqlBuilderCreator(CustomRepository<E> repository, String serviceName) {
-        this.repository = repository;
-        this.serviceName = serviceName;
-    }
-
-    public SqlBuilder<E> getSqlBuilder(String mainField) {
+@Component
+public class SqlBuilderCreatorImpl<E extends IdentifiedEntity> implements SqlBuilderCreator<E> {
+    public SqlBuilder<E> getSqlBuilder(String mainField, CustomRepository<E> repository, String serviceName) {
         String mainKeyToSort = mainField.replaceAll(serviceName + DOT, "");
         if (StringUtils.isNotBlank(mainKeyToSort) && !mainKeyToSort.equals(serviceName)) {
             String[] havingCondition = getHavingCondition(mainKeyToSort);
             if (havingCondition.length > 1) {
-                return getHavingSqlBuilder(havingCondition);
+                return getHavingSqlBuilder(havingCondition, repository);
             } else {
                 return repository.createQuery(mainKeyToSort);
             }
@@ -32,7 +27,7 @@ public class SqlBuilderCreator<E extends IdentifiedEntity> {
         }
     }
 
-    private SqlBuilder<E> getHavingSqlBuilder(String[] havingCondition) {
+    private SqlBuilder<E> getHavingSqlBuilder(String[] havingCondition, CustomRepository<E> repository) {
         try {
             int havingNumber = Integer.parseInt(havingCondition[1]);
             return repository.createQuery(havingCondition[0], havingNumber);
