@@ -10,7 +10,6 @@ import org.go.together.service.interfaces.NotificationReceiverService;
 import org.go.together.service.interfaces.NotificationService;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.go.together.streams.interfaces.NotificationMessageStream.INPUT;
 
@@ -22,7 +21,6 @@ public class NotificationMessageStreamListener {
     private final NotificationService notificationService;
 
     @StreamListener(target = INPUT)
-    @Transactional
     public void handleMessage(NotificationEvent message) {
         switch (message.getStatus()) {
             case UPDATE_MESSAGE -> updateNotification(message);
