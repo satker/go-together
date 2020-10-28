@@ -1,4 +1,4 @@
-package org.go.together.configuration;
+package org.go.together.streams.listeners;
 
 import lombok.RequiredArgsConstructor;
 import org.go.together.dto.IdDto;
@@ -8,19 +8,20 @@ import org.go.together.message.NotificationEvent;
 import org.go.together.service.interfaces.NotificationMessageService;
 import org.go.together.service.interfaces.NotificationReceiverService;
 import org.go.together.service.interfaces.NotificationService;
-import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.cloud.stream.messaging.Sink;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@EnableBinding(Sink.class)
+import static org.go.together.streams.interfaces.NotificationMessageStream.INPUT;
+
+@Component
 @RequiredArgsConstructor
-public class NotificationConfiguration {
+public class NotificationMessageStreamListener {
     private final NotificationReceiverService notificationReceiverService;
     private final NotificationMessageService notificationMessageService;
     private final NotificationService notificationService;
 
-    @StreamListener(target = Sink.INPUT)
+    @StreamListener(target = INPUT)
     @Transactional
     public void handleMessage(NotificationEvent message) {
         switch (message.getStatus()) {

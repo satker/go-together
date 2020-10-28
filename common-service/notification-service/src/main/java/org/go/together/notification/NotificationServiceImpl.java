@@ -9,8 +9,8 @@ import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.NotificationService;
 import org.go.together.message.NotificationEvent;
 import org.go.together.message.NotificationEventStatus;
+import org.go.together.notification.streams.NotificationSource;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
@@ -21,9 +21,9 @@ import static org.go.together.notification.utils.ComparatorUtils.getMainField;
 
 @Component
 @RequiredArgsConstructor
-@EnableBinding(Source.class)
+@EnableBinding(NotificationSource.class)
 public class NotificationServiceImpl<D extends Dto> implements NotificationService<D> {
-    private final Source source;
+    private final NotificationSource source;
 
     public void createNotification(UUID id, D dto, String resultMessage) {
         Optional.ofNullable(dto)

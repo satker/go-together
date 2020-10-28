@@ -16,3 +16,11 @@ feign:
         connectTimeout: 5000
         readTimeout: 5000
         loggerLevel: full
+spring:
+  cloud:
+    stream:
+      bindings:
+        notificationMessageOutput:
+          destination: notifications
+      default:
+        contentType: application/json

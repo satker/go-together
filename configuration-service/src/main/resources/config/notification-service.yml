@@ -17,6 +17,8 @@ spring:
           brokers:
             - localhost:9092
       bindings:
-        input:
-          destination: notificationMessage
-          group: inputSubscriberGroup
+        notificationMessageInput:
+          destination: notifications
+          group: notificationsSubscriberGroup
+      default:
+        contentType: application/json

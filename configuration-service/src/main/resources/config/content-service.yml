@@ -9,6 +9,14 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:1111/eureka
+spring:
+  cloud:
+    stream:
+      bindings:
+        notificationMessageOutput:
+          destination: notifications
+      default:
+        contentType: application/json
 photo:
   store:
     path: store/

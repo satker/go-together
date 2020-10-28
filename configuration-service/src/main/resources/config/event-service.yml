@@ -14,8 +14,8 @@ spring:
   cloud:
     stream:
       bindings:
-        output:
-          destination: notificationMessage
+        notificationMessageOutput:
+          destination: notifications
       default:
         contentType: application/json
 

@@ -5,6 +5,7 @@ import org.go.together.context.RepositoryContext;
 import org.go.together.dto.EventUserDto;
 import org.go.together.model.Event;
 import org.go.together.model.EventUser;
+import org.go.together.notification.streams.NotificationSource;
 import org.go.together.repository.interfaces.EventRepository;
 import org.go.together.service.interfaces.EventUserService;
 import org.go.together.tests.CrudServiceCommonTest;
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -31,7 +31,7 @@ public class EventUserServiceTest extends CrudServiceCommonTest<EventUser, Event
     private EventRepository eventRepository;
 
     @Autowired
-    private Source source;
+    private NotificationSource source;
 
     @BeforeEach
     public void init() {
