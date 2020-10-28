@@ -34,44 +34,52 @@ public class ComparatorUtils {
                 .orElse(StringUtils.EMPTY);
     }
 
-    public static void compareObject(Collection<String> result, String fieldName, Object object, Object anotherObject) {
-        if (object != anotherObject) {
+    public static void compareObject(Collection<String> result,
+                                     String fieldName,
+                                     Object originalObject,
+                                     Object changedObject) {
+        if (originalObject != changedObject) {
             String resultString = fieldName + StringUtils.SPACE + CHANGED;
             result.add(resultString);
         }
     }
 
-    public static void compareStrings(Collection<String> result, String fieldName, String string, String anotherString) {
-        if (!string.equalsIgnoreCase(anotherString)) {
-            String resultString = fieldName + FROM + string + TO + anotherString;
+    public static void compareStrings(Collection<String> result, String fieldName, String originalString, String changedString) {
+        if (!originalString.equalsIgnoreCase(changedString)) {
+            String resultString = fieldName + FROM + originalString + TO + changedString;
             result.add(resultString);
         }
     }
 
-    public static void compareNumbers(Collection<String> result, String fieldName, Number number, Number anotherNumber) {
-        if (!number.equals(anotherNumber)) {
-            String resultString = fieldName + FROM + number.toString() + TO + anotherNumber.toString();
+    public static void compareNumbers(Collection<String> result, String fieldName, Number originalNumber, Number changedNumber) {
+        if (!originalNumber.equals(changedNumber)) {
+            String resultString = fieldName + FROM + originalNumber.toString() + TO + changedNumber.toString();
             result.add(resultString);
         }
     }
 
-    private static <T extends Dto & ComparableDto> void updateResult(Collection<String> result, String fieldName, Object object, Object anotherObject,
-                                                                     boolean isNeededDeepCompare, boolean ignored, boolean idCompare) {
+    private static <T extends Dto & ComparableDto> void updateResult(Collection<String> result,
+                                                                     String fieldName,
+                                                                     Object originalObject,
+                                                                     Object changedObject,
+                                                                     boolean isNeededDeepCompare,
+                                                                     boolean ignored,
+                                                                     boolean idCompare) {
         if (!isNeededDeepCompare || ignored) {
-            compareObject(result, fieldName, object, anotherObject);
-        } else if (object instanceof String && anotherObject instanceof String) {
-            compareStrings(result, fieldName, (String) object, (String) anotherObject);
-        } else if (object instanceof Number && anotherObject instanceof Number) {
-            compareNumbers(result, fieldName, (Number) object, (Number) anotherObject);
-        } else if (object instanceof Date && anotherObject instanceof Date) {
-            compareDates(result, fieldName, (Date) object, (Date) anotherObject);
-        } else if (object instanceof NamedEnum && anotherObject instanceof NamedEnum) {
-            compareEnums(result, fieldName, (NamedEnum) object, (NamedEnum) anotherObject);
-        } else if (object instanceof SimpleDto && anotherObject instanceof SimpleDto) {
-            compareStrings(result, fieldName + " name", ((SimpleDto) object).getName(), ((SimpleDto) anotherObject).getName());
-        } else if (object instanceof Collection && anotherObject instanceof Collection) {
-            Collection<T> collection = (Collection) object;
-            Collection<T> anotherCollection = (Collection) anotherObject;
+            compareObject(result, fieldName, originalObject, changedObject);
+        } else if (originalObject instanceof String && changedObject instanceof String) {
+            compareStrings(result, fieldName, (String) originalObject, (String) changedObject);
+        } else if (originalObject instanceof Number && changedObject instanceof Number) {
+            compareNumbers(result, fieldName, (Number) originalObject, (Number) changedObject);
+        } else if (originalObject instanceof Date && changedObject instanceof Date) {
+            compareDates(result, fieldName, (Date) originalObject, (Date) changedObject);
+        } else if (originalObject instanceof NamedEnum && changedObject instanceof NamedEnum) {
+            compareEnums(result, fieldName, (NamedEnum) originalObject, (NamedEnum) changedObject);
+        } else if (originalObject instanceof SimpleDto && changedObject instanceof SimpleDto) {
+            compareStrings(result, fieldName + " name", ((SimpleDto) originalObject).getName(), ((SimpleDto) changedObject).getName());
+        } else if (originalObject instanceof Collection && changedObject instanceof Collection) {
+            Collection<T> collection = (Collection) originalObject;
+            Collection<T> anotherCollection = (Collection) changedObject;
 
             Iterator<T> iteratorCollection = collection.iterator();
             Iterator<T> iteratorAnotherCollection = anotherCollection.iterator();
@@ -83,25 +91,25 @@ public class ComparatorUtils {
                     compareCollectionDtos(result, fieldName, collection, anotherCollection, idCompare);
                 }
             }
-        } else if (object instanceof Dto && anotherObject instanceof Dto) {
-            Dto comparableDtoObject = (Dto) object;
-            Dto anotherComparableDtoObject = (Dto) anotherObject;
+        } else if (originalObject instanceof Dto && changedObject instanceof Dto) {
+            Dto comparableDtoObject = (Dto) originalObject;
+            Dto anotherComparableDtoObject = (Dto) changedObject;
 
             if (idCompare) {
                 compareObject(result, fieldName, comparableDtoObject.getId(), anotherComparableDtoObject.getId());
             } else {
                 compareDtos(result, fieldName, comparableDtoObject, anotherComparableDtoObject);
             }
-        } else if (object != null && anotherObject != null) {
+        } else if (originalObject != null && changedObject != null) {
             throw new IncorrectDtoException("Incorrect field type: " + fieldName);
         }
     }
 
-    public static void compareDtos(Collection<String> result, String fieldName, Dto comparableDto, Dto anotherComparableDto) {
+    public static void compareDtos(Collection<String> result, String fieldName, Dto originalDto, Dto changedDto) {
         Set<String> strings = new HashSet<>();
-        String mainField = getMainField(anotherComparableDto);
-        getComparingMap(comparableDto).forEach((key, value) -> {
-            ComparingObject comparingField = getComparingMap(anotherComparableDto).get(key);
+        String mainField = getMainField(changedDto);
+        getComparingMap(originalDto).forEach((key, value) -> {
+            ComparingObject comparingField = getComparingMap(changedDto).get(key);
             if (comparingField.getFieldValue() != null || value.getFieldValue() != null) {
                 updateResult(strings, key, value.getFieldValue(),
                         comparingField.getFieldValue(),
@@ -124,34 +132,35 @@ public class ComparatorUtils {
         }
     }
 
-    public static void compareDates(Collection<String> result, String fieldName, Date date, Date anotherDate) {
-        if (date.compareTo(anotherDate) != 0) {
-            String resultString = fieldName + FROM + date.toString() + TO + anotherDate.toString();
+    public static void compareDates(Collection<String> result, String fieldName, Date originalDate, Date changedDate) {
+        if (originalDate.compareTo(changedDate) != 0) {
+            String resultString = fieldName + FROM + originalDate.toString() + TO + changedDate.toString();
             result.add(resultString);
         }
     }
 
-    public static void compareEnums(Collection<String> result, String fieldName, NamedEnum oneEnum, NamedEnum anotherEnum) {
-        if (oneEnum != anotherEnum) {
-            String resultString = fieldName + FROM + oneEnum.getDescription() + TO + anotherEnum.getDescription();
+    public static void compareEnums(Collection<String> result, String fieldName, NamedEnum originalEnum, NamedEnum changedEnum) {
+        if (originalEnum != changedEnum) {
+            String resultString = fieldName + FROM + originalEnum.getDescription() + TO + changedEnum.getDescription();
             result.add(resultString);
         }
     }
 
-    public static <T extends Dto> void compareCollectionDtos(Collection<String> result, String fieldName,
-                                                             Collection<T> collectionDtos,
-                                                             Collection<T> anotherCollectionDtos,
+    public static <T extends Dto> void compareCollectionDtos(Collection<String> result,
+                                                             String fieldName,
+                                                             Collection<T> originalDtos,
+                                                             Collection<T> changedDtos,
                                                              boolean idCompare) {
         StringBuilder resultString = new StringBuilder();
-        Map<UUID, ? extends List<T>> collectionIdsMap = collectionDtos.stream()
+        Map<UUID, ? extends List<T>> collectionIdsMap = originalDtos.stream()
                 .collect(Collectors.groupingBy(Dto::getId));
 
-        Map<UUID, ? extends List<T>> anotherCollectionIdsMap = anotherCollectionDtos.stream()
+        Map<UUID, ? extends List<T>> anotherCollectionIdsMap = changedDtos.stream()
                 .filter(dto -> dto.getId() != null)
                 .collect(Collectors.groupingBy(Dto::getId));
 
         List<String> removedElements = new ArrayList<>();
-        List<String> addedElements = anotherCollectionDtos.stream()
+        List<String> addedElements = changedDtos.stream()
                 .filter(dto -> dto.getId() == null)
                 .map(ComparatorUtils::getMainField)
                 .collect(Collectors.toList());

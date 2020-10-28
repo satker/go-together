@@ -2,11 +2,11 @@ package org.go.together.context;
 
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
-import org.go.together.client.NotificationClient;
 import org.go.together.client.UserClient;
 import org.go.together.configuration.H2HibernateConfig;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -31,8 +31,8 @@ public class RepositoryContext {
     }
 
     @Bean
-    public NotificationClient notificationClient() {
-        return Mockito.mock(NotificationClient.class);
+    public Source source() {
+        return Mockito.mock(Source.class);
     }
 
     @Bean

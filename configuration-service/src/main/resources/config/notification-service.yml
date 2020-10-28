@@ -9,3 +9,14 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:1111/eureka
+spring:
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092
+      bindings:
+        input:
+          destination: notificationMessage
+          group: inputSubscriberGroup

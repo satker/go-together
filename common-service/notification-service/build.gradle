@@ -1,6 +1,7 @@
 buildscript {
     ext {
         lombokVersion='1.18.16'
+        springCloudStreamVersion='3.0.8.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -22,7 +23,11 @@ repositories {
 }
 
 dependencies {
-    compile("org.projectlombok:lombok:${lombokVersion}")
+    compile(
+            "org.projectlombok:lombok:${lombokVersion}",
+            "org.springframework.cloud:spring-cloud-starter-stream-kafka:${springCloudStreamVersion}",
+    )
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile project(":notification-service-client")
     compile project(":common-service:exception-service")

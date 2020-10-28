@@ -28,16 +28,19 @@ import java.util.UUID;
 @Service
 public class NotificationReceiverServiceImpl extends CommonCrudService<NotificationReceiverDto, NotificationReceiver>
         implements NotificationReceiverService {
-    private final NotificationMessageService notificationMessageService;
+    private NotificationMessageService notificationMessageService;
     private final NotificationRepository notificationRepository;
     private final Mapper<NotificationDto, Notification> notificationMapper;
     private NotificationReceiverMessageService notificationReceiverMessageService;
 
     protected NotificationReceiverServiceImpl(NotificationRepository notificationRepository,
-                                              Mapper<NotificationDto, Notification> notificationMapper,
-                                              NotificationMessageService notificationMessageService) {
+                                              Mapper<NotificationDto, Notification> notificationMapper) {
         this.notificationRepository = notificationRepository;
         this.notificationMapper = notificationMapper;
+    }
+
+    @Autowired
+    public void setNotificationMessageService(NotificationMessageService notificationMessageService) {
         this.notificationMessageService = notificationMessageService;
     }
 

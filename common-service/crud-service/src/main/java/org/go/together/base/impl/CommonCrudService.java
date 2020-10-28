@@ -7,35 +7,24 @@ import org.go.together.enums.CrudOperation;
 import org.go.together.enums.NotificationStatus;
 import org.go.together.exceptions.ApplicationException;
 import org.go.together.exceptions.ValidationException;
-import org.go.together.find.impl.CommonFindService;
-import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.Dto;
-import org.go.together.interfaces.NotificationService;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.validation.Validator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntity>
-        extends CommonFindService<D, E> implements CrudService<D> {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+        extends CommonNotificationService<D, E> implements CrudService<D> {
     protected Validator<D> validator;
-    protected NotificationService<D> notificationService;
 
     @Autowired
     public void setValidator(Validator<D> validator) {
         this.validator = validator;
     }
 
-    @Autowired(required = false)
-    public void setNotificationService(NotificationService<D> notificationService) {
-        this.notificationService = notificationService;
-    }
-
+    @Override
     public IdDto create(D dto) {
         CrudOperation crudOperation = CrudOperation.CREATE;
         String validate = validator.validate(dto, crudOperation);
@@ -55,10 +44,7 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
                 log.error("Rollback successful  create " + getServiceName() + " id = " + entity.getId());
                 throw new ApplicationException(e);
             }
-            if (dto instanceof ComparableDto) {
-                String message = getNotificationMessage(dto, dto, NotificationStatus.CREATED);
-                notificationService.createNotification(createdEntity.getId(), dto, message);
-            }
+            sendNotification(createdEntity.getId(), dto, dto, NotificationStatus.UPDATED);
             return new IdDto(createdEntity.getId());
         } else {
             log.error("Validation failed " + getServiceName() + ": " + validate);
@@ -66,28 +52,26 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
         }
     }
 
-    public IdDto update(D dto) {
+    @Override
+    public IdDto update(D updatedDto) {
         CrudOperation crudOperation = CrudOperation.UPDATE;
-        String validate = validator.validate(dto, crudOperation);
+        String validate = validator.validate(updatedDto, crudOperation);
         if (StringUtils.isBlank(validate)) {
-            E entityById = repository.findByIdOrThrow(dto.getId());
-            D entityToDto = mapper.entityToDto(entityById);
-            E mappedEntity = mapper.dtoToEntity(dto);
+            E entityById = repository.findByIdOrThrow(updatedDto.getId());
+            D originalDto = mapper.entityToDto(entityById);
+            E updatedEntity = mapper.dtoToEntity(updatedDto);
             E createdEntity;
             try {
-                E enrichedEntity = enrichEntity(mappedEntity, dto, crudOperation);
+                E enrichedEntity = enrichEntity(updatedEntity, updatedDto, crudOperation);
                 createdEntity = repository.save(enrichedEntity);
             } catch (Exception e) {
                 log.error("Cannot update " + getServiceName() + ": " + e.getMessage());
-                log.error("Try rollback update " + getServiceName() + " id = " + mappedEntity.getId());
-                enrichEntity(entityById, entityToDto, crudOperation);
-                log.error("Rollback successful update " + getServiceName() + " id = " + mappedEntity.getId());
+                log.error("Try rollback update " + getServiceName() + " id = " + updatedEntity.getId());
+                enrichEntity(entityById, originalDto, crudOperation);
+                log.error("Rollback successful update " + getServiceName() + " id = " + updatedEntity.getId());
                 throw new ApplicationException(e);
             }
-            if (dto instanceof ComparableDto) {
-                String message = getNotificationMessage(entityToDto, dto, NotificationStatus.UPDATED);
-                notificationService.updateNotification(dto.getId(), dto, message);
-            }
+            sendNotification(updatedDto.getId(), originalDto, updatedDto, NotificationStatus.UPDATED);
             return new IdDto(createdEntity.getId());
         } else {
             log.error("Validation failed " + getServiceName() + ": " + validate);
@@ -95,28 +79,23 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
         }
     }
 
+    @Override
     public D read(UUID uuid) {
         E entityById = repository.findByIdOrThrow(uuid);
         log.info("Read " + getServiceName() + " row with id: " + uuid.toString());
         return mapper.entityToDto(entityById);
     }
 
+    @Override
     public void delete(UUID uuid) {
         CrudOperation crudOperation = CrudOperation.DELETE;
         Optional<E> entityById = repository.findById(uuid);
         if (entityById.isPresent()) {
             E entity = entityById.get();
-            D dto = mapper.entityToDto(entity);
+            D originalDto = mapper.entityToDto(entity);
             E enrichedEntity = enrichEntity(entity, null, crudOperation);
-            String message = null;
-            if (dto instanceof ComparableDto) {
-                D readDto = read(dto.getId());
-                message = getNotificationMessage(readDto, readDto, NotificationStatus.DELETED);
-            }
             repository.delete(enrichedEntity);
-            if (dto instanceof ComparableDto) {
-                notificationService.updateNotification(uuid, dto, message);
-            }
+            sendNotification(uuid, originalDto, originalDto, NotificationStatus.DELETED);
         } else {
             String message = "Cannot find entity " + getServiceName() + "  by id " + uuid;
             log.warn(message);
@@ -129,11 +108,5 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
 
     protected E enrichEntity(E entity, D dto, CrudOperation crudOperation) {
         return entity;
-    }
-
-    protected String getNotificationMessage(D dto, D anotherDto, NotificationStatus notificationStatus) {
-        String message = notificationService.getMessage(dto, anotherDto, getServiceName(), notificationStatus);
-        log.info(message);
-        return message;
     }
 }

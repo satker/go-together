@@ -33,21 +33,21 @@ public class EventUserServiceImpl extends CommonCrudService<EventUserDto, EventU
             return false;
         }
         super.delete(eventUserByUserIdAndEventId.get().getId());
-        notificationService.removedReceiver(eventUserDto);
+        notificationService.removeReceiver(eventUserDto);
         return true;
     }
 
     @Override
-    protected String getNotificationMessage(EventUserDto dto, EventUserDto anotherDto, NotificationStatus notificationStatus) {
-        String login = userClient.findLoginById(anotherDto.getUser().getId());
-        String eventName = eventRepository.findById(anotherDto.getEventId())
+    public String getNotificationMessage(EventUserDto originalDto, EventUserDto changedDto, NotificationStatus notificationStatus) {
+        String login = userClient.findLoginById(changedDto.getUser().getId());
+        String eventName = eventRepository.findById(changedDto.getEventId())
                 .map(Event::getName)
                 .orElse(StringUtils.EMPTY);
         if (notificationStatus == NotificationStatus.CREATED) {
             return "Added user '" + login + "' to event '" + eventName + "'.";
         } else if (notificationStatus == NotificationStatus.UPDATED) {
             return "Changed user '" + login +
-                    "' status to " + anotherDto.getUserStatus().getDescription() +
+                    "' status to " + changedDto.getUserStatus().getDescription() +
                     " in event '" + eventName + "'.";
         } else if (notificationStatus == NotificationStatus.DELETED) {
             return "Delete user '" + login + "' from event '" + eventName + "'.";

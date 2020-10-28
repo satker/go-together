@@ -4,6 +4,7 @@ buildscript {
         springCloudVersion = '2.2.2.RELEASE'
         lombokVersion='1.18.16'
         postgresDriver='42.2.18'
+        springCloudStreamVersion='3.0.8.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -37,6 +38,7 @@ dependencies {
             "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
             "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}",
 
+            "org.springframework.cloud:spring-cloud-starter-stream-kafka:${springCloudStreamVersion}",
             "org.projectlombok:lombok:${lombokVersion}"
     )
 

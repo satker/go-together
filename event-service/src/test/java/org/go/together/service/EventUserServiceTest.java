@@ -10,12 +10,16 @@ import org.go.together.service.interfaces.EventUserService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.messaging.Source;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collections;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
@@ -26,9 +30,15 @@ public class EventUserServiceTest extends CrudServiceCommonTest<EventUser, Event
     @Autowired
     private EventRepository eventRepository;
 
+    @Autowired
+    private Source source;
+
     @BeforeEach
     public void init() {
         super.init();
+        MessageChannel messageChannel = Mockito.mock(MessageChannel.class);
+        when(source.output()).thenReturn(messageChannel);
+        when(messageChannel.send(any())).thenReturn(true);
         when(userClient.checkIfUserPresentsById(dto.getUser().getId())).thenReturn(true);
         when(userClient.checkIfUserPresentsById(updatedDto.getUser().getId())).thenReturn(true);
         when(userClient.findSimpleUserDtosByUserIds(Collections.singleton(dto.getUser().getId())))

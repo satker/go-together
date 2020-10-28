@@ -32,9 +32,9 @@ const wrapActions = (actions, state, setState, ACTIONS_ID) => {
     const FORM_ID = ACTIONS_ID || state.formId.value;
 
     const result = {};
-    const dispatch = fetchAndSetToken(state.auth.response.token)(setToContext(setState));
     for (const action in actions) {
         if (!(actionsStore[FORM_ID] && actionsStore[FORM_ID][action])) {
+            const dispatch = fetchAndSetToken(state.auth.response.token)(setToContext(setState));
             result[action] = (...args) => actions[action](...args)(dispatch, state);
             actionsStore[FORM_ID] = {
                 ...actionsStore[FORM_ID],
