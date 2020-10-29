@@ -1,6 +1,7 @@
 buildscript {
     ext {
         springBootVersion = '2.3.0.RELEASE'
+        lombokVersion='1.18.16'
     }
     repositories {
         mavenCentral()
@@ -23,7 +24,9 @@ repositories {
 
 dependencies {
     compile (
+            "org.projectlombok:lombok:${lombokVersion}",
             "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
     )
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
 

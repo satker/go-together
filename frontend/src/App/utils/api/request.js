@@ -29,16 +29,24 @@ export const fetchAndSet = (url,
     fetch(url, requestParams)
         .then(resolveJson)
         .then(response => {
-            pathData.data.response = response;
-            pathData.data.inProcess = false;
-            setResult(pathData);
+            if (response.exceptionMessage) {
+                const exceptionMessage = response.exceptionMessage;
+                pathData.data.error = exceptionMessage;
+                pathData.data.inProcess = false;
+                setResult(pathData);
+                setNotificationMessage(exceptionMessage);
+            } else {
+                pathData.data.response = response;
+                pathData.data.inProcess = false;
+                setResult(pathData);
+            }
         }).catch(errorMessage => Promise.resolve(errorMessage)
         .then(error => error.json())
         .then(exception => {
-            pathData.data.error = exception;
+            pathData.data.error = exception.exceptionMessage;
             pathData.data.inProcess = false;
             setResult(pathData);
-            setNotificationMessage(exception.message);
+            setNotificationMessage(exception.exceptionMessage);
         }));
 };
 

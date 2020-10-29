@@ -27,7 +27,8 @@ repositories {
 dependencies {
     compile (
             "org.projectlombok:lombok:${lombokVersion}",
-            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+            'org.apache.commons:commons-lang3:3.9'
     )
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }

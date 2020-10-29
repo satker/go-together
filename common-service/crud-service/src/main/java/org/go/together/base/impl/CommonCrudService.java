@@ -27,55 +27,29 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
     @Override
     public IdDto create(D dto) {
         CrudOperation crudOperation = CrudOperation.CREATE;
-        String validate = validator.validate(dto, crudOperation);
-        if (StringUtils.isBlank(validate)) {
+        String validationException = validator.validate(dto, crudOperation);
+        if (StringUtils.isBlank(validationException)) {
             UUID id = repository.create().getId();
-            E entity = mapper.dtoToEntity(dto);
-            entity.setId(id);
-            E createdEntity;
-            try {
-                E enrichedEntity = enrichEntity(entity, dto, crudOperation);
-                createdEntity = repository.save(enrichedEntity);
-            } catch (Exception e) {
-                log.error("Cannot create " + getServiceName() + ": " + e.getMessage());
-                log.error("Try rollback create " + getServiceName() + " id = " + entity.getId());
-                enrichEntity(entity, dto, CrudOperation.DELETE);
-                repository.findById(id).ifPresent(repository::delete);
-                log.error("Rollback successful  create " + getServiceName() + " id = " + entity.getId());
-                throw new ApplicationException(e);
-            }
-            sendNotification(createdEntity.getId(), dto, dto, NotificationStatus.UPDATED);
-            return new IdDto(createdEntity.getId());
+            E newEntity = mapper.dtoToEntity(dto);
+            newEntity.setId(id);
+            return dtoAction(dto, crudOperation, CrudOperation.DELETE, newEntity, dto, newEntity);
         } else {
-            log.error("Validation failed " + getServiceName() + ": " + validate);
-            throw new ValidationException(validate);
+            throw new ValidationException(validationException, getServiceName());
         }
     }
 
     @Override
     public IdDto update(D updatedDto) {
         CrudOperation crudOperation = CrudOperation.UPDATE;
-        String validate = validator.validate(updatedDto, crudOperation);
-        if (StringUtils.isBlank(validate)) {
-            E entityById = repository.findByIdOrThrow(updatedDto.getId());
-            D originalDto = mapper.entityToDto(entityById);
+        String validationException = validator.validate(updatedDto, crudOperation);
+        if (StringUtils.isBlank(validationException)) {
+            E originalEntity = repository.findByIdOrThrow(updatedDto.getId());
+            D originalDto = mapper.entityToDto(originalEntity);
             E updatedEntity = mapper.dtoToEntity(updatedDto);
-            E createdEntity;
-            try {
-                E enrichedEntity = enrichEntity(updatedEntity, updatedDto, crudOperation);
-                createdEntity = repository.save(enrichedEntity);
-            } catch (Exception e) {
-                log.error("Cannot update " + getServiceName() + ": " + e.getMessage());
-                log.error("Try rollback update " + getServiceName() + " id = " + updatedEntity.getId());
-                enrichEntity(entityById, originalDto, crudOperation);
-                log.error("Rollback successful update " + getServiceName() + " id = " + updatedEntity.getId());
-                throw new ApplicationException(e);
-            }
-            sendNotification(updatedDto.getId(), originalDto, updatedDto, NotificationStatus.UPDATED);
-            return new IdDto(createdEntity.getId());
+            return dtoAction(updatedDto, crudOperation, crudOperation, originalEntity, originalDto, updatedEntity);
         } else {
-            log.error("Validation failed " + getServiceName() + ": " + validate);
-            throw new ValidationException(validate);
+            log.error("Validation failed " + getServiceName() + ": " + validationException);
+            throw new ValidationException(validationException, getServiceName());
         }
     }
 
@@ -100,6 +74,33 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
             String message = "Cannot find entity " + getServiceName() + "  by id " + uuid;
             log.warn(message);
         }
+    }
+
+    private void rollbackAction(D dto, E entity, Exception e, CrudOperation crudOperation) {
+        final String serviceName = getServiceName();
+        final String operation = crudOperation.getDescription();
+        log.error("Cannot " + operation + StringUtils.SPACE + serviceName + ": " + e.getMessage() +
+                ". Try rollback " + serviceName + " with id = " + entity.getId());
+        enrichEntity(entity, dto, crudOperation);
+        log.error("Rollback " + operation + " successful for " + serviceName + " with id = " + entity.getId());
+    }
+
+    private IdDto dtoAction(D newDto,
+                            CrudOperation crudOperation,
+                            CrudOperation revertCrudOperation,
+                            E originalEntity,
+                            D originalDto,
+                            E updatedEntity) {
+        E createdEntity;
+        try {
+            E enrichedEntity = enrichEntity(updatedEntity, newDto, crudOperation);
+            createdEntity = repository.save(enrichedEntity);
+        } catch (Exception exception) {
+            rollbackAction(originalDto, originalEntity, exception, revertCrudOperation);
+            throw new ApplicationException(exception);
+        }
+        sendNotification(newDto.getId(), originalDto, newDto, NotificationStatus.UPDATED);
+        return new IdDto(createdEntity.getId());
     }
 
     public String validate(D dto) {

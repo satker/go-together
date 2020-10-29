@@ -29,7 +29,7 @@ public abstract class CommonFindService<D extends Dto, E extends IdentifiedEntit
     private BaseResultMapper<D, E> resultMapper;
 
     @Autowired
-    public void setResultMapper(BaseResultMapper<D, E> resultMapper) {
+    private void setResultMapper(BaseResultMapper<D, E> resultMapper) {
         this.resultMapper = resultMapper;
     }
 
@@ -44,7 +44,7 @@ public abstract class CommonFindService<D extends Dto, E extends IdentifiedEntit
     }
 
     @Autowired
-    public void setMapper(BaseFindService<E> baseFindService) {
+    private void setMapper(BaseFindService<E> baseFindService) {
         this.baseFindService = baseFindService;
     }
 

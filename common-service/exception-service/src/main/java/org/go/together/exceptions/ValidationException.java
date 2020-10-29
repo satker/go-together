@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ValidationException extends RuntimeException {
     private static final Logger log = LoggerFactory.getLogger(ValidationException.class);
 
-    public ValidationException(String validationMessage) {
+    public ValidationException(String validationMessage, String serviceName) {
         super("Errors throw validation: " + validationMessage + ".");
+        log.error(serviceName + " validation failed: " + validationMessage);
         log.error("Errors throw validation: '" + validationMessage + "'.");
     }
 }

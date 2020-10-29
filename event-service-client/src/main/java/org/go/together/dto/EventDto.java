@@ -1,16 +1,17 @@
 package org.go.together.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
-import org.go.together.interfaces.Dto;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = false)
 @Data
-public class EventDto implements ComparableDto, Dto {
+public class EventDto extends ComparableDto {
     private UUID id;
     @ComparingField(value = "event name", isMain = true)
     private String name;

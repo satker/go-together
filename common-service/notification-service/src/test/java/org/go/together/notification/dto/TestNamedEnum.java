@@ -1,13 +1,13 @@
-package org.go.together.enums;
+package org.go.together.notification.dto;
 
 import org.go.together.interfaces.NamedEnum;
 
-public enum CrudOperation implements NamedEnum {
-    CREATE("create"), UPDATE("update"), DELETE("delete");
+public enum TestNamedEnum implements NamedEnum {
+    TEST("test"), ANOTHER_TEST("another test");
 
     private final String description;
 
-    CrudOperation(String description) {
+    TestNamedEnum(String description) {
         this.description = description;
     }
 
