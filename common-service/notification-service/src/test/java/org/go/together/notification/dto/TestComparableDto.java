@@ -41,7 +41,11 @@ public class TestComparableDto extends ComparableDto {
     @ComparingField("another test dto")
     private AnotherTestDto anotherTestDto;
 
+    @ComparingField(value = "another test dto with id compare", idCompare = true)
+    private AnotherTestDto anotherTestDtoWithIdCompare;
 
+
+    @ComparingField("test dtos")
     private Set<AnotherTestDto> testDtos;
 
     @Override
@@ -52,5 +56,10 @@ public class TestComparableDto extends ComparableDto {
     @Override
     public UUID getParentId() {
         return someObject;
+    }
+
+    @Override
+    public String getMainField() {
+        return string;
     }
 }

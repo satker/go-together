@@ -1,5 +1,7 @@
 package org.go.together.notification;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.go.together.enums.NotificationStatus;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.Dto;
@@ -50,8 +52,10 @@ public class NotificationServiceImpl<D extends Dto> implements NotificationServi
         updateNotificationSender.send(id, dto, resultMessage);
     }
 
+    @SneakyThrows
     private String compareFields(D originalDto, D changedDto, String serviceName) {
-        return dtoComparator.compare(serviceName, originalDto, changedDto, false);
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(dtoComparator.compare(serviceName, originalDto, changedDto));
     }
 
 

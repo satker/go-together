@@ -54,19 +54,18 @@ class CustomRepositoryImplTest {
     private void getTestEntity(UUID id, String manyEntityName, String joinEntityName, String testName, int testNumber) {
         Set<ManyJoinEntity> manyJoinEntities = new HashSet<>();
         for (int i = 0; i < 10; i++) {
-            ManyJoinEntity manyEntity = ManyJoinEntity.builder()
-                    .id(UUID.randomUUID())
-                    .name(manyEntityName + i)
-                    .number(i)
-                    .build();
+            ManyJoinEntity manyEntity = new ManyJoinEntity();
+            manyEntity.setId(UUID.randomUUID());
+            manyEntity.setNumber(i);
+            manyEntity.setName(manyEntityName + i);
             manyJoinRepository.save(manyEntity);
             manyJoinEntities.add(manyEntity);
         }
         Set<JoinTestEntity> joinTestEntities = new HashSet<>();
         for (int i = 0; i < 5; i++) {
-            JoinTestEntity joinTestEntity = JoinTestEntity.builder()
-                    .id(UUID.randomUUID())
-                    .name(joinEntityName + i).build();
+            JoinTestEntity joinTestEntity = new JoinTestEntity();
+            joinTestEntity.setId(UUID.randomUUID());
+            joinTestEntity.setName(joinEntityName + i);
             entityManager.merge(joinTestEntity);
             joinTestEntities.add(joinTestEntity);
         }
@@ -74,14 +73,14 @@ class CustomRepositoryImplTest {
         for (int i = 0; i < 3; i++) {
             elements.add(UUID.randomUUID());
         }
-        testEntity = TestEntity.builder().id(id)
-                .name(testName)
-                .number(testNumber)
-                .date(new Date())
-                .elements(elements)
-                .manyJoinEntities(manyJoinEntities)
-                .joinTestEntities(joinTestEntities)
-                .build();
+        this.testEntity = new TestEntity();
+        this.testEntity.setId(id);
+        this.testEntity.setNumber(testNumber);
+        this.testEntity.setName(testName);
+        this.testEntity.setDate(new Date());
+        this.testEntity.setElements(elements);
+        this.testEntity.setManyJoinEntities(manyJoinEntities);
+        this.testEntity.setJoinTestEntities(joinTestEntities);
     }
 
     @AfterEach

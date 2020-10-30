@@ -7,31 +7,25 @@ import org.go.together.utils.NotificationUtils;
 import java.util.Map;
 import java.util.UUID;
 
-import static java.util.Objects.nonNull;
-
 public abstract class ComparableDto implements Dto {
     private final Map<String, ComparingObject> comparingObject;
-    private String mainField;
 
     protected ComparableDto() {
         this.comparingObject = NotificationUtils.getComparingMap(this.getClass());
-
     }
 
     @JsonIgnore
-    public abstract UUID getOwnerId();
-
-    @JsonIgnore
-    public abstract UUID getParentId();
-
-    @JsonIgnore
-    public String getMainField() {
-        if (nonNull(mainField)) {
-            return mainField;
-        } else {
-            return NotificationUtils.getMainField(comparingObject, this);
-        }
+    public UUID getOwnerId() {
+        return null;
     }
+
+    @JsonIgnore
+    public UUID getParentId() {
+        return null;
+    }
+
+    @JsonIgnore
+    public abstract String getMainField();
 
     @JsonIgnore
     public Map<String, ComparingObject> getComparingMap() {

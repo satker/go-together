@@ -1,6 +1,5 @@
 package org.go.together.notification.comparators.impl;
 
-import org.apache.commons.lang3.StringUtils;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.go.together.notification.context.TestConfiguration;
 import org.junit.jupiter.api.Test;
@@ -9,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.go.together.notification.comparators.interfaces.Comparator.FROM;
+import java.util.Collections;
+import java.util.Map;
+
 import static org.go.together.notification.comparators.interfaces.Comparator.TO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -24,15 +25,15 @@ class StringComparatorTest {
 
     @Test
     void compareSameStrings() {
-        String compareResult = stringComparator.compare(FIELD, TEST_STRING, TEST_STRING, false);
-        assertEquals(StringUtils.EMPTY, compareResult);
+        Map<String, Object> compareResult = stringComparator.compare(FIELD, TEST_STRING, TEST_STRING);
+        assertEquals(Collections.emptyMap(), compareResult);
     }
 
     @Test
     void compareDifferentStrings() {
-        final String result = FIELD + FROM + TEST_STRING + TO + ANOTHER_TEST_STRING;
+        final Map<String, Object> expected = Map.of(FIELD, TEST_STRING + TO + ANOTHER_TEST_STRING);
 
-        String compareResult = stringComparator.compare(FIELD, TEST_STRING, ANOTHER_TEST_STRING, false);
-        assertEquals(result, compareResult);
+        Map<String, Object> compareResult = stringComparator.compare(FIELD, TEST_STRING, ANOTHER_TEST_STRING);
+        assertEquals(expected, compareResult);
     }
 }

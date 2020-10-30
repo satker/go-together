@@ -13,7 +13,7 @@ import java.util.UUID;
 @Data
 public class EventDto extends ComparableDto {
     private UUID id;
-    @ComparingField(value = "event name", isMain = true)
+    @ComparingField("event name")
     private String name;
     @ComparingField("people count")
     private Integer peopleCount;
@@ -42,5 +42,10 @@ public class EventDto extends ComparableDto {
     @Override
     public UUID getParentId() {
         return getId();
+    }
+
+    @Override
+    public String getMainField() {
+        return name;
     }
 }

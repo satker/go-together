@@ -1,15 +1,15 @@
 package org.go.together.notification.comparators.impl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.dto.ComparingObject;
 import org.go.together.interfaces.ComparableDto;
-import org.go.together.interfaces.Dto;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 public class CollectionDtoComparator implements Comparator<Collection<ComparableDto>> {
@@ -21,115 +21,89 @@ public class CollectionDtoComparator implements Comparator<Collection<Comparable
     }
 
     @Override
-    public String compare(String fieldName,
-                          Collection<ComparableDto> originalObject, Collection<ComparableDto> changedObject, boolean idCompare) {
-        StringBuilder resultString = new StringBuilder();
-        Map<UUID, ? extends List<ComparableDto>> originalIdsMap = originalObject.stream()
-                .collect(Collectors.groupingBy(ComparableDto::getId));
+    public Map<String, Object> compare(String fieldName, Collection<ComparableDto> originalObject,
+                                       Collection<ComparableDto> changedObject, ComparingObject fieldProperties) {
+        originalObject = Optional.ofNullable(originalObject).orElse(Collections.emptySet());
+        changedObject = Optional.ofNullable(changedObject).orElse(Collections.emptySet());
 
-        Map<UUID, ? extends List<ComparableDto>> changedIdsMap = changedObject.stream()
+        Map<UUID, ComparableDto> originalIdsMap = originalObject.stream()
+                .collect(Collectors.toMap(ComparableDto::getId, Function.identity()));
+
+        Map<UUID, ComparableDto> changedIdsMap = changedObject.stream()
                 .filter(dto -> dto.getId() != null)
-                .collect(Collectors.groupingBy(Dto::getId));
+                .collect(Collectors.toMap(ComparableDto::getId, Function.identity()));
 
-        Set<String> addedElements = findAddedElements(changedObject, originalIdsMap, changedIdsMap);
-        Set<String> changedElements = findChangedElements(fieldName, idCompare, originalIdsMap, changedIdsMap);
-        Set<String> removedElements = findRemovedElements(originalIdsMap, changedIdsMap);
+        Collection<String> addedElements = findAddedElements(changedObject, originalIdsMap, changedIdsMap);
+        Map<String, Object> changedElements = findChangedElements(fieldProperties, originalIdsMap, changedIdsMap);
+        Collection<String> removedElements = findRemovedElements(originalIdsMap, changedIdsMap);
 
-        String concatComparingResult = concatComparingResult(removedElements, addedElements, changedElements);
+        Map<String, Object> resultMap = getComparingMap(removedElements, addedElements, changedElements);
 
-        return produceComparingResult(fieldName, resultString, concatComparingResult);
+        return Map.of(fieldName, resultMap);
     }
 
-    private Set<String> findChangedElements(String fieldName,
-                                            boolean idCompare,
-                                            Map<UUID, ? extends List<ComparableDto>> originalIdsMap,
-                                            Map<UUID, ? extends List<ComparableDto>> changedIdsMap) {
-        if (idCompare) {
-            return Collections.emptySet();
+    private Map<String, Object> findChangedElements(ComparingObject fieldProperties,
+                                                    Map<UUID, ComparableDto> originalIdsMap,
+                                                    Map<UUID, ComparableDto> changedIdsMap) {
+        if (fieldProperties.getIdCompare()) {
+            return Collections.emptyMap();
         } else {
-            return changedIdsMap.entrySet().stream()
-                    .map(entry -> {
-                        ComparableDto anotherComparableDto = entry.getValue().iterator().next();
-                        Set<String> resultComparing = new HashSet<>();
-                        ComparableDto comparableDto = originalIdsMap.get(entry.getKey()).iterator().next();
-                        String comparingResult = comparableDtoComparator.compare(fieldName, comparableDto, anotherComparableDto, false);
-                        resultComparing.add(comparingResult);
-                        if (!resultComparing.isEmpty()) {
-                            return StringUtils.join(resultComparing, ",");
-                        }
-                        return StringUtils.EMPTY;
-                    }).collect(Collectors.toSet());
+            Map<String, Object> resultMap = new HashMap<>();
+            changedIdsMap.entrySet().stream()
+                    .map(entry -> Optional.ofNullable(originalIdsMap.get(entry.getKey()))
+                            .map(dto -> comparableDtoComparator.compare(ITEM, dto, entry.getValue(), fieldProperties))
+                            .orElse(Collections.emptyMap()))
+                    .filter(map -> !map.isEmpty())
+                    .forEach(resultMap::putAll);
+            return resultMap;
         }
     }
 
-    private Set<String> findAddedElements(Collection<ComparableDto> changedObject,
-                                          Map<UUID, ? extends List<ComparableDto>> originalIdsMap,
-                                          Map<UUID, ? extends List<ComparableDto>> changedIdsMap) {
-        Set<String> addedElements = changedObject.stream()
+    private Collection<String> findAddedElements(Collection<ComparableDto> changedObject,
+                                                 Map<UUID, ComparableDto> originalIdsMap,
+                                                 Map<UUID, ComparableDto> changedIdsMap) {
+        Collection<String> addedElements = changedObject.stream()
                 .filter(dto -> dto.getId() == null)
                 .map(ComparableDto::getMainField)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
         changedIdsMap.entrySet().stream()
                 .filter(changedId -> !originalIdsMap.containsKey(changedId.getKey()))
                 .map(Map.Entry::getValue)
-                .map(List::iterator)
-                .filter(Iterator::hasNext)
-                .map(Iterator::next)
                 .map(ComparableDto::getMainField)
                 .forEach(addedElements::add);
         return addedElements;
     }
 
-    private Set<String> findRemovedElements(Map<UUID, ? extends List<ComparableDto>> originalIdsMap, Map<UUID, ? extends List<ComparableDto>> changedIdsMap) {
+    private Collection<String> findRemovedElements(Map<UUID, ComparableDto> originalIdsMap, Map<UUID, ComparableDto> changedIdsMap) {
         return originalIdsMap.keySet().stream()
                 .filter(originalId -> !changedIdsMap.containsKey(originalId))
-                .map(originalId -> originalIdsMap.get(originalId).iterator().next())
+                .map(originalIdsMap::get)
                 .map(ComparableDto::getMainField)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
-    private String produceComparingResult(String fieldName,
-                                          StringBuilder resultString,
-                                          String concatComparingResult) {
-
-        return resultString.append(CHANGED)
-                .append(StringUtils.SPACE)
-                .append(fieldName)
-                .append(" (")
-                .append(concatComparingResult)
-                .append(") ").toString();
-    }
-
-    private String concatComparingResult(Set<String> removedElements,
-                                         Set<String> addedElements,
-                                         Set<String> changedElements) {
+    private Map<String, Object> getComparingMap(Collection<String> removedElements,
+                                                Collection<String> addedElements,
+                                                Map<String, Object> changedElements) {
         if (!removedElements.isEmpty() || !addedElements.isEmpty() || !changedElements.isEmpty()) {
-            String removedElementsString = produceAddedElementsResult(removedElements, " removed ");
-            String addedElementsString = produceAddedElementsResult(addedElements, " added ");
-            String changedElementsString = produceChangedElementsResult(changedElements, addedElementsString);
+            Map<String, Object> removedElementsString = produceAddedElementsResult(removedElements, REMOVED);
+            Map<String, Object> addedElementsString = produceAddedElementsResult(addedElements, ADDED);
 
-            return Stream.of(removedElementsString, addedElementsString, changedElementsString)
-                    .filter(StringUtils::isNotBlank)
-                    .collect(Collectors.joining(" and"));
+            changedElements.putAll(removedElementsString);
+            changedElements.putAll(addedElementsString);
+
+            return changedElements;
         }
-        return StringUtils.EMPTY;
+        return Collections.emptyMap();
     }
 
-    private String produceChangedElementsResult(Set<String> changedElements,
-                                                String addedElementsString) {
-        if (!changedElements.isEmpty()) {
-            return addedElementsString + StringUtils.join(changedElements, COMMA);
+    private Map<String, Object> produceAddedElementsResult(Collection<String> elements, String action) {
+        if (!elements.isEmpty()) {
+            String message = StringUtils.isBlank(elements.iterator().next()) ?
+                    elements.size() + ITEMS :
+                    StringUtils.join(elements, COMMA);
+            return Map.of(action, message);
         }
-        return StringUtils.EMPTY;
-    }
-
-    private String produceAddedElementsResult(Set<String> removedElements, String action) {
-        if (!removedElements.isEmpty()) {
-            String message = StringUtils.isBlank(removedElements.iterator().next()) ?
-                    removedElements.size() + " elements " :
-                    StringUtils.join(removedElements, COMMA);
-            return action + message;
-        }
-        return StringUtils.EMPTY;
+        return Collections.emptyMap();
     }
 }

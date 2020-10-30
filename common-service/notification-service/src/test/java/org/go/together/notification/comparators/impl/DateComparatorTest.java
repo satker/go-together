@@ -1,6 +1,5 @@
 package org.go.together.notification.comparators.impl;
 
-import org.apache.commons.lang3.StringUtils;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.go.together.notification.context.TestConfiguration;
 import org.junit.jupiter.api.Test;
@@ -10,9 +9,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 
-import static org.go.together.notification.comparators.interfaces.Comparator.FROM;
 import static org.go.together.notification.comparators.interfaces.Comparator.TO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -34,15 +34,15 @@ class DateComparatorTest {
 
     @Test
     void compareSameEnums() {
-        String compareResult = dateComparator.compare(FIELD, TEST_DATE, TEST_DATE, false);
-        assertEquals(StringUtils.EMPTY, compareResult);
+        Map<String, Object> compareResult = dateComparator.compare(FIELD, TEST_DATE, TEST_DATE);
+        assertEquals(Collections.emptyMap(), compareResult);
     }
 
     @Test
     void compareDifferentEnums() {
-        final String result = FIELD + FROM + TEST_DATE.toString() + TO + ANOTHER_TEST_DATE.toString();
+        final Map<String, Object> result = Map.of(FIELD, TEST_DATE.toString() + TO + ANOTHER_TEST_DATE.toString());
 
-        String compareResult = dateComparator.compare(FIELD, TEST_DATE, ANOTHER_TEST_DATE, false);
+        Map<String, Object> compareResult = dateComparator.compare(FIELD, TEST_DATE, ANOTHER_TEST_DATE);
         assertEquals(result, compareResult);
     }
 }

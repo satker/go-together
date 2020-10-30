@@ -157,7 +157,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
         testDto.setNumber((long) random.nextInt(10) + 10);
         testDto.setLatitude(3333.3);
-        testDto.setEndNumber(random.nextInt(10) + 20);
+        testDto.setEndNumber((long) (random.nextInt(10) + 20));
         IdDto updatedId = crudService.update(testDto);
         Optional<TestEntity> updatedEntity = repository.findById(updatedId.getId());
 

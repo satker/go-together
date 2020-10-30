@@ -1,6 +1,5 @@
 package org.go.together.notification.comparators.impl;
 
-import org.apache.commons.lang3.StringUtils;
 import org.go.together.interfaces.NamedEnum;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.go.together.notification.context.TestConfiguration;
@@ -11,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.go.together.notification.comparators.interfaces.Comparator.FROM;
+import java.util.Collections;
+import java.util.Map;
+
 import static org.go.together.notification.comparators.interfaces.Comparator.TO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -27,15 +28,15 @@ class EnumComparatorTest {
 
     @Test
     void compareSameEnums() {
-        String compareResult = namedEnumComparator.compare(FIELD, TEST_NAMED_ENUM, TEST_NAMED_ENUM, false);
-        assertEquals(StringUtils.EMPTY, compareResult);
+        Map<String, Object> compareResult = namedEnumComparator.compare(FIELD, TEST_NAMED_ENUM, TEST_NAMED_ENUM);
+        assertEquals(Collections.emptyMap(), compareResult);
     }
 
     @Test
     void compareDifferentEnums() {
-        final String result = FIELD + FROM + TEST_NAMED_ENUM.getDescription() + TO + ANOTHER_TEST_NAMED_ENUM.getDescription();
+        final Map<String, Object> result = Map.of(FIELD, TEST_NAMED_ENUM.getDescription() + TO + ANOTHER_TEST_NAMED_ENUM.getDescription());
 
-        String compareResult = namedEnumComparator.compare(FIELD, TEST_NAMED_ENUM, ANOTHER_TEST_NAMED_ENUM, false);
+        Map<String, Object> compareResult = namedEnumComparator.compare(FIELD, TEST_NAMED_ENUM, ANOTHER_TEST_NAMED_ENUM);
         assertEquals(result, compareResult);
     }
 }

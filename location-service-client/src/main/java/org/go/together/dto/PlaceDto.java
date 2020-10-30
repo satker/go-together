@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
-import org.go.together.interfaces.Dto;
 
 import java.util.Set;
 import java.util.UUID;
@@ -14,10 +14,10 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"id"})
-public class PlaceDto implements Dto {
+@EqualsAndHashCode(exclude = {"id"}, callSuper = false)
+public class PlaceDto extends ComparableDto {
     private UUID id;
-    @ComparingField(value = "name", isMain = true)
+    @ComparingField("name")
     private String name;
     @ComparingField("state")
     private String state;
@@ -26,4 +26,9 @@ public class PlaceDto implements Dto {
 
     @JsonIgnore
     private Set<UUID> locations;
+
+    @Override
+    public String getMainField() {
+        return name;
+    }
 }

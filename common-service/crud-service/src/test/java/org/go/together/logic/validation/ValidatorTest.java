@@ -78,7 +78,7 @@ class ValidatorTest {
 
     @Test
     void validateWithIncorrectNumber() {
-        testDto.setNumber(0);
+        testDto.setNumber(0L);
 
         String validate = testValidator.validate(testDto, null);
 
@@ -87,7 +87,7 @@ class ValidatorTest {
 
     @Test
     void validateWithIncorrectNumbers() {
-        testDto.setEndNumber(0);
+        testDto.setEndNumber(0L);
 
         String validate = testValidator.validate(testDto, null);
 

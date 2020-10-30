@@ -29,4 +29,9 @@ public class AnotherTestDto extends ComparableDto {
     public UUID getParentId() {
         return null;
     }
+
+    @Override
+    public String getMainField() {
+        return string;
+    }
 }

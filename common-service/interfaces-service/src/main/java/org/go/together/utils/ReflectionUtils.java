@@ -2,6 +2,7 @@ package org.go.together.utils;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 public class ReflectionUtils {
     public static <E> Class<E> getParametrizedClass(Class clazz, int parameterNumber) {
@@ -26,6 +27,9 @@ public class ReflectionUtils {
                 Type actualTypeArgument = ((ParameterizedType) genericInterface).getActualTypeArguments()[parameterNumber];
                 if (actualTypeArgument instanceof ParameterizedType) {
                     return (Class<?>) ((ParameterizedType) actualTypeArgument).getRawType();
+                }
+                if (actualTypeArgument instanceof TypeVariable) {
+                    return (Class<?>) ((TypeVariable) actualTypeArgument).getBounds()[0];
                 }
                 return (Class<?>) actualTypeArgument;
             }

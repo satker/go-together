@@ -39,7 +39,7 @@ dependencies {
     compile project(":common-service:find-service")
     compile project(":common-service:validation-service")
     testCompile project(":common-service:notification-service")
-
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
 

@@ -1,18 +1,21 @@
 package org.go.together.notification.comparators.impl;
 
-import org.apache.commons.lang3.StringUtils;
+import org.go.together.dto.ComparingObject;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 
 @Component
 public class DateComparator implements Comparator<Date> {
+
     @Override
-    public String compare(String fieldName, Date originalObject, Date changedObject, boolean idCompare) {
+    public Map<String, Object> compare(String fieldName, Date originalObject, Date changedObject, ComparingObject fieldProperties) {
         if (originalObject.compareTo(changedObject) != 0) {
-            return fieldName + FROM + originalObject.toString() + TO + changedObject.toString();
+            return Map.of(fieldName, originalObject.toString() + TO + changedObject.toString());
         }
-        return StringUtils.EMPTY;
+        return Collections.emptyMap();
     }
 }

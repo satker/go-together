@@ -13,7 +13,7 @@ import java.util.UUID;
 public class MessageDto extends ComparableDto {
     private UUID id;
 
-    @ComparingField(value = "message", isMain = true)
+    @ComparingField("message")
     private String message;
 
     @ComparingField("rating")
@@ -36,5 +36,10 @@ public class MessageDto extends ComparableDto {
     @Override
     public UUID getParentId() {
         return getId();
+    }
+
+    @Override
+    public String getMainField() {
+        return message;
     }
 }

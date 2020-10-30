@@ -12,7 +12,5 @@ public @interface ComparingField {
 
     boolean deepCompare() default true;
 
-    boolean isMain() default false;
-
     boolean idCompare() default false;
 }

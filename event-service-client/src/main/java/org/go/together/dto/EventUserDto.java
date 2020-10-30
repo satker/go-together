@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 public class EventUserDto extends ComparableDto {
     private UUID id;
-    @ComparingField(value = "user", isMain = true)
+    @ComparingField("user")
     private SimpleUserDto user;
     @ComparingField("user status")
     private EventUserStatus userStatus;
@@ -25,5 +25,10 @@ public class EventUserDto extends ComparableDto {
     @Override
     public UUID getParentId() {
         return this.getEventId();
+    }
+
+    @Override
+    public String getMainField() {
+        return user.getMainField();
     }
 }

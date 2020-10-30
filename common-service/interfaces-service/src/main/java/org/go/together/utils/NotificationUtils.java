@@ -1,7 +1,6 @@
 package org.go.together.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.ComparingObject;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
@@ -31,9 +30,12 @@ public class NotificationUtils {
                                 }
                             };
                             boolean ignored = field.isAnnotationPresent(JsonIgnore.class);
-                            ComparingObject comparingObject =
-                                    new ComparingObject(fieldValueGetter, annotation.deepCompare(), annotation.isMain(), ignored,
-                                            annotation.idCompare());
+                            ComparingObject comparingObject = ComparingObject.builder()
+                                    .fieldValueGetter(fieldValueGetter)
+                                    .isDeepCompare(annotation.deepCompare())
+                                    .idCompare(annotation.idCompare())
+                                    .clazz(field.getType())
+                                    .ignored(ignored).build();
                             result.put(annotation.value(), comparingObject);
                         } catch (Exception e) {
                             throw new IllegalArgumentException("Cannot find field '" + name + "' getter");
@@ -41,16 +43,5 @@ public class NotificationUtils {
                     }
                 });
         return result;
-    }
-
-    public static <T extends ComparableDto> String getMainField(Map<String, ComparingObject> comparingObject, T dto) {
-        return comparingObject.values().stream()
-                .filter(ComparingObject::getIsMain)
-                .findFirst()
-                .map(ComparingObject::getFieldValueGetter)
-                .map(fieldGetter -> fieldGetter.apply(dto))
-                .map(Object::toString)
-                .map(string -> " '" + string + "'")
-                .orElse(StringUtils.EMPTY);
     }
 }

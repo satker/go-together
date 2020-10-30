@@ -13,7 +13,7 @@ import java.util.UUID;
 public class UserDto extends ComparableDto {
     private UUID id;
 
-    @ComparingField(value = "login", isMain = true)
+    @ComparingField("login")
     private String login;
 
     @ComparingField("mail")
@@ -54,5 +54,10 @@ public class UserDto extends ComparableDto {
     @Override
     public UUID getParentId() {
         return getId();
+    }
+
+    @Override
+    public String getMainField() {
+        return login;
     }
 }

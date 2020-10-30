@@ -2,23 +2,23 @@ package org.go.together.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
-import org.go.together.interfaces.Dto;
 
 import java.util.UUID;
 
 @Data
-@EqualsAndHashCode(exclude = {"id"})
-public class LocationDto implements Dto {
+@EqualsAndHashCode(exclude = {"id"}, callSuper = false)
+public class LocationDto extends ComparableDto {
     private UUID id;
 
     @ComparingField("place")
     private PlaceDto place;
 
-    @ComparingField(value = "route number")
+    @ComparingField("route number")
     private Integer routeNumber;
 
-    @ComparingField(value = "address", isMain = true)
+    @ComparingField("address")
     private String address;
 
     private Double latitude;
@@ -27,4 +27,9 @@ public class LocationDto implements Dto {
 
     private Boolean isStart;
     private Boolean isEnd;
+
+    @Override
+    public String getMainField() {
+        return address;
+    }
 }
