@@ -170,7 +170,7 @@ class MapperTest {
 
         Set<ManyJoinEntity> manyJoinEntities = new HashSet<>();
         Set<ManyJoinDto> manyJoinDtos = new HashSet<>();
-        for (int i = 0; i < 15; i++) {
+        for (long i = 0; i < 15; i++) {
             UUID id = UUID.randomUUID();
             String name = "many join test " + i;
             ManyJoinEntity manyJoinEntity = new ManyJoinEntity();

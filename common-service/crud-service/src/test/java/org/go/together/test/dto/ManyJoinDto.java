@@ -16,7 +16,7 @@ public class ManyJoinDto extends ComparableDto {
     private String name;
 
     @ComparingField("number")
-    private long number;
+    private Long number;
 
     @Override
     public String getMainField() {

@@ -4,7 +4,7 @@ import lombok.SneakyThrows;
 import org.go.together.dto.ComparingObject;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.notification.comparators.interfaces.Comparator;
-import org.go.together.notification.comparators.interfaces.Transformer;
+import org.go.together.notification.transport.interfaces.CompareTransport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,25 +15,24 @@ import java.util.function.Function;
 
 @Component
 public class DtoComparator<T extends ComparableDto> implements Comparator<T> {
-    private Transformer transformer;
+    private CompareTransport transformer;
 
     @Autowired
-    public void setTransformer(Transformer transformer) {
+    public void setTransformer(CompareTransport transformer) {
         this.transformer = transformer;
     }
 
     public Map<String, Object> compare(String fieldName, T originalObject, T changedObject, ComparingObject fieldProperties) {
         Map<String, Object> resultMap = compareDtoFields(originalObject, changedObject);
         String mainField = changedObject.getMainField();
-        return getCompareResult(fieldName, resultMap, mainField);
+        return getCompareResult(fieldName, resultMap);
     }
 
     @SneakyThrows
     private Map<String, Object> getCompareResult(String fieldName,
-                                                 Map<String, Object> resultMap,
-                                                 String mainField) {
+                                                 Map<String, Object> resultMap) {
         if (!resultMap.isEmpty()) {
-            return Map.of(fieldName + mainField, resultMap);
+            return Map.of(fieldName, resultMap);
         }
         return Collections.emptyMap();
     }

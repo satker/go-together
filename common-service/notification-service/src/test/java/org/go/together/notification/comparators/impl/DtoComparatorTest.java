@@ -21,15 +21,14 @@ import static org.go.together.notification.comparators.impl.SimpleDtoComparatorT
 import static org.go.together.notification.comparators.impl.SimpleDtoComparatorTest.SIMPLE_DTO;
 import static org.go.together.notification.comparators.impl.StringComparatorTest.ANOTHER_TEST_STRING;
 import static org.go.together.notification.comparators.impl.StringComparatorTest.TEST_STRING;
-import static org.go.together.notification.comparators.interfaces.Comparator.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.go.together.notification.comparators.interfaces.Comparator.CHANGED;
+import static org.go.together.notification.comparators.interfaces.Comparator.TO;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfiguration.class)
 class DtoComparatorTest {
     private static final String FIELD = "field";
-    private static final String CHANGED_FIELD = CHANGED_WITH_UPPER_LETTER + StringUtils.SPACE + FIELD + COLON;
     private static final String SECURE_FIELD = "secure field";
     private static final String ANOTHER_TEST_DTO_STRING = "another string";
     private static final Number ANOTHER_TEST_DTO_NUMBER = 2;
@@ -50,8 +49,8 @@ class DtoComparatorTest {
                                                    String string,
                                                    TestNamedEnum testNamedEnum,
                                                    UUID anotherTestDtoId) {
-        AnotherTestDto firstTestDto = createAnotherTestDto(anotherTestDtoId, ANOTHER_TEST_DTO_NUMBER, ANOTHER_TEST_DTO_STRING);
-        AnotherTestDto secondTestDto = createAnotherTestDto(ANOTHER_TEST_DTO_NUMBER, ANOTHER_TEST_DTO_STRING);
+        AnotherTestDto firstTestDto = createAnotherTestDto(anotherTestDtoId, ANOTHER_TEST_DTO_NUMBER, ANOTHER_TEST_DTO_STRING + 1);
+        AnotherTestDto secondTestDto = createAnotherTestDto(ANOTHER_TEST_DTO_NUMBER, ANOTHER_TEST_DTO_STRING + 2);
         return TestComparableDto.builder()
                 .id(UUID.randomUUID())
                 .date(date)
@@ -65,7 +64,7 @@ class DtoComparatorTest {
                 .secureString(SECURE_FIELD).build();
     }
 
-    private static AnotherTestDto createAnotherTestDto(Number number, String string) {
+    public static AnotherTestDto createAnotherTestDto(Number number, String string) {
         return createAnotherTestDto(UUID.randomUUID(), number, string);
     }
 
@@ -76,10 +75,15 @@ class DtoComparatorTest {
                 .string(string).build();
     }
 
-    private void compareMaps(Map<String, Object> result, Pair<String, Object> changedField) {
+    public static void compareMaps(Map<String, Object> result, Pair<String, Object> changedField) {
         Object changedFieldInResult = result.get(changedField.getKey());
         assertNotNull(changedFieldInResult);
-        assertEquals(changedField.getValue(), changedFieldInResult);
+        if (changedFieldInResult instanceof Collection) {
+            assertArrayEquals(((Collection<?>) changedField.getValue()).stream().sorted().toArray(),
+                    ((Collection<?>) changedFieldInResult).stream().sorted().toArray());
+        } else {
+            assertEquals(changedField.getValue(), changedFieldInResult);
+        }
     }
 
     @Test
@@ -145,7 +149,7 @@ class DtoComparatorTest {
 
         final String anotherTestDto = "another test dto";
         final Pair<String, Object> anotherDtoStringFieldChanged = Pair.of("another string",
-                ANOTHER_TEST_DTO_STRING + TO + changedString);
+                TEST_DTO.getAnotherTestDto().getString() + TO + changedString);
 
         Map<String, Object> compareResult = testComparableDtoComparator.compare(FIELD, TEST_DTO, ANOTHER_DTO_TEST);
 
@@ -168,7 +172,7 @@ class DtoComparatorTest {
 
         final String anotherTestDto = "another test dto";
         final Pair<String, Object> anotherDtoStringFieldChanged = Pair.of("another string",
-                ANOTHER_TEST_DTO_STRING + TO + changedString);
+                TEST_DTO.getAnotherTestDto().getString() + TO + changedString);
         final Pair<String, Object> anotherDtoNumberFieldChanged = Pair.of("another number",
                 ANOTHER_TEST_DTO_NUMBER + TO + changedNumber);
 
@@ -204,103 +208,5 @@ class DtoComparatorTest {
         assertEquals(1, result.size());
 
         compareMaps(result, idCompareFieldChanged);
-    }
-
-    @Test
-    void compareDtoAddedElementsCollections() {
-        Set<AnotherTestDto> testDtos = Set.of(TEST_DTO.getAnotherTestDto(), TEST_DTO.getAnotherTestDtoWithIdCompare());
-        final TestComparableDto ANOTHER_TEST_DTO = TEST_DTO.toBuilder().testDtos(testDtos).build();
-
-        final String testDtosName = "test dtos";
-        final Pair<String, Object> expectedChangedCollections = Pair.of(ADDED, testDtos.size() + ITEMS);
-
-        Map<String, Object> compareResult = testComparableDtoComparator.compare(FIELD, TEST_DTO, ANOTHER_TEST_DTO);
-
-        assertEquals(1, compareResult.size());
-
-        Map<String, Object> result = (Map<String, Object>) compareResult.get(FIELD);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-
-        Map<String, Object> innerDtoComparingMap = (Map<String, Object>) result.get(testDtosName);
-
-        compareMaps(innerDtoComparingMap, expectedChangedCollections);
-    }
-
-    @Test
-    void compareDtoRemovedElementsCollections() {
-        Set<AnotherTestDto> testDtos = Set.of(TEST_DTO.getAnotherTestDto(), TEST_DTO.getAnotherTestDtoWithIdCompare());
-        final TestComparableDto ANOTHER_TEST_DTO = TEST_DTO.toBuilder().testDtos(testDtos).build();
-        final TestComparableDto ANOTHER_TEST_DTO_WITH_REMOVED_ELEMENTS = TEST_DTO.toBuilder().testDtos(null).build();
-
-        final String testDtosName = "test dtos";
-        final Pair<String, Object> expectedChangedCollections = Pair.of(REMOVED, testDtos.size() + ITEMS);
-
-        Map<String, Object> compareResult = testComparableDtoComparator.compare(FIELD, ANOTHER_TEST_DTO, ANOTHER_TEST_DTO_WITH_REMOVED_ELEMENTS);
-
-        assertEquals(1, compareResult.size());
-
-        Map<String, Object> result = (Map<String, Object>) compareResult.get(FIELD);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-
-        Map<String, Object> innerDtoComparingMap = (Map<String, Object>) result.get(testDtosName);
-
-        compareMaps(innerDtoComparingMap, expectedChangedCollections);
-    }
-
-    @Test
-    void compareDtoAddedAndRemovedElementsCollections() {
-        Set<AnotherTestDto> testDtos = Set.of(TEST_DTO.getAnotherTestDto(), TEST_DTO.getAnotherTestDtoWithIdCompare());
-        final TestComparableDto ANOTHER_TEST_DTO = TEST_DTO.toBuilder().testDtos(testDtos).build();
-
-        Set<AnotherTestDto> anotherTestDtos = Set.of(createAnotherTestDto(3, "test3"), createAnotherTestDto(4, "test4"));
-        final TestComparableDto ANOTHER_TEST_DTO_WITH_REMOVED_ELEMENTS = TEST_DTO.toBuilder().testDtos(anotherTestDtos).build();
-
-        final String testDtosName = "test dtos";
-        final Pair<String, Object> expectedRemovedElementsCollections = Pair.of(REMOVED, +testDtos.size() + ITEMS);
-        final Pair<String, Object> expectedAddedElementsCollections = Pair.of(ADDED, anotherTestDtos.size() + ITEMS);
-
-        Map<String, Object> compareResult = testComparableDtoComparator.compare(FIELD, ANOTHER_TEST_DTO, ANOTHER_TEST_DTO_WITH_REMOVED_ELEMENTS);
-
-        assertEquals(1, compareResult.size());
-
-        Map<String, Object> result = (Map<String, Object>) compareResult.get(FIELD);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-
-        Map<String, Object> innerDtoComparingMap = (Map<String, Object>) result.get(testDtosName);
-
-        compareMaps(innerDtoComparingMap, expectedRemovedElementsCollections);
-        compareMaps(innerDtoComparingMap, expectedAddedElementsCollections);
-    }
-
-    @Test
-    void compareDtoChangedElementsCollections() {
-        Set<AnotherTestDto> testDtos = Set.of(TEST_DTO.getAnotherTestDto(), TEST_DTO.getAnotherTestDtoWithIdCompare());
-        final TestComparableDto ANOTHER_TEST_DTO = TEST_DTO.toBuilder().testDtos(testDtos).build();
-
-        AnotherTestDto changedElement = TEST_DTO.getAnotherTestDto().toBuilder().number(123).build();
-        AnotherTestDto nextChangedElement = TEST_DTO.getAnotherTestDtoWithIdCompare().toBuilder().string("changed element").build();
-        Set<AnotherTestDto> changedTestDtos = Set.of(changedElement, nextChangedElement);
-        final TestComparableDto ANOTHER_TEST_DTO_WITH_REMOVED_ELEMENTS = TEST_DTO.toBuilder().testDtos(changedTestDtos).build();
-
-        final String testDtosName = "test dtos";
-
-        Map<String, Object> compareResult = testComparableDtoComparator.compare(FIELD, ANOTHER_TEST_DTO, ANOTHER_TEST_DTO_WITH_REMOVED_ELEMENTS);
-        assertEquals(1, compareResult.size());
-
-        Map<String, Object> result = (Map<String, Object>) compareResult.get(FIELD);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-
-        Map<String, Object> innerDtoComparingMap = (Map<String, Object>) result.get(testDtosName);
-
-        assertNotNull(result);
-        assertEquals(2, innerDtoComparingMap.size());
     }
 }

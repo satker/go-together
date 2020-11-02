@@ -1,11 +1,10 @@
-package org.go.together.notification.comparators.impl;
+package org.go.together.notification.comparators.transformers.impl;
 
 import org.go.together.dto.ComparingObject;
 import org.go.together.exceptions.IncorrectDtoException;
-import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.Dto;
 import org.go.together.notification.comparators.interfaces.Comparator;
-import org.go.together.notification.comparators.interfaces.Transformer;
+import org.go.together.notification.comparators.transformers.interfaces.Transformer;
 import org.go.together.utils.ReflectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,8 +14,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.go.together.utils.ReflectionUtils.getClazz;
+
 @Component
-public class CommonTransformer implements Transformer {
+public class CommonCompareTransformer implements Transformer<Comparator> {
     private Map<Class<?>, Comparator> classComparatorMap;
 
     @Autowired
@@ -27,19 +28,16 @@ public class CommonTransformer implements Transformer {
     }
 
     @Override
-    public Map<String, Object> transform(String fieldName, Object originalObject, Object changedObject, ComparingObject fieldProperties) {
+    public Comparator get(String fieldName, Object originalObject, Object changedObject, ComparingObject fieldProperties) {
         if (!fieldProperties.getIsDeepCompare() || fieldProperties.getIgnored()) {
-            return getComparator(Object.class).compare(fieldName, originalObject, changedObject, fieldProperties);
+            return getComparator(Object.class);
         } else if (originalObject == null || changedObject == null || originalObject.getClass() == changedObject.getClass()) {
             if (originalObject instanceof Dto && changedObject instanceof Dto) {
-                ComparableDto comparableDtoObject = (ComparableDto) originalObject;
-                ComparableDto anotherComparableDtoObject = (ComparableDto) changedObject;
                 if (fieldProperties.getIdCompare()) {
-                    return getComparator(Object.class)
-                            .compare(fieldName, comparableDtoObject.getId(), anotherComparableDtoObject.getId(), fieldProperties);
+                    return getComparator(Object.class);
                 }
             }
-            return getComparator(fieldProperties.getClazz()).compare(fieldName, originalObject, changedObject, fieldProperties);
+            return getComparator(getClazz(fieldProperties.getClazzType()));
         }
         throw new IncorrectDtoException("Incorrect field type: " + fieldName);
     }

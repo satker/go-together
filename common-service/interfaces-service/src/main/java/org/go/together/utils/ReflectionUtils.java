@@ -24,19 +24,31 @@ public class ReflectionUtils {
             Type genericInterface = clazz.getGenericInterfaces()[0];
             boolean isParametrizedType = genericInterface instanceof ParameterizedType;
             if (isParametrizedType) {
-                Type actualTypeArgument = ((ParameterizedType) genericInterface).getActualTypeArguments()[parameterNumber];
-                if (actualTypeArgument instanceof ParameterizedType) {
-                    return (Class<?>) ((ParameterizedType) actualTypeArgument).getRawType();
-                }
-                if (actualTypeArgument instanceof TypeVariable) {
-                    return (Class<?>) ((TypeVariable) actualTypeArgument).getBounds()[0];
-                }
-                return (Class<?>) actualTypeArgument;
+                return getClazzByType(parameterNumber, genericInterface);
             }
 
             clazz = clazz.getSuperclass();
         } while (clazz != null);
 
         throw new IllegalArgumentException("Class " + clazz + " doesn't have a generic type.");
+    }
+
+    public static Class<?> getClazzByType(int parameterNumber, Type genericInterface) {
+        Type actualTypeArgument = ((ParameterizedType) genericInterface).getActualTypeArguments()[parameterNumber];
+        if (actualTypeArgument instanceof ParameterizedType) {
+            return (Class<?>) ((ParameterizedType) actualTypeArgument).getRawType();
+        }
+        if (actualTypeArgument instanceof TypeVariable) {
+            return (Class<?>) ((TypeVariable) actualTypeArgument).getBounds()[0];
+        }
+        return (Class<?>) actualTypeArgument;
+    }
+
+    public static Class<?> getClazz(Type genericInterface) {
+        if (genericInterface instanceof Class<?>) {
+            return (Class<?>) genericInterface;
+        }
+        Type actualTypeArgument = ((ParameterizedType) genericInterface).getRawType();
+        return (Class<?>) actualTypeArgument;
     }
 }

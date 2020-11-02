@@ -34,7 +34,7 @@ public class NotificationUtils {
                                     .fieldValueGetter(fieldValueGetter)
                                     .isDeepCompare(annotation.deepCompare())
                                     .idCompare(annotation.idCompare())
-                                    .clazz(field.getType())
+                                    .clazzType(field.getGenericType())
                                     .ignored(ignored).build();
                             result.put(annotation.value(), comparingObject);
                         } catch (Exception e) {
