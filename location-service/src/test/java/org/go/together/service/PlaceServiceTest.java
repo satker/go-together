@@ -7,17 +7,23 @@ import org.go.together.dto.SimpleDto;
 import org.go.together.mapper.Mapper;
 import org.go.together.model.Country;
 import org.go.together.model.Place;
+import org.go.together.notification.streams.NotificationSource;
 import org.go.together.repository.interfaces.CountryRepository;
 import org.go.together.service.interfaces.PlaceService;
 import org.go.together.tests.CrudServiceCommonTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collections;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 class PlaceServiceTest extends CrudServiceCommonTest<Place, PlaceDto> {
@@ -26,6 +32,18 @@ class PlaceServiceTest extends CrudServiceCommonTest<Place, PlaceDto> {
 
     @Autowired
     private Mapper<CountryDto, Country> countryMapper;
+
+    @Autowired
+    private NotificationSource source;
+
+    @Override
+    @BeforeEach
+    public void init() {
+        super.init();
+        MessageChannel messageChannel = Mockito.mock(MessageChannel.class);
+        when(source.output()).thenReturn(messageChannel);
+        when(messageChannel.send(any())).thenReturn(true);
+    }
 
     @Test
     void getLocationsByName() {

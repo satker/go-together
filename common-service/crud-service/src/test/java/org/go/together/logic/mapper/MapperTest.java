@@ -23,7 +23,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = RepositoryContext.class)
@@ -68,14 +67,38 @@ class MapperTest {
     void entityToDto() {
         TestDto actualTestDto = testMapper.entityToDto(testEntity);
 
-        assertEquals(testDto, actualTestDto);
+        assertEquals(testDto.getDate(), actualTestDto.getDate());
+        assertEquals(testDto.getEndDate(), actualTestDto.getEndDate());
+        assertEquals(testDto.getStartDate(), actualTestDto.getStartDate());
+        assertEquals(testDto.getElements(), actualTestDto.getElements());
+        assertEquals(testDto.getEndNumber(), actualTestDto.getEndNumber());
+        compareCollections(testDto.getJoinTestEntities(), actualTestDto.getJoinTestEntities());
+        assertEquals(testDto.getLatitude(), actualTestDto.getLatitude());
+        assertEquals(testDto.getLongitude(), actualTestDto.getLongitude());
+        assertEquals(testDto.getStartNumber(), actualTestDto.getStartNumber());
+        assertEquals(testDto.getSimpleDto(), actualTestDto.getSimpleDto());
+        assertEquals(testDto.getId(), actualTestDto.getId());
+        assertEquals(testDto.getName(), actualTestDto.getName());
+        compareCollections(testDto.getManyJoinEntities(), actualTestDto.getManyJoinEntities());
     }
 
     @Test
     void dtoToEntity() {
         TestEntity actualTestEntity = testMapper.dtoToEntity(testDto);
 
-        assertEquals(testEntity, actualTestEntity);
+        assertEquals(testEntity.getDate(), actualTestEntity.getDate());
+        assertEquals(testEntity.getEndDate(), actualTestEntity.getEndDate());
+        assertEquals(testEntity.getStartDate(), actualTestEntity.getStartDate());
+        assertEquals(testEntity.getElements(), actualTestEntity.getElements());
+        assertEquals(testEntity.getEndNumber(), actualTestEntity.getEndNumber());
+        compareCollections(testEntity.getJoinTestEntities(), actualTestEntity.getJoinTestEntities());
+        assertEquals(testEntity.getLatitude(), actualTestEntity.getLatitude());
+        assertEquals(testEntity.getLongitude(), actualTestEntity.getLongitude());
+        assertEquals(testEntity.getStartNumber(), actualTestEntity.getStartNumber());
+        assertEquals(testEntity.getSimpleDto(), actualTestEntity.getSimpleDto());
+        assertEquals(testEntity.getId(), actualTestEntity.getId());
+        assertEquals(testEntity.getName(), actualTestEntity.getName());
+        compareCollections(testEntity.getManyJoinEntities(), actualTestEntity.getManyJoinEntities());
     }
 
     @Test
@@ -104,7 +127,7 @@ class MapperTest {
         Collection<TestDto> actualTestDtos = testMapper.entitiesToDtos(testEntities);
 
         assertEquals(2, actualTestDtos.size());
-        assertTrue(compareCollections(testDtos, actualTestDtos));
+        compareCollections(testDtos, actualTestDtos);
     }
 
     @Test
@@ -133,18 +156,17 @@ class MapperTest {
         Collection<TestEntity> actualTestEntites = testMapper.dtosToEntities(testDtos);
 
         assertEquals(2, actualTestEntites.size());
-        assertTrue(compareCollections(testEntities, actualTestEntites));
+        compareCollections(testEntities, actualTestEntites);
     }
 
-    private boolean compareCollections(Collection<? extends Identified> oneCollection,
-                                       Collection<? extends Identified> anotherCollection) {
+    private void compareCollections(Collection<? extends Identified> oneCollection,
+                                    Collection<? extends Identified> anotherCollection) {
         Map<UUID, Set<Identified>> oneMap = oneCollection.stream()
                 .collect(Collectors.groupingBy(Identified::getId, Collectors.toSet()));
         Map<UUID, Set<Identified>> anotherMap = anotherCollection.stream()
                 .collect(Collectors.groupingBy(Identified::getId, Collectors.toSet()));
 
-        return oneMap.keySet().stream()
-                .allMatch(key -> oneMap.get(key).equals(anotherMap.get(key)));
+        oneMap.keySet().forEach(key -> assertEquals(oneMap.get(key), anotherMap.get(key)));
     }
 
 

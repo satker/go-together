@@ -4,17 +4,36 @@ import org.go.together.context.RepositoryContext;
 import org.go.together.dto.CountryDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.model.Country;
+import org.go.together.notification.streams.NotificationSource;
 import org.go.together.service.interfaces.CountryService;
 import org.go.together.tests.CrudServiceCommonTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 class CountryServiceTest extends CrudServiceCommonTest<Country, CountryDto> {
+    @Autowired
+    private NotificationSource source;
+
+    @Override
+    @BeforeEach
+    public void init() {
+        super.init();
+        MessageChannel messageChannel = Mockito.mock(MessageChannel.class);
+        when(source.output()).thenReturn(messageChannel);
+        when(messageChannel.send(any())).thenReturn(true);
+    }
+
     @Test
     void findCountriesLike() {
         Collection<Country> countriesLike =

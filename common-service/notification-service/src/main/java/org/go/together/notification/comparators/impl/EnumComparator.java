@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class EnumComparator implements Comparator<NamedEnum> {
@@ -14,7 +15,8 @@ public class EnumComparator implements Comparator<NamedEnum> {
     @Override
     public Map<String, Object> compare(String fieldName, NamedEnum originalObject, NamedEnum changedObject, ComparingObject fieldProperties) {
         if (originalObject != changedObject) {
-            return Map.of(fieldName, originalObject.getDescription() + TO + changedObject.getDescription());
+            return Map.of(fieldName, Optional.ofNullable(originalObject).map(NamedEnum::getDescription).orElse(null) +
+                    TO + Optional.ofNullable(changedObject).map(NamedEnum::getDescription).orElse(null));
         }
         return Collections.emptyMap();
     }

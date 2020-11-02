@@ -38,6 +38,7 @@ dependencies {
 
     compile project(":common-service:interfaces-service")
     compile project(":common-service:exception-service")
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
 

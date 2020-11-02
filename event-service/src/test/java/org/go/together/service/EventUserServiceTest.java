@@ -33,6 +33,7 @@ public class EventUserServiceTest extends CrudServiceCommonTest<EventUser, Event
     @Autowired
     private NotificationSource source;
 
+    @Override
     @BeforeEach
     public void init() {
         super.init();

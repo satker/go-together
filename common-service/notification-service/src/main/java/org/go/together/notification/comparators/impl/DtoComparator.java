@@ -24,7 +24,6 @@ public class DtoComparator<T extends ComparableDto> implements Comparator<T> {
 
     public Map<String, Object> compare(String fieldName, T originalObject, T changedObject, ComparingObject fieldProperties) {
         Map<String, Object> resultMap = compareDtoFields(originalObject, changedObject);
-        String mainField = changedObject.getMainField();
         return getCompareResult(fieldName, resultMap);
     }
 

@@ -11,6 +11,7 @@ import org.go.together.enums.CrudOperation;
 import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Event;
 import org.go.together.repository.interfaces.EventRepository;
+import org.go.together.service.interfaces.EventPaidThingService;
 import org.go.together.service.interfaces.EventService;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
     private final LocationClient locationClient;
     private final ContentClient contentClient;
     private final UserClient userClient;
+    private final EventPaidThingService eventPaidThingService;
 
     @Override
     protected Event enrichEntity(Event entity, EventDto dto, CrudOperation crudOperation) {

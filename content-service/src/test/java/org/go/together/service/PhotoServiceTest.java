@@ -5,14 +5,17 @@ import org.go.together.context.RepositoryContext;
 import org.go.together.dto.ContentDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.model.Photo;
+import org.go.together.notification.streams.NotificationSource;
 import org.go.together.service.interfaces.PhotoService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.io.File;
@@ -23,6 +26,8 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
@@ -32,9 +37,16 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
     @Autowired
     private PhotoService photoService;
 
+    @Autowired
+    private NotificationSource source;
+
+    @Override
     @BeforeEach
     public void init() {
         super.init();
+        MessageChannel messageChannel = Mockito.mock(MessageChannel.class);
+        when(source.output()).thenReturn(messageChannel);
+        when(messageChannel.send(any())).thenReturn(true);
         PhotoDto photoDto;
         try {
             photoDto = getPhotoDto("photos/1.jpg");

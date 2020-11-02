@@ -10,6 +10,7 @@ import org.go.together.model.EventLike;
 import org.go.together.model.Interest;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
+import org.go.together.notification.streams.NotificationSource;
 import org.go.together.repository.interfaces.EventLikeRepository;
 import org.go.together.repository.interfaces.InterestRepository;
 import org.go.together.repository.interfaces.LanguageRepository;
@@ -19,7 +20,9 @@ import org.go.together.service.interfaces.UserService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.HashSet;
@@ -30,6 +33,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
@@ -64,10 +68,15 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private NotificationSource source;
 
     @BeforeEach
     public void init() {
         super.init();
+        MessageChannel messageChannel = Mockito.mock(MessageChannel.class);
+        when(source.output()).thenReturn(messageChannel);
+        when(messageChannel.send(any())).thenReturn(true);
         updatedDto.setEventId(dto.getEventId());
     }
 

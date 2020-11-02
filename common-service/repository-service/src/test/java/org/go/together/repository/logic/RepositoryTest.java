@@ -1,15 +1,15 @@
-package org.go.together.logic.repository;
+package org.go.together.repository.logic;
 
-import org.go.together.context.RepositoryContext;
 import org.go.together.repository.builder.Sql;
+import org.go.together.repository.context.RepositoryContext;
 import org.go.together.repository.entities.Direction;
 import org.go.together.repository.sql.SqlOperator;
-import org.go.together.test.entities.JoinTestEntity;
-import org.go.together.test.entities.ManyJoinEntity;
-import org.go.together.test.entities.TestEntity;
-import org.go.together.test.repository.impl.TestRepositoryImpl;
-import org.go.together.test.repository.interfaces.ManyJoinRepository;
-import org.go.together.test.repository.interfaces.TestRepository;
+import org.go.together.repository.test.entities.JoinTestEntity;
+import org.go.together.repository.test.entities.ManyJoinEntity;
+import org.go.together.repository.test.entities.TestEntity;
+import org.go.together.repository.test.repository.impl.TestRepositoryImpl;
+import org.go.together.repository.test.repository.interfaces.ManyJoinRepository;
+import org.go.together.repository.test.repository.interfaces.TestRepository;
 import org.go.together.utils.ReflectionUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 @DataJpaTest
 @ContextConfiguration(classes = RepositoryContext.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class CustomRepositoryImplTest {
+public class RepositoryTest {
     TestEntity testEntity;
     @Autowired
     private TestRepository testRepository;

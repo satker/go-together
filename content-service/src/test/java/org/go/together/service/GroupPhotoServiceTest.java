@@ -6,13 +6,16 @@ import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
 import org.go.together.model.GroupPhoto;
 import org.go.together.model.Photo;
+import org.go.together.notification.streams.NotificationSource;
 import org.go.together.repository.interfaces.PhotoRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.io.File;
@@ -23,6 +26,8 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 class GroupPhotoServiceTest extends CrudServiceCommonTest<GroupPhoto, GroupPhotoDto> {
@@ -32,11 +37,18 @@ class GroupPhotoServiceTest extends CrudServiceCommonTest<GroupPhoto, GroupPhoto
     @Autowired
     private PhotoRepository photoRepository;
 
+    @Autowired
+    private NotificationSource source;
+
     private GroupPhoto groupPhoto;
 
+    @Override
     @BeforeEach
     public void init() {
         super.init();
+        MessageChannel messageChannel = Mockito.mock(MessageChannel.class);
+        when(source.output()).thenReturn(messageChannel);
+        when(messageChannel.send(any())).thenReturn(true);
         GroupPhotoDto groupPhotoDto = createGroupPhoto(Set.of("photos/1.jpg", "photos/2.jpg"));
         IdDto idGroupPhotoDto = crudService.create(groupPhotoDto);
         Optional<GroupPhoto> groupPhotoOptional = repository.findById(idGroupPhotoDto.getId());

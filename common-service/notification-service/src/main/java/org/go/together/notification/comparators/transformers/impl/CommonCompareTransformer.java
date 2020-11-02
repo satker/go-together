@@ -1,8 +1,6 @@
 package org.go.together.notification.comparators.transformers.impl;
 
 import org.go.together.dto.ComparingObject;
-import org.go.together.exceptions.IncorrectDtoException;
-import org.go.together.interfaces.Dto;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.go.together.notification.comparators.transformers.interfaces.Transformer;
 import org.go.together.utils.ReflectionUtils;
@@ -29,17 +27,12 @@ public class CommonCompareTransformer implements Transformer<Comparator> {
 
     @Override
     public Comparator get(String fieldName, Object originalObject, Object changedObject, ComparingObject fieldProperties) {
-        if (!fieldProperties.getIsDeepCompare() || fieldProperties.getIgnored()) {
+        if (!fieldProperties.getIsDeepCompare() || fieldProperties.getIgnored() || fieldProperties.getIdCompare()) {
             return getComparator(Object.class);
-        } else if (originalObject == null || changedObject == null || originalObject.getClass() == changedObject.getClass()) {
-            if (originalObject instanceof Dto && changedObject instanceof Dto) {
-                if (fieldProperties.getIdCompare()) {
-                    return getComparator(Object.class);
-                }
-            }
-            return getComparator(getClazz(fieldProperties.getClazzType()));
         }
-        throw new IncorrectDtoException("Incorrect field type: " + fieldName);
+        Class<?> clazz = getClazz(fieldProperties.getClazzType());
+
+        return getComparator(clazz);
     }
 
     private Comparator getComparator(Class<?> clazz) {

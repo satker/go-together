@@ -1,9 +1,9 @@
-package org.go.together.logic.validation;
+package org.go.together.validation.impl;
 
-import org.go.together.context.RepositoryContext;
 import org.go.together.dto.SimpleDto;
-import org.go.together.test.dto.TestDto;
 import org.go.together.validation.Validator;
+import org.go.together.validation.context.ValidatorContext;
+import org.go.together.validation.test.dto.TestDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,16 +16,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.*;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.go.together.test.TestUtils.createTestDto;
+import static org.go.together.validation.test.TestUtils.createTestDto;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = RepositoryContext.class)
-class ValidatorTest {
+@ContextConfiguration(classes = ValidatorContext.class)
+class CommonValidatorTest {
+    TestDto testDto;
     @Autowired
     private Validator<TestDto> testValidator;
-
-    TestDto testDto;
 
     @BeforeEach
     public void init() {
