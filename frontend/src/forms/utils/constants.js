@@ -17,7 +17,6 @@ export const DEFAULT_MAIN_INFO = {
     id: null,
     name: null,
     description: null,
-    housingType: null,
     startDate: null,
     endDate: null,
     peopleCount: 0,
@@ -51,20 +50,10 @@ export const DEFAULT_ROUTE = {
 
 export const DEFAULT_CREATE_EVENT = {
     ...DEFAULT_MAIN_INFO,
-    paidThings: [],
     route: {
         groupId: null,
         locations: [],
         category: 'EVENT'
-    }
-};
-
-export const DEFAULT_PAID_THING = {
-    id: null,
-    cashCategory: null,
-    paidThing: {
-        id: null,
-        name: null
     }
 };
 

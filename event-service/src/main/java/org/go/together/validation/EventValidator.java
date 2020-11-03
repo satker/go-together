@@ -5,17 +5,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
-import org.go.together.dto.CashCategory;
 import org.go.together.dto.EventDto;
-import org.go.together.dto.EventPaidThingDto;
 import org.go.together.dto.UserDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.validation.dto.DateIntervalDto;
 import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +21,6 @@ public class EventValidator extends CommonValidator<EventDto> {
     private final UserClient userClient;
     private final ContentClient contentClient;
     private final LocationClient locationClient;
-    private final Validator<EventPaidThingDto> eventPaidThingValidator;
 
     @Override
     public void getMapsForCheck(EventDto dto) {
@@ -55,7 +52,6 @@ public class EventValidator extends CommonValidator<EventDto> {
                     .append(". ");
         }
 
-        checkCashCategories(dto.getPaidThings(), errors, crudOperation);
 
         String contentValidation = contentClient.validate(dto.getGroupPhoto());
         if (StringUtils.isNotBlank(contentValidation)) {
@@ -65,21 +61,5 @@ public class EventValidator extends CommonValidator<EventDto> {
         locationClient.validateRoute(dto.getRoute());
 
         return errors.toString();
-    }
-
-    private void checkCashCategories(Collection<EventPaidThingDto> paidThingDtos, StringBuilder errors,
-                                     CrudOperation crudOperation) {
-        List<CashCategory> cashCategories = paidThingDtos.stream()
-                .map(EventPaidThingDto::getCashCategory)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-        if (cashCategories.size() != paidThingDtos.size()) {
-            errors.append("Collection paid things is incorrect.");
-        } else {
-            paidThingDtos.stream()
-                    .map(paidThingDto -> eventPaidThingValidator.validate(paidThingDto, crudOperation))
-                    .filter(StringUtils::isNotBlank)
-                    .forEach(errors::append);
-        }
     }
 }

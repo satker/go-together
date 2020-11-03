@@ -4,13 +4,12 @@ import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.*;
+import org.go.together.dto.EventDto;
+import org.go.together.dto.IdDto;
+import org.go.together.dto.SimpleDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.mapper.Mapper;
 import org.go.together.model.Event;
-import org.go.together.model.PaidThing;
 import org.go.together.notification.streams.NotificationSource;
-import org.go.together.repository.interfaces.PaidThingRepository;
 import org.go.together.service.interfaces.EventService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,12 +39,6 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
 
     @Autowired
     private ContentClient contentClient;
-
-    @Autowired
-    private Mapper<PaidThingDto, PaidThing> paidThingMapper;
-
-    @Autowired
-    private PaidThingRepository paidThingRepository;
 
     @Autowired
     private NotificationSource source;
@@ -81,12 +74,6 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
 
         calendar.add(Calendar.MONTH, rand.nextInt(10) + 1);
         eventDto.setEndDate(calendar.getTime());
-        for (EventPaidThingDto paidThingDto : eventDto.getPaidThings()) {
-            PaidThing paidThing = paidThingMapper.dtoToEntity(paidThingDto.getPaidThing());
-            PaidThing savedPaidThing = paidThingRepository.save(paidThing);
-            paidThingDto.setPaidThing(paidThingMapper.entityToDto(savedPaidThing));
-        }
-
         return eventDto;
     }
 
@@ -112,6 +99,5 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
         assertEquals(dto.getStartDate(), savedObject.getStartDate());
         assertEquals(dto.getGroupPhoto(), savedObject.getGroupPhoto());
         assertEquals(dto.getPeopleCount(), savedObject.getPeopleCount());
-        assertEquals(dto.getHousingType(), savedObject.getHousingType());
     }
 }

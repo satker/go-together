@@ -2,12 +2,12 @@ package org.go.together.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.go.together.dto.HousingType;
 import org.go.together.repository.entities.NamedIdentifiedEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
@@ -20,8 +20,6 @@ public class Event extends NamedIdentifiedEntity {
     @Column(columnDefinition = "uuid")
     private UUID authorId;
 
-    private HousingType housingType;
-
     private String description;
 
     private Date startDate;
@@ -33,9 +31,5 @@ public class Event extends NamedIdentifiedEntity {
 
     @Column(columnDefinition = "uuid")
     private UUID routeId;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "event_id")
-    private Set<EventPaidThing> paidThings;
 
 }

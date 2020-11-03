@@ -10,7 +10,6 @@ import {connect} from "App/Context";
 
 import ParticipationButton from "../../ParticipationButton";
 import {getUsers} from "../../actions";
-import Container from "forms/utils/components/Container/ContainerRow";
 import {getCorrectDateFromString} from "forms/utils/utils";
 
 const CommonInfo = ({event, users, getUsers, userId, getEventsLikes}) => {
@@ -37,17 +36,6 @@ const CommonInfo = ({event, users, getUsers, userId, getEventsLikes}) => {
         </ItemContainer>
         <ItemContainer>
             <div dangerouslySetInnerHTML={{__html: event.description}}/>
-        </ItemContainer>
-        <ItemContainer>
-            <h5>Event paid things:</h5>
-        </ItemContainer>
-        <ItemContainer>
-            <Container>
-                {event.paidThings.map((p, key) => {
-                    return (<ItemContainer key={key}>• {p.cashCategory} - {p.paidThing.name}</ItemContainer>
-                    )
-                })}
-            </Container>
         </ItemContainer>
         <ItemContainer>
             Trip dates: {getCorrectDateFromString(event.startDate)} -> {getCorrectDateFromString(event.endDate)}

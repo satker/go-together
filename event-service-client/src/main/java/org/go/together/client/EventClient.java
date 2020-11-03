@@ -5,7 +5,6 @@ import org.go.together.find.client.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,12 +24,6 @@ public interface EventClient extends FindClient {
 
     @GetMapping("/events")
     Set<SimpleDto> autocompleteEvents(@RequestParam("name") String name);
-
-    @GetMapping("/events/housingTypes")
-    Collection<SimpleDto> getHousingTypes();
-
-    @GetMapping("/events/cashCategories")
-    Collection<SimpleDto> getCashCategories();
 
     @GetMapping("/events/{eventId}/users/statuses")
     EventUserStatus[] getUserStatuses();

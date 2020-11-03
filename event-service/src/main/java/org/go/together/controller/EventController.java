@@ -10,11 +10,8 @@ import org.go.together.service.interfaces.EventService;
 import org.go.together.service.interfaces.EventUserService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,20 +48,6 @@ public class EventController extends FindController implements EventClient {
     @Override
     public Set<SimpleDto> autocompleteEvents(String name) {
         return eventService.autocompleteEvents(name);
-    }
-
-    @Override
-    public Collection<SimpleDto> getHousingTypes() {
-        return Stream.of(HousingType.values())
-                .map(type -> new SimpleDto(type.name(), type.getDescription()))
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public Collection<SimpleDto> getCashCategories() {
-        return Stream.of(CashCategory.values())
-                .map(type -> new SimpleDto(type.name(), type.getDescription()))
-                .collect(Collectors.toSet());
     }
 
     @Override
