@@ -3,7 +3,7 @@ package org.go.together.find.dto;
 import lombok.Builder;
 import lombok.Getter;
 import org.go.together.find.FindService;
-import org.go.together.find.client.FindClient;
+import org.go.together.interfaces.FindClient;
 
 @Builder
 @Getter

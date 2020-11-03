@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -159,6 +160,8 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
     }
 
     private void prepareDto(UserDto userDto) {
+        when(locationClient.validate(userDto.getLocation())).thenReturn(EMPTY);
+        when(contentClient.validate(userDto.getGroupPhoto())).thenReturn(EMPTY);
         when(contentClient.updateGroup(userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
         when(contentClient.createGroup(userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
         when(locationClient.getRouteById(userDto.getLocation().getId())).thenReturn(userDto.getLocation());

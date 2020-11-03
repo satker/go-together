@@ -35,4 +35,6 @@ include 'common-service:mapper-service'
 findProject(':common-service:mapper-service')?.name = 'mapper-service'
 include 'common-service:validation-service'
 findProject(':common-service:validation-service')?.name = 'validation-service'
+include 'route-info-service'
+include 'route-info-service-client'
 

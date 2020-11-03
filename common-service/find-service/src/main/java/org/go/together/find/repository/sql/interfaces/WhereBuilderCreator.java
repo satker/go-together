@@ -1,7 +1,7 @@
 package org.go.together.find.repository.sql.interfaces;
 
+import org.go.together.dto.form.FilterDto;
 import org.go.together.find.dto.FieldDto;
-import org.go.together.find.dto.form.FilterDto;
 import org.go.together.repository.CustomRepository;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.repository.interfaces.WhereBuilder;

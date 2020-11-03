@@ -1,10 +1,10 @@
 package org.go.together.find.logic.impl;
 
+import org.go.together.dto.form.FilterDto;
+import org.go.together.dto.form.FormDto;
 import org.go.together.find.correction.CorrectorService;
 import org.go.together.find.dto.FieldDto;
 import org.go.together.find.dto.FieldMapper;
-import org.go.together.find.dto.form.FilterDto;
-import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.finders.Finder;
 import org.go.together.find.logic.interfaces.BaseCorrectorService;
 import org.springframework.beans.factory.annotation.Qualifier;

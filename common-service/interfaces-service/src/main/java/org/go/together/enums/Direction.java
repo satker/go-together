@@ -1,4 +1,4 @@
-package org.go.together.repository.entities;
+package org.go.together.enums;
 
 public enum Direction {
     ASC("ASC"),

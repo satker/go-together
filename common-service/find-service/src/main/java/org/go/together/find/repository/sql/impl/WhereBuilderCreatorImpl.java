@@ -1,10 +1,11 @@
 package org.go.together.find.repository.sql.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import org.go.together.dto.form.FilterDto;
+import org.go.together.enums.FindOperator;
 import org.go.together.find.dto.FieldDto;
-import org.go.together.find.dto.form.FilterDto;
-import org.go.together.find.dto.utils.FindSqlOperator;
+import org.go.together.find.repository.sql.interfaces.QueryFindOperator;
 import org.go.together.find.repository.sql.interfaces.WhereBuilderCreator;
 import org.go.together.find.utils.FindUtils;
 import org.go.together.repository.CustomRepository;
@@ -20,7 +21,10 @@ import java.util.stream.Stream;
 import static org.go.together.find.utils.FindUtils.getSingleGroupFields;
 
 @Component
+@RequiredArgsConstructor
 public class WhereBuilderCreatorImpl<E extends IdentifiedEntity> implements WhereBuilderCreator<E> {
+    private final QueryFindOperator queryFindOperator;
+
     public WhereBuilder<E> getWhereBuilder(Map<FieldDto, FilterDto> filters, CustomRepository<E> repository) {
         Map<String, String> joinMap = new HashMap<>();
         WhereBuilder<E> where = repository.createWhere();
@@ -83,7 +87,7 @@ public class WhereBuilderCreatorImpl<E extends IdentifiedEntity> implements Wher
     }
 
     private void addCondition(Map<String, Object> value,
-                              FindSqlOperator filterType,
+                              FindOperator filterType,
                               WhereBuilder<E> groupWhere,
                               String field) {
         Object searchObject = Optional.ofNullable(value.get(field))
@@ -91,7 +95,6 @@ public class WhereBuilderCreatorImpl<E extends IdentifiedEntity> implements Wher
                     String[] searchField = FindUtils.getParsedFields(field);
                     return value.get(searchField[searchField.length - 1]);
                 });
-        Pair<String, Object> searchPair = Pair.of(field, searchObject);
-        filterType.getSearchObjectFromDtos().accept(searchPair, groupWhere);
+        queryFindOperator.enrichQuery(filterType, groupWhere, field, searchObject);
     }
 }

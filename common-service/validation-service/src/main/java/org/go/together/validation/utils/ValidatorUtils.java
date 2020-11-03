@@ -3,6 +3,7 @@ package org.go.together.validation.utils;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.SimpleDto;
 import org.go.together.interfaces.Dto;
+import org.go.together.interfaces.FindClient;
 import org.go.together.validation.dto.DateIntervalDto;
 import org.go.together.validation.dto.NumberIntervalDto;
 import org.go.together.validation.dto.StringRegexDto;
@@ -114,5 +115,11 @@ public class ValidatorUtils {
         } else {
             return StringUtils.EMPTY;
         }
+    }
+
+    public static <D extends Dto> String checkAnotherServiceDtoIsCorrect(Map<FindClient, D> anotherServiceCorrectCheck) {
+        return anotherServiceCorrectCheck.entrySet().stream()
+                .map(entry -> entry.getKey().validate(entry.getValue()))
+                .collect(Collectors.joining());
     }
 }

@@ -1,7 +1,7 @@
 package org.go.together.repository.interfaces;
 
+import org.go.together.enums.Direction;
 import org.go.together.repository.builder.Sql;
-import org.go.together.repository.entities.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
 
 public interface SqlBuilder<E extends IdentifiedEntity> extends QueryBuilder<E> {

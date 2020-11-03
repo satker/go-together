@@ -1,7 +1,7 @@
-package org.go.together.find.dto.form;
+package org.go.together.dto.form;
 
 import lombok.Data;
-import org.go.together.repository.entities.Direction;
+import org.go.together.enums.Direction;
 
 @Data
 public class SortDto {

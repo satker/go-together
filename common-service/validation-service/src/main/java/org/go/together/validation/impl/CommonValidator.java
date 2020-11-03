@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.SimpleDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.interfaces.Dto;
+import org.go.together.interfaces.FindClient;
 import org.go.together.validation.Validator;
 import org.go.together.validation.dto.DateIntervalDto;
 import org.go.together.validation.dto.NumberIntervalDto;
@@ -24,6 +25,7 @@ public abstract class CommonValidator<D extends Dto> implements Validator<D> {
     public Map<String, DateIntervalDto> DATES_CORRECT_CHECK = new HashMap<>();
     public Map<String, Function<D, Object>> OBJECT_NULL_CHECK = new HashMap<>();
     public Map<String, NumberIntervalDto> NUMBER_INTERVAL_CORRECT_CHECK = new HashMap<>();
+    public Map<FindClient, ? extends Dto> ANOTHER_SERVICE_DTO_CORRECT_CHECK = new HashMap<>();
 
     @Override
     public String validate(D dto, CrudOperation crudOperation) {
@@ -40,7 +42,8 @@ public abstract class CommonValidator<D extends Dto> implements Validator<D> {
                 .append(ValidatorUtils.checkStringByRegex(REGEX_STRING_CORRECT_CHECK))
                 .append(ValidatorUtils.checkDateIntervalIsCorrect(DATES_CORRECT_CHECK))
                 .append(ValidatorUtils.checkNullObject(OBJECT_NULL_CHECK, dto))
-                .append(ValidatorUtils.checkNumberIntervalIsCorrect(NUMBER_INTERVAL_CORRECT_CHECK));
+                .append(ValidatorUtils.checkNumberIntervalIsCorrect(NUMBER_INTERVAL_CORRECT_CHECK))
+                .append(ValidatorUtils.checkAnotherServiceDtoIsCorrect(ANOTHER_SERVICE_DTO_CORRECT_CHECK));
         if (StringUtils.isBlank(errors)) {
             errors.append(commonValidation(dto, crudOperation));
         }

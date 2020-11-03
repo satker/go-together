@@ -1,4 +1,4 @@
-package org.go.together.find.dto.form;
+package org.go.together.dto.form;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -2,6 +2,7 @@ package org.go.together.context;
 
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
+import org.go.together.client.RouteInfoClient;
 import org.go.together.client.UserClient;
 import org.go.together.configuration.H2HibernateConfig;
 import org.go.together.notification.streams.NotificationSource;
@@ -33,6 +34,11 @@ public class RepositoryContext {
     @Bean
     public UserClient userClient() {
         return Mockito.mock(UserClient.class);
+    }
+
+    @Bean
+    public RouteInfoClient routeInfoClient() {
+        return Mockito.mock(RouteInfoClient.class);
     }
 
     @Bean

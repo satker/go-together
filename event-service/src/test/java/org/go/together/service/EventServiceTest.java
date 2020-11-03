@@ -2,6 +2,7 @@ package org.go.together.service;
 
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
+import org.go.together.client.RouteInfoClient;
 import org.go.together.client.UserClient;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.EventDto;
@@ -24,6 +25,7 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,6 +41,9 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
 
     @Autowired
     private ContentClient contentClient;
+
+    @Autowired
+    private RouteInfoClient routeInfoClient;
 
     @Autowired
     private NotificationSource source;
@@ -86,6 +91,9 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
         when(locationClient.updateRoute(eventDto.getRoute())).thenReturn(new IdDto(eventDto.getRoute().getId()));
         when(contentClient.updateGroup(eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
         when(contentClient.createGroup(eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
+        when(contentClient.validate(eventDto.getGroupPhoto())).thenReturn(EMPTY);
+        when(routeInfoClient.validate(eventDto.getRouteInfo())).thenReturn(EMPTY);
+        when(locationClient.validate(eventDto.getRoute())).thenReturn(EMPTY);
     }
 
     @Override

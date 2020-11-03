@@ -3,8 +3,8 @@ package org.go.together.dto;
 import org.go.together.interfaces.NamedEnum;
 
 public enum LocationCategory implements NamedEnum {
-    USER("user photos"),
-    EVENT("event photos");
+    USER("user locations"),
+    EVENT("event locations");
 
     private final String description;
 

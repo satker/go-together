@@ -1,7 +1,7 @@
 package org.go.together.find.logic.impl;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.go.together.find.dto.form.PageDto;
+import org.go.together.dto.form.PageDto;
 import org.go.together.find.logic.interfaces.BaseResultMapper;
 import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.Identified;

@@ -1,9 +1,9 @@
-package org.go.together.find.dto.form;
+package org.go.together.dto.form;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.go.together.find.dto.utils.FindSqlOperator;
+import org.go.together.enums.FindOperator;
 
 import java.util.Collection;
 import java.util.Map;
@@ -12,6 +12,6 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FilterDto {
-    private FindSqlOperator filterType;
+    private FindOperator filterType;
     private Collection<Map<String, Object>> values;
 }

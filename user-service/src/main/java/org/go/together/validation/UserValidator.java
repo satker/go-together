@@ -1,7 +1,6 @@
 package org.go.together.validation;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.UserDto;
@@ -26,11 +25,6 @@ public class UserValidator extends CommonValidator<UserDto> {
         StringBuilder errors = new StringBuilder();
 
         if (crudOperation == CrudOperation.CREATE) {
-            String validatedLocation = locationClient.validateRoute(dto.getLocation());
-            if (StringUtils.isNotBlank(validatedLocation)) {
-                errors.append(validatedLocation);
-            }
-
             if (dto.getLanguages().isEmpty() || dto.getLanguages()
                     .stream()
                     .anyMatch(lang -> languageRepository.findById(lang.getId()).isEmpty())) {
@@ -41,11 +35,6 @@ public class UserValidator extends CommonValidator<UserDto> {
                     .stream()
                     .anyMatch(lang -> interestRepository.findById(lang.getId()).isEmpty())) {
                 errors.append("User interests are empty or incorrect");
-            }
-
-            String contentValidation = contentClient.validate(dto.getGroupPhoto());
-            if (StringUtils.isNotBlank(contentValidation)) {
-                errors.append(contentValidation);
             }
         }
 
@@ -60,5 +49,9 @@ public class UserValidator extends CommonValidator<UserDto> {
                 "description", UserDto::getDescription,
                 "login", UserDto::getLogin,
                 "mail", UserDto::getMail);
+        super.ANOTHER_SERVICE_DTO_CORRECT_CHECK = Map.of(
+                locationClient, dto.getLocation(),
+                contentClient, dto.getGroupPhoto()
+        );
     }
 }

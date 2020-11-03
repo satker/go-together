@@ -2,14 +2,14 @@ package org.go.together.tests;
 
 import org.go.together.base.CrudService;
 import org.go.together.dto.IdDto;
+import org.go.together.dto.ResponseDto;
+import org.go.together.dto.form.FilterDto;
+import org.go.together.dto.form.FormDto;
 import org.go.together.enums.CrudOperation;
+import org.go.together.enums.FindOperator;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.find.FindService;
 import org.go.together.find.dto.FieldMapper;
-import org.go.together.find.dto.ResponseDto;
-import org.go.together.find.dto.form.FilterDto;
-import org.go.together.find.dto.form.FormDto;
-import org.go.together.find.dto.utils.FindSqlOperator;
 import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.Identified;
 import org.go.together.mapper.Mapper;
@@ -154,7 +154,7 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
             declaredField.setAccessible(true);
             Object value = declaredField.get(savedEntity);
             FilterDto filterDto = new FilterDto();
-            filterDto.setFilterType(FindSqlOperator.EQUAL);
+            filterDto.setFilterType(FindOperator.EQUAL);
             filterDto.setValues(Collections.singleton(Map.of(entry.getKey(), value)));
             return Map.entry(entry.getKey(), filterDto);
         } catch (IllegalAccessException | NoSuchFieldException e) {

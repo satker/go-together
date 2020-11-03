@@ -1,7 +1,10 @@
 package org.go.together.client;
 
-import org.go.together.dto.*;
-import org.go.together.find.client.FindClient;
+import org.go.together.dto.GroupLocationDto;
+import org.go.together.dto.IdDto;
+import org.go.together.dto.PlaceDto;
+import org.go.together.dto.SimpleDto;
+import org.go.together.interfaces.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,12 +24,6 @@ public interface LocationClient extends FindClient {
 
     @DeleteMapping("/routes/{groupLocationId}")
     void deleteRoute(@PathVariable("groupLocationId") UUID groupLocationId);
-
-    @PostMapping("/routes/validate")
-    String validateRoute(@RequestBody GroupLocationDto groupLocationDto);
-
-    @PostMapping("/locations/validate")
-    String validateLocation(@RequestBody PlaceDto placeDto);
 
     @GetMapping("/locations")
     Set<SimpleDto> autocompleteLocations(@RequestParam("name") String name);

@@ -8,9 +8,7 @@ public interface Comparator<T> {
     String REMOVED = "-1";
     String ADDED = "1";
     String CHANGED = "0";
-    String CHANGED_WITH_UPPER_LETTER = "Changed";
     String TO = " -> ";
-    String COLON = ": ";
 
     Map<String, Object> compare(String fieldName, T originalObject, T changedObject, ComparingObject fieldProperties);
 

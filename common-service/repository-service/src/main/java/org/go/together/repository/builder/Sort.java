@@ -1,6 +1,6 @@
 package org.go.together.repository.builder;
 
-import org.go.together.repository.entities.Direction;
+import org.go.together.enums.Direction;
 import org.go.together.repository.entities.IdentifiedEntity;
 import org.go.together.repository.interfaces.Query;
 import org.go.together.repository.interfaces.SortBuilder;
