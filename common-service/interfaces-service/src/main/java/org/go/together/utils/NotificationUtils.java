@@ -2,8 +2,8 @@ package org.go.together.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.go.together.dto.ComparingObject;
-import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
+import org.go.together.interfaces.Dto;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class NotificationUtils {
-    public static <T extends ComparableDto> Map<String, ComparingObject> getComparingMap(Class<T> clazz) {
+    public static <T extends Dto> Map<String, ComparingObject> getComparingMap(Class<T> clazz) {
         HashMap<String, ComparingObject> result = new HashMap<>();
         Stream.of(clazz.getDeclaredFields())
                 .forEach(field -> {

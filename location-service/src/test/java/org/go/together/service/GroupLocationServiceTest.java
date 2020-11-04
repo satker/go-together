@@ -19,12 +19,13 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -56,10 +57,11 @@ class GroupLocationServiceTest extends CrudServiceCommonTest<GroupLocation, Grou
     public void updateSimilarLocationTest() {
         GroupLocationDto createdDto = getCreatedEntityId(dto);
         updatedDto.setId(createdDto.getId());
+        Set<LocationDto> locationsUpdated = createdDto.getLocations();
         Set<LocationDto> locations = updatedDto.getLocations().stream()
                 .limit(2)
+                .peek(location -> location.setRouteNumber(location.getRouteNumber() + locationsUpdated.size()))
                 .collect(Collectors.toSet());
-        Set<LocationDto> locationsUpdated = createdDto.getLocations();
         locationsUpdated.addAll(locations);
         updatedDto.setLocations(locationsUpdated);
         IdDto update = crudService.update(updatedDto);
@@ -131,12 +133,32 @@ class GroupLocationServiceTest extends CrudServiceCommonTest<GroupLocation, Grou
     protected void checkDtos(GroupLocationDto dto, GroupLocationDto savedObject, CrudOperation operation) {
         assertEquals(dto.getCategory(), savedObject.getCategory());
         assertEquals(dto.getGroupId(), savedObject.getGroupId());
-        assertTrue(savedObject.getLocations().containsAll(dto.getLocations()));
+
+        Map<Number, LocationDto> oneMap = dto.getLocations().stream()
+                .collect(Collectors.toMap(LocationDto::getRouteNumber, Function.identity()));
+
+        Map<Number, LocationDto> anotherMap = savedObject.getLocations().stream()
+                .collect(Collectors.toMap(LocationDto::getRouteNumber, Function.identity()));
+
+        oneMap.forEach((key, value) -> compareLocationDto(value, anotherMap.get(key)));
 
         int sumLocations = repository.findAll().stream()
                 .map(GroupLocation::getLocations)
                 .mapToInt(Collection::size)
                 .sum();
         assertEquals(sumLocations, locationRepository.findAll().size());
+    }
+
+    private void compareLocationDto(LocationDto oneLocationDto, LocationDto anotherLocationDto) {
+        assertEquals(oneLocationDto.getIsEnd(), anotherLocationDto.getIsEnd());
+        assertEquals(oneLocationDto.getIsStart(), anotherLocationDto.getIsStart());
+        assertEquals(oneLocationDto.getAddress(), anotherLocationDto.getAddress());
+        assertEquals(oneLocationDto.getRouteNumber(), anotherLocationDto.getRouteNumber());
+        assertEquals(oneLocationDto.getLatitude(), anotherLocationDto.getLatitude());
+        assertEquals(oneLocationDto.getLongitude(), anotherLocationDto.getLongitude());
+        assertEquals(oneLocationDto.getPlace().getLocations(), anotherLocationDto.getPlace().getLocations());
+        assertEquals(oneLocationDto.getPlace().getCountry(), anotherLocationDto.getPlace().getCountry());
+        assertEquals(oneLocationDto.getPlace().getState(), anotherLocationDto.getPlace().getState());
+        assertEquals(oneLocationDto.getPlace().getName(), anotherLocationDto.getPlace().getName());
     }
 }

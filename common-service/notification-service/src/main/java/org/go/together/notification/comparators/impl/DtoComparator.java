@@ -1,10 +1,10 @@
 package org.go.together.notification.comparators.impl;
 
-import lombok.SneakyThrows;
 import org.go.together.dto.ComparingObject;
-import org.go.together.interfaces.ComparableDto;
+import org.go.together.interfaces.Dto;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.go.together.notification.transport.interfaces.CompareTransport;
+import org.go.together.utils.NotificationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +14,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
-public class DtoComparator<T extends ComparableDto> implements Comparator<T> {
+public class DtoComparator<T extends Dto> implements Comparator<T> {
     private CompareTransport transformer;
+    private final Map<Class<? extends Dto>, Map<String, ComparingObject>> classFieldProperties =
+            new HashMap<>();
 
     @Autowired
     public void setTransformer(CompareTransport transformer) {
@@ -27,7 +29,16 @@ public class DtoComparator<T extends ComparableDto> implements Comparator<T> {
         return getCompareResult(fieldName, resultMap);
     }
 
-    @SneakyThrows
+    private Map<String, ComparingObject> getFieldsProperties(Class<? extends Dto> clazz) {
+        Map<String, ComparingObject> comparingObject = classFieldProperties.get(clazz);
+        if (comparingObject == null) {
+            Map<String, ComparingObject> comparingMap = NotificationUtils.getComparingMap(clazz);
+            classFieldProperties.put(clazz, comparingMap);
+            return comparingMap;
+        }
+        return comparingObject;
+    }
+
     private Map<String, Object> getCompareResult(String fieldName,
                                                  Map<String, Object> resultMap) {
         if (!resultMap.isEmpty()) {
@@ -38,7 +49,7 @@ public class DtoComparator<T extends ComparableDto> implements Comparator<T> {
 
     private Map<String, Object> compareDtoFields(T originalObject, T changedObject) {
         Map<String, Object> result = new HashMap<>();
-        originalObject.getComparingMap().entrySet().stream()
+        getFieldsProperties(originalObject.getClass()).entrySet().stream()
                 .map(originalObjectEntry -> getFieldCompareResult(originalObject, changedObject, originalObjectEntry))
                 .filter(map -> !map.isEmpty())
                 .forEach(result::putAll);
@@ -50,8 +61,8 @@ public class DtoComparator<T extends ComparableDto> implements Comparator<T> {
                                                       Map.Entry<String, ComparingObject> originalObjectEntry) {
         String fieldName = originalObjectEntry.getKey();
         ComparingObject field = originalObjectEntry.getValue();
-        ComparingObject comparingField = changedObject.getComparingMap().get(fieldName);
-        Function<ComparableDto, Object> fieldValueGetter = comparingField.getFieldValueGetter();
+        ComparingObject comparingField = getFieldsProperties(changedObject.getClass()).get(fieldName);
+        Function<Dto, Object> fieldValueGetter = comparingField.getFieldValueGetter();
         Object changedFieldValue = fieldValueGetter.apply(changedObject);
         Object originalFieldValue = fieldValueGetter.apply(originalObject);
         if (changedFieldValue != null || originalFieldValue != null) {

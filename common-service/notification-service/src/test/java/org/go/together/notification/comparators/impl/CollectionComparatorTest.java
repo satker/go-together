@@ -7,6 +7,7 @@ import org.go.together.notification.comparators.interfaces.Comparator;
 import org.go.together.notification.context.TestConfiguration;
 import org.go.together.notification.dto.AnotherTestDto;
 import org.go.together.notification.dto.TestComparableDto;
+import org.go.together.utils.NotificationUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfiguration.class)
 class CollectionComparatorTest {
-    private static final ComparingObject COMPARING_OBJECT =
-            TestComparableDto.builder().build().getComparingMap().get("test dtos");
+    private static final ComparingObject COMPARING_OBJECT = NotificationUtils.getComparingMap(TestComparableDto.class)
+            .get("test dtos");
     private static final String ANOTHER_TEST_DTO_STRING = "another string";
     private static final Number ANOTHER_TEST_DTO_NUMBER = 2;
     private static final String FIELD = "test dtos";
@@ -105,8 +106,10 @@ class CollectionComparatorTest {
 
     @Test
     void compareDtoChangedElementsCollections() {
-        AnotherTestDto changedElement = FIRST_TEST_DTO.toBuilder().number(123).build();
-        AnotherTestDto nextChangedElement = SECOND_TEST_DTO.toBuilder().string("changed element").build();
+        AnotherTestDto changedElement = createAnotherTestDto(FIRST_TEST_DTO.getId(), 123,
+                FIRST_TEST_DTO.getString());
+        AnotherTestDto nextChangedElement = createAnotherTestDto(SECOND_TEST_DTO.getId(), SECOND_TEST_DTO.getNumber(),
+                "changed element");
         Set<AnotherTestDto> changedTestDtos = Set.of(changedElement, nextChangedElement);
         Map<String, Object> compareResult = collectionComparator.compare(FIELD, TEST_DTOS, changedTestDtos, COMPARING_OBJECT);
 

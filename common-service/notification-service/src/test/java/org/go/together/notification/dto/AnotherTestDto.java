@@ -1,6 +1,5 @@
 package org.go.together.notification.dto;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.go.together.interfaces.ComparableDto;
@@ -10,7 +9,6 @@ import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Builder(toBuilder = true)
 public class AnotherTestDto extends ComparableDto {
     @ComparingField("another string")
     private String string;

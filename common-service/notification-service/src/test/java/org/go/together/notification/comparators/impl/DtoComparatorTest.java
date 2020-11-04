@@ -69,10 +69,10 @@ class DtoComparatorTest {
         return createAnotherTestDto(UUID.randomUUID(), number, string);
     }
 
-    private static AnotherTestDto createAnotherTestDto(UUID id, Number number, String string) {
-        AnotherTestDto builtAnotherTestDto = AnotherTestDto.builder()
-                .number(number)
-                .string(string).build();
+    public static AnotherTestDto createAnotherTestDto(UUID id, Number number, String string) {
+        AnotherTestDto builtAnotherTestDto = new AnotherTestDto();
+        builtAnotherTestDto.setNumber(number);
+        builtAnotherTestDto.setString(string);
         builtAnotherTestDto.setId(id);
         return builtAnotherTestDto;
     }
