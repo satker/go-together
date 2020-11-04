@@ -1,7 +1,7 @@
 package org.go.together.test.service.impl;
 
 import org.go.together.base.impl.CommonCrudService;
-import org.go.together.find.dto.FieldMapper;
+import org.go.together.dto.FieldMapper;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.entities.JoinTestEntity;
 import org.go.together.test.service.interfaces.JoinTestService;

@@ -20,6 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -161,10 +162,10 @@ class MapperTest {
 
     private void compareCollections(Collection<? extends Identified> oneCollection,
                                     Collection<? extends Identified> anotherCollection) {
-        Map<UUID, Set<Identified>> oneMap = oneCollection.stream()
-                .collect(Collectors.groupingBy(Identified::getId, Collectors.toSet()));
-        Map<UUID, Set<Identified>> anotherMap = anotherCollection.stream()
-                .collect(Collectors.groupingBy(Identified::getId, Collectors.toSet()));
+        Map<UUID, Identified> oneMap = oneCollection.stream()
+                .collect(Collectors.toMap(Identified::getId, Function.identity()));
+        Map<UUID, Identified> anotherMap = anotherCollection.stream()
+                .collect(Collectors.toMap(Identified::getId, Function.identity()));
 
         oneMap.keySet().forEach(key -> assertEquals(oneMap.get(key), anotherMap.get(key)));
     }

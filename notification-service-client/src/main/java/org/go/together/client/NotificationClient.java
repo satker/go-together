@@ -1,6 +1,6 @@
 package org.go.together.client;
 
-import org.go.together.interfaces.FindClient;
+import org.go.together.base.FindClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -2,10 +2,10 @@ package org.go.together.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.go.together.base.impl.CommonCrudService;
+import org.go.together.dto.FieldMapper;
 import org.go.together.dto.GroupLocationDto;
 import org.go.together.dto.LocationDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.GroupLocation;
 import org.go.together.model.Location;
 import org.go.together.service.interfaces.GroupLocationService;

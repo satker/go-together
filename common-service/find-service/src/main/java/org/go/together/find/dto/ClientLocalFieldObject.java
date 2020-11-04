@@ -3,7 +3,7 @@ package org.go.together.find.dto;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.go.together.interfaces.FindClient;
+import org.go.together.base.FindClient;
 
 @Getter
 @Builder

@@ -2,10 +2,10 @@ package org.go.together.notification;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import org.go.together.base.NotificationService;
 import org.go.together.enums.NotificationStatus;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.Dto;
-import org.go.together.interfaces.NotificationService;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.go.together.notification.helpers.interfaces.NotificationSender;
 import org.go.together.notification.helpers.interfaces.ReceiverSender;
@@ -16,16 +16,16 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
-public class NotificationServiceImpl<D extends Dto> implements NotificationService<D> {
+public class CommonNotificationService<D extends Dto> implements NotificationService<D> {
     private final NotificationSender createNotificationSender;
     private final NotificationSender updateNotificationSender;
     private final ReceiverSender removeReceiverSender;
     private final Comparator<D> dtoComparator;
 
-    public NotificationServiceImpl(@Qualifier("createNotificationSender") NotificationSender createNotificationSender,
-                                   @Qualifier("updateNotificationSender") NotificationSender updateNotificationSender,
-                                   @Qualifier("receiverRemoveSender") ReceiverSender removeReceiverSender,
-                                   Comparator<D> dtoComparator) {
+    public CommonNotificationService(@Qualifier("createNotificationSender") NotificationSender createNotificationSender,
+                                     @Qualifier("updateNotificationSender") NotificationSender updateNotificationSender,
+                                     @Qualifier("receiverRemoveSender") ReceiverSender removeReceiverSender,
+                                     Comparator<D> dtoComparator) {
         this.createNotificationSender = createNotificationSender;
         this.updateNotificationSender = updateNotificationSender;
         this.removeReceiverSender = removeReceiverSender;

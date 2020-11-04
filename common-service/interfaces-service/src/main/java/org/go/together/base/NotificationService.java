@@ -1,6 +1,7 @@
-package org.go.together.interfaces;
+package org.go.together.base;
 
 import org.go.together.enums.NotificationStatus;
+import org.go.together.interfaces.Dto;
 
 import java.util.UUID;
 

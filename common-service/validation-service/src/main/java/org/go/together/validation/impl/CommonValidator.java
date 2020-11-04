@@ -1,10 +1,10 @@
 package org.go.together.validation.impl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.base.FindClient;
 import org.go.together.dto.SimpleDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.interfaces.Dto;
-import org.go.together.interfaces.FindClient;
 import org.go.together.validation.Validator;
 import org.go.together.validation.dto.DateIntervalDto;
 import org.go.together.validation.dto.NumberIntervalDto;

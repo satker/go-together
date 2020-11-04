@@ -1,13 +1,13 @@
-package org.go.together.find;
+package org.go.together.base;
 
+import org.go.together.dto.FieldMapper;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.form.FormDto;
-import org.go.together.find.dto.FieldMapper;
-import org.go.together.repository.entities.IdentifiedEntity;
+import org.go.together.interfaces.Dto;
 
 import java.util.Map;
 
-public interface FindService<E extends IdentifiedEntity> {
+public interface FindService<D extends Dto> {
     ResponseDto<Object> find(FormDto formDto);
 
     String getServiceName();

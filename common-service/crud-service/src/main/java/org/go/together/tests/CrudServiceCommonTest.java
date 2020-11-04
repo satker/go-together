@@ -1,6 +1,9 @@
 package org.go.together.tests;
 
+import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.CrudService;
+import org.go.together.base.FindService;
+import org.go.together.dto.FieldMapper;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.form.FilterDto;
@@ -8,13 +11,12 @@ import org.go.together.dto.form.FormDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.enums.FindOperator;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.find.FindService;
-import org.go.together.find.dto.FieldMapper;
 import org.go.together.interfaces.Dto;
 import org.go.together.interfaces.Identified;
 import org.go.together.mapper.Mapper;
 import org.go.together.repository.CustomRepository;
 import org.go.together.repository.entities.IdentifiedEntity;
+import org.go.together.validation.Validator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,13 +45,16 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
     protected CrudService<D> crudService;
 
     @Autowired
-    protected FindService<E> findService;
+    protected FindService<D> findService;
 
     @Autowired
     protected CustomRepository<E> repository;
 
     @Autowired
     protected Mapper<D, E> mapper;
+
+    @Autowired
+    protected Validator<D> validator;
 
     protected D dto;
     protected D updatedDto;
@@ -63,6 +68,11 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
     @AfterEach
     public void clean() {
         repository.findAll().forEach(repository::delete);
+    }
+
+    @Test
+    public void validateDto() {
+        assertTrue(StringUtils.isBlank(validator.validate(dto, null)));
     }
 
     @Test

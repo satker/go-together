@@ -1,9 +1,9 @@
-package org.go.together.find.dto;
+package org.go.together.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.go.together.find.FindService;
-import org.go.together.interfaces.FindClient;
+import org.go.together.base.FindClient;
+import org.go.together.base.FindService;
 
 @Builder
 @Getter

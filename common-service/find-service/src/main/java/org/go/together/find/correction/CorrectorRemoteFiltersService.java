@@ -1,10 +1,10 @@
 package org.go.together.find.correction;
 
+import org.go.together.dto.FieldMapper;
 import org.go.together.dto.form.FilterDto;
 import org.go.together.find.correction.field.dto.CorrectedFieldDto;
 import org.go.together.find.correction.fieldpath.FieldPathCorrector;
 import org.go.together.find.dto.FieldDto;
-import org.go.together.find.dto.FieldMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

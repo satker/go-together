@@ -8,7 +8,6 @@ import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
-import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.Event;
 import org.go.together.repository.interfaces.EventRepository;
 import org.go.together.service.interfaces.EventService;

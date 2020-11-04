@@ -1,10 +1,10 @@
 package org.go.together.find.correction.field;
 
+import org.go.together.dto.FieldMapper;
 import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.find.correction.field.dto.CorrectedFieldDto;
 import org.go.together.find.correction.fieldpath.FieldPathCorrector;
 import org.go.together.find.dto.FieldDto;
-import org.go.together.find.dto.FieldMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

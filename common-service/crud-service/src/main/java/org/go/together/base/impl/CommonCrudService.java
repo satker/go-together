@@ -103,10 +103,6 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
         return new IdDto(createdEntity.getId());
     }
 
-    public String validate(D dto) {
-        return validator.validate(dto, null);
-    }
-
     protected E enrichEntity(E entity, D dto, CrudOperation crudOperation) {
         return entity;
     }

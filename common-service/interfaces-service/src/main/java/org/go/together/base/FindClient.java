@@ -1,7 +1,8 @@
-package org.go.together.interfaces;
+package org.go.together.base;
 
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.form.FormDto;
+import org.go.together.interfaces.Dto;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 

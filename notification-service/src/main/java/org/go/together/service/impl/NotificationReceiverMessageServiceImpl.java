@@ -1,8 +1,8 @@
 package org.go.together.service.impl;
 
 import org.go.together.base.impl.CommonCrudService;
+import org.go.together.dto.FieldMapper;
 import org.go.together.dto.NotificationReceiverMessageDto;
-import org.go.together.find.dto.FieldMapper;
 import org.go.together.model.NotificationReceiverMessage;
 import org.go.together.repository.interfaces.NotificationReceiverMessageRepository;
 import org.go.together.service.interfaces.NotificationMessageService;

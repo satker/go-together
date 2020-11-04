@@ -1,8 +1,8 @@
 package org.go.together.base.impl;
 
+import org.go.together.base.FindService;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.form.FormDto;
-import org.go.together.find.FindService;
 import org.go.together.find.utils.FindUtils;
 import org.go.together.interfaces.Dto;
 import org.go.together.utils.ReflectionUtils;
@@ -15,11 +15,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public abstract class FindController {
-    private Set<FindService<?>> services;
+    private Set<FindService> services;
     private Map<Class<?>, Validator> validators;
 
     @Autowired
-    public void setServices(Set<FindService<?>> services) {
+    public void setServices(Set<FindService> services) {
         this.services = services;
     }
 

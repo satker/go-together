@@ -2,7 +2,7 @@ package org.go.together.find.correction.path.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.go.together.find.dto.FieldMapper;
+import org.go.together.dto.FieldMapper;
 
 import java.util.Map;
 

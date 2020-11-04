@@ -35,9 +35,6 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
     private String storePath;
 
     @Autowired
-    private PhotoService photoService;
-
-    @Autowired
     private NotificationSource source;
 
     @Override
@@ -53,7 +50,7 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
         } catch (IOException e) {
             throw new RuntimeException("Cannot get file in content-service");
         }
-        photoService.create(photoDto);
+        crudService.create(photoDto);
     }
 
     @AfterEach
@@ -71,7 +68,7 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
         PhotoDto photoDto2 = getPhotoDto("photos/2.jpg");
         PhotoDto photoDto3 = getPhotoDto("photos/3.jpg");
         Set<Photo> photoRepositoryAll = Set.copyOf(repository.findAll());
-        Set<Photo> result = photoService.savePhotos(Set.of(photoDto2, photoDto3), photoRepositoryAll);
+        Set<Photo> result = ((PhotoService) crudService).savePhotos(Set.of(photoDto2, photoDto3), photoRepositoryAll);
 
         List<String> files = checkSavedPhotosToDirectory(result);
         assertEquals(2, result.size());
@@ -82,7 +79,7 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
     void saveOrUpdatePhotosWithoutOldPhotos() throws IOException {
         PhotoDto photoDto2 = getPhotoDto("photos/2.jpg");
         PhotoDto photoDto3 = getPhotoDto("photos/3.jpg");
-        Set<Photo> result = photoService.savePhotos(Set.of(photoDto2, photoDto3), Collections.emptySet());
+        Set<Photo> result = ((PhotoService) crudService).savePhotos(Set.of(photoDto2, photoDto3), Collections.emptySet());
 
         List<String> files = checkSavedPhotosToDirectory(result);
         assertEquals(2, result.size());
@@ -92,7 +89,7 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
     @Test
     void validationPhoto() throws IOException {
         PhotoDto photoDto = getPhotoDto("photos/2.jpg");
-        String result = photoService.validate(photoDto);
+        String result = validator.validate(photoDto, null);
 
         assertTrue(StringUtils.isBlank(result));
     }
@@ -102,7 +99,7 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
         PhotoDto photoDto = getPhotoDto("photos/2.jpg");
         photoDto.setContent(new ContentDto());
 
-        String result = photoService.validate(photoDto);
+        String result = validator.validate(photoDto, null);
 
         assertTrue(StringUtils.isNotBlank(result));
     }
@@ -110,7 +107,7 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
     @Test
     void deletePhotos() throws IOException {
         PhotoDto photoDto = getPhotoDto("photos/2.jpg");
-        photoService.create(photoDto);
+        crudService.create(photoDto);
 
         List<String> files = Arrays.stream(Objects.requireNonNull(new File(storePath).list()))
                 .map(fileName -> fileName.split("\\.")[0])
@@ -119,7 +116,7 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
 
         Set<Photo> repositoryAll = Set.copyOf(repository.findAll());
 
-        repositoryAll.stream().map(Photo::getId).forEach(photoService::delete);
+        repositoryAll.stream().map(Photo::getId).forEach(crudService::delete);
 
         List<String> deletedPhotos = Arrays.stream(Objects.requireNonNull(new File(storePath).list()))
                 .map(fileName -> fileName.split("\\.")[0])

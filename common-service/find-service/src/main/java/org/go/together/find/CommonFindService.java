@@ -1,13 +1,13 @@
-package org.go.together.find.impl;
+package org.go.together.find;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.tuple.Pair;
+import org.go.together.base.FindService;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.form.FormDto;
 import org.go.together.dto.form.PageDto;
 import org.go.together.exceptions.ApplicationException;
-import org.go.together.find.FindService;
 import org.go.together.find.logic.interfaces.BaseFindService;
 import org.go.together.find.logic.interfaces.BaseResultMapper;
 import org.go.together.interfaces.Dto;
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collection;
 import java.util.Optional;
 
-public abstract class CommonFindService<D extends Dto, E extends IdentifiedEntity> implements FindService<E> {
+public abstract class CommonFindService<D extends Dto, E extends IdentifiedEntity> implements FindService<D> {
     protected final Logger log = LoggerFactory.getLogger(getClass());
     protected Mapper<D, E> mapper;
     protected BaseFindService<E> baseFindService;
