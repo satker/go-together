@@ -3,6 +3,7 @@ package org.go.together.service;
 import org.go.together.client.UserClient;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.EventUserDto;
+import org.go.together.enums.CrudOperation;
 import org.go.together.model.Event;
 import org.go.together.model.EventUser;
 import org.go.together.notification.streams.NotificationSource;
@@ -18,6 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collections;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -64,5 +66,10 @@ public class EventUserServiceTest extends CrudServiceCommonTest<EventUser, Event
     @Override
     protected EventUserDto createDto() {
         return factory.manufacturePojo(EventUserDto.class);
+    }
+
+    @Override
+    protected void checkDtos(EventUserDto dto, EventUserDto savedObject, CrudOperation operation) {
+        assertEquals(dto, savedObject);
     }
 }

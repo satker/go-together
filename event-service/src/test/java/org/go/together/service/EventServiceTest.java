@@ -87,10 +87,10 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
         when(userClient.findById(eventDto.getAuthor().getId())).thenReturn(eventDto.getAuthor());
         when(locationClient.getRouteById(eventDto.getRoute().getId())).thenReturn(eventDto.getRoute());
         when(contentClient.readGroupPhotosById(eventDto.getGroupPhoto().getId())).thenReturn(eventDto.getGroupPhoto());
-        when(locationClient.createRoute(eventDto.getRoute())).thenReturn(new IdDto(eventDto.getRoute().getId()));
-        when(locationClient.updateRoute(eventDto.getRoute())).thenReturn(new IdDto(eventDto.getRoute().getId()));
-        when(contentClient.updateGroup(eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
-        when(contentClient.createGroup(eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
+        when(locationClient.create(eventDto.getRoute())).thenReturn(new IdDto(eventDto.getRoute().getId()));
+        when(locationClient.update(eventDto.getRoute())).thenReturn(new IdDto(eventDto.getRoute().getId()));
+        when(contentClient.update(eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
+        when(contentClient.create(eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
         when(contentClient.validate(eventDto.getGroupPhoto())).thenReturn(EMPTY);
         when(routeInfoClient.validate(eventDto.getRouteInfo())).thenReturn(EMPTY);
         when(locationClient.validate(eventDto.getRoute())).thenReturn(EMPTY);

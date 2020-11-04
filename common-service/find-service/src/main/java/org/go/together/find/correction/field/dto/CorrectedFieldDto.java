@@ -10,7 +10,7 @@ import java.util.Map;
 @Getter
 public class CorrectedFieldDto {
     private final Map<String, String> oldNewFilterField;
-    private final Map<String, Class> oldValueClass;
+    private final Map<String, Class<?>> oldValueClass;
     private final String correctedField;
     private final FieldDto fieldDto;
 }

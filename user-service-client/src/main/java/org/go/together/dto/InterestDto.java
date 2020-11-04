@@ -5,12 +5,9 @@ import lombok.EqualsAndHashCode;
 import org.go.together.interfaces.ComparableDto;
 import org.go.together.interfaces.ComparingField;
 
-import java.util.UUID;
-
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class InterestDto extends ComparableDto {
-    private UUID id;
     @ComparingField("name")
     private String name;
 

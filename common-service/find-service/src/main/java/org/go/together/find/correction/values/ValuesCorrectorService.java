@@ -11,12 +11,12 @@ public class ValuesCorrectorService implements ValuesCorrector {
     public Collection<Map<String, Object>> correct(CorrectedFieldDto correctedFieldDto,
                                                    Collection<Map<String, Object>> filters) {
         Collection<Map<String, Object>> result = new HashSet<>();
-        Map<String, Class> oldValueClass = correctedFieldDto.getOldValueClass();
+        Map<String, Class<?>> oldValueClass = correctedFieldDto.getOldValueClass();
         for (Map<String, Object> next : filters) {
             Map<String, Object> map = new HashMap<>();
             correctedFieldDto.getOldNewFilterField().forEach((oldKey, newKey) -> {
                 Object value = next.get(oldKey);
-                Class parsedClass = oldValueClass.getOrDefault(oldKey, Object.class);
+                Class<?> parsedClass = oldValueClass.getOrDefault(oldKey, Object.class);
                 Object parsedValue = parseFilterObjectToClass(value, parsedClass);
                 map.put(newKey, parsedValue);
             });
@@ -25,12 +25,12 @@ public class ValuesCorrectorService implements ValuesCorrector {
         return result;
     }
 
-    private Object parseFilterObjectToClass(Object value, Class clazz) {
+    private Object parseFilterObjectToClass(Object value, Class<?> clazz) {
         if (clazz == null) {
             return value;
         }
         if (value instanceof Collection) {
-            return ((Collection) value).stream()
+            return ((Collection<?>) value).stream()
                     .map(val -> parseFilterObjectToClass(val, clazz))
                     .collect(Collectors.toSet());
         } else if (clazz == String.class && value instanceof String) {
@@ -42,7 +42,7 @@ public class ValuesCorrectorService implements ValuesCorrector {
         } else if (clazz == Number.class && value instanceof Number) {
             return value;
         } else if (Enum.class.isAssignableFrom(clazz) && value instanceof String) {
-            return Enum.valueOf(clazz, String.valueOf(value));
+            return Enum.valueOf((Class) clazz, String.valueOf(value));
         } else {
             return value;
         }

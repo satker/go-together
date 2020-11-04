@@ -51,8 +51,7 @@ class DtoComparatorTest {
                                                    UUID anotherTestDtoId) {
         AnotherTestDto firstTestDto = createAnotherTestDto(anotherTestDtoId, ANOTHER_TEST_DTO_NUMBER, ANOTHER_TEST_DTO_STRING + 1);
         AnotherTestDto secondTestDto = createAnotherTestDto(ANOTHER_TEST_DTO_NUMBER, ANOTHER_TEST_DTO_STRING + 2);
-        return TestComparableDto.builder()
-                .id(UUID.randomUUID())
+        TestComparableDto builtTestDto = TestComparableDto.builder()
                 .date(date)
                 .number(Math.random())
                 .simpleDto(simpleDto)
@@ -62,6 +61,8 @@ class DtoComparatorTest {
                 .anotherTestDto(secondTestDto)
                 .anotherTestDtoWithIdCompare(firstTestDto)
                 .secureString(SECURE_FIELD).build();
+        builtTestDto.setId(UUID.randomUUID());
+        return builtTestDto;
     }
 
     public static AnotherTestDto createAnotherTestDto(Number number, String string) {
@@ -69,10 +70,11 @@ class DtoComparatorTest {
     }
 
     private static AnotherTestDto createAnotherTestDto(UUID id, Number number, String string) {
-        return AnotherTestDto.builder()
-                .id(id)
+        AnotherTestDto builtAnotherTestDto = AnotherTestDto.builder()
                 .number(number)
                 .string(string).build();
+        builtAnotherTestDto.setId(id);
+        return builtAnotherTestDto;
     }
 
     public static void compareMaps(Map<String, Object> result, Pair<String, Object> changedField) {

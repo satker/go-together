@@ -1,13 +1,15 @@
 package org.go.together.interfaces;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.EqualsAndHashCode;
 import org.go.together.dto.ComparingObject;
 import org.go.together.utils.NotificationUtils;
 
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class ComparableDto implements Dto {
+@EqualsAndHashCode(exclude = "comparingObject", callSuper = true)
+public abstract class ComparableDto extends Dto {
     private final Map<String, ComparingObject> comparingObject;
 
     protected ComparableDto() {

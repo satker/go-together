@@ -3,7 +3,10 @@ package org.go.together.controller;
 import lombok.RequiredArgsConstructor;
 import org.go.together.base.impl.FindController;
 import org.go.together.client.UserClient;
-import org.go.together.dto.*;
+import org.go.together.dto.AuthUserDto;
+import org.go.together.dto.ResponseDto;
+import org.go.together.dto.SimpleUserDto;
+import org.go.together.dto.UserDto;
 import org.go.together.dto.form.FormDto;
 import org.go.together.service.interfaces.EventLikeService;
 import org.go.together.service.interfaces.UserService;
@@ -26,11 +29,6 @@ class UserController extends FindController implements UserClient {
     }
 
     @Override
-    public IdDto add(UserDto input) {
-        return userService.create(input);
-    }
-
-    @Override
     public boolean checkIsGoodUsername(String username) {
         return userService.checkIsPresentedUsername(username);
     }
@@ -48,11 +46,6 @@ class UserController extends FindController implements UserClient {
     @Override
     public boolean checkLanguages(UUID ownerId, List<UUID> languagesForCompare) {
         return userService.checkLanguages(ownerId, languagesForCompare);
-    }
-
-    @Override
-    public IdDto updateUser(UserDto user) {
-        return userService.update(user);
     }
 
     @Override
@@ -86,23 +79,12 @@ class UserController extends FindController implements UserClient {
     }
 
     @Override
-    public IdDto createEventLike(EventLikeDto eventLikeDto) {
-        return eventLikeService.create(eventLikeDto);
-    }
-
-    @Override
-    public IdDto updateEventLike(EventLikeDto eventLikeDto) {
-        return eventLikeService.update(eventLikeDto);
-    }
-
-    @Override
     public void deleteEventLike(UUID eventId) {
         eventLikeService.deleteByEventId(eventId);
     }
 
     @Override
     public Set<UUID> getLikedEventsByUserId(UUID userId) {
-        // FROM USER
         return eventLikeService.findLikedEventIdsByUserId(userId);
     }
 }

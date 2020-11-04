@@ -1,7 +1,9 @@
 package org.go.together.client;
 
 import org.go.together.base.FindClient;
-import org.go.together.dto.*;
+import org.go.together.dto.AuthUserDto;
+import org.go.together.dto.SimpleUserDto;
+import org.go.together.dto.UserDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +20,6 @@ public interface UserClient extends FindClient {
     @PostMapping("/users/simple")
     Collection<SimpleUserDto> findSimpleUserDtosByUserIds(@RequestBody Set<UUID> userIds);
 
-    @PutMapping("/users")
-    IdDto add(@RequestBody UserDto input);
-
     @GetMapping("/users/check/login/{login}")
     boolean checkIsGoodUsername(@PathVariable("login") String username);
 
@@ -29,9 +28,6 @@ public interface UserClient extends FindClient {
 
     @GetMapping("/users/{userId}/check/languages")
     boolean checkLanguages(@PathVariable("userId") UUID userId, @RequestBody List<UUID> languagesForCompare);
-
-    @PostMapping("/users")
-    IdDto updateUser(@RequestBody UserDto user);
 
     @GetMapping("/users/{userId}/languages")
     Set<UUID> getLanguagesByOwnerId(@PathVariable("userId") UUID userId);
@@ -47,12 +43,6 @@ public interface UserClient extends FindClient {
 
     @GetMapping("/users/{userId}/presents")
     boolean checkIfUserPresentsById(@PathVariable("userId") UUID id);
-
-    @PutMapping("/users/likes")
-    IdDto createEventLike(@RequestBody EventLikeDto eventLikeDto);
-
-    @PostMapping("/users/likes")
-    IdDto updateEventLike(@RequestBody EventLikeDto eventLikeDto);
 
     @DeleteMapping("/users/likes/{eventId}")
     void deleteEventLike(@PathVariable("eventId") UUID eventId);

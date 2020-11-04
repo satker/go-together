@@ -1,6 +1,7 @@
 package org.go.together.validation.test.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.go.together.dto.SimpleDto;
 import org.go.together.interfaces.Dto;
 
@@ -8,9 +9,9 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class TestDto implements Dto {
-    private UUID id;
+public class TestDto extends Dto {
     private String name;
     private Long number;
     private Date date;

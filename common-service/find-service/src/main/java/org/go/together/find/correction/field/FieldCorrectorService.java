@@ -31,7 +31,7 @@ public class FieldCorrectorService implements FieldCorrector {
         String filterField = fieldDto.getFilterFields();
         Map<String, String> oldNewFilterField = Stream.of(getSingleGroupFields(filterField))
                 .collect(Collectors.toMap(Function.identity(), Function.identity()));
-        Map<String, Class> oldValueClass = new HashMap<>();
+        Map<String, Class<?>> oldValueClass = new HashMap<>();
         Map<String, String> filledOldNewFilterField = oldNewFilterField.keySet().stream()
                 .map(searchField -> correctFilterFields(fieldMappers, searchField, oldValueClass))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -43,7 +43,7 @@ public class FieldCorrectorService implements FieldCorrector {
 
     private Map.Entry<String, String> correctFilterFields(Map<String, FieldMapper> fieldMappers,
                                                           String searchField,
-                                                          Map<String, Class> oldValueClass) {
+                                                          Map<String, Class<?>> oldValueClass) {
         String[] splitByDotString = getParsedFields(searchField);
         if (splitByDotString.length > 1 && fieldMappers.containsKey(splitByDotString[0])) {
             Map.Entry<String, String> correctedComplexGroupFilterField =

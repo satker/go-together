@@ -7,10 +7,9 @@ import org.go.together.interfaces.ComparableDto;
 import java.util.Set;
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class GroupRouteInfoDto extends ComparableDto {
-    private UUID id;
     private UUID groupId;
     private Set<RouteInfoDto> infoRoutes;
 

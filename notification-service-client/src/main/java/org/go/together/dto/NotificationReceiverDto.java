@@ -1,13 +1,14 @@
 package org.go.together.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.go.together.interfaces.Dto;
 
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class NotificationReceiverDto implements Dto {
-    private UUID id;
+public class NotificationReceiverDto extends Dto {
     private UUID userId;
     private NotificationDto notification;
 }

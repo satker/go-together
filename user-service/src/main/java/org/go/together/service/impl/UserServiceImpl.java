@@ -38,12 +38,13 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
         Optional<SystemUser> userByLogin = ((UserRepository) repository).findUserByLogin(login);
         if (userByLogin.isPresent()) {
             SystemUser systemUser = userByLogin.get();
-            return AuthUserDto.builder()
-                    .id(systemUser.getId())
+            AuthUserDto build = AuthUserDto.builder()
                     .login(systemUser.getLogin())
                     .password(systemUser.getPassword())
                     .role(systemUser.getRole())
                     .build();
+            build.setId(systemUser.getId());
+            return build;
         }
         throw new CannotFindEntityException("Cannot find user by login");
     }
@@ -98,13 +99,13 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             GroupLocationDto locationDto = dto.getLocation();
             locationDto.setGroupId(entity.getId());
             locationDto.setCategory(LocationCategory.USER);
-            IdDto route = locationClient.updateRoute(locationDto);
+            IdDto route = locationClient.update(locationDto);
             entity.setLocationId(route.getId());
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.USER);
-            IdDto groupPhotoId = contentClient.updateGroup(groupPhotoDto);
+            IdDto groupPhotoId = contentClient.update(groupPhotoDto);
             entity.setGroupPhoto(groupPhotoId.getId());
 
             entity.setRole(role);
@@ -114,13 +115,13 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             GroupLocationDto locationDto = dto.getLocation();
             locationDto.setGroupId(entity.getId());
             locationDto.setCategory(LocationCategory.USER);
-            IdDto route = locationClient.createRoute(locationDto);
+            IdDto route = locationClient.create(locationDto);
             entity.setLocationId(route.getId());
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.USER);
-            IdDto groupPhotoId = contentClient.createGroup(groupPhotoDto);
+            IdDto groupPhotoId = contentClient.create(groupPhotoDto);
             entity.setGroupPhoto(groupPhotoId.getId());
             entity.setRole(Role.ROLE_USER);
             EventLikeDto eventLikeDto = new EventLikeDto();

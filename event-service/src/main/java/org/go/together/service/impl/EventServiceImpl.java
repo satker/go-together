@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.impl.CommonCrudService;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
+import org.go.together.client.RouteInfoClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
@@ -22,6 +23,7 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
     private final LocationClient locationClient;
     private final ContentClient contentClient;
     private final UserClient userClient;
+    private final RouteInfoClient routeInfoClient;
 
     @Override
     protected Event enrichEntity(Event entity, EventDto dto, CrudOperation crudOperation) {
@@ -29,31 +31,31 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
             GroupLocationDto locationDto = dto.getRoute();
             locationDto.setGroupId(entity.getId());
             locationDto.setCategory(LocationCategory.EVENT);
-            IdDto route = locationClient.updateRoute(locationDto);
+            IdDto route = locationClient.update(locationDto);
             entity.setRouteId(route.getId());
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.EVENT);
-            IdDto photoId = contentClient.updateGroup(groupPhotoDto);
+            IdDto photoId = contentClient.update(groupPhotoDto);
             entity.setGroupPhotoId(photoId.getId());
         } else if (crudOperation == CrudOperation.CREATE) {
             GroupLocationDto locationDto = dto.getRoute();
             locationDto.setGroupId(entity.getId());
             locationDto.setCategory(LocationCategory.EVENT);
-            IdDto route = locationClient.createRoute(dto.getRoute());
+            IdDto route = locationClient.create(dto.getRoute());
             entity.setRouteId(route.getId());
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.EVENT);
-            IdDto photoId = contentClient.createGroup(groupPhotoDto);
+            IdDto photoId = contentClient.create(groupPhotoDto);
             entity.setGroupPhotoId(photoId.getId());
 
             EventLikeDto eventLikeDto = new EventLikeDto();
             eventLikeDto.setEventId(entity.getId());
             eventLikeDto.setUsers(Collections.emptySet());
-            userClient.createEventLike(eventLikeDto);
+            userClient.create(eventLikeDto);
         } else if (crudOperation == CrudOperation.DELETE) {
             locationClient.deleteRoute(entity.getRouteId());
             contentClient.delete(entity.getGroupPhotoId());

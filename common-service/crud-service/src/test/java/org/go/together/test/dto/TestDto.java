@@ -10,11 +10,9 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class TestDto extends ComparableDto {
-    private UUID id;
-
     @ComparingField("name")
     private String name;
 

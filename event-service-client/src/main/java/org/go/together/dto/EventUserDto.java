@@ -7,10 +7,9 @@ import org.go.together.interfaces.ComparingField;
 
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class EventUserDto extends ComparableDto {
-    private UUID id;
     @ComparingField("user")
     private SimpleUserDto user;
     @ComparingField("user status")

@@ -206,10 +206,10 @@ class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
     private void prepareDto(UserDto userDto) {
         when(locationClient.validate(userDto.getLocation())).thenReturn(EMPTY);
         when(contentClient.validate(userDto.getGroupPhoto())).thenReturn(EMPTY);
-        when(contentClient.updateGroup(userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
-        when(contentClient.createGroup(userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
-        when(locationClient.createRoute(userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
-        when(locationClient.updateRoute(userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
+        when(contentClient.update(userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
+        when(contentClient.create(userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
+        when(locationClient.create(userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
+        when(locationClient.update(userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
         when(locationClient.getRouteById(userDto.getLocation().getId())).thenReturn(userDto.getLocation());
         when(contentClient.readGroupPhotosById(userDto.getGroupPhoto().getId())).thenReturn(userDto.getGroupPhoto());
     }

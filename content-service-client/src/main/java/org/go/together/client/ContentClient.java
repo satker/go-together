@@ -2,20 +2,15 @@ package org.go.together.client;
 
 import org.go.together.base.FindClient;
 import org.go.together.dto.GroupPhotoDto;
-import org.go.together.dto.IdDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.UUID;
 
 @FeignClient(name = "content-service")
 public interface ContentClient extends FindClient {
-    @PutMapping("/groups")
-    IdDto createGroup(@RequestBody GroupPhotoDto groupPhotoDto);
-
-    @PostMapping("/groups")
-    IdDto updateGroup(@RequestBody GroupPhotoDto groupPhotoDto);
-
     @GetMapping("events/photos/{groupPhotoId}")
     GroupPhotoDto readGroupPhotosById(@PathVariable("groupPhotoId") UUID groupPhotoId);
 

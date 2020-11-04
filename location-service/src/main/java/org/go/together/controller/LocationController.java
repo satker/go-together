@@ -3,8 +3,8 @@ package org.go.together.controller;
 import lombok.RequiredArgsConstructor;
 import org.go.together.base.impl.FindController;
 import org.go.together.client.LocationClient;
-import org.go.together.dto.*;
-import org.go.together.dto.form.FormDto;
+import org.go.together.dto.GroupLocationDto;
+import org.go.together.dto.SimpleDto;
 import org.go.together.service.interfaces.GroupLocationService;
 import org.go.together.service.interfaces.PlaceService;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,16 +24,6 @@ public class LocationController extends FindController implements LocationClient
     }
 
     @Override
-    public IdDto createRoute(GroupLocationDto groupLocationDto) {
-        return groupLocationService.create(groupLocationDto);
-    }
-
-    @Override
-    public IdDto updateRoute(GroupLocationDto groupLocationDto) {
-        return groupLocationService.update(groupLocationDto);
-    }
-
-    @Override
     public void deleteRoute(UUID eventRouteId) {
         groupLocationService.delete(eventRouteId);
     }
@@ -41,15 +31,5 @@ public class LocationController extends FindController implements LocationClient
     @Override
     public Set<SimpleDto> autocompleteLocations(String name) {
         return placeService.getLocationsByName(name);
-    }
-
-    @Override
-    public IdDto saveLocation(PlaceDto placeDto) {
-        return placeService.create(placeDto);
-    }
-
-    @Override
-    public ResponseDto<Object> find(FormDto formDto) {
-        return super.find(formDto);
     }
 }

@@ -9,10 +9,8 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
-@EqualsAndHashCode(exclude = {"password"}, callSuper = false)
+@EqualsAndHashCode(exclude = {"password"}, callSuper = true)
 public class UserDto extends ComparableDto {
-    private UUID id;
-
     @ComparingField("login")
     private String login;
 

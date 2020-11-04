@@ -4,12 +4,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.go.together.interfaces.ComparableDto;
 
-import java.util.UUID;
-
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class JoinTestDto extends ComparableDto {
-    private UUID id;
     private String name;
 
     @Override

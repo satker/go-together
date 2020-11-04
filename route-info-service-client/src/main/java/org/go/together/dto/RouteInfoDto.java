@@ -10,7 +10,6 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class RouteInfoDto extends ComparableDto {
-    private UUID id;
     private UUID startLocationId;
     private UUID endLocationId;
     private TransportType transportType;

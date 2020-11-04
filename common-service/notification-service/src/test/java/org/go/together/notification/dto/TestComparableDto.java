@@ -11,12 +11,10 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder(toBuilder = true)
 public class TestComparableDto extends ComparableDto {
-    private UUID id;
-
     @ComparingField("date")
     private Date date;
 
@@ -50,7 +48,7 @@ public class TestComparableDto extends ComparableDto {
 
     @Override
     public UUID getOwnerId() {
-        return id;
+        return super.getId();
     }
 
     @Override
