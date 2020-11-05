@@ -1,8 +1,7 @@
 package org.go.together.tests;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.base.CrudService;
-import org.go.together.base.FindService;
+import org.go.together.base.*;
 import org.go.together.compare.FieldMapper;
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
@@ -13,10 +12,7 @@ import org.go.together.enums.CrudOperation;
 import org.go.together.enums.FindOperator;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.interfaces.Identified;
-import org.go.together.mapper.Mapper;
-import org.go.together.repository.CustomRepository;
-import org.go.together.repository.entities.IdentifiedEntity;
-import org.go.together.validation.Validator;
+import org.go.together.model.IdentifiedEntity;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

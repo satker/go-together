@@ -2,7 +2,6 @@ package org.go.together.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

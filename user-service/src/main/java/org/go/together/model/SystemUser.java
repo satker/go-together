@@ -4,7 +4,6 @@ package org.go.together.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.go.together.dto.Role;
-import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.*;
 import java.util.HashSet;

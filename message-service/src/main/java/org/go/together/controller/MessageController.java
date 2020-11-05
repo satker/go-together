@@ -1,7 +1,7 @@
 package org.go.together.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.go.together.base.impl.FindController;
+import org.go.together.base.FindController;
 import org.go.together.client.MessageClient;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.MessageDto;

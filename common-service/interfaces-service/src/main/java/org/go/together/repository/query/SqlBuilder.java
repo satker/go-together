@@ -1,8 +1,9 @@
-package org.go.together.repository.interfaces;
+package org.go.together.repository.query;
 
 import org.go.together.enums.Direction;
-import org.go.together.repository.builder.Sql;
-import org.go.together.repository.entities.IdentifiedEntity;
+import org.go.together.model.IdentifiedEntity;
+import org.go.together.repository.builders.QueryBuilder;
+import org.go.together.repository.builders.Sql;
 
 public interface SqlBuilder<E extends IdentifiedEntity> extends QueryBuilder<E> {
     SqlBuilder<E> having(Integer havingCondition);

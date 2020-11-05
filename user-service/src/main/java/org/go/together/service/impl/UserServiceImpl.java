@@ -2,14 +2,14 @@ package org.go.together.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.base.impl.CommonCrudService;
+import org.go.together.base.CommonCrudService;
+import org.go.together.base.Mapper;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.compare.FieldMapper;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.mapper.Mapper;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
 import org.go.together.repository.interfaces.UserRepository;
@@ -130,8 +130,8 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             eventLikeDto.setUsers(Collections.emptySet());
             eventLikeService.create(eventLikeDto);
         } else if (crudOperation == CrudOperation.DELETE) {
-            locationClient.deleteRoute(entity.getLocationId());
-            contentClient.delete(entity.getGroupPhoto());
+            locationClient.delete("groupLocations", entity.getLocationId());
+            contentClient.delete("groupPhotos", entity.getGroupPhoto());
             eventLikeService.deleteByUserId(entity.getId());
         }
         return entity;

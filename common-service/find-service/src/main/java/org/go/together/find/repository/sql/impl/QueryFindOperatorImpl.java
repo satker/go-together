@@ -1,10 +1,10 @@
 package org.go.together.find.repository.sql.impl;
 
 import org.go.together.enums.FindOperator;
+import org.go.together.enums.SqlOperator;
 import org.go.together.find.repository.sql.interfaces.QueryFindOperator;
-import org.go.together.repository.entities.IdentifiedEntity;
-import org.go.together.repository.interfaces.WhereBuilder;
-import org.go.together.repository.sql.SqlOperator;
+import org.go.together.model.IdentifiedEntity;
+import org.go.together.repository.query.WhereBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,6 +28,5 @@ public class QueryFindOperatorImpl implements QueryFindOperator {
                 }
             }
         }
-
     }
 }

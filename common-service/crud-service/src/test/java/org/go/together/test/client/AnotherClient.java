@@ -1,11 +1,14 @@
 package org.go.together.test.client;
 
 import org.go.together.base.FindClient;
+import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.ValidationMessageDto;
 import org.go.together.dto.form.FormDto;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 @Component
 public class AnotherClient implements FindClient {
@@ -28,6 +31,16 @@ public class AnotherClient implements FindClient {
 
     @Override
     public IdDto update(String serviceName, Object dto) {
+        return null;
+    }
+
+    @Override
+    public void delete(String serviceName, UUID dtoId) {
+
+    }
+
+    @Override
+    public Dto read(String serviceName, UUID dtoId) {
         return null;
     }
 

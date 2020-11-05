@@ -1,12 +1,10 @@
-package org.go.together.base.impl;
+package org.go.together.base;
 
-import org.go.together.base.NotificationCrudService;
-import org.go.together.base.NotificationService;
 import org.go.together.compare.ComparableDto;
 import org.go.together.dto.Dto;
 import org.go.together.enums.NotificationStatus;
 import org.go.together.find.CommonFindService;
-import org.go.together.repository.entities.IdentifiedEntity;
+import org.go.together.model.IdentifiedEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;

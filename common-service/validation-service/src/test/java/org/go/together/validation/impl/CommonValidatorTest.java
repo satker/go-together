@@ -1,7 +1,7 @@
 package org.go.together.validation.impl;
 
+import org.go.together.base.Validator;
 import org.go.together.dto.SimpleDto;
-import org.go.together.validation.Validator;
 import org.go.together.validation.context.ValidatorContext;
 import org.go.together.validation.test.dto.TestDto;
 import org.go.together.validation.validators.impl.*;

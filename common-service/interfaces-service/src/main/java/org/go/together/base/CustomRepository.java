@@ -1,8 +1,8 @@
-package org.go.together.repository;
+package org.go.together.base;
 
-import org.go.together.repository.entities.IdentifiedEntity;
-import org.go.together.repository.interfaces.SqlBuilder;
-import org.go.together.repository.interfaces.WhereBuilder;
+import org.go.together.model.IdentifiedEntity;
+import org.go.together.repository.query.SqlBuilder;
+import org.go.together.repository.query.WhereBuilder;
 
 import java.util.Collection;
 import java.util.Optional;

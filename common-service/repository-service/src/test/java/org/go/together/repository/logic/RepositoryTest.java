@@ -1,9 +1,9 @@
 package org.go.together.repository.logic;
 
 import org.go.together.enums.Direction;
-import org.go.together.repository.builder.Sql;
+import org.go.together.enums.SqlOperator;
+import org.go.together.repository.builders.Sql;
 import org.go.together.repository.context.RepositoryContext;
-import org.go.together.repository.sql.SqlOperator;
 import org.go.together.repository.test.entities.JoinTestEntity;
 import org.go.together.repository.test.entities.ManyJoinEntity;
 import org.go.together.repository.test.entities.TestEntity;

@@ -6,7 +6,7 @@ import org.go.together.interfaces.Identified;
 import java.util.UUID;
 
 @EqualsAndHashCode
-public class Dto implements Identified {
+public abstract class Dto implements Identified {
     private UUID id;
 
     @Override

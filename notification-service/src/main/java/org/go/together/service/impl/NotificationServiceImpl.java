@@ -1,6 +1,6 @@
 package org.go.together.service.impl;
 
-import org.go.together.base.impl.CommonCrudService;
+import org.go.together.base.CommonCrudService;
 import org.go.together.dto.NotificationDto;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.model.Notification;

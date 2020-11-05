@@ -1,6 +1,7 @@
 package org.go.together.mapper;
 
 import lombok.RequiredArgsConstructor;
+import org.go.together.base.Mapper;
 import org.go.together.dto.GroupRouteInfoDto;
 import org.go.together.dto.RouteInfoDto;
 import org.go.together.model.GroupRouteInfo;

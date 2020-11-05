@@ -1,12 +1,11 @@
 package org.go.together.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.go.together.base.impl.FindController;
+import org.go.together.base.FindController;
 import org.go.together.client.UserClient;
 import org.go.together.dto.AuthUserDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.SimpleUserDto;
-import org.go.together.dto.UserDto;
 import org.go.together.dto.form.FormDto;
 import org.go.together.service.interfaces.EventLikeService;
 import org.go.together.service.interfaces.UserService;
@@ -59,18 +58,8 @@ class UserController extends FindController implements UserClient {
     }
 
     @Override
-    public UserDto findById(UUID id) {
-        return userService.read(id);
-    }
-
-    @Override
     public String findLoginById(UUID id) {
         return userService.findLoginById(id);
-    }
-
-    @Override
-    public void deleteUserById(UUID id) {
-        userService.delete(id);
     }
 
     @Override

@@ -2,6 +2,7 @@ package org.go.together.find.logic.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
+import org.go.together.base.CustomRepository;
 import org.go.together.compare.FieldMapper;
 import org.go.together.dto.form.FilterDto;
 import org.go.together.dto.form.FormDto;
@@ -10,8 +11,7 @@ import org.go.together.find.dto.FieldDto;
 import org.go.together.find.logic.interfaces.BaseCorrectorService;
 import org.go.together.find.logic.interfaces.BaseFindService;
 import org.go.together.find.repository.FindRepository;
-import org.go.together.repository.CustomRepository;
-import org.go.together.repository.entities.IdentifiedEntity;
+import org.go.together.model.IdentifiedEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;

@@ -1,20 +1,21 @@
 package org.go.together.repository.builder;
 
-import org.go.together.repository.entities.IdentifiedEntity;
-import org.go.together.repository.interfaces.Query;
-import org.go.together.repository.interfaces.WhereBuilder;
-import org.go.together.repository.sql.SqlOperator;
+import org.go.together.enums.SqlOperator;
+import org.go.together.model.IdentifiedEntity;
+import org.go.together.repository.builders.Where;
+import org.go.together.repository.query.WhereBuilder;
+import org.go.together.repository.sql.OperatorParser;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.go.together.repository.sql.ObjectStringParser.parseToString;
 
-public class Where<E extends IdentifiedEntity> implements Query<E> {
+public class WhereImpl<E extends IdentifiedEntity> implements Where<E> {
     private final Map<String, String> joinMap;
     private final StringBuilder whereQuery;
 
-    private Where(Map<String, String> joinMap, StringBuilder whereQuery) {
+    private WhereImpl(Map<String, String> joinMap, StringBuilder whereQuery) {
         this.joinMap = joinMap;
         this.whereQuery = whereQuery;
     }
@@ -52,7 +53,8 @@ public class Where<E extends IdentifiedEntity> implements Query<E> {
         public WhereBuilder<B> condition(String field, SqlOperator sqlOperator, Object value) {
             String parsedValue = parseToString(value);
             String fieldName = getFieldWithJoin(field);
-            whereQuery.append(sqlOperator.getBiFunction().apply(fieldName, parsedValue));
+            String query = OperatorParser.getOperatorFunction(sqlOperator, fieldName, parsedValue);
+            whereQuery.append(query);
             return this;
         }
 
@@ -89,9 +91,9 @@ public class Where<E extends IdentifiedEntity> implements Query<E> {
             }
         }
 
-        public Where<B> build() {
+        public WhereImpl<B> build() {
             joinMap.putAll(joinBuilder.getJoinTables());
-            return new Where<>(joinMap, whereQuery);
+            return new WhereImpl<>(joinMap, whereQuery);
         }
     }
 }

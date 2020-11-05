@@ -2,10 +2,10 @@ package org.go.together.validation;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.base.Validator;
 import org.go.together.dto.CountryDto;
 import org.go.together.dto.PlaceDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

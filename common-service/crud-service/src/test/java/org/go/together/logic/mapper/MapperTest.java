@@ -1,10 +1,10 @@
 package org.go.together.logic.mapper;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.go.together.base.Mapper;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.SimpleDto;
 import org.go.together.interfaces.Identified;
-import org.go.together.mapper.Mapper;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.dto.TestDto;

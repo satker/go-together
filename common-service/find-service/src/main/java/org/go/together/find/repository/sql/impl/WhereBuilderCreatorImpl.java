@@ -2,15 +2,15 @@ package org.go.together.find.repository.sql.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.base.CustomRepository;
 import org.go.together.dto.form.FilterDto;
 import org.go.together.enums.FindOperator;
 import org.go.together.find.dto.FieldDto;
 import org.go.together.find.repository.sql.interfaces.QueryFindOperator;
 import org.go.together.find.repository.sql.interfaces.WhereBuilderCreator;
 import org.go.together.find.utils.FindUtils;
-import org.go.together.repository.CustomRepository;
-import org.go.together.repository.entities.IdentifiedEntity;
-import org.go.together.repository.interfaces.WhereBuilder;
+import org.go.together.model.IdentifiedEntity;
+import org.go.together.repository.query.WhereBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

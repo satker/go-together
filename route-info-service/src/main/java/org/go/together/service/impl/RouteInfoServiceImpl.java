@@ -1,6 +1,6 @@
 package org.go.together.service.impl;
 
-import org.go.together.base.impl.CommonCrudService;
+import org.go.together.base.CommonCrudService;
 import org.go.together.dto.RouteInfoDto;
 import org.go.together.model.RouteInfo;
 import org.go.together.service.interfaces.RouteInfoService;

@@ -1,12 +1,12 @@
 package org.go.together.validation.test.validator;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.base.Validator;
 import org.go.together.enums.CrudOperation;
-import org.go.together.validation.Validator;
+import org.go.together.validation.CommonValidator;
 import org.go.together.validation.dto.DateIntervalDto;
 import org.go.together.validation.dto.NumberIntervalDto;
 import org.go.together.validation.dto.StringRegexDto;
-import org.go.together.validation.impl.CommonValidator;
 import org.go.together.validation.test.dto.JoinTestDto;
 import org.go.together.validation.test.dto.ManyJoinDto;
 import org.go.together.validation.test.dto.TestDto;

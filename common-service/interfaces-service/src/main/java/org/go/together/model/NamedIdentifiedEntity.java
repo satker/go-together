@@ -1,4 +1,4 @@
-package org.go.together.repository.entities;
+package org.go.together.model;
 
 import lombok.EqualsAndHashCode;
 

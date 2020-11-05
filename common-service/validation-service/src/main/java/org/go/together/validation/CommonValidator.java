@@ -1,10 +1,10 @@
-package org.go.together.validation.impl;
+package org.go.together.validation;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.base.Validator;
 import org.go.together.dto.Dto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.interfaces.ImplFinder;
-import org.go.together.validation.Validator;
 import org.go.together.validation.validators.interfaces.ObjectValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 

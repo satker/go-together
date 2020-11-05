@@ -1,14 +1,14 @@
 package org.go.together.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.go.together.base.impl.CommonCrudService;
+import org.go.together.base.CommonCrudService;
+import org.go.together.base.Mapper;
 import org.go.together.compare.FieldMapper;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.LocationDto;
 import org.go.together.dto.PlaceDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.mapper.Mapper;
 import org.go.together.model.Location;
 import org.go.together.model.Place;
 import org.go.together.service.interfaces.LocationService;

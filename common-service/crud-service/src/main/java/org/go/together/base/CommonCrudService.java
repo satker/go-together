@@ -1,15 +1,13 @@
-package org.go.together.base.impl;
+package org.go.together.base;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.base.CrudService;
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.enums.NotificationStatus;
 import org.go.together.exceptions.ApplicationException;
 import org.go.together.exceptions.ValidationException;
-import org.go.together.repository.entities.IdentifiedEntity;
-import org.go.together.validation.Validator;
+import org.go.together.model.IdentifiedEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;

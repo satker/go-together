@@ -2,10 +2,10 @@ package org.go.together.repository.builder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.enums.Direction;
-import org.go.together.repository.entities.IdentifiedEntity;
-import org.go.together.repository.interfaces.Query;
-import org.go.together.repository.interfaces.SqlBuilder;
-import org.go.together.repository.interfaces.WhereBuilder;
+import org.go.together.model.IdentifiedEntity;
+import org.go.together.repository.builders.Sql;
+import org.go.together.repository.query.SqlBuilder;
+import org.go.together.repository.query.WhereBuilder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 import static org.go.together.repository.builder.utils.BuilderUtils.createLeftJoin;
 import static org.go.together.repository.builder.utils.BuilderUtils.getEntityLink;
 
-public class Sql<E extends IdentifiedEntity> implements Query<E> {
+public class SqlImpl<E extends IdentifiedEntity> implements Sql<E> {
     private final EntityManager entityManager;
     private final Class<E> clazz;
     private final String query;
     private final String countQuery;
 
-    private Sql(Class<E> clazz, EntityManager entityManager, String query, String countQuery) {
+    private SqlImpl(Class<E> clazz, EntityManager entityManager, String query, String countQuery) {
         this.entityManager = entityManager;
         this.clazz = clazz;
         this.query = query;
@@ -124,7 +124,7 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
         }
 
         public SqlBuilderImpl<B> where(WhereBuilder<B> where) {
-            Where<B> buildWhere = where.build();
+            WhereImpl<B> buildWhere = (WhereImpl<B>) where.build();
             joinMap.putAll(buildWhere.getJoin());
             if (StringUtils.isNotBlank(query)) {
                 query.append(" and ");
@@ -160,11 +160,11 @@ public class Sql<E extends IdentifiedEntity> implements Query<E> {
             return query.toString();
         }
 
-        public Sql<B> build() {
+        public SqlImpl<B> build() {
             if (!sortMap.isEmpty()) {
                 enrichBySort();
             }
-            return new Sql<>(clazz, entityManager, getQuery(), getCountQuery());
+            return new SqlImpl<>(clazz, entityManager, getQuery(), getCountQuery());
         }
 
         private String getQuery() {

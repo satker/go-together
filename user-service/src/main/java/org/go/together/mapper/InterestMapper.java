@@ -1,5 +1,6 @@
 package org.go.together.mapper;
 
+import org.go.together.base.Mapper;
 import org.go.together.dto.InterestDto;
 import org.go.together.model.Interest;
 import org.springframework.stereotype.Component;

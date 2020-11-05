@@ -1,6 +1,7 @@
 package org.go.together.service.impl;
 
-import org.go.together.base.impl.CommonCrudService;
+import org.go.together.base.CommonCrudService;
+import org.go.together.base.Mapper;
 import org.go.together.compare.FieldMapper;
 import org.go.together.dto.NotificationDto;
 import org.go.together.dto.NotificationMessageDto;
@@ -8,7 +9,6 @@ import org.go.together.dto.NotificationReceiverDto;
 import org.go.together.dto.NotificationReceiverMessageDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.mapper.Mapper;
 import org.go.together.model.Notification;
 import org.go.together.model.NotificationMessage;
 import org.go.together.model.NotificationReceiver;

@@ -1,6 +1,6 @@
 package org.go.together.test.service.impl;
 
-import org.go.together.base.impl.CommonCrudService;
+import org.go.together.base.CommonCrudService;
 import org.go.together.compare.FieldMapper;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.entities.JoinTestEntity;

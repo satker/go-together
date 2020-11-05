@@ -2,6 +2,7 @@ package org.go.together.find.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
+import org.go.together.base.CustomRepository;
 import org.go.together.compare.FieldMapper;
 import org.go.together.dto.form.FilterDto;
 import org.go.together.dto.form.FormDto;
@@ -11,11 +12,10 @@ import org.go.together.find.correction.fieldpath.FieldPathCorrector;
 import org.go.together.find.dto.FieldDto;
 import org.go.together.find.repository.sql.impl.SqlBuilderCreatorImpl;
 import org.go.together.find.repository.sql.interfaces.WhereBuilderCreator;
-import org.go.together.repository.CustomRepository;
-import org.go.together.repository.builder.Sql;
-import org.go.together.repository.entities.IdentifiedEntity;
-import org.go.together.repository.interfaces.SqlBuilder;
-import org.go.together.repository.interfaces.WhereBuilder;
+import org.go.together.model.IdentifiedEntity;
+import org.go.together.repository.builders.Sql;
+import org.go.together.repository.query.SqlBuilder;
+import org.go.together.repository.query.WhereBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;

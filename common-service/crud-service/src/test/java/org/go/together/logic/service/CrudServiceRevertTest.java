@@ -1,12 +1,13 @@
 package org.go.together.logic.service;
 
-import org.go.together.base.impl.CommonCrudService;
+import org.go.together.base.CommonCrudService;
+import org.go.together.base.Mapper;
+import org.go.together.base.Validator;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.SimpleDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.ApplicationException;
 import org.go.together.exceptions.ValidationException;
-import org.go.together.mapper.Mapper;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.dto.TestDto;
@@ -16,7 +17,6 @@ import org.go.together.test.entities.TestEntity;
 import org.go.together.test.repository.interfaces.JoinTestRepository;
 import org.go.together.test.repository.interfaces.ManyJoinRepository;
 import org.go.together.test.repository.interfaces.TestRepository;
-import org.go.together.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

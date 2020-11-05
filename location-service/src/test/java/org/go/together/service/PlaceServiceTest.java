@@ -1,10 +1,10 @@
 package org.go.together.service;
 
+import org.go.together.base.Mapper;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.CountryDto;
 import org.go.together.dto.PlaceDto;
 import org.go.together.dto.SimpleDto;
-import org.go.together.mapper.Mapper;
 import org.go.together.model.Country;
 import org.go.together.model.Place;
 import org.go.together.notification.streams.NotificationSource;

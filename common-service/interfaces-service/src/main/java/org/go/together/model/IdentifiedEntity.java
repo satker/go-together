@@ -1,4 +1,4 @@
-package org.go.together.repository.entities;
+package org.go.together.model;
 
 import lombok.EqualsAndHashCode;
 import org.go.together.interfaces.Identified;

@@ -2,7 +2,7 @@ package org.go.together.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.base.impl.CommonCrudService;
+import org.go.together.base.CommonCrudService;
 import org.go.together.client.UserClient;
 import org.go.together.compare.FieldMapper;
 import org.go.together.dto.EventUserDto;

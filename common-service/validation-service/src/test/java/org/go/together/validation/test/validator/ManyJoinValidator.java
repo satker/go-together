@@ -1,6 +1,6 @@
 package org.go.together.validation.test.validator;
 
-import org.go.together.validation.impl.CommonValidator;
+import org.go.together.validation.CommonValidator;
 import org.go.together.validation.test.dto.ManyJoinDto;
 import org.springframework.stereotype.Component;
 

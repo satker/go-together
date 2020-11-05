@@ -8,7 +8,6 @@ import org.go.together.client.UserClient;
 import org.go.together.dto.EventDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.validation.dto.DateIntervalDto;
-import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

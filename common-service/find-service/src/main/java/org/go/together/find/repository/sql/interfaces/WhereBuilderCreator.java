@@ -1,10 +1,10 @@
 package org.go.together.find.repository.sql.interfaces;
 
+import org.go.together.base.CustomRepository;
 import org.go.together.dto.form.FilterDto;
 import org.go.together.find.dto.FieldDto;
-import org.go.together.repository.CustomRepository;
-import org.go.together.repository.entities.IdentifiedEntity;
-import org.go.together.repository.interfaces.WhereBuilder;
+import org.go.together.model.IdentifiedEntity;
+import org.go.together.repository.query.WhereBuilder;
 
 import java.util.Map;
 

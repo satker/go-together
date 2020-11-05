@@ -3,7 +3,6 @@ package org.go.together.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.go.together.dto.TransportType;
-import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

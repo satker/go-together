@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.go.together.dto.EventUserStatus;
-import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.*;
 import java.util.UUID;

@@ -1,11 +1,11 @@
 package org.go.together.service;
 
+import org.go.together.base.Mapper;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.mapper.Mapper;
 import org.go.together.model.EventLike;
 import org.go.together.model.Interest;
 import org.go.together.model.Language;
@@ -164,10 +164,10 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
         when(contentClient.validate("groupPhotos", userDto.getGroupPhoto())).thenReturn(new ValidationMessageDto(EMPTY));
         when(contentClient.update("groupPhotos", userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
         when(contentClient.create("groupPhotos", userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
-        when(locationClient.getRouteById(userDto.getLocation().getId())).thenReturn(userDto.getLocation());
+        when(locationClient.read("groupLocations", userDto.getLocation().getId())).thenReturn(userDto.getLocation());
         when(locationClient.create("groupLocations", userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
         when(locationClient.update("groupLocations", userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
-        when(contentClient.readGroupPhotosById(userDto.getGroupPhoto().getId())).thenReturn(userDto.getGroupPhoto());
+        when(contentClient.read("groupPhotos", userDto.getGroupPhoto().getId())).thenReturn(userDto.getGroupPhoto());
 
     }
 }

@@ -26,7 +26,6 @@ dependencies {
     compile project(":common-service:interfaces-service")
     compile project(":common-service:repository-service")
     compile project(":common-service:exception-service")
-    compile project(":common-service:mapper-service")
 
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }

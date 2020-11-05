@@ -1,10 +1,7 @@
-package org.go.together.base.impl;
+package org.go.together.base;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.go.together.base.CrudService;
-import org.go.together.base.FindClient;
-import org.go.together.base.FindService;
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
@@ -12,12 +9,12 @@ import org.go.together.dto.ValidationMessageDto;
 import org.go.together.dto.form.FormDto;
 import org.go.together.find.utils.FindUtils;
 import org.go.together.utils.ReflectionUtils;
-import org.go.together.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -77,6 +74,18 @@ public abstract class FindController implements FindClient {
         Class<? extends Dto> dtoClazz = getDtoClass(serviceName);
         Dto parsedDto = checkDtoType(dtoClazz, dto);
         return crudServices.get(dtoClazz).update(parsedDto);
+    }
+
+    @Override
+    public void delete(String serviceName, UUID dtoId) {
+        Class<? extends Dto> dtoClazz = getDtoClass(serviceName);
+        crudServices.get(dtoClazz).delete(dtoId);
+    }
+
+    @Override
+    public <D extends Dto> D read(String serviceName, UUID dtoId) {
+        Class<? extends Dto> dtoClazz = getDtoClass(serviceName);
+        return (D) crudServices.get(dtoClazz).read(dtoId);
     }
 
     private Dto checkDtoType(Class<? extends Dto> dtoClazz, Object dto) {

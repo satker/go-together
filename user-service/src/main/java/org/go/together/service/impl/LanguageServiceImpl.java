@@ -1,6 +1,6 @@
 package org.go.together.service.impl;
 
-import org.go.together.base.impl.CommonCrudService;
+import org.go.together.base.CommonCrudService;
 import org.go.together.compare.FieldMapper;
 import org.go.together.dto.LanguageDto;
 import org.go.together.model.Language;

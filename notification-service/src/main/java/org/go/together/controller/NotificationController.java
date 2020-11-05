@@ -1,7 +1,7 @@
 package org.go.together.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.go.together.base.impl.FindController;
+import org.go.together.base.FindController;
 import org.go.together.client.NotificationClient;
 import org.go.together.service.interfaces.NotificationReceiverMessageService;
 import org.springframework.web.bind.annotation.RestController;

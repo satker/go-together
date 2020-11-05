@@ -1,11 +1,11 @@
 package org.go.together.find.repository.sql.impl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.base.CustomRepository;
 import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.find.repository.sql.interfaces.SqlBuilderCreator;
-import org.go.together.repository.CustomRepository;
-import org.go.together.repository.entities.IdentifiedEntity;
-import org.go.together.repository.interfaces.SqlBuilder;
+import org.go.together.model.IdentifiedEntity;
+import org.go.together.repository.query.SqlBuilder;
 import org.springframework.stereotype.Component;
 
 import static org.go.together.find.utils.FindUtils.DOT;

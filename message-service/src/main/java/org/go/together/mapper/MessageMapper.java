@@ -1,5 +1,6 @@
 package org.go.together.mapper;
 
+import org.go.together.base.Mapper;
 import org.go.together.dto.MessageDto;
 import org.go.together.model.Message;
 import org.springframework.stereotype.Component;

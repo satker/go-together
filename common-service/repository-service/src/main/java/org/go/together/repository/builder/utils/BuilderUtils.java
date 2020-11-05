@@ -1,7 +1,7 @@
 package org.go.together.repository.builder.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.repository.entities.IdentifiedEntity;
+import org.go.together.model.IdentifiedEntity;
 
 import java.util.Map;
 

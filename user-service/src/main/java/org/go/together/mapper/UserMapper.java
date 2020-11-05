@@ -1,6 +1,7 @@
 package org.go.together.mapper;
 
 import lombok.RequiredArgsConstructor;
+import org.go.together.base.Mapper;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.dto.InterestDto;
@@ -31,14 +32,14 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
                 .map(languageMapper::entityToDto)
                 .collect(Collectors.toSet()));
         userDTO.setLastName(entity.getLastName());
-        userDTO.setLocation(locationClient.getRouteById(entity.getLocationId()));
+        userDTO.setLocation(locationClient.read("groupLocations", entity.getLocationId()));
         userDTO.setLogin(entity.getLogin());
         userDTO.setMail(entity.getMail());
         userDTO.setRole(entity.getRole());
         userDTO.setInterests(entity.getInterests().stream()
                 .map(interestMapper::entityToDto)
                 .collect(Collectors.toSet()));
-        userDTO.setGroupPhoto(contentClient.readGroupPhotosById(entity.getGroupPhoto()));
+        userDTO.setGroupPhoto(contentClient.read("groupPhotos", entity.getGroupPhoto()));
         return userDTO;
     }
 

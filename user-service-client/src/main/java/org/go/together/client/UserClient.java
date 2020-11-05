@@ -3,7 +3,6 @@ package org.go.together.client;
 import org.go.together.base.FindClient;
 import org.go.together.dto.AuthUserDto;
 import org.go.together.dto.SimpleUserDto;
-import org.go.together.dto.UserDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,14 +31,8 @@ public interface UserClient extends FindClient {
     @GetMapping("/users/{userId}/languages")
     Set<UUID> getLanguagesByOwnerId(@PathVariable("userId") UUID userId);
 
-    @GetMapping("/users/{userId}")
-    UserDto findById(@PathVariable("userId") UUID id);
-
     @GetMapping("/users/{userId}/login")
     String findLoginById(@PathVariable("userId") UUID id);
-
-    @DeleteMapping("/users/{userId}")
-    void deleteUserById(@PathVariable("userId") UUID id);
 
     @GetMapping("/users/{userId}/presents")
     boolean checkIfUserPresentsById(@PathVariable("userId") UUID id);

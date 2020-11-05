@@ -2,7 +2,7 @@ package org.go.together.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.base.impl.CommonCrudService;
+import org.go.together.base.CommonCrudService;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.RouteInfoClient;
@@ -58,8 +58,8 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
             eventLikeDto.setUsers(Collections.emptySet());
             userClient.create("eventLikes", eventLikeDto);
         } else if (crudOperation == CrudOperation.DELETE) {
-            locationClient.deleteRoute(entity.getRouteId());
-            contentClient.delete(entity.getGroupPhotoId());
+            locationClient.delete("groupLocations", entity.getRouteId());
+            contentClient.delete("groupPhotos", entity.getGroupPhotoId());
             userClient.deleteEventLike(entity.getId());
         }
         return entity;

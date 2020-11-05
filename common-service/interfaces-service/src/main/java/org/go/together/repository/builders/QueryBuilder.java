@@ -1,6 +1,6 @@
-package org.go.together.repository.interfaces;
+package org.go.together.repository.builders;
 
-import org.go.together.repository.entities.IdentifiedEntity;
+import org.go.together.model.IdentifiedEntity;
 
 public interface QueryBuilder<E extends IdentifiedEntity> extends QueryClassBuilder<E> {
     Query<E> build();

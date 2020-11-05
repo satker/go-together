@@ -3,7 +3,6 @@ package org.go.together.validation;
 import org.assertj.core.util.Strings;
 import org.go.together.dto.PhotoDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;

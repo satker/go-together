@@ -1,21 +1,19 @@
 package org.go.together.client;
 
 import org.go.together.base.FindClient;
-import org.go.together.dto.*;
+import org.go.together.dto.EventUserDto;
+import org.go.together.dto.EventUserStatus;
+import org.go.together.dto.SimpleDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Set;
-import java.util.UUID;
 
 @FeignClient(name = "event-service")
 public interface EventClient extends FindClient {
-    @GetMapping("/events/{eventId}")
-    EventDto getEventById(@PathVariable("eventId") UUID eventId);
-
-    @DeleteMapping("/events/{eventId}")
-    IdDto deleteEvent(@PathVariable("eventId") UUID eventId);
-
     @GetMapping("/events")
     Set<SimpleDto> autocompleteEvents(@RequestParam("name") String name);
 

@@ -1,6 +1,7 @@
 package org.go.together.mapper;
 
 import lombok.RequiredArgsConstructor;
+import org.go.together.base.Mapper;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventUserDto;
 import org.go.together.model.EventUser;

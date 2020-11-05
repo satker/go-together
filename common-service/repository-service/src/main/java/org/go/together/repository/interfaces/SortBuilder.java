@@ -1,8 +1,9 @@
 package org.go.together.repository.interfaces;
 
 import org.go.together.enums.Direction;
+import org.go.together.model.IdentifiedEntity;
 import org.go.together.repository.builder.Sort;
-import org.go.together.repository.entities.IdentifiedEntity;
+import org.go.together.repository.builders.QueryBuilder;
 
 import java.util.Map;
 

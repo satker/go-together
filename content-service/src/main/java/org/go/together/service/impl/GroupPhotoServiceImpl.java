@@ -1,7 +1,7 @@
 package org.go.together.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.go.together.base.impl.CommonCrudService;
+import org.go.together.base.CommonCrudService;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.model.GroupPhoto;

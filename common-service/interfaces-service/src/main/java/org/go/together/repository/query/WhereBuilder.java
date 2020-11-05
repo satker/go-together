@@ -1,8 +1,9 @@
-package org.go.together.repository.interfaces;
+package org.go.together.repository.query;
 
-import org.go.together.repository.builder.Where;
-import org.go.together.repository.entities.IdentifiedEntity;
-import org.go.together.repository.sql.SqlOperator;
+import org.go.together.enums.SqlOperator;
+import org.go.together.model.IdentifiedEntity;
+import org.go.together.repository.builders.QueryBuilder;
+import org.go.together.repository.builders.Where;
 
 import java.util.Map;
 

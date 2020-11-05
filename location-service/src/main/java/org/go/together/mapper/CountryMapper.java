@@ -1,6 +1,7 @@
 package org.go.together.mapper;
 
 import lombok.RequiredArgsConstructor;
+import org.go.together.base.Mapper;
 import org.go.together.dto.CountryDto;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.model.Country;

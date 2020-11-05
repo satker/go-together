@@ -5,7 +5,6 @@ import org.go.together.client.UserClient;
 import org.go.together.dto.EventUserDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.repository.interfaces.EventRepository;
-import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

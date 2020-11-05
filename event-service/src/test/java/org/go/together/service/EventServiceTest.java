@@ -85,9 +85,9 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
 
     private void prepareDto(EventDto eventDto) {
         when(userClient.checkIfUserPresentsById(eventDto.getAuthor().getId())).thenReturn(true);
-        when(userClient.findById(eventDto.getAuthor().getId())).thenReturn(eventDto.getAuthor());
-        when(locationClient.getRouteById(eventDto.getRoute().getId())).thenReturn(eventDto.getRoute());
-        when(contentClient.readGroupPhotosById(eventDto.getGroupPhoto().getId())).thenReturn(eventDto.getGroupPhoto());
+        when(userClient.read("users", eventDto.getAuthor().getId())).thenReturn(eventDto.getAuthor());
+        when(locationClient.read("groupLocations", eventDto.getRoute().getId())).thenReturn(eventDto.getRoute());
+        when(contentClient.read("groupPhotos", eventDto.getGroupPhoto().getId())).thenReturn(eventDto.getGroupPhoto());
         when(locationClient.create("groupLocations", eventDto.getRoute())).thenReturn(new IdDto(eventDto.getRoute().getId()));
         when(locationClient.update("groupLocations", eventDto.getRoute())).thenReturn(new IdDto(eventDto.getRoute().getId()));
         when(contentClient.update("groupPhotos", eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));

@@ -1,6 +1,7 @@
 package org.go.together.mapper;
 
 import lombok.RequiredArgsConstructor;
+import org.go.together.base.Mapper;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
@@ -19,11 +20,11 @@ public class EventMapper implements Mapper<EventDto, Event> {
     public EventDto entityToDto(Event entity) {
         EventDto eventDto = new EventDto();
         eventDto.setId(entity.getId());
-        eventDto.setAuthor(userClient.findById(entity.getAuthorId()));
+        eventDto.setAuthor(userClient.read("users", entity.getAuthorId()));
         eventDto.setDescription(entity.getDescription());
         eventDto.setPeopleCount(entity.getPeopleCount());
-        eventDto.setRoute(locationClient.getRouteById(entity.getRouteId()));
-        eventDto.setGroupPhoto(contentClient.readGroupPhotosById(entity.getGroupPhotoId()));
+        eventDto.setRoute(locationClient.read("groupLocations", entity.getRouteId()));
+        eventDto.setGroupPhoto(contentClient.read("groupPhotos", entity.getGroupPhotoId()));
         eventDto.setName(entity.getName());
         eventDto.setStartDate(entity.getStartDate());
         eventDto.setEndDate(entity.getEndDate());
