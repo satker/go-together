@@ -1,7 +1,7 @@
 package org.go.together.notification.comparators.impl.collection.finders.impl;
 
-import org.go.together.dto.ComparingObject;
-import org.go.together.interfaces.ComparableDto;
+import org.go.together.compare.ComparableDto;
+import org.go.together.compare.ComparingObject;
 import org.go.together.notification.comparators.impl.collection.finders.interfaces.Finder;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.springframework.beans.factory.annotation.Autowired;

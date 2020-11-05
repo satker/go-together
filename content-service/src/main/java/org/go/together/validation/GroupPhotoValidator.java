@@ -14,10 +14,6 @@ public class GroupPhotoValidator extends CommonValidator<GroupPhotoDto> {
     private final Validator<PhotoDto> photoValidator;
 
     @Override
-    public void getMapsForCheck(GroupPhotoDto dto) {
-    }
-
-    @Override
     protected String commonValidation(GroupPhotoDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 

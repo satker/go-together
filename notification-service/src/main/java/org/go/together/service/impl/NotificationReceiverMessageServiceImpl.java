@@ -1,7 +1,7 @@
 package org.go.together.service.impl;
 
 import org.go.together.base.impl.CommonCrudService;
-import org.go.together.dto.FieldMapper;
+import org.go.together.compare.FieldMapper;
 import org.go.together.dto.NotificationReceiverMessageDto;
 import org.go.together.model.NotificationReceiverMessage;
 import org.go.together.repository.interfaces.NotificationReceiverMessageRepository;
@@ -33,7 +33,7 @@ public class NotificationReceiverMessageServiceImpl extends CommonCrudService<No
 
     @Override
     public String getServiceName() {
-        return "notificationReceiverMessage";
+        return "notificationReceiverMessages";
     }
 
     @Override

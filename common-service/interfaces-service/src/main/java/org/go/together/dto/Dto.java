@@ -1,11 +1,12 @@
-package org.go.together.interfaces;
+package org.go.together.dto;
 
 import lombok.EqualsAndHashCode;
+import org.go.together.interfaces.Identified;
 
 import java.util.UUID;
 
 @EqualsAndHashCode
-public abstract class Dto implements Identified {
+public class Dto implements Identified {
     private UUID id;
 
     @Override

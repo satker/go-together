@@ -9,6 +9,7 @@ import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
@@ -17,8 +18,8 @@ public class EventUserValidator extends CommonValidator<EventUserDto> {
     private final EventRepository eventRepository;
 
     @Override
-    public void getMapsForCheck(EventUserDto dto) {
-        super.OBJECT_NULL_CHECK = Map.of(
+    public Map<String, Function<EventUserDto, ?>> getMapsForCheck() {
+        return Map.of(
                 "user id", testDto -> testDto.getUser().getId(),
                 "user status", EventUserDto::getUserStatus);
     }

@@ -1,7 +1,7 @@
 package org.go.together.notification.comparators.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.go.together.dto.ComparingObject;
+import org.go.together.compare.ComparingObject;
 import org.go.together.dto.SimpleDto;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.springframework.stereotype.Component;

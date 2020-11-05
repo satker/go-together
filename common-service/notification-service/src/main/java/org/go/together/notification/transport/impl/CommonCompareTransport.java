@@ -1,7 +1,7 @@
 package org.go.together.notification.transport.impl;
 
-import org.go.together.dto.ComparingObject;
-import org.go.together.interfaces.ComparableDto;
+import org.go.together.compare.ComparableDto;
+import org.go.together.compare.ComparingObject;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.go.together.notification.comparators.transformers.interfaces.Transformer;
 import org.go.together.notification.transport.interfaces.CompareTransport;

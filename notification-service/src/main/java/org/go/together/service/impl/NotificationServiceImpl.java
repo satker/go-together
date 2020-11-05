@@ -23,6 +23,6 @@ public class NotificationServiceImpl extends CommonCrudService<NotificationDto, 
 
     @Override
     public String getServiceName() {
-        return "notification";
+        return "notifications";
     }
 }

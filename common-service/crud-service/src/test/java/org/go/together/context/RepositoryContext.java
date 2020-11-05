@@ -15,7 +15,8 @@ import org.springframework.context.annotation.Import;
 @ComponentScan({
         "org.go.together.test",
         "org.go.together.find",
-        "org.go.together.notification"
+        "org.go.together.notification",
+        "org.go.together.validation"
 })
 public class RepositoryContext {
     @Bean

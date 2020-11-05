@@ -1,7 +1,7 @@
 package org.go.together.notification.helpers.interfaces;
 
+import org.go.together.dto.Dto;
 import org.go.together.dto.NotificationMessageDto;
-import org.go.together.interfaces.Dto;
 
 import java.util.Date;
 import java.util.UUID;

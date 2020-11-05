@@ -1,7 +1,7 @@
 package org.go.together.service.impl;
 
 import org.go.together.base.impl.CommonCrudService;
-import org.go.together.dto.FieldMapper;
+import org.go.together.compare.FieldMapper;
 import org.go.together.dto.NotificationMessageDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.model.NotificationMessage;
@@ -35,7 +35,7 @@ public class NotificationMessageServiceImpl extends CommonCrudService<Notificati
 
     @Override
     public String getServiceName() {
-        return "notificationMessage";
+        return "notificationMessages";
     }
 
     @Override

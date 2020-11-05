@@ -6,8 +6,4 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class InterestValidator extends CommonValidator<InterestDto> {
-    @Override
-    public void getMapsForCheck(InterestDto dto) {
-
-    }
 }

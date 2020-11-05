@@ -2,8 +2,8 @@ package org.go.together.validation.test.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.go.together.dto.Dto;
 import org.go.together.dto.SimpleDto;
-import org.go.together.interfaces.Dto;
 
 import java.util.Date;
 import java.util.Set;

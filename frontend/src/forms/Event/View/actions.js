@@ -22,7 +22,7 @@ export const getUsers = (eventId) => (dispatch) => {
         method: POST,
         url: EVENT_SERVICE_URL + '/find',
         data: {
-            mainIdField: "eventUser",
+            mainIdField: "eventUsers",
             filters: {
                 eventId: {
                     filterType: 'EQUAL',

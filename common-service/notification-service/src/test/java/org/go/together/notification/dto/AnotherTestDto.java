@@ -2,8 +2,8 @@ package org.go.together.notification.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.go.together.interfaces.ComparableDto;
-import org.go.together.interfaces.ComparingField;
+import org.go.together.compare.ComparableDto;
+import org.go.together.compare.ComparingField;
 
 import java.util.UUID;
 

@@ -1,9 +1,9 @@
 package org.go.together.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.go.together.dto.ComparingObject;
-import org.go.together.interfaces.ComparingField;
-import org.go.together.interfaces.Dto;
+import org.go.together.compare.ComparingField;
+import org.go.together.compare.ComparingObject;
+import org.go.together.dto.Dto;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

@@ -9,6 +9,7 @@ import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
@@ -16,9 +17,8 @@ public class PlaceValidator extends CommonValidator<PlaceDto> {
     private final Validator<CountryDto> countryValidator;
 
     @Override
-    public void getMapsForCheck(PlaceDto dto) {
-        super.STRINGS_FOR_BLANK_CHECK = Map.of(
-                "location code", PlaceDto::getName);
+    public Map<String, Function<PlaceDto, ?>> getMapsForCheck() {
+        return Map.of("location code", PlaceDto::getName);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package org.go.together.notification.helpers.impl;
 
+import org.go.together.compare.ComparableDto;
+import org.go.together.dto.Dto;
 import org.go.together.dto.NotificationMessageDto;
-import org.go.together.interfaces.ComparableDto;
-import org.go.together.interfaces.Dto;
 import org.go.together.message.NotificationEvent;
 import org.go.together.message.NotificationEventStatus;
 import org.go.together.notification.helpers.interfaces.NotificationSender;

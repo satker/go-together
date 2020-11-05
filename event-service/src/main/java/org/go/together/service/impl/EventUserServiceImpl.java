@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.impl.CommonCrudService;
 import org.go.together.client.UserClient;
+import org.go.together.compare.FieldMapper;
 import org.go.together.dto.EventUserDto;
-import org.go.together.dto.FieldMapper;
 import org.go.together.enums.NotificationStatus;
 import org.go.together.model.Event;
 import org.go.together.model.EventUser;
@@ -57,7 +57,7 @@ public class EventUserServiceImpl extends CommonCrudService<EventUserDto, EventU
 
     @Override
     public String getServiceName() {
-        return "eventUser";
+        return "eventUsers";
     }
 
     @Override

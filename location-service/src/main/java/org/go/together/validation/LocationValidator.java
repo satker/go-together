@@ -13,6 +13,7 @@ import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
@@ -21,11 +22,10 @@ public class LocationValidator extends CommonValidator<LocationDto> {
     private final Validator<PlaceDto> placeValidator;
 
     @Override
-    public void getMapsForCheck(LocationDto locationDto) {
-        super.STRINGS_FOR_BLANK_CHECK = Map.of(
+    public Map<String, Function<LocationDto, ?>> getMapsForCheck() {
+        return Map.of(
                 "address", LocationDto::getAddress,
-                "city name", dto -> dto.getPlace().getName());
-        super.OBJECT_NULL_CHECK = Map.of(
+                "city name", dto -> dto.getPlace().getName(),
                 "place", LocationDto::getPlace,
                 "end location", LocationDto::getIsEnd,
                 "start location", LocationDto::getIsStart);

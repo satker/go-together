@@ -34,14 +34,17 @@ public class ReflectionUtils {
     }
 
     public static Class<?> getClazzByType(int parameterNumber, Type genericInterface) {
-        Type actualTypeArgument = ((ParameterizedType) genericInterface).getActualTypeArguments()[parameterNumber];
-        if (actualTypeArgument instanceof ParameterizedType) {
-            return (Class<?>) ((ParameterizedType) actualTypeArgument).getRawType();
+        if (genericInterface instanceof ParameterizedType) {
+            Type actualTypeArgument = ((ParameterizedType) genericInterface).getActualTypeArguments()[parameterNumber];
+            if (actualTypeArgument instanceof ParameterizedType) {
+                return (Class<?>) ((ParameterizedType) actualTypeArgument).getRawType();
+            }
+            if (actualTypeArgument instanceof TypeVariable) {
+                return (Class<?>) ((TypeVariable) actualTypeArgument).getBounds()[0];
+            }
+            return (Class<?>) actualTypeArgument;
         }
-        if (actualTypeArgument instanceof TypeVariable) {
-            return (Class<?>) ((TypeVariable) actualTypeArgument).getBounds()[0];
-        }
-        return (Class<?>) actualTypeArgument;
+        return (Class<?>) genericInterface;
     }
 
     public static Class<?> getClazz(Type genericInterface) {

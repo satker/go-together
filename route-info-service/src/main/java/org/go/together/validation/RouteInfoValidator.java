@@ -6,8 +6,4 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RouteInfoValidator extends CommonValidator<RouteInfoDto> {
-    @Override
-    public void getMapsForCheck(RouteInfoDto dto) {
-
-    }
 }

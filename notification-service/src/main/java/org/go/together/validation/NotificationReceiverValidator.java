@@ -6,8 +6,4 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class NotificationReceiverValidator extends CommonValidator<NotificationReceiverDto> {
-    @Override
-    public void getMapsForCheck(NotificationReceiverDto dto) {
-
-    }
 }

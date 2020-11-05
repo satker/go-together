@@ -20,11 +20,6 @@ public class GroupLocationValidator extends CommonValidator<GroupLocationDto> {
     private final Validator<LocationDto> locationValidator;
 
     @Override
-    public void getMapsForCheck(GroupLocationDto dto) {
-
-    }
-
-    @Override
     protected String commonValidation(GroupLocationDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
         checkRoutes(dto.getLocations(), errors, crudOperation);

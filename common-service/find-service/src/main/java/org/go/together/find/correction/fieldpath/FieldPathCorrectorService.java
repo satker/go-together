@@ -1,7 +1,7 @@
 package org.go.together.find.correction.fieldpath;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.dto.FieldMapper;
+import org.go.together.compare.FieldMapper;
 import org.go.together.find.correction.field.FieldCorrector;
 import org.go.together.find.correction.field.dto.CorrectedFieldDto;
 import org.go.together.find.correction.path.PathCorrector;

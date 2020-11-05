@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.impl.CommonCrudService;
 import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
+import org.go.together.compare.FieldMapper;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
@@ -99,13 +100,13 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             GroupLocationDto locationDto = dto.getLocation();
             locationDto.setGroupId(entity.getId());
             locationDto.setCategory(LocationCategory.USER);
-            IdDto route = locationClient.update(locationDto);
+            IdDto route = locationClient.update("groupLocations", locationDto);
             entity.setLocationId(route.getId());
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.USER);
-            IdDto groupPhotoId = contentClient.update(groupPhotoDto);
+            IdDto groupPhotoId = contentClient.update("groupPhotos", groupPhotoDto);
             entity.setGroupPhoto(groupPhotoId.getId());
 
             entity.setRole(role);
@@ -115,13 +116,13 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             GroupLocationDto locationDto = dto.getLocation();
             locationDto.setGroupId(entity.getId());
             locationDto.setCategory(LocationCategory.USER);
-            IdDto route = locationClient.create(locationDto);
+            IdDto route = locationClient.create("groupLocations", locationDto);
             entity.setLocationId(route.getId());
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.USER);
-            IdDto groupPhotoId = contentClient.create(groupPhotoDto);
+            IdDto groupPhotoId = contentClient.create("groupPhotos", groupPhotoDto);
             entity.setGroupPhoto(groupPhotoId.getId());
             entity.setRole(Role.ROLE_USER);
             EventLikeDto eventLikeDto = new EventLikeDto();
@@ -157,7 +158,7 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
 
     @Override
     public String getServiceName() {
-        return "user";
+        return "users";
     }
 
     @Override

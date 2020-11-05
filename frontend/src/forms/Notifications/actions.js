@@ -8,7 +8,7 @@ export const getUserNotifications = (userId, page = 0) => (dispatch) => {
         method: POST,
         url: NOTIFICATION_SERVICE_URL + '/find',
         data: {
-            mainIdField: "notificationReceiverMessage",
+            mainIdField: "notificationReceiverMessages",
             filters: {
                 "receiver.id": {
                     filterType: 'EQUAL',
@@ -28,7 +28,7 @@ export const getUnreadUserNotifications = (userId) => (dispatch) => {
         method: POST,
         url: NOTIFICATION_SERVICE_URL + '/find',
         data: {
-            mainIdField: "notificationReceiverMessage",
+            mainIdField: "notificationReceiverMessages",
             filters: {
                 "receiver.id": {
                     filterType: 'EQUAL',

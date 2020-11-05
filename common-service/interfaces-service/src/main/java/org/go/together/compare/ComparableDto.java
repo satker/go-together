@@ -1,7 +1,8 @@
-package org.go.together.interfaces;
+package org.go.together.compare;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
+import org.go.together.dto.Dto;
 
 import java.util.UUID;
 

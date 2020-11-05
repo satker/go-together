@@ -1,8 +1,8 @@
 package org.go.together.notification.comparators.impl;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.go.together.dto.ComparingObject;
-import org.go.together.interfaces.ComparableDto;
+import org.go.together.compare.ComparableDto;
+import org.go.together.compare.ComparingObject;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.go.together.notification.context.TestConfiguration;
 import org.go.together.notification.dto.AnotherTestDto;

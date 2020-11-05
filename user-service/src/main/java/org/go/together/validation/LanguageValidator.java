@@ -6,8 +6,4 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class LanguageValidator extends CommonValidator<LanguageDto> {
-    @Override
-    public void getMapsForCheck(LanguageDto dto) {
-
-    }
 }

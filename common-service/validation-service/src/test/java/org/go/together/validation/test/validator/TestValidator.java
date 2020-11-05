@@ -13,6 +13,7 @@ import org.go.together.validation.test.dto.TestDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.function.Function;
 
 @Component
 public class TestValidator extends CommonValidator<TestDto> {
@@ -26,21 +27,14 @@ public class TestValidator extends CommonValidator<TestDto> {
     }
 
     @Override
-    public void getMapsForCheck(TestDto dto) {
-        super.STRINGS_FOR_BLANK_CHECK = Map.of("test name", TestDto::getName);
-        super.NUMBER_CORRECT_ZERO_OR_NEGATIVE_CHECK = Map.of(
-                "test number", TestDto::getNumber);
-        super.SIMPLE_DTO_CORRECT_CHECK = Map.of(
-                "simple dto", TestDto::getSimpleDto);
-        super.REGEX_STRING_CORRECT_CHECK = Map.of(
-                "test name regex", new StringRegexDto(dto.getName(), "^.*test.*$"));
-        super.OBJECT_NULL_CHECK = Map.of(
-                "test id", TestDto::getId);
-        super.DATES_CORRECT_CHECK = Map.of(
-                "test dates", new DateIntervalDto(dto.getStartDate(), dto.getEndDate()));
-        super.NUMBER_INTERVAL_CORRECT_CHECK = Map.of(
-                "test number interval", new NumberIntervalDto(dto.getNumber(), dto.getStartNumber(), dto.getEndNumber()));
-        super.COLLECTION_CORRECT_CHECK = Map.of("test elements", TestDto::getElements,
+    public Map<String, Function<TestDto, ?>> getMapsForCheck() {
+        return Map.of("test name", TestDto::getName,
+                "test number", TestDto::getNumber,
+                "simple dto", TestDto::getSimpleDto,
+                "test name regex", testDto -> new StringRegexDto(testDto.getName(), "^.*test.*$"),
+                "test id", TestDto::getId,
+                "test dates", testDto -> new DateIntervalDto(testDto.getStartDate(), testDto.getEndDate()),
+                "test number interval", testDto -> new NumberIntervalDto(testDto.getNumber(), testDto.getStartNumber(), testDto.getEndNumber()),
                 "test join tests", TestDto::getJoinTestEntities,
                 "test many joins", TestDto::getManyJoinEntities);
     }

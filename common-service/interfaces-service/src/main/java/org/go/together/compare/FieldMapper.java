@@ -1,4 +1,4 @@
-package org.go.together.dto;
+package org.go.together.compare;
 
 import lombok.Builder;
 import lombok.Getter;

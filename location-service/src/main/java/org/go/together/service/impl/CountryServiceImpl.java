@@ -17,6 +17,6 @@ public class CountryServiceImpl extends CommonCrudService<CountryDto, Country> i
 
     @Override
     public String getServiceName() {
-        return "country";
+        return "countries";
     }
 }

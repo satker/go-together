@@ -1,7 +1,11 @@
 package org.go.together.service.impl;
 
 import org.go.together.base.impl.CommonCrudService;
-import org.go.together.dto.*;
+import org.go.together.compare.FieldMapper;
+import org.go.together.dto.NotificationDto;
+import org.go.together.dto.NotificationMessageDto;
+import org.go.together.dto.NotificationReceiverDto;
+import org.go.together.dto.NotificationReceiverMessageDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.mapper.Mapper;
@@ -106,7 +110,7 @@ public class NotificationReceiverServiceImpl extends CommonCrudService<Notificat
 
     @Override
     public String getServiceName() {
-        return "notificationReceiver";
+        return "notificationReceivers";
     }
 
     @Override

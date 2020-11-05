@@ -2,8 +2,7 @@ package org.go.together.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.go.together.interfaces.ComparingField;
-import org.go.together.interfaces.Dto;
+import org.go.together.compare.ComparingField;
 
 import java.util.Set;
 import java.util.UUID;

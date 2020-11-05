@@ -5,11 +5,12 @@ import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.function.Function;
 
 @Component
 public class NotificationMessageValidator extends CommonValidator<NotificationMessageDto> {
     @Override
-    public void getMapsForCheck(NotificationMessageDto dto) {
-        super.STRINGS_FOR_BLANK_CHECK = Map.of("message", NotificationMessageDto::getMessage);
+    public Map<String, Function<NotificationMessageDto, ?>> getMapsForCheck() {
+        return Map.of("message", NotificationMessageDto::getMessage);
     }
 }

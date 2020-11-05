@@ -1,7 +1,6 @@
 package org.go.together.dto;
 
 import lombok.*;
-import org.go.together.interfaces.Dto;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

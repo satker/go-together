@@ -14,10 +14,6 @@ public class PhotoValidator extends CommonValidator<PhotoDto> {
             "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
 
     @Override
-    public void getMapsForCheck(PhotoDto photoDto) {
-    }
-
-    @Override
     protected String commonValidation(PhotoDto photo, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
         boolean contentIsNull = photo.getContent() == null || (Strings.isNullOrEmpty(photo.getContent().getType()) &&

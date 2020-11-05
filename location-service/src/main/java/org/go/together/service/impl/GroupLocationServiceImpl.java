@@ -2,7 +2,7 @@ package org.go.together.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.go.together.base.impl.CommonCrudService;
-import org.go.together.dto.FieldMapper;
+import org.go.together.compare.FieldMapper;
 import org.go.together.dto.GroupLocationDto;
 import org.go.together.dto.LocationDto;
 import org.go.together.enums.CrudOperation;
@@ -48,7 +48,7 @@ public class GroupLocationServiceImpl extends CommonCrudService<GroupLocationDto
 
     @Override
     public String getServiceName() {
-        return "groupLocation";
+        return "groupLocations";
     }
 
     @Override

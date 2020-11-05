@@ -11,6 +11,7 @@ import org.go.together.validation.impl.CommonValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -42,16 +43,15 @@ public class UserValidator extends CommonValidator<UserDto> {
     }
 
     @Override
-    public void getMapsForCheck(UserDto dto) {
-        super.STRINGS_FOR_BLANK_CHECK = Map.of(
+    public Map<String, Function<UserDto, ?>> getMapsForCheck() {
+        return Map.of(
                 "first name", UserDto::getFirstName,
                 "last name", UserDto::getLastName,
                 "description", UserDto::getDescription,
                 "login", UserDto::getLogin,
-                "mail", UserDto::getMail);
-        super.ANOTHER_SERVICE_DTO_CORRECT_CHECK = Map.of(
-                locationClient, dto.getLocation(),
-                contentClient, dto.getGroupPhoto()
+                "mail", UserDto::getMail,
+                "user locations", userDto -> locationClient.validate("groupLocations", userDto.getLocation()),
+                "user photos", userDto -> contentClient.validate("groupPhotos", userDto.getGroupPhoto())
         );
     }
 }

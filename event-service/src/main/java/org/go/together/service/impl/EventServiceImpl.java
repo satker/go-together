@@ -7,6 +7,7 @@ import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.RouteInfoClient;
 import org.go.together.client.UserClient;
+import org.go.together.compare.FieldMapper;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
 import org.go.together.model.Event;
@@ -31,31 +32,31 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
             GroupLocationDto locationDto = dto.getRoute();
             locationDto.setGroupId(entity.getId());
             locationDto.setCategory(LocationCategory.EVENT);
-            IdDto route = locationClient.update(locationDto);
+            IdDto route = locationClient.update("groupLocations", locationDto);
             entity.setRouteId(route.getId());
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.EVENT);
-            IdDto photoId = contentClient.update(groupPhotoDto);
+            IdDto photoId = contentClient.update("groupPhotos", groupPhotoDto);
             entity.setGroupPhotoId(photoId.getId());
         } else if (crudOperation == CrudOperation.CREATE) {
             GroupLocationDto locationDto = dto.getRoute();
             locationDto.setGroupId(entity.getId());
             locationDto.setCategory(LocationCategory.EVENT);
-            IdDto route = locationClient.create(dto.getRoute());
+            IdDto route = locationClient.create("groupLocations", dto.getRoute());
             entity.setRouteId(route.getId());
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.EVENT);
-            IdDto photoId = contentClient.create(groupPhotoDto);
+            IdDto photoId = contentClient.create("groupPhotos", groupPhotoDto);
             entity.setGroupPhotoId(photoId.getId());
 
             EventLikeDto eventLikeDto = new EventLikeDto();
             eventLikeDto.setEventId(entity.getId());
             eventLikeDto.setUsers(Collections.emptySet());
-            userClient.create(eventLikeDto);
+            userClient.create("eventLikes", eventLikeDto);
         } else if (crudOperation == CrudOperation.DELETE) {
             locationClient.deleteRoute(entity.getRouteId());
             contentClient.delete(entity.getGroupPhotoId());
@@ -79,7 +80,7 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
 
     @Override
     public String getServiceName() {
-        return "event";
+        return "events";
     }
 
     @Override
@@ -93,13 +94,13 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
                 "author", FieldMapper.builder()
                         .currentServiceField("authorId")
                         .remoteServiceClient(userClient)
-                        .remoteServiceName("user")
+                        .remoteServiceName("users")
                         .remoteServiceFieldGetter("id")
                         .fieldClass(UUID.class).build(),
                 "idEventRoutes", FieldMapper.builder()
                         .currentServiceField("id")
                         .remoteServiceClient(locationClient)
-                        .remoteServiceName("groupLocation")
+                        .remoteServiceName("groupLocations")
                         .remoteServiceFieldGetter("groupId")
                         .fieldClass(UUID.class).build(),
                 "startDate", FieldMapper.builder()

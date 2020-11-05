@@ -1,7 +1,7 @@
 package org.go.together.service.impl;
 
 import org.go.together.base.impl.CommonCrudService;
-import org.go.together.dto.FieldMapper;
+import org.go.together.compare.FieldMapper;
 import org.go.together.dto.MessageDto;
 import org.go.together.dto.MessageType;
 import org.go.together.enums.CrudOperation;
@@ -58,7 +58,7 @@ public class MessageServiceImpl extends CommonCrudService<MessageDto, Message> i
 
     @Override
     public String getServiceName() {
-        return "message";
+        return "messages";
     }
 
     @Override

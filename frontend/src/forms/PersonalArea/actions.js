@@ -20,7 +20,7 @@ export const getAllLanguages = () => (dispatch) => {
         method: POST,
         url: USER_SERVICE_URL + '/find',
         data: {
-            mainIdField: "language"
+            mainIdField: "languages"
         }
     });
 };
@@ -31,7 +31,7 @@ export const getAllInterests = () => (dispatch) => {
         method: POST,
         url: USER_SERVICE_URL + '/find',
         data: {
-            mainIdField: "interest"
+            mainIdField: "interests"
         }
     });
 };

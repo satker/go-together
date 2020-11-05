@@ -2,7 +2,7 @@ package org.go.together.test.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.go.together.interfaces.ComparableDto;
+import org.go.together.compare.ComparableDto;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

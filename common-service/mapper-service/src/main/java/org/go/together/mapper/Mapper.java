@@ -1,6 +1,6 @@
 package org.go.together.mapper;
 
-import org.go.together.interfaces.Dto;
+import org.go.together.dto.Dto;
 import org.go.together.repository.entities.IdentifiedEntity;
 
 import java.util.Collection;

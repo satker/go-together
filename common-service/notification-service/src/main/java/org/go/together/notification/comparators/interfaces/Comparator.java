@@ -1,6 +1,6 @@
 package org.go.together.notification.comparators.interfaces;
 
-import org.go.together.dto.ComparingObject;
+import org.go.together.compare.ComparingObject;
 
 import java.util.Map;
 

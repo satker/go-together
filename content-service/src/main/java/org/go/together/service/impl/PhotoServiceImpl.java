@@ -99,6 +99,6 @@ public class PhotoServiceImpl extends CommonCrudService<PhotoDto, Photo> impleme
 
     @Override
     public String getServiceName() {
-        return "photo";
+        return "photos";
     }
 }

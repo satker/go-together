@@ -4,6 +4,7 @@ import org.go.together.dto.SimpleDto;
 import org.go.together.validation.Validator;
 import org.go.together.validation.context.ValidatorContext;
 import org.go.together.validation.test.dto.TestDto;
+import org.go.together.validation.validators.impl.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import java.util.*;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.go.together.validation.test.TestUtils.createTestDto;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
@@ -72,7 +74,11 @@ class CommonValidatorTest {
 
         String validate = testValidator.validate(testDto, null);
 
-        assertTrue(validate.contains("test dates"));
+        String dateMessage = String.format(DateIntervalValidator.MESSAGE, "test dates");
+
+        assertTrue(validate.contains(dateMessage));
+
+        assertEquals(EMPTY, validate.replace(dateMessage, EMPTY));
     }
 
     @Test
@@ -81,7 +87,13 @@ class CommonValidatorTest {
 
         String validate = testValidator.validate(testDto, null);
 
-        assertTrue(validate.contains("test number"));
+        String intervalMessage = String.format(NumberIntervalValidator.MESSAGE, "test number interval");
+        String numberMessage = String.format(NumberValidator.MESSAGE, "test number");
+
+        assertTrue(validate.contains(intervalMessage));
+        assertTrue(validate.contains(numberMessage));
+
+        assertEquals(EMPTY, validate.replace(intervalMessage, EMPTY).replace(numberMessage, EMPTY));
     }
 
     @Test
@@ -90,7 +102,11 @@ class CommonValidatorTest {
 
         String validate = testValidator.validate(testDto, null);
 
-        assertTrue(validate.contains("test number interval"));
+        String intervalMessage = String.format(NumberIntervalValidator.MESSAGE, "test number interval");
+
+        assertTrue(validate.contains(intervalMessage));
+
+        assertEquals(EMPTY, validate.replace(intervalMessage, EMPTY));
     }
 
     @Test
@@ -99,7 +115,11 @@ class CommonValidatorTest {
 
         String validate = testValidator.validate(testDto, null);
 
-        assertTrue(validate.contains("test id"));
+        String nullMessage = String.format(CommonObjectValidator.MESSAGE, "test id");
+
+        assertTrue(validate.contains(nullMessage));
+
+        assertEquals(EMPTY, validate.replace(nullMessage, EMPTY));
     }
 
     @Test
@@ -108,7 +128,11 @@ class CommonValidatorTest {
 
         String validate = testValidator.validate(testDto, null);
 
-        assertTrue(validate.contains("simple dto"));
+        String simpleDtoMessage = String.format(SimpleDtoValidator.MESSAGE, "simple dto");
+
+        assertTrue(validate.contains(simpleDtoMessage));
+
+        assertEquals(EMPTY, validate.replace(simpleDtoMessage, EMPTY));
     }
 
     @Test
@@ -117,7 +141,13 @@ class CommonValidatorTest {
 
         String validate = testValidator.validate(testDto, null);
 
-        assertTrue(validate.contains("test name"));
+        String stringMessage = String.format(StringValidator.MESSAGE, "test name");
+        String regexMessage = String.format(RegexValidator.MESSAGE, "test name regex");
+
+        assertTrue(validate.contains(stringMessage));
+        assertTrue(validate.contains(regexMessage));
+
+        assertEquals(EMPTY, validate.replace(stringMessage, EMPTY).replace(regexMessage, EMPTY));
     }
 
     @Test
@@ -126,7 +156,11 @@ class CommonValidatorTest {
 
         String validate = testValidator.validate(testDto, null);
 
-        assertTrue(validate.contains("test name"));
+        String stringMessage = String.format(StringValidator.MESSAGE, "join test name");
+
+        assertTrue(validate.contains(stringMessage));
+
+        assertEquals(EMPTY, validate.replace(stringMessage, EMPTY));
     }
 
     @Test
@@ -135,7 +169,11 @@ class CommonValidatorTest {
 
         String validate = testValidator.validate(testDto, null);
 
-        assertTrue(validate.contains("test join tests"));
+        String collectionMessage = String.format(CollectionValidator.MESSAGE, "test join tests");
+
+        assertTrue(validate.contains(collectionMessage));
+
+        assertEquals(EMPTY, validate.replace(collectionMessage, EMPTY));
     }
 
     @Test

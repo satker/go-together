@@ -1,6 +1,6 @@
 package org.go.together.find.correction.field;
 
-import org.go.together.dto.FieldMapper;
+import org.go.together.compare.FieldMapper;
 import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.find.correction.field.dto.CorrectedFieldDto;
 import org.go.together.find.correction.fieldpath.FieldPathCorrector;

@@ -63,6 +63,6 @@ public class PlaceServiceImpl extends CommonCrudService<PlaceDto, Place> impleme
 
     @Override
     public String getServiceName() {
-        return "location";
+        return "places";
     }
 }

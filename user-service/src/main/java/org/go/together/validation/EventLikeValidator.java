@@ -15,11 +15,6 @@ public class EventLikeValidator extends CommonValidator<EventLikeDto> {
     private final EventLikeRepository eventLikeRepository;
 
     @Override
-    public void getMapsForCheck(EventLikeDto dto) {
-
-    }
-
-    @Override
     protected String commonValidation(EventLikeDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 

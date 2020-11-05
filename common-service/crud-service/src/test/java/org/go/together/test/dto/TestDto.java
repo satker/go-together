@@ -2,9 +2,9 @@ package org.go.together.test.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.go.together.compare.ComparableDto;
+import org.go.together.compare.ComparingField;
 import org.go.together.dto.SimpleDto;
-import org.go.together.interfaces.ComparableDto;
-import org.go.together.interfaces.ComparingField;
 
 import java.util.Date;
 import java.util.Set;

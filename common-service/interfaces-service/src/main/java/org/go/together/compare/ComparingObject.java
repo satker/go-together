@@ -1,8 +1,8 @@
-package org.go.together.dto;
+package org.go.together.compare;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.go.together.interfaces.Dto;
+import org.go.together.dto.Dto;
 
 import java.lang.reflect.Type;
 import java.util.function.Function;

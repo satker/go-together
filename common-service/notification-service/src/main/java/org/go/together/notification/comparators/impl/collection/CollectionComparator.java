@@ -1,8 +1,8 @@
 package org.go.together.notification.comparators.impl.collection;
 
-import org.go.together.dto.ComparingObject;
+import org.go.together.compare.ComparingObject;
+import org.go.together.interfaces.ImplFinder;
 import org.go.together.notification.comparators.impl.collection.finders.interfaces.Finder;
-import org.go.together.notification.comparators.impl.collection.transformers.interfaces.FinderTransformer;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,11 +14,11 @@ import java.util.Optional;
 
 @Component
 public class CollectionComparator implements Comparator<Collection<?>> {
-    private FinderTransformer finderTransformer;
+    private ImplFinder<Finder<?>> finderImplFinder;
 
     @Autowired
-    public void setFinderTransformer(FinderTransformer finderTransformer) {
-        this.finderTransformer = finderTransformer;
+    public void setFinderTransformer(ImplFinder<Finder<?>> finderImplFinder) {
+        this.finderImplFinder = finderImplFinder;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class CollectionComparator implements Comparator<Collection<?>> {
         originalObject = Optional.ofNullable(originalObject).orElse(Collections.emptySet());
         changedObject = Optional.ofNullable(changedObject).orElse(Collections.emptySet());
 
-        Finder finder = finderTransformer.get(fieldProperties);
+        Finder finder = finderImplFinder.get(fieldProperties.getClazzType());
 
         Collection<String> addedElements = finder.findAdded(changedObject, originalObject);
         Map<String, Object> changedElements = finder.findChanged(changedObject, originalObject, fieldProperties);

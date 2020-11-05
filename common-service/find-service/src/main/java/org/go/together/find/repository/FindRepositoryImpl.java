@@ -2,7 +2,7 @@ package org.go.together.find.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
-import org.go.together.dto.FieldMapper;
+import org.go.together.compare.FieldMapper;
 import org.go.together.dto.form.FilterDto;
 import org.go.together.dto.form.FormDto;
 import org.go.together.dto.form.PageDto;
