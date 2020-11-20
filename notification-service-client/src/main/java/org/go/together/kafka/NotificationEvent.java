@@ -1,4 +1,4 @@
-package org.go.together.message;
+package org.go.together.kafka;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

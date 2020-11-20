@@ -6,6 +6,7 @@ import org.go.together.client.UserClient;
 import org.go.together.dto.AuthUserDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.SimpleUserDto;
+import org.go.together.dto.UserDto;
 import org.go.together.dto.form.FormDto;
 import org.go.together.service.interfaces.EventLikeService;
 import org.go.together.service.interfaces.UserService;
@@ -75,5 +76,10 @@ class UserController extends FindController implements UserClient {
     @Override
     public Set<UUID> getLikedEventsByUserId(UUID userId) {
         return eventLikeService.findLikedEventIdsByUserId(userId);
+    }
+
+    @Override
+    public UserDto readUser(UUID authorId) {
+        return userService.read(authorId);
     }
 }

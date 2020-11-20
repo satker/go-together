@@ -6,19 +6,18 @@ import org.go.together.client.LocationClient;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
 import org.go.together.exceptions.CannotFindEntityException;
+import org.go.together.kafka.NotificationEvent;
 import org.go.together.model.Interest;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
-import org.go.together.notification.streams.NotificationSource;
 import org.go.together.repository.interfaces.InterestRepository;
 import org.go.together.repository.interfaces.LanguageRepository;
 import org.go.together.service.interfaces.UserService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.MessageChannel;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.*;
@@ -27,6 +26,7 @@ import java.util.stream.Collectors;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
@@ -50,14 +50,12 @@ class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
     private Mapper<LanguageDto, Language> languageMapper;
 
     @Autowired
-    private NotificationSource source;
+    private KafkaTemplate<UUID, NotificationEvent> kafkaTemplate;
 
     @BeforeEach
     public void init() {
         super.init();
-        MessageChannel messageChannel = Mockito.mock(MessageChannel.class);
-        when(source.output()).thenReturn(messageChannel);
-        when(messageChannel.send(any())).thenReturn(true);
+        doNothing().when(kafkaTemplate.send(any(), any(), any()));
         prepareDto(dto);
         prepareDto(updatedDto);
     }
@@ -210,7 +208,7 @@ class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
         when(contentClient.create("groupPhotos", userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
         when(locationClient.create("groupLocations", userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
         when(locationClient.update("groupLocations", userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
-        when(locationClient.read("groupLocations", userDto.getLocation().getId())).thenReturn(userDto.getLocation());
-        when(contentClient.read("groupPhotos", userDto.getGroupPhoto().getId())).thenReturn(userDto.getGroupPhoto());
+        when(locationClient.readGroupLocations(userDto.getLocation().getId())).thenReturn(userDto.getLocation());
+        when(contentClient.readGroupPhotos(userDto.getGroupPhoto().getId())).thenReturn(userDto.getGroupPhoto());
     }
 }

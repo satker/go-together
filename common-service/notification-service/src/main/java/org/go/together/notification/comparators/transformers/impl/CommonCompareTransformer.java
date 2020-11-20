@@ -21,6 +21,8 @@ public class CommonCompareTransformer implements Transformer<Comparator> {
     @Override
     @Autowired
     public void setImpl(List<Comparator> comparators) {
+        //ResolvableType resolvableType = ResolvableType.forClass(comparators.getClass());
+        //Class<?> resolve = resolvableType.getGeneric(0).resolve();
         this.classComparatorMap = comparators.stream()
                 .collect(Collectors.toMap(comparator -> ReflectionUtils.getParametrizedInterface(comparator.getClass(), 0),
                         Function.identity()));

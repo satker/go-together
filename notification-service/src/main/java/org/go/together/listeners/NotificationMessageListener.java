@@ -1,32 +1,34 @@
-package org.go.together.streams.listeners;
+package org.go.together.listeners;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.NotificationDto;
 import org.go.together.dto.NotificationMessageDto;
-import org.go.together.message.NotificationEvent;
+import org.go.together.kafka.NotificationEvent;
 import org.go.together.service.interfaces.NotificationMessageService;
 import org.go.together.service.interfaces.NotificationReceiverService;
 import org.go.together.service.interfaces.NotificationService;
-import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import static org.go.together.streams.interfaces.NotificationMessageStream.INPUT;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class NotificationMessageStreamListener {
+public class NotificationMessageListener {
     private final NotificationReceiverService notificationReceiverService;
     private final NotificationMessageService notificationMessageService;
     private final NotificationService notificationService;
 
-    @StreamListener(target = INPUT)
-    public void handleMessage(NotificationEvent message) {
-        switch (message.getStatus()) {
-            case UPDATE_MESSAGE -> updateNotification(message);
-            case CREATE_MESSAGE -> createNotification(message);
-            case ADD_RECEIVER -> addReceiver(message);
-            case REMOVE_RECEIVER -> removeReceiver(message);
+    @KafkaListener(topics = "${kafka.groupId}")
+    public void handleMessage(ConsumerRecord<UUID, NotificationEvent> message) {
+        NotificationEvent value = message.value();
+        switch (value.getStatus()) {
+            case UPDATE_MESSAGE -> updateNotification(value);
+            case CREATE_MESSAGE -> createNotification(value);
+            case ADD_RECEIVER -> addReceiver(value);
+            case REMOVE_RECEIVER -> removeReceiver(value);
         }
     }
 
@@ -40,7 +42,6 @@ public class NotificationMessageStreamListener {
 
     private void updateNotification(NotificationEvent message) {
         NotificationDto notificationByProducerId = notificationService.getNotificationByProducerId(message.getProducerId());
-
         final NotificationMessageDto notificationMessageDto = message.getMessage();
         notificationMessageDto.setNotificationId(notificationByProducerId.getId());
         notificationMessageService.create(notificationMessageDto);

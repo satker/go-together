@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.function.Function;
 
+import static org.go.together.enums.ServiceInfo.GROUP_PHOTO_NAME;
+
 @Service
 @RequiredArgsConstructor
 public class UserValidator extends CommonValidator<UserDto> {
@@ -50,7 +52,7 @@ public class UserValidator extends CommonValidator<UserDto> {
                 "login", UserDto::getLogin,
                 "mail", UserDto::getMail,
                 "user locations", userDto -> locationClient.validate("groupLocations", userDto.getLocation()),
-                "user photos", userDto -> contentClient.validate("groupPhotos", userDto.getGroupPhoto())
+                "user photos", userDto -> contentClient.validate(GROUP_PHOTO_NAME.getDescription(), userDto.getGroupPhoto())
         );
     }
 }

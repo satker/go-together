@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.function.Function;
 
+import static org.go.together.enums.ServiceInfo.GROUP_PHOTO_NAME;
+
 @Component
 @RequiredArgsConstructor
 public class EventValidator extends CommonValidator<EventDto> {
@@ -31,8 +33,9 @@ public class EventValidator extends CommonValidator<EventDto> {
                 "routes", EventDto::getRoute,
                 "photos", eventDto -> eventDto.getGroupPhoto().getPhotos(),
                 "routes locations", eventDto -> eventDto.getRoute().getLocations(),
-                "event photos", eventDto -> contentClient.validate("groupPhotos", eventDto.getGroupPhoto()),
-                "event locations", eventDto -> locationClient.validate("groupLocations", eventDto.getRoute())
+                "event photos", eventDto -> contentClient.validate(GROUP_PHOTO_NAME.getDescription(), eventDto.getGroupPhoto()),
+                "event locations", eventDto -> locationClient.validate("groupLocations", eventDto.getRoute()),
+                "routes info", eventDto -> routeInfoClient.validate("groupRouteInfo", eventDto.getRouteInfo())
         );
     }
 

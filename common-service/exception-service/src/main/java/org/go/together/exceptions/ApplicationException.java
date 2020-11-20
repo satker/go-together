@@ -12,6 +12,10 @@ public class ApplicationException extends RuntimeException {
     public ApplicationException(Exception exception) {
         super("Server error: " + exception.getMessage());
         log.error("Server error: " + exception.getMessage());
+    }
 
+    public ApplicationException(String message) {
+        super("Server error: " + message);
+        log.error("Server error: " + message);
     }
 }

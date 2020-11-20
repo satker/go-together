@@ -5,25 +5,25 @@ import org.go.together.context.RepositoryContext;
 import org.go.together.dto.CountryDto;
 import org.go.together.dto.PlaceDto;
 import org.go.together.dto.SimpleDto;
+import org.go.together.kafka.NotificationEvent;
 import org.go.together.model.Country;
 import org.go.together.model.Place;
-import org.go.together.notification.streams.NotificationSource;
 import org.go.together.repository.interfaces.CountryRepository;
 import org.go.together.service.interfaces.PlaceService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.MessageChannel;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 class PlaceServiceTest extends CrudServiceCommonTest<Place, PlaceDto> {
@@ -34,15 +34,13 @@ class PlaceServiceTest extends CrudServiceCommonTest<Place, PlaceDto> {
     private Mapper<CountryDto, Country> countryMapper;
 
     @Autowired
-    private NotificationSource source;
+    private KafkaTemplate<UUID, NotificationEvent> kafkaTemplate;
 
     @Override
     @BeforeEach
     public void init() {
         super.init();
-        MessageChannel messageChannel = Mockito.mock(MessageChannel.class);
-        when(source.output()).thenReturn(messageChannel);
-        when(messageChannel.send(any())).thenReturn(true);
+        doNothing().when(kafkaTemplate.send(any(), any(), any()));
     }
 
     @Test

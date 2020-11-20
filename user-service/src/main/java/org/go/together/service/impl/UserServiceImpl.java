@@ -10,6 +10,8 @@ import org.go.together.compare.FieldMapper;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
+import org.go.together.kafka.interfaces.producers.crud.CreateKafkaProducer;
+import org.go.together.kafka.interfaces.producers.crud.UpdateKafkaProducer;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
 import org.go.together.repository.interfaces.UserRepository;
@@ -29,6 +31,8 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ContentClient contentClient;
     private final Mapper<SimpleUserDto, SystemUser> simpleUserMapper;
+    private final UpdateKafkaProducer<GroupPhotoDto> groupPhotoDtoUpdateKafkaProducer;
+    private final CreateKafkaProducer<GroupPhotoDto> groupPhotoDtoCreateKafkaProducer;
     private final LanguageService languageService;
     private final InterestService interestService;
     private final EventLikeService eventLikeService;
@@ -106,7 +110,7 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.USER);
-            IdDto groupPhotoId = contentClient.update("groupPhotos", groupPhotoDto);
+            IdDto groupPhotoId = groupPhotoDtoUpdateKafkaProducer.update(entity.getId(), groupPhotoDto);
             entity.setGroupPhoto(groupPhotoId.getId());
 
             entity.setRole(role);
@@ -122,7 +126,7 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.USER);
-            IdDto groupPhotoId = contentClient.create("groupPhotos", groupPhotoDto);
+            IdDto groupPhotoId = groupPhotoDtoCreateKafkaProducer.create(entity.getId(), groupPhotoDto);
             entity.setGroupPhoto(groupPhotoId.getId());
             entity.setRole(Role.ROLE_USER);
             EventLikeDto eventLikeDto = new EventLikeDto();

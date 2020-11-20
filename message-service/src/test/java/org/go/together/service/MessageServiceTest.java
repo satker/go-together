@@ -4,15 +4,14 @@ import org.go.together.context.RepositoryContext;
 import org.go.together.dto.MessageDto;
 import org.go.together.dto.MessageType;
 import org.go.together.enums.CrudOperation;
+import org.go.together.kafka.NotificationEvent;
 import org.go.together.model.Message;
-import org.go.together.notification.streams.NotificationSource;
 import org.go.together.service.interfaces.MessageService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.MessageChannel;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Map;
@@ -21,7 +20,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 public class MessageServiceTest extends CrudServiceCommonTest<Message, MessageDto> {
@@ -29,15 +28,13 @@ public class MessageServiceTest extends CrudServiceCommonTest<Message, MessageDt
     private MessageService messageService;
 
     @Autowired
-    private NotificationSource source;
+    private KafkaTemplate<UUID, NotificationEvent> kafkaTemplate;
 
     @Override
     @BeforeEach
     public void init() {
         super.init();
-        MessageChannel messageChannel = Mockito.mock(MessageChannel.class);
-        when(source.output()).thenReturn(messageChannel);
-        when(messageChannel.send(any())).thenReturn(true);
+        doNothing().when(kafkaTemplate.send(any(), any(), any()));
     }
 
     @Test

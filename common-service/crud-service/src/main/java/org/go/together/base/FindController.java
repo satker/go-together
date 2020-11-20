@@ -82,12 +82,6 @@ public abstract class FindController implements FindClient {
         crudServices.get(dtoClazz).delete(dtoId);
     }
 
-    @Override
-    public <D extends Dto> D read(String serviceName, UUID dtoId) {
-        Class<? extends Dto> dtoClazz = getDtoClass(serviceName);
-        return (D) crudServices.get(dtoClazz).read(dtoId);
-    }
-
     private Dto checkDtoType(Class<? extends Dto> dtoClazz, Object dto) {
         try {
             return objectMapper.readValue(objectMapper.writeValueAsString(dto), dtoClazz);

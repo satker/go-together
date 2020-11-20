@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.UUID;
 
 public interface NotificationSender {
-    static NotificationMessageDto getNotificationMessageDto(String resultMessage) {
+    default NotificationMessageDto getNotificationMessageDto(String resultMessage) {
         NotificationMessageDto notificationMessageDto = new NotificationMessageDto();
         notificationMessageDto.setMessage(resultMessage);
         notificationMessageDto.setDate(new Date());

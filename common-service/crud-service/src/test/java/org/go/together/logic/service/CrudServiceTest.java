@@ -11,7 +11,6 @@ import org.go.together.dto.form.FilterDto;
 import org.go.together.dto.form.FormDto;
 import org.go.together.dto.form.PageDto;
 import org.go.together.exceptions.ApplicationException;
-import org.go.together.notification.streams.NotificationSource;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.dto.TestDto;
@@ -25,10 +24,10 @@ import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.MessageChannel;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,10 +36,10 @@ import static org.go.together.enums.FindOperator.*;
 import static org.go.together.test.TestUtils.createManyJoinDtos;
 import static org.go.together.test.TestUtils.createTestDto;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
+@EmbeddedKafka
+@TestPropertySource(locations = "/application.properties")
 class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
     TestDto testDto;
 
@@ -59,17 +58,12 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
     @Autowired
     private Validator<TestDto> validator;
 
-    @Autowired
-    private NotificationSource source;
     Random random = new Random();
 
     @Override
     @BeforeEach
     public void init() {
         super.init();
-        MessageChannel messageChannel = Mockito.mock(MessageChannel.class);
-        when(source.output()).thenReturn(messageChannel);
-        when(messageChannel.send(any())).thenReturn(true);
         TestEntity testEntity = createTestEntity("test name");
         for (int i = 0; i < 5; i++) {
             createTestEntity("test " + 1);

@@ -60,14 +60,18 @@ public class DtoComparator<T extends Dto> implements Comparator<T> {
                                                       T changedObject,
                                                       Map.Entry<String, ComparingObject> originalObjectEntry) {
         String fieldName = originalObjectEntry.getKey();
-        ComparingObject field = originalObjectEntry.getValue();
-        ComparingObject comparingField = getFieldsProperties(changedObject.getClass()).get(fieldName);
-        Function<Dto, Object> fieldValueGetter = comparingField.getFieldValueGetter();
-        Object changedFieldValue = fieldValueGetter.apply(changedObject);
-        Object originalFieldValue = fieldValueGetter.apply(originalObject);
-        if (changedFieldValue != null || originalFieldValue != null) {
-            return transformer.transform(fieldName, originalFieldValue, changedFieldValue, field);
+        try {
+            ComparingObject field = originalObjectEntry.getValue();
+            ComparingObject comparingField = getFieldsProperties(changedObject.getClass()).get(fieldName);
+            Function<Dto, Object> fieldValueGetter = comparingField.getFieldValueGetter();
+            Object changedFieldValue = fieldValueGetter.apply(changedObject);
+            Object originalFieldValue = fieldValueGetter.apply(originalObject);
+            if (changedFieldValue != null || originalFieldValue != null) {
+                return transformer.transform(fieldName, originalFieldValue, changedFieldValue, field);
+            }
+            return Collections.emptyMap();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Cannot compare field " + fieldName + " and two classes " + changedObject.getClass());
         }
-        return Collections.emptyMap();
     }
 }

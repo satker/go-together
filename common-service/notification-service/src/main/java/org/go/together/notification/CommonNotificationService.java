@@ -2,6 +2,7 @@ package org.go.together.notification;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.NotificationService;
 import org.go.together.compare.ComparableDto;
 import org.go.together.dto.Dto;
@@ -34,11 +35,13 @@ public class CommonNotificationService<D extends Dto> implements NotificationSer
 
     public String getMessage(D originalDto, D changedDto, String serviceName, NotificationStatus notificationStatus) {
         return switch (notificationStatus) {
-            case CREATED -> "Created " + serviceName + ((ComparableDto) originalDto).getMainField() + ".";
+            case CREATED -> "Created " + serviceName + StringUtils.SPACE +
+                    ((ComparableDto) originalDto).getMainField() + ".";
             case UPDATED -> Optional.ofNullable(originalDto)
                     .map(id -> compareFields(originalDto, changedDto, serviceName))
                     .orElse(null);
-            case DELETED -> "Deleted " + serviceName + ((ComparableDto) originalDto).getMainField() + ".";
+            case DELETED -> "Deleted " + serviceName + StringUtils.SPACE +
+                    ((ComparableDto) originalDto).getMainField() + ".";
         };
     }
 
@@ -66,7 +69,7 @@ public class CommonNotificationService<D extends Dto> implements NotificationSer
                 .ifPresent(comparableDto -> {
                     UUID ownerId = comparableDto.getOwnerId();
                     Optional.ofNullable(comparableDto.getParentId())
-                            .ifPresent(producerId -> removeReceiverSender.send(producerId, ownerId));
+                            .ifPresent(producerId -> removeReceiverSender.send(comparableDto.getId(), producerId, ownerId));
                 });
     }
 }

@@ -3,7 +3,10 @@ package org.go.together.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.go.together.base.CommonCrudService;
 import org.go.together.dto.GroupPhotoDto;
+import org.go.together.dto.IdDto;
+import org.go.together.dto.PhotoDto;
 import org.go.together.enums.CrudOperation;
+import org.go.together.exceptions.ApplicationException;
 import org.go.together.model.GroupPhoto;
 import org.go.together.model.Photo;
 import org.go.together.service.interfaces.GroupPhotoService;
@@ -13,6 +16,9 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.go.together.enums.ServiceInfo.GROUP_PHOTO_NAME;
 
 @Service
 @RequiredArgsConstructor
@@ -22,27 +28,12 @@ public class GroupPhotoServiceImpl extends CommonCrudService<GroupPhotoDto, Grou
     @Override
     protected GroupPhoto enrichEntity(GroupPhoto entity, GroupPhotoDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE || crudOperation == CrudOperation.UPDATE) {
-            GroupPhoto groupPhoto = Optional.ofNullable(entity.getId())
-                    .map(repository::findById)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .orElse(null);
-
-            Set<Photo> oldPhotos = Optional.ofNullable(groupPhoto)
-                    .map(GroupPhoto::getPhotos)
-                    .orElse(Collections.emptySet());
-
-            Set<Photo> newPhotos = photoService.savePhotos(dto.getPhotos(), oldPhotos);
-
-            if (groupPhoto == null) {
-                entity.setPhotos(newPhotos);
-
-            } else {
-                groupPhoto.setCategory(entity.getCategory());
-                groupPhoto.setGroupId(entity.getGroupId());
-                groupPhoto.setPhotos(newPhotos);
-                return groupPhoto;
-            }
+            Set<Photo> photos = dto.getPhotos().stream()
+                    .map(this::getPhotos)
+                    .collect(Collectors.toSet());
+            GroupPhoto groupPhoto = repository.findByIdOrThrow(entity.getId());
+            deleteUnneededPhotos(groupPhoto.getPhotos(), photos);
+            entity.setPhotos(photos);
         } else if (crudOperation == CrudOperation.DELETE) {
             entity.getPhotos().stream()
                     .map(Photo::getId)
@@ -51,8 +42,27 @@ public class GroupPhotoServiceImpl extends CommonCrudService<GroupPhotoDto, Grou
         return entity;
     }
 
+    private Photo getPhotos(PhotoDto photoDto) {
+        Optional<Photo> photo = photoService.readPhoto(photoDto.getId());
+        if (photo.isEmpty()) {
+            IdDto createdPhotoId = photoService.create(photoDto);
+            Optional<Photo> createdPhoto = photoService.readPhoto(createdPhotoId.getId());
+            return createdPhoto.orElseThrow(() -> new ApplicationException("Cannot create photo by id: " + createdPhotoId.getId()));
+        } else {
+            return photo.get();
+        }
+    }
+
+    private void deleteUnneededPhotos(Set<Photo> oldPhotos, Set<Photo> newPhotos) {
+        Optional.ofNullable(oldPhotos)
+                .orElse(Collections.emptySet()).stream()
+                .map(Photo::getId)
+                .filter(photoId -> newPhotos.stream().noneMatch(photo -> photo.getId().equals(photoId)))
+                .forEach(photoService::delete);
+    }
+
     @Override
     public String getServiceName() {
-        return "groupPhotos";
+        return GROUP_PHOTO_NAME.getDescription();
     }
 }

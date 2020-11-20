@@ -1,6 +1,5 @@
 package org.go.together.base;
 
-import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.ValidationMessageDto;
@@ -28,8 +27,4 @@ public interface FindClient {
     @DeleteMapping("/{serviceName}/{id}")
     void delete(@PathVariable("serviceName") String serviceName,
                 @PathVariable("id") UUID dtoId);
-
-    @GetMapping("/{serviceName}/{id}")
-    <D extends Dto> D read(@PathVariable("serviceName") String serviceName,
-                           @PathVariable("id") UUID dtoId);
 }

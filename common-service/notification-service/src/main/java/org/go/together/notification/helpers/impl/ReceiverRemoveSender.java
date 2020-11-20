@@ -1,11 +1,10 @@
 package org.go.together.notification.helpers.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.go.together.message.NotificationEvent;
-import org.go.together.message.NotificationEventStatus;
+import org.go.together.kafka.NotificationEvent;
+import org.go.together.kafka.NotificationEventStatus;
+import org.go.together.notification.helpers.interfaces.KafkaSender;
 import org.go.together.notification.helpers.interfaces.ReceiverSender;
-import org.go.together.notification.streams.NotificationSource;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -13,10 +12,10 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class ReceiverRemoveSender implements ReceiverSender {
-    private final NotificationSource source;
+    private final KafkaSender kafkaSender;
 
     @Override
-    public void send(UUID producerId, UUID receiverId) {
+    public void send(UUID id, UUID producerId, UUID receiverId) {
         if (receiverId == null || producerId == null) {
             throw new IllegalArgumentException("Cannot send remove receiver message to notification service: producerId or receiverId is null");
         }
@@ -24,6 +23,6 @@ public class ReceiverRemoveSender implements ReceiverSender {
                 .producerId(producerId)
                 .status(NotificationEventStatus.REMOVE_RECEIVER)
                 .receiverId(receiverId).build();
-        source.output().send(MessageBuilder.withPayload(receiverEvent).build());
+        kafkaSender.send(id, receiverEvent);
     }
 }

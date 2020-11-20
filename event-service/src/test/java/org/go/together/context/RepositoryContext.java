@@ -5,13 +5,16 @@ import org.go.together.client.LocationClient;
 import org.go.together.client.RouteInfoClient;
 import org.go.together.client.UserClient;
 import org.go.together.configuration.H2HibernateConfig;
-import org.go.together.notification.streams.NotificationSource;
+import org.go.together.dto.GroupPhotoDto;
+import org.go.together.kafka.interfaces.producers.crud.ReadKafkaProducer;
+import org.go.together.producers.GroupPhotoReadProducer;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 
 @EnableAutoConfiguration
 @Configuration
@@ -27,8 +30,13 @@ import org.springframework.context.annotation.Import;
 })
 public class RepositoryContext {
     @Bean
-    public NotificationSource source() {
-        return Mockito.mock(NotificationSource.class);
+    public ReplyingKafkaTemplate replyingKafkaTemplate() {
+        return Mockito.mock(ReplyingKafkaTemplate.class);
+    }
+
+    @Bean
+    public ReadKafkaProducer<GroupPhotoDto> groupPhotoReadProducer() {
+        return Mockito.mock(GroupPhotoReadProducer.class);
     }
 
     @Bean

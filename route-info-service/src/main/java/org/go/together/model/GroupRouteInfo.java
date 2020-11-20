@@ -14,7 +14,7 @@ import java.util.UUID;
 public class GroupRouteInfo extends IdentifiedEntity {
     private UUID groupId;
 
-    @OneToMany(cascade = CascadeType.REFRESH)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "group_route_info_id")
     private Set<RouteInfo> infoRoutes;
 }

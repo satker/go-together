@@ -3,6 +3,7 @@ package org.go.together.client;
 import org.go.together.base.FindClient;
 import org.go.together.dto.AuthUserDto;
 import org.go.together.dto.SimpleUserDto;
+import org.go.together.dto.UserDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,4 +43,7 @@ public interface UserClient extends FindClient {
 
     @GetMapping("/users/{userId}/events")
     Set<UUID> getLikedEventsByUserId(@PathVariable("userId") UUID userId);
+
+    @GetMapping("/users/{userId}")
+    UserDto readUser(@PathVariable("userId") UUID authorId);
 }

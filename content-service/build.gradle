@@ -4,6 +4,7 @@ buildscript {
         springCloudVersion = '2.2.2.RELEASE'
         lombokVersion='1.18.16'
         postgresDriver='42.2.18'
+        springKafkaVersion='2.6.3'
     }
     repositories {
         mavenCentral()
@@ -31,6 +32,8 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}",
+
             "org.postgresql:postgresql:${postgresDriver}",
 
             "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
@@ -39,6 +42,8 @@ dependencies {
             "org.projectlombok:lombok:${lombokVersion}"
 
     )
+
+    testCompile("org.springframework.kafka:spring-kafka-test:${springKafkaVersion}")
 
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 

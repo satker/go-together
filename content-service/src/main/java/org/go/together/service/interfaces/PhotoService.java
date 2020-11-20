@@ -5,8 +5,9 @@ import org.go.together.base.FindService;
 import org.go.together.dto.PhotoDto;
 import org.go.together.model.Photo;
 
-import java.util.Set;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface PhotoService extends CrudService<PhotoDto>, FindService<PhotoDto> {
-    Set<Photo> savePhotos(Set<PhotoDto> newPhotosDto, Set<Photo> oldPhotos);
+    Optional<Photo> readPhoto(UUID photoId);
 }

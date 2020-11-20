@@ -3,7 +3,6 @@ package org.go.together.service.impl;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.CommonCrudService;
-import org.go.together.dto.IdDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.model.Photo;
@@ -15,9 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class PhotoServiceImpl extends CommonCrudService<PhotoDto, Photo> implements PhotoService {
@@ -59,42 +56,12 @@ public class PhotoServiceImpl extends CommonCrudService<PhotoDto, Photo> impleme
         return entity;
     }
 
-    public Set<Photo> savePhotos(Set<PhotoDto> newPhotosDto, Set<Photo> oldPhotos) {
-        Set<UUID> presentedPhotos = newPhotosDto.stream()
-                .map(PhotoDto::getId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-
-        Set<UUID> presentedPhotoIds = oldPhotos.stream()
-                .map(Photo::getId)
-                .collect(Collectors.toSet());
-
-        Set<Photo> photosForDeleting = oldPhotos.stream()
-                .filter(oldPhoto -> !presentedPhotos.contains(oldPhoto.getId()))
-                .collect(Collectors.toSet());
-
-        Set<Photo> newEventPhotoDtos = newPhotosDto.stream()
-                .filter(photoDto -> photoDto.getId() == null || !presentedPhotoIds.contains(photoDto.getId()))
-                .map(super::create)
-                .map(IdDto::getId)
-                .map(repository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toSet());
-
-        if (!photosForDeleting.isEmpty()) {
-            photosForDeleting.stream()
-                    .map(Photo::getId)
-                    .forEach(super::delete);
+    @Override
+    public Optional<Photo> readPhoto(UUID photoId) {
+        if (Objects.isNull(photoId)) {
+            return Optional.empty();
         }
-
-        Set<Photo> newPhotos = oldPhotos.stream()
-                .filter(photo -> photosForDeleting.stream()
-                        .map(Photo::getId)
-                        .noneMatch(deletedPhoto -> deletedPhoto.equals(photo.getId())))
-                .collect(Collectors.toSet());
-        newPhotos.addAll(newEventPhotoDtos);
-        return newPhotos;
+        return repository.findById(photoId);
     }
 
     @Override

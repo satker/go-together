@@ -17,7 +17,7 @@ public class EventDto extends ComparableDto {
     @ComparingField("people count")
     private Integer peopleCount;
 
-    @ComparingField("author")
+    @ComparingField(value = "author", idCompare = true)
     private UserDto author;
 
     @ComparingField("description")

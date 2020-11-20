@@ -25,7 +25,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Calendar;
@@ -43,6 +45,8 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = RepositoryContext.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@EmbeddedKafka
+@TestPropertySource(locations = "/application.properties")
 class CrudServiceRevertTest {
     private static final String TEST_NAME = "test name";
     private static final String CREATED_TEST_NAME = "create test name";

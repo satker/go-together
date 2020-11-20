@@ -31,4 +31,7 @@ public class Event extends NamedIdentifiedEntity {
     @Column(columnDefinition = "uuid")
     private UUID routeId;
 
+    @Column(columnDefinition = "uuid")
+    private UUID routeInfoId;
+
 }

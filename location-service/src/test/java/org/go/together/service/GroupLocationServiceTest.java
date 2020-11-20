@@ -4,30 +4,26 @@ import org.go.together.base.Mapper;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
+import org.go.together.kafka.NotificationEvent;
 import org.go.together.model.Country;
 import org.go.together.model.GroupLocation;
-import org.go.together.notification.streams.NotificationSource;
 import org.go.together.repository.interfaces.CountryRepository;
 import org.go.together.repository.interfaces.LocationRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.MessageChannel;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
 
 
 @ContextConfiguration(classes = RepositoryContext.class)
@@ -42,15 +38,13 @@ class GroupLocationServiceTest extends CrudServiceCommonTest<GroupLocation, Grou
     private LocationRepository locationRepository;
 
     @Autowired
-    private NotificationSource source;
+    private KafkaTemplate<UUID, NotificationEvent> kafkaTemplate;
 
     @Override
     @BeforeEach
     public void init() {
         super.init();
-        MessageChannel messageChannel = Mockito.mock(MessageChannel.class);
-        when(source.output()).thenReturn(messageChannel);
-        when(messageChannel.send(any())).thenReturn(true);
+        doNothing().when(kafkaTemplate.send(any(), any(), any()));
     }
 
     @Test

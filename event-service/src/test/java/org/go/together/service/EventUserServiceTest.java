@@ -6,25 +6,23 @@ import org.go.together.dto.EventUserDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.model.Event;
 import org.go.together.model.EventUser;
-import org.go.together.notification.streams.NotificationSource;
 import org.go.together.repository.interfaces.EventRepository;
 import org.go.together.service.interfaces.EventUserService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.MessageChannel;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
+@EmbeddedKafka
 public class EventUserServiceTest extends CrudServiceCommonTest<EventUser, EventUserDto> {
     @Autowired
     private UserClient userClient;
@@ -32,16 +30,11 @@ public class EventUserServiceTest extends CrudServiceCommonTest<EventUser, Event
     @Autowired
     private EventRepository eventRepository;
 
-    @Autowired
-    private NotificationSource source;
 
     @Override
     @BeforeEach
     public void init() {
         super.init();
-        MessageChannel messageChannel = Mockito.mock(MessageChannel.class);
-        when(source.output()).thenReturn(messageChannel);
-        when(messageChannel.send(any())).thenReturn(true);
         when(userClient.checkIfUserPresentsById(dto.getUser().getId())).thenReturn(true);
         when(userClient.checkIfUserPresentsById(updatedDto.getUser().getId())).thenReturn(true);
         when(userClient.findSimpleUserDtosByUserIds(Collections.singleton(dto.getUser().getId())))

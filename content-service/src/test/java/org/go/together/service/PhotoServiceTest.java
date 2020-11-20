@@ -5,17 +5,13 @@ import org.go.together.context.RepositoryContext;
 import org.go.together.dto.ContentDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.model.Photo;
-import org.go.together.notification.streams.NotificationSource;
-import org.go.together.service.interfaces.PhotoService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.messaging.MessageChannel;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.io.File;
@@ -26,24 +22,17 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
+@EmbeddedKafka
 class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
     @Value("${photo.store.path}")
     private String storePath;
-
-    @Autowired
-    private NotificationSource source;
 
     @Override
     @BeforeEach
     public void init() {
         super.init();
-        MessageChannel messageChannel = Mockito.mock(MessageChannel.class);
-        when(source.output()).thenReturn(messageChannel);
-        when(messageChannel.send(any())).thenReturn(true);
         PhotoDto photoDto;
         try {
             photoDto = getPhotoDto("photos/1.jpg");
@@ -61,29 +50,6 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
             throw new RuntimeException("Cannot get file in content-service");
         }
         repository.findAll().forEach(repository::delete);
-    }
-
-    @Test
-    void saveOrUpdatePhotosWithOldPhotos() throws IOException {
-        PhotoDto photoDto2 = getPhotoDto("photos/2.jpg");
-        PhotoDto photoDto3 = getPhotoDto("photos/3.jpg");
-        Set<Photo> photoRepositoryAll = Set.copyOf(repository.findAll());
-        Set<Photo> result = ((PhotoService) crudService).savePhotos(Set.of(photoDto2, photoDto3), photoRepositoryAll);
-
-        List<String> files = checkSavedPhotosToDirectory(result);
-        assertEquals(2, result.size());
-        assertEquals(2, files.size());
-    }
-
-    @Test
-    void saveOrUpdatePhotosWithoutOldPhotos() throws IOException {
-        PhotoDto photoDto2 = getPhotoDto("photos/2.jpg");
-        PhotoDto photoDto3 = getPhotoDto("photos/3.jpg");
-        Set<Photo> result = ((PhotoService) crudService).savePhotos(Set.of(photoDto2, photoDto3), Collections.emptySet());
-
-        List<String> files = checkSavedPhotosToDirectory(result);
-        assertEquals(2, result.size());
-        assertEquals(3, files.size());
     }
 
     @Test

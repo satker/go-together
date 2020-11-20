@@ -1,7 +1,6 @@
 package org.go.together.test.client;
 
 import org.go.together.base.FindClient;
-import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.ValidationMessageDto;
@@ -37,11 +36,6 @@ public class AnotherClient implements FindClient {
     @Override
     public void delete(String serviceName, UUID dtoId) {
 
-    }
-
-    @Override
-    public Dto read(String serviceName, UUID dtoId) {
-        return null;
     }
 
     public void setResponseDto(ResponseDto<Object> responseDto) {

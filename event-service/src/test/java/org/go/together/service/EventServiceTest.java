@@ -6,33 +6,31 @@ import org.go.together.client.RouteInfoClient;
 import org.go.together.client.UserClient;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.EventDto;
+import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.IdDto;
-import org.go.together.dto.SimpleDto;
 import org.go.together.dto.ValidationMessageDto;
 import org.go.together.enums.CrudOperation;
+import org.go.together.kafka.interfaces.producers.crud.ReadKafkaProducer;
 import org.go.together.model.Event;
-import org.go.together.notification.streams.NotificationSource;
-import org.go.together.service.interfaces.EventService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.MessageChannel;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
+@EmbeddedKafka
 public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
     @Autowired
     private UserClient userClient;
@@ -41,32 +39,20 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
     private LocationClient locationClient;
 
     @Autowired
+    private ReadKafkaProducer<GroupPhotoDto> groupPhotoProducer;
+
+    @Autowired
     private ContentClient contentClient;
 
     @Autowired
     private RouteInfoClient routeInfoClient;
 
-    @Autowired
-    private NotificationSource source;
-
     @Override
     @BeforeEach
     public void init() {
         super.init();
-        MessageChannel messageChannel = Mockito.mock(MessageChannel.class);
-        when(source.output()).thenReturn(messageChannel);
-        when(messageChannel.send(any())).thenReturn(true);
         prepareDto(dto);
         prepareDto(updatedDto);
-    }
-
-    @Test
-    public void autocompleteEventTest() {
-        IdDto idDto = crudService.create(dto);
-        Set<SimpleDto> events = ((EventService) crudService).autocompleteEvents(dto.getName());
-
-        assertEquals(1, events.size());
-        assertEquals(idDto.getId(), UUID.fromString(events.iterator().next().getId()));
     }
 
     @Override
@@ -85,15 +71,18 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
 
     private void prepareDto(EventDto eventDto) {
         when(userClient.checkIfUserPresentsById(eventDto.getAuthor().getId())).thenReturn(true);
-        when(userClient.read("users", eventDto.getAuthor().getId())).thenReturn(eventDto.getAuthor());
-        when(locationClient.read("groupLocations", eventDto.getRoute().getId())).thenReturn(eventDto.getRoute());
-        when(contentClient.read("groupPhotos", eventDto.getGroupPhoto().getId())).thenReturn(eventDto.getGroupPhoto());
+        when(userClient.readUser(eventDto.getAuthor().getId())).thenReturn(eventDto.getAuthor());
+        when(locationClient.readGroupLocations(eventDto.getRoute().getId())).thenReturn(eventDto.getRoute());
+        when(groupPhotoProducer.read(any(UUID.class), eq(eventDto.getGroupPhoto().getId()))).thenReturn(eventDto.getGroupPhoto());
         when(locationClient.create("groupLocations", eventDto.getRoute())).thenReturn(new IdDto(eventDto.getRoute().getId()));
         when(locationClient.update("groupLocations", eventDto.getRoute())).thenReturn(new IdDto(eventDto.getRoute().getId()));
         when(contentClient.update("groupPhotos", eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
         when(contentClient.create("groupPhotos", eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
         when(contentClient.validate("groupPhotos", eventDto.getGroupPhoto())).thenReturn(new ValidationMessageDto(EMPTY));
         when(locationClient.validate("groupLocations", eventDto.getRoute())).thenReturn(new ValidationMessageDto(EMPTY));
+        when(routeInfoClient.validate("groupRouteInfo", eventDto.getRouteInfo())).thenReturn(new ValidationMessageDto(EMPTY));
+        when(routeInfoClient.create("groupRouteInfo", eventDto.getRouteInfo())).thenReturn(new IdDto(eventDto.getRouteInfo().getId()));
+        when(routeInfoClient.update("groupRouteInfo", eventDto.getRouteInfo())).thenReturn(new IdDto(eventDto.getRouteInfo().getId()));
     }
 
     @Override

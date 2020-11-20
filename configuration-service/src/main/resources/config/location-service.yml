@@ -16,11 +16,12 @@ feign:
         connectTimeout: 5000
         readTimeout: 5000
         loggerLevel: full
-spring:
-  cloud:
-    stream:
-      bindings:
-        notificationMessageOutput:
-          destination: notifications
-      default:
-        contentType: application/json
+kafka:
+  notificationTopicId: notification-service
+  groupId: location-service
+  server: localhost:9092
+  replyPostfix: _reply
+  readReplyPrefix: _read_
+  createReplyPrefix: _create_
+  updateReplyPrefix: _update_
+  deleteReplyPrefix: _delete_

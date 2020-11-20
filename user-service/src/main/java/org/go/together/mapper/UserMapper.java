@@ -2,11 +2,12 @@ package org.go.together.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.go.together.base.Mapper;
-import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
+import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.InterestDto;
 import org.go.together.dto.LanguageDto;
 import org.go.together.dto.UserDto;
+import org.go.together.kafka.interfaces.producers.crud.ReadKafkaProducer;
 import org.go.together.model.Interest;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserMapper implements Mapper<UserDto, SystemUser> {
     private final LocationClient locationClient;
-    private final ContentClient contentClient;
+    private final ReadKafkaProducer<GroupPhotoDto> groupPhotoProducer;
     private final Mapper<LanguageDto, Language> languageMapper;
     private final Mapper<InterestDto, Interest> interestMapper;
 
@@ -32,14 +33,14 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
                 .map(languageMapper::entityToDto)
                 .collect(Collectors.toSet()));
         userDTO.setLastName(entity.getLastName());
-        userDTO.setLocation(locationClient.read("groupLocations", entity.getLocationId()));
+        userDTO.setLocation(locationClient.readGroupLocations(entity.getLocationId()));
         userDTO.setLogin(entity.getLogin());
         userDTO.setMail(entity.getMail());
         userDTO.setRole(entity.getRole());
         userDTO.setInterests(entity.getInterests().stream()
                 .map(interestMapper::entityToDto)
                 .collect(Collectors.toSet()));
-        userDTO.setGroupPhoto(contentClient.read("groupPhotos", entity.getGroupPhoto()));
+        userDTO.setGroupPhoto(groupPhotoProducer.read(entity.getId(), entity.getGroupPhoto()));
         return userDTO;
     }
 

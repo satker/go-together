@@ -18,7 +18,7 @@ public class GroupPhoto extends IdentifiedEntity {
 
     private PhotoCategory category;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "group_photo_id")
     private Set<Photo> photos;
 }
