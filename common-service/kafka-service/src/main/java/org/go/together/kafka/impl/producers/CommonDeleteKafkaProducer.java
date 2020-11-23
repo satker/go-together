@@ -13,7 +13,6 @@ public abstract class CommonDeleteKafkaProducer implements DeleteKafkaProducer {
         return kafkaTemplate;
     }
 
-    //@Autowired
     public void setDeleteKafkaTemplate(KafkaTemplate<UUID, UUID> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }

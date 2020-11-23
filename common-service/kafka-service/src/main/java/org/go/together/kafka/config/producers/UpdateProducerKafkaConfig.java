@@ -23,7 +23,7 @@ import java.util.UUID;
 
 import static org.go.together.kafka.interfaces.producers.ReplyKafkaProducer.KAFKA_REPLY_ID;
 
-public abstract class UpdateProducerKafkaConfig<D extends Dto> {
+public abstract class UpdateProducerKafkaConfig<D extends Dto> extends DeleteProducerKafkaConfig {
     private ProducerFactory<UUID, D> updateProducerFactory(String kafkaServer) {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
@@ -61,6 +61,4 @@ public abstract class UpdateProducerKafkaConfig<D extends Dto> {
     private String getUpdateReplyTopicId() {
         return getConsumerId() + TopicKafkaPostfix.UPDATE.getDescription() + KAFKA_REPLY_ID;
     }
-
-    public abstract String getConsumerId();
 }

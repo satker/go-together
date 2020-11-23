@@ -35,4 +35,6 @@ include 'common-service:validation-service'
 findProject(':common-service:validation-service')?.name = 'validation-service'
 include 'route-info-service'
 include 'route-info-service-client'
+include 'common-service:kafka-service'
+findProject(':common-service:kafka-service')?.name = 'kafka-service'
 
