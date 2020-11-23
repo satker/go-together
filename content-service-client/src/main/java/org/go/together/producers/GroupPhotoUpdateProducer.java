@@ -21,8 +21,8 @@ public class GroupPhotoUpdateProducer extends CommonUpdateKafkaProducer<GroupPho
 
     @Override
     @Autowired
-    public void setReplyingKafkaTemplate(@Qualifier("groupPhotosUpdateReplyingKafkaTemplate")
-                                                 ReplyingKafkaTemplate<UUID, GroupPhotoDto, IdDto> kafkaTemplate) {
-        super.setReplyingKafkaTemplate(kafkaTemplate);
+    public void setUpdateReplyingKafkaTemplate(@Qualifier("groupPhotosUpdateReplyingKafkaTemplate")
+                                                       ReplyingKafkaTemplate<UUID, GroupPhotoDto, IdDto> kafkaTemplate) {
+        super.setUpdateReplyingKafkaTemplate(kafkaTemplate);
     }
 }

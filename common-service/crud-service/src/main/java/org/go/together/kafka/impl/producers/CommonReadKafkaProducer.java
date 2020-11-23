@@ -14,7 +14,7 @@ public abstract class CommonReadKafkaProducer<D extends Dto> implements ReadKafk
     private String groupId;
 
     @Override
-    public String getCorrelationId() {
+    public String getGroupId() {
         return groupId;
     }
 
@@ -23,7 +23,7 @@ public abstract class CommonReadKafkaProducer<D extends Dto> implements ReadKafk
         return this.kafkaTemplate;
     }
 
-    public void setReplyingKafkaTemplate(ReplyingKafkaTemplate<UUID, UUID, D> kafkaTemplate) {
+    public void setReadReplyingKafkaTemplate(ReplyingKafkaTemplate<UUID, UUID, D> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 }

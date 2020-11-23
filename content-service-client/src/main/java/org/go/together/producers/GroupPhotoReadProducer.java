@@ -20,8 +20,8 @@ public class GroupPhotoReadProducer extends CommonReadKafkaProducer<GroupPhotoDt
 
     @Override
     @Autowired
-    public void setReplyingKafkaTemplate(@Qualifier("groupPhotosReadReplyingKafkaTemplate")
-                                                 ReplyingKafkaTemplate<UUID, UUID, GroupPhotoDto> kafkaTemplate) {
-        super.setReplyingKafkaTemplate(kafkaTemplate);
+    public void setReadReplyingKafkaTemplate(@Qualifier("groupPhotosReadReplyingKafkaTemplate")
+                                                     ReplyingKafkaTemplate<UUID, UUID, GroupPhotoDto> kafkaTemplate) {
+        super.setReadReplyingKafkaTemplate(kafkaTemplate);
     }
 }

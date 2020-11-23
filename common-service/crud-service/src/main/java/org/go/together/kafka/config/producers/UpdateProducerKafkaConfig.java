@@ -24,7 +24,7 @@ import java.util.UUID;
 import static org.go.together.kafka.interfaces.producers.ReplyKafkaProducer.KAFKA_REPLY_ID;
 
 public abstract class UpdateProducerKafkaConfig<D extends Dto> {
-    public ProducerFactory<UUID, D> updateProducerFactory(String kafkaServer) {
+    private ProducerFactory<UUID, D> updateProducerFactory(String kafkaServer) {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class);
@@ -32,31 +32,33 @@ public abstract class UpdateProducerKafkaConfig<D extends Dto> {
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
-    public ReplyingKafkaTemplate<UUID, D, IdDto> updateReplyingKafkaTemplate(KafkaMessageListenerContainer<UUID, IdDto> updateRepliesContainer,
-                                                                             String kafkaServer) {
+    private ReplyingKafkaTemplate<UUID, D, IdDto> updateReplyingKafkaTemplate(KafkaMessageListenerContainer<UUID, IdDto> updateRepliesContainer,
+                                                                              String kafkaServer) {
         return new ReplyingKafkaTemplate<>(updateProducerFactory(kafkaServer), updateRepliesContainer);
     }
 
-    public KafkaMessageListenerContainer<UUID, IdDto> updateRepliesContainer(@Qualifier("updateReplyConsumerFactory")
-                                                                                     ConsumerFactory<UUID, IdDto> changeReplyConsumerFactory) {
-        ContainerProperties containerProperties = new ContainerProperties(getUpdateReplyTopicId());
+    private KafkaMessageListenerContainer<UUID, IdDto> updateRepliesContainer(@Qualifier("updateReplyConsumerFactory")
+                                                                                      ConsumerFactory<UUID, IdDto> changeReplyConsumerFactory,
+                                                                              String kafkaGroupId) {
+        ContainerProperties containerProperties = new ContainerProperties(getUpdateReplyTopicId() + kafkaGroupId);
         return new KafkaMessageListenerContainer<>(changeReplyConsumerFactory, containerProperties);
     }
 
 
     @Bean
     public BeanFactoryPostProcessor changeProducerBeanFactoryPostProcessor(@Value("${kafka.server}") String kafkaServer,
+                                                                           @Value("${kafka.groupId}") String kafkaGroupId,
                                                                            @Qualifier("updateReplyConsumerFactory")
                                                                                    ConsumerFactory<UUID, IdDto> changeReplyConsumerFactory) {
         return beanFactory -> {
-            KafkaMessageListenerContainer<UUID, IdDto> updateRepliesContainer = updateRepliesContainer(changeReplyConsumerFactory);
+            KafkaMessageListenerContainer<UUID, IdDto> updateRepliesContainer = updateRepliesContainer(changeReplyConsumerFactory, kafkaGroupId);
             beanFactory.registerSingleton(getConsumerId() + "UpdateRepliesContainer", updateRepliesContainer);
             ReplyingKafkaTemplate<UUID, D, IdDto> updateReplyingKafkaTemplate = updateReplyingKafkaTemplate(updateRepliesContainer, kafkaServer);
             beanFactory.registerSingleton(getConsumerId() + "UpdateReplyingKafkaTemplate", updateReplyingKafkaTemplate);
         };
     }
 
-    public String getUpdateReplyTopicId() {
+    private String getUpdateReplyTopicId() {
         return getConsumerId() + TopicKafkaPostfix.UPDATE.getDescription() + KAFKA_REPLY_ID;
     }
 

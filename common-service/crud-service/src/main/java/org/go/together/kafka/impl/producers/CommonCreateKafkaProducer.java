@@ -15,7 +15,7 @@ public abstract class CommonCreateKafkaProducer<D extends Dto> implements Create
     private String groupId;
 
     @Override
-    public String getCorrelationId() {
+    public String getGroupId() {
         return groupId;
     }
 
@@ -24,7 +24,7 @@ public abstract class CommonCreateKafkaProducer<D extends Dto> implements Create
         return this.kafkaTemplate;
     }
 
-    public void setReplyingKafkaTemplate(ReplyingKafkaTemplate<UUID, D, IdDto> kafkaTemplate) {
+    public void setCreateReplyingKafkaTemplate(ReplyingKafkaTemplate<UUID, D, IdDto> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 }

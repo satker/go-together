@@ -15,7 +15,7 @@ public abstract class CommonUpdateKafkaProducer<D extends Dto> implements Update
     private String groupId;
 
     @Override
-    public String getCorrelationId() {
+    public String getGroupId() {
         return groupId;
     }
 
@@ -23,7 +23,7 @@ public abstract class CommonUpdateKafkaProducer<D extends Dto> implements Update
         return this.kafkaTemplate;
     }
 
-    public void setReplyingKafkaTemplate(ReplyingKafkaTemplate<UUID, D, IdDto> kafkaTemplate) {
+    public void setUpdateReplyingKafkaTemplate(ReplyingKafkaTemplate<UUID, D, IdDto> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 }

@@ -13,23 +13,21 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public interface ReplyKafkaProducer<T, R> {
-    String KAFKA_REPLY_ID = "_reply";
+    String KAFKA_REPLY_ID = "_reply_";
 
     String CORRELATION_PREFIX = "_correlationId";
 
-    String getCorrelationId();
+    String getGroupId();
 
     ReplyingKafkaTemplate<UUID, T, R> getReplyingKafkaTemplate();
-
-    void setReplyingKafkaTemplate(ReplyingKafkaTemplate<UUID, T, R> kafkaTemplate);
 
     String getTopicId();
 
     default R sendWithReply(String targetTopic, UUID id, T object) {
         ProducerRecord<UUID, T> record = new ProducerRecord<>(targetTopic, null, id, object);
-        String replyTopicId = targetTopic + KAFKA_REPLY_ID;
+        String replyTopicId = targetTopic + KAFKA_REPLY_ID + getGroupId();
         record.headers().add(KafkaHeaders.REPLY_TOPIC, replyTopicId.getBytes());
-        String correlationId = getCorrelationId() + CORRELATION_PREFIX;
+        String correlationId = getGroupId() + CORRELATION_PREFIX;
         record.headers().add(KafkaHeaders.CORRELATION_ID, correlationId.getBytes());
         RequestReplyFuture<UUID, T, R> result = getReplyingKafkaTemplate().sendAndReceive(record);
         try {

@@ -31,6 +31,8 @@ public abstract class ReadConsumerKafkaConfig<D extends Dto> {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, "15728640");
+        props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
         return props;
     }
 
