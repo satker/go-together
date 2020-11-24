@@ -37,8 +37,7 @@ public abstract class CreateProducerKafkaConfig<D extends Dto> extends ReadProdu
         return new ReplyingKafkaTemplate<>(createProducerFactory(kafkaServer), createRepliesContainer);
     }
 
-    private KafkaMessageListenerContainer<UUID, IdDto> createRepliesContainer(@Qualifier("createReplyConsumerFactory")
-                                                                                      ConsumerFactory<UUID, IdDto> createReplyConsumerFactory,
+    private KafkaMessageListenerContainer<UUID, IdDto> createRepliesContainer(ConsumerFactory<UUID, IdDto> createReplyConsumerFactory,
                                                                               String kafkaGroupId) {
         ContainerProperties containerProperties = new ContainerProperties(getCreateReplyTopicId() + kafkaGroupId);
         return new KafkaMessageListenerContainer<>(createReplyConsumerFactory, containerProperties);

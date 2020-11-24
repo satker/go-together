@@ -2,8 +2,3 @@ kafka:
   notificationTopicId: notification-service
   server: localhost:9092
   groupId: content-service
-  replyPostfix: _reply
-  readReplyPrefix: read_
-  createReplyPrefix: create_
-  updateReplyPrefix: update_
-  deleteReplyPrefix: delete_

@@ -14,11 +14,6 @@ kafka:
   notificationTopicId: notification-service
   groupId: event-service
   server: localhost:9092
-  replyPostfix: _reply
-  readReplyPrefix: _read_
-  createReplyPrefix: _create_
-  updateReplyPrefix: _update_
-  deleteReplyPrefix: _delete_
 
 connectTimeout: 160000000
 readTimeout: 160000000
