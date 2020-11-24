@@ -7,7 +7,8 @@ public enum TopicKafkaPostfix implements NamedEnum {
     UPDATE("Update"),
     DELETE("Delete"),
     READ("Read"),
-    VALIDATE("Validate");
+    VALIDATE("Validate"),
+    FIND("Find");
 
     private final String description;
 

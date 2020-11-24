@@ -55,10 +55,10 @@ public abstract class ReadProducerKafkaConfig<D extends Dto> extends UpdateProdu
     }
 
     private ConsumerFactory<UUID, D> readReplyConsumerFactory(String kafkaServer, String kafkaGroupId) {
-        JsonDeserializer<D> groupPhotoDtoJsonDeserializer = new JsonDeserializer<>();
-        groupPhotoDtoJsonDeserializer.addTrustedPackages("org.go.together.dto");
+        JsonDeserializer<D> readDtoJsonDeserializer = new JsonDeserializer<>();
+        readDtoJsonDeserializer.addTrustedPackages("org.go.together.dto");
         return new DefaultKafkaConsumerFactory<>(readConsumerConfigs(kafkaServer, kafkaGroupId), new UUIDDeserializer(),
-                groupPhotoDtoJsonDeserializer);
+                readDtoJsonDeserializer);
     }
 
     @Bean

@@ -2,16 +2,16 @@ package org.go.together.consumers;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.go.together.base.CrudService;
+import org.go.together.base.FindService;
 import org.go.together.base.Validator;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.IdDto;
+import org.go.together.dto.ResponseDto;
+import org.go.together.dto.form.FormDto;
 import org.go.together.kafka.impl.consumers.CommonCrudKafkaConsumer;
-import org.go.together.service.interfaces.GroupPhotoService;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -19,8 +19,9 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
-    private final GroupPhotoService groupPhotoService;
+    private final CrudService<GroupPhotoDto> service;
     private final Validator<GroupPhotoDto> validator;
+    private final FindService<GroupPhotoDto> findService;
 
     @Override
     @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
@@ -30,7 +31,7 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
     @SendTo
     public IdDto handleCreate(ConsumerRecord<UUID, GroupPhotoDto> message) {
         GroupPhotoDto dto = message.value();
-        return groupPhotoService.create(dto);
+        return service.create(dto);
     }
 
     @Override
@@ -41,35 +42,44 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
     @SendTo
     public IdDto handleUpdate(ConsumerRecord<UUID, GroupPhotoDto> message) {
         GroupPhotoDto dto = message.value();
-        return groupPhotoService.update(dto);
+        return service.update(dto);
     }
 
     @Override
     @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
-            ".concat(T(org.go.together.kafka.interfaces.TopicKafkaPostfix).DELETE.getDescription())}")
+            ".concat(T(org.go.together.kafka.interfaces.TopicKafkaPostfix).DELETE.getDescription())}",
+            containerFactory = "groupPhotosDeleteListenerContainerFactory")
     public void handleDelete(ConsumerRecord<UUID, UUID> message) {
         UUID dtoId = message.value();
-        groupPhotoService.delete(dtoId);
+        service.delete(dtoId);
     }
 
     @Override
     @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
             ".concat(T(org.go.together.kafka.interfaces.TopicKafkaPostfix).READ.getDescription())}",
-            groupId = "${kafka.groupId}",
             containerFactory = "groupPhotosReadListenerContainerFactory")
     @SendTo
-    public Message<GroupPhotoDto> handleRead(ConsumerRecord<UUID, UUID> message) {
+    public GroupPhotoDto handleRead(ConsumerRecord<UUID, UUID> message) {
         UUID dtoId = message.value();
-        return MessageBuilder.withPayload(groupPhotoService.read(dtoId))
-                .setHeader(KafkaHeaders.MESSAGE_KEY, message.key())
-                .build();
+        return service.read(dtoId);
     }
 
     @Override
     @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
-            ".concat(T(org.go.together.kafka.interfaces.TopicKafkaPostfix).VALIDATE.getDescription())}")
+            ".concat(T(org.go.together.kafka.interfaces.TopicKafkaPostfix).VALIDATE.getDescription())}",
+            containerFactory = "groupPhotosValidateListenerContainerFactory")
+    @SendTo
     public String handleValidate(ConsumerRecord<UUID, GroupPhotoDto> message) {
         GroupPhotoDto dto = message.value();
         return validator.validate(dto, null);
+    }
+
+    @Override
+    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
+            ".concat(T(org.go.together.kafka.interfaces.TopicKafkaPostfix).FIND.getDescription())}",
+            containerFactory = "groupPhotosFindListenerContainerFactory")
+    @SendTo
+    public ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message) {
+        return findService.find(message.value());
     }
 }
