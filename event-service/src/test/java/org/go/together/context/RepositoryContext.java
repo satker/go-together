@@ -6,8 +6,8 @@ import org.go.together.client.RouteInfoClient;
 import org.go.together.client.UserClient;
 import org.go.together.configuration.H2HibernateConfig;
 import org.go.together.dto.GroupPhotoDto;
+import org.go.together.kafka.impl.producers.CommonReadKafkaProducer;
 import org.go.together.kafka.interfaces.producers.crud.ReadKafkaProducer;
-import org.go.together.producers.GroupPhotoReadProducer;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -36,7 +36,7 @@ public class RepositoryContext {
 
     @Bean
     public ReadKafkaProducer<GroupPhotoDto> groupPhotoReadProducer() {
-        return Mockito.mock(GroupPhotoReadProducer.class);
+        return Mockito.mock(CommonReadKafkaProducer.class);
     }
 
     @Bean

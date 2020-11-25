@@ -6,9 +6,14 @@ import org.go.together.dto.ResponseDto;
 import org.go.together.dto.form.FormDto;
 
 import java.util.Map;
+import java.util.UUID;
 
 public interface FindService<D extends Dto> {
-    ResponseDto<Object> find(FormDto formDto);
+    default ResponseDto<Object> find(FormDto formDto) {
+        return find(null, formDto);
+    }
+
+    ResponseDto<Object> find(UUID requestId, FormDto formDto);
 
     String getServiceName();
 

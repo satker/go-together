@@ -30,7 +30,7 @@ public class EventLikeServiceImpl extends CommonCrudService<EventLikeDto, EventL
     }
 
     @Override
-    protected EventLike enrichEntity(EventLike entity, EventLikeDto dto, CrudOperation crudOperation) {
+    protected EventLike enrichEntity(UUID requestId, EventLike entity, EventLikeDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE) {
             EventLike eventLike = repository.findByIdOrThrow(dto.getId());
             eventLike.setUsers(entity.getUsers());
@@ -56,12 +56,12 @@ public class EventLikeServiceImpl extends CommonCrudService<EventLikeDto, EventL
     }
 
     @Override
-    public void deleteByUserId(UUID userId) {
+    public void deleteByUserId(UUID requestId, UUID userId) {
         ((EventLikeRepository) repository).findByUserId(userId).stream()
                 .peek(eventLike -> {
                     eventLike.getUsers().removeIf(user -> user.getId().equals(userId));
                     eventLike.setUsers(eventLike.getUsers());
                 }).map(mapper::entityToDto)
-                .forEach(super::update);
+                .forEach(eventLikeDto -> super.update(requestId, eventLikeDto));
     }
 }

@@ -3,16 +3,19 @@ package org.go.together.kafka.impl.producers;
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
 import org.go.together.kafka.interfaces.producers.crud.UpdateKafkaProducer;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 
 import java.util.UUID;
 
 public abstract class CommonUpdateKafkaProducer<D extends Dto> implements UpdateKafkaProducer<D> {
-    private ReplyingKafkaTemplate<UUID, D, IdDto> kafkaTemplate;
+    private final ReplyingKafkaTemplate<UUID, D, IdDto> kafkaTemplate;
+    private final String groupId;
 
-    @Value("${kafka.groupId}")
-    private String groupId;
+    protected CommonUpdateKafkaProducer(ReplyingKafkaTemplate<UUID, D, IdDto> kafkaTemplate,
+                                        String groupId) {
+        this.kafkaTemplate = kafkaTemplate;
+        this.groupId = groupId;
+    }
 
     @Override
     public String getGroupId() {
@@ -21,9 +24,5 @@ public abstract class CommonUpdateKafkaProducer<D extends Dto> implements Update
 
     public ReplyingKafkaTemplate<UUID, D, IdDto> getReplyingKafkaTemplate() {
         return this.kafkaTemplate;
-    }
-
-    public void setUpdateReplyingKafkaTemplate(ReplyingKafkaTemplate<UUID, D, IdDto> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
     }
 }

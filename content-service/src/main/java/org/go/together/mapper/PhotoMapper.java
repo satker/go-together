@@ -21,7 +21,8 @@ public class PhotoMapper implements Mapper<PhotoDto, Photo> {
                 byte[] bytes = FileUtils.readFileToByteArray(new File(photo.getPathName()));
                 photoDto.setContent(new ContentDto(photo.getContentType(), bytes));
             } catch (IOException e) {
-                throw new RuntimeException("Cannot read image");
+                photoDto.setContent(new ContentDto(photo.getContentType(), new byte[]{}));
+                //throw new RuntimeException("Cannot read image");
             }
         } else {
             photoDto.setPhotoUrl(photo.getPhotoUrl());

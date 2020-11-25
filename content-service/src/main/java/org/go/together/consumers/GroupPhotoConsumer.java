@@ -30,8 +30,7 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
     )
     @SendTo
     public IdDto handleCreate(ConsumerRecord<UUID, GroupPhotoDto> message) {
-        GroupPhotoDto dto = message.value();
-        return service.create(dto);
+        return service.create(message.key(), message.value());
     }
 
     @Override
@@ -41,8 +40,7 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
     )
     @SendTo
     public IdDto handleUpdate(ConsumerRecord<UUID, GroupPhotoDto> message) {
-        GroupPhotoDto dto = message.value();
-        return service.update(dto);
+        return service.update(message.key(), message.value());
     }
 
     @Override
@@ -50,8 +48,7 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
             ".concat(T(org.go.together.kafka.interfaces.TopicKafkaPostfix).DELETE.getDescription())}",
             containerFactory = "groupPhotosDeleteListenerContainerFactory")
     public void handleDelete(ConsumerRecord<UUID, UUID> message) {
-        UUID dtoId = message.value();
-        service.delete(dtoId);
+        service.delete(message.key(), message.value());
     }
 
     @Override
@@ -60,8 +57,7 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
             containerFactory = "groupPhotosReadListenerContainerFactory")
     @SendTo
     public GroupPhotoDto handleRead(ConsumerRecord<UUID, UUID> message) {
-        UUID dtoId = message.value();
-        return service.read(dtoId);
+        return service.read(message.key(), message.value());
     }
 
     @Override
@@ -77,9 +73,9 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
     @Override
     @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
             ".concat(T(org.go.together.kafka.interfaces.TopicKafkaPostfix).FIND.getDescription())}",
-            containerFactory = "groupPhotosFindListenerContainerFactory")
+            containerFactory = "findListenerContainerFactory")
     @SendTo
     public ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message) {
-        return findService.find(message.value());
+        return findService.find(message.key(), message.value());
     }
 }

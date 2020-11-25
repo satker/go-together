@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class NotificationMessageServiceImpl extends CommonCrudService<NotificationMessageDto, NotificationMessage>
@@ -24,11 +25,12 @@ public class NotificationMessageServiceImpl extends CommonCrudService<Notificati
     }
 
     @Override
-    protected NotificationMessage enrichEntity(NotificationMessage entity,
+    protected NotificationMessage enrichEntity(UUID requestId,
+                                               NotificationMessage entity,
                                                NotificationMessageDto dto,
                                                CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE) {
-            notificationReceiverService.notificateMessageReceivers(entity, dto);
+            notificationReceiverService.notificateMessageReceivers(requestId, entity, dto);
         }
         return entity;
     }

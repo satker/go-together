@@ -8,10 +8,12 @@ import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
+import org.go.together.dto.form.FormDto;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
@@ -157,5 +159,32 @@ public class CommonKafkaConfig {
     @Bean
     public KafkaTemplate<UUID, UUID> deleteKafkaTemplate(@Qualifier("deleteProducerFactory") ProducerFactory<UUID, UUID> deleteProducerFactory) {
         return new KafkaTemplate<>(deleteProducerFactory);
+    }
+
+    private Map<String, Object> getConsumerConfigs(String kafkaServer, String kafkaGroupId) {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId);
+        return props;
+    }
+
+    @Bean
+    public ConsumerFactory<UUID, FormDto> findConsumerFactory(@Value("${kafka.server}") String kafkaServer,
+                                                              @Value("${kafka.groupId}") String kafkaGroupId) {
+        JsonDeserializer<FormDto> formDtoJsonDeserializer = new JsonDeserializer<>();
+        formDtoJsonDeserializer.addTrustedPackages("org.go.together.dto");
+        return new DefaultKafkaConsumerFactory<>(getConsumerConfigs(kafkaServer, kafkaGroupId), new UUIDDeserializer(),
+                formDtoJsonDeserializer);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<UUID, FormDto> findListenerContainerFactory(ConsumerFactory<UUID, FormDto> findConsumerFactory,
+                                                                                               KafkaTemplate<UUID, ResponseDto<Object>> findKafkaTemplate) {
+        ConcurrentKafkaListenerContainerFactory<UUID, FormDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(findConsumerFactory);
+        factory.setReplyTemplate(findKafkaTemplate);
+        return factory;
     }
 }

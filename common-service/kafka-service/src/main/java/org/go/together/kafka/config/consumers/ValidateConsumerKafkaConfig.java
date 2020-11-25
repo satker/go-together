@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class ValidateConsumerKafkaConfig<D extends Dto> extends FindConsumerKafkaConfig {
+public abstract class ValidateConsumerKafkaConfig<D extends Dto> extends DeleteConsumerKafkaConfig {
     private Map<String, Object> getConsumerConfigs(String kafkaServer, String kafkaGroupId) {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);

@@ -4,6 +4,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
+import org.go.together.kafka.impl.producers.CommonUpdateKafkaProducer;
 import org.go.together.kafka.interfaces.TopicKafkaPostfix;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,6 +56,13 @@ public abstract class UpdateProducerKafkaConfig<D extends Dto> extends ValidateP
             beanFactory.registerSingleton(getConsumerId() + "UpdateRepliesContainer", updateRepliesContainer);
             ReplyingKafkaTemplate<UUID, D, IdDto> updateReplyingKafkaTemplate = updateReplyingKafkaTemplate(updateRepliesContainer, kafkaServer);
             beanFactory.registerSingleton(getConsumerId() + "UpdateReplyingKafkaTemplate", updateReplyingKafkaTemplate);
+            CommonUpdateKafkaProducer<D> commonUpdateKafkaProducer = new CommonUpdateKafkaProducer<>(updateReplyingKafkaTemplate, kafkaGroupId) {
+                @Override
+                public String getTopicId() {
+                    return getConsumerId();
+                }
+            };
+            beanFactory.registerSingleton(getConsumerId() + "UpdateKafkaProducer", commonUpdateKafkaProducer);
         };
     }
 

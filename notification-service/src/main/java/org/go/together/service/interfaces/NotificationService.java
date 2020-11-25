@@ -7,5 +7,5 @@ import org.go.together.dto.NotificationDto;
 import java.util.UUID;
 
 public interface NotificationService extends CrudService<NotificationDto>, FindService<NotificationDto> {
-    NotificationDto getNotificationByProducerId(UUID producerId);
+    NotificationDto getNotificationByProducerId(UUID requestId, UUID producerId);
 }

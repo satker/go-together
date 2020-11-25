@@ -6,11 +6,27 @@ import org.go.together.dto.IdDto;
 import java.util.UUID;
 
 public interface CrudService<D extends Dto> {
-    IdDto create(D dto);
+    default IdDto create(D dto) {
+        return create(null, dto);
+    }
 
-    IdDto update(D dto);
+    IdDto create(UUID requestId, D dto);
 
-    D read(UUID uuid);
+    default IdDto update(D dto) {
+        return update(null, dto);
+    }
 
-    void delete(UUID uuid);
+    IdDto update(UUID requestId, D dto);
+
+    default D read(UUID uuid) {
+        return read(null, uuid);
+    }
+
+    D read(UUID requestId, UUID uuid);
+
+    default void delete(UUID uuid) {
+        delete(null, uuid);
+    }
+
+    void delete(UUID requestId, UUID uuid);
 }

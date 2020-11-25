@@ -25,7 +25,7 @@ public class PhotoServiceImpl extends CommonCrudService<PhotoDto, Photo> impleme
     }
 
     @Override
-    protected Photo enrichEntity(Photo entity, PhotoDto dto, CrudOperation crudOperation) {
+    protected Photo enrichEntity(UUID requestId, Photo entity, PhotoDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE || crudOperation == CrudOperation.UPDATE) {
             if (StringUtils.isBlank(dto.getPhotoUrl())) {
                 String type = dto.getContent().getType();

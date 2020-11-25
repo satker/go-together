@@ -24,36 +24,37 @@ public class NotificationMessageListener {
     @KafkaListener(topics = "${kafka.groupId}")
     public void handleMessage(ConsumerRecord<UUID, NotificationEvent> message) {
         NotificationEvent value = message.value();
+        UUID requestId = message.key();
         switch (value.getStatus()) {
-            case UPDATE_MESSAGE -> updateNotification(value);
-            case CREATE_MESSAGE -> createNotification(value);
-            case ADD_RECEIVER -> addReceiver(value);
-            case REMOVE_RECEIVER -> removeReceiver(value);
+            case UPDATE_MESSAGE -> updateNotification(requestId, value);
+            case CREATE_MESSAGE -> createNotification(requestId, value);
+            case ADD_RECEIVER -> addReceiver(requestId, value);
+            case REMOVE_RECEIVER -> removeReceiver(requestId, value);
         }
     }
 
-    private void addReceiver(NotificationEvent message) {
-        notificationReceiverService.addReceiver(message.getProducerId(), message.getReceiverId());
+    private void addReceiver(UUID requestId, NotificationEvent message) {
+        notificationReceiverService.addReceiver(requestId, message.getProducerId(), message.getReceiverId());
     }
 
-    private void removeReceiver(NotificationEvent message) {
-        notificationReceiverService.removeReceiver(message.getProducerId(), message.getReceiverId());
+    private void removeReceiver(UUID requestId, NotificationEvent message) {
+        notificationReceiverService.removeReceiver(requestId, message.getProducerId(), message.getReceiverId());
     }
 
-    private void updateNotification(NotificationEvent message) {
-        NotificationDto notificationByProducerId = notificationService.getNotificationByProducerId(message.getProducerId());
+    private void updateNotification(UUID requestId, NotificationEvent message) {
+        NotificationDto notificationByProducerId = notificationService.getNotificationByProducerId(requestId, message.getProducerId());
         final NotificationMessageDto notificationMessageDto = message.getMessage();
         notificationMessageDto.setNotificationId(notificationByProducerId.getId());
-        notificationMessageService.create(notificationMessageDto);
+        notificationMessageService.create(requestId, notificationMessageDto);
     }
 
-    private void createNotification(NotificationEvent message) {
+    private void createNotification(UUID requestId, NotificationEvent message) {
         NotificationDto notificationDto = new NotificationDto();
         notificationDto.setProducerId(message.getProducerId());
-        IdDto notificationId = notificationService.create(notificationDto);
+        IdDto notificationId = notificationService.create(requestId, notificationDto);
 
         final NotificationMessageDto notificationMessageDto = message.getMessage();
         notificationMessageDto.setNotificationId(notificationId.getId());
-        notificationMessageService.create(notificationMessageDto);
+        notificationMessageService.create(requestId, notificationMessageDto);
     }
 }

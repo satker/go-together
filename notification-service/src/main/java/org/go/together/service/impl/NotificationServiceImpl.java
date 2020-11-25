@@ -14,10 +14,10 @@ import java.util.UUID;
 public class NotificationServiceImpl extends CommonCrudService<NotificationDto, Notification>
         implements NotificationService {
     @Override
-    public NotificationDto getNotificationByProducerId(UUID producerId) {
+    public NotificationDto getNotificationByProducerId(UUID requestId, UUID producerId) {
         return ((NotificationRepository) repository).findByProducerId(producerId)
                 .map(Notification::getId)
-                .map(super::read)
+                .map(notificationId -> super.read(requestId, notificationId))
                 .orElseThrow(() -> new CannotFindEntityException("Cannot find notification by producer id: " + producerId));
     }
 

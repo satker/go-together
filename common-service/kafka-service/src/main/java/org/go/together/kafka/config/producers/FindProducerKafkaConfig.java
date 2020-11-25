@@ -4,8 +4,10 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.apache.kafka.common.serialization.UUIDSerializer;
+import org.go.together.dto.Dto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.form.FormDto;
+import org.go.together.kafka.impl.producers.CommonFindKafkaProducer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +28,7 @@ import java.util.UUID;
 import static org.go.together.kafka.interfaces.TopicKafkaPostfix.FIND;
 import static org.go.together.kafka.interfaces.producers.ReplyKafkaProducer.KAFKA_REPLY_ID;
 
-public abstract class FindProducerKafkaConfig {
+public abstract class FindProducerKafkaConfig<D extends Dto> extends DeleteProducerKafkaConfig<D> {
     private ProducerFactory<UUID, FormDto> findProducerFactory(String kafkaServer) {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
@@ -73,12 +75,15 @@ public abstract class FindProducerKafkaConfig {
             beanFactory.registerSingleton(getConsumerId() + "FindRepliesContainer", kafkaMessageListenerContainer);
             ReplyingKafkaTemplate<UUID, FormDto, ResponseDto<Object>> replyingKafkaTemplate = findReplyingKafkaTemplate(kafkaServer, kafkaMessageListenerContainer);
             beanFactory.registerSingleton(getConsumerId() + "FindReplyingKafkaTemplate", replyingKafkaTemplate);
-
+            CommonFindKafkaProducer<D> commonFindKafkaProducer = new CommonFindKafkaProducer<>(replyingKafkaTemplate, kafkaGroupId) {
+                @Override
+                public String getTopicId() {
+                    return getConsumerId();
+                }
+            };
+            beanFactory.registerSingleton(getConsumerId() + "FindKafkaProducer", commonFindKafkaProducer);
         };
     }
-
-
-    public abstract String getConsumerId();
 
     private String getReplyTopicId() {
         return getConsumerId() + FIND.getDescription() + KAFKA_REPLY_ID;

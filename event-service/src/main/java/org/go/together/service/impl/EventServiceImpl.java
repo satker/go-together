@@ -2,13 +2,15 @@ package org.go.together.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.go.together.base.CommonCrudService;
-import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.RouteInfoClient;
 import org.go.together.client.UserClient;
 import org.go.together.compare.FieldMapper;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
+import org.go.together.kafka.impl.producers.CommonCreateKafkaProducer;
+import org.go.together.kafka.impl.producers.CommonDeleteKafkaProducer;
+import org.go.together.kafka.impl.producers.CommonUpdateKafkaProducer;
 import org.go.together.model.Event;
 import org.go.together.service.interfaces.EventService;
 import org.springframework.stereotype.Service;
@@ -18,23 +20,23 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.go.together.enums.ServiceInfo.GROUP_PHOTO_NAME;
-
 @Service
 @RequiredArgsConstructor
 public class EventServiceImpl extends CommonCrudService<EventDto, Event> implements EventService {
     private final LocationClient locationClient;
-    private final ContentClient contentClient;
+    private final CommonDeleteKafkaProducer<GroupPhotoDto> groupPhotoDeleteProducer;
+    private final CommonCreateKafkaProducer<GroupPhotoDto> photoCreate;
+    private final CommonUpdateKafkaProducer<GroupPhotoDto> photoUpdate;
     private final UserClient userClient;
     private final RouteInfoClient routeInfoClient;
 
     @Override
-    protected Event enrichEntity(Event entity, EventDto dto, CrudOperation crudOperation) {
+    protected Event enrichEntity(UUID requestId, Event entity, EventDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE) {
             IdDto updateGroupLocations = updateLocations(entity, dto);
             entity.setRouteId(updateGroupLocations.getId());
 
-            IdDto updateContent = updateContent(entity, dto);
+            IdDto updateContent = updateContent(requestId, entity, dto);
             entity.setGroupPhotoId(updateContent.getId());
 
             IdDto groupRouteInfo = updateRouteInfo(entity, dto);
@@ -43,7 +45,7 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
             IdDto route = createLocations(entity, dto);
             entity.setRouteId(route.getId());
 
-            IdDto photoId = createContent(entity, dto);
+            IdDto photoId = createContent(requestId, entity, dto);
             entity.setGroupPhotoId(photoId.getId());
 
             createEventLikes(entity);
@@ -52,7 +54,7 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
             entity.setRouteInfoId(groupRouteInfo.getId());
         } else if (crudOperation == CrudOperation.DELETE) {
             locationClient.delete("groupLocations", entity.getRouteId());
-            contentClient.delete(GROUP_PHOTO_NAME.getDescription(), entity.getGroupPhotoId());
+            groupPhotoDeleteProducer.delete(requestId, entity.getGroupPhotoId());
             userClient.deleteEventLike(entity.getId());
         }
         return entity;
@@ -77,11 +79,11 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
         userClient.create("eventLikes", eventLikeDto);
     }
 
-    private IdDto createContent(Event entity, EventDto dto) {
+    private IdDto createContent(UUID requestId, Event entity, EventDto dto) {
         GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
         groupPhotoDto.setGroupId(entity.getId());
         groupPhotoDto.setCategory(PhotoCategory.EVENT);
-        return contentClient.create(GROUP_PHOTO_NAME.getDescription(), groupPhotoDto);
+        return photoCreate.create(requestId, groupPhotoDto);
     }
 
     private IdDto createLocations(Event entity, EventDto dto) {
@@ -98,11 +100,11 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
         return locationClient.update("groupLocations", locationDto);
     }
 
-    private IdDto updateContent(Event entity, EventDto dto) {
+    private IdDto updateContent(UUID requestId, Event entity, EventDto dto) {
         GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
         groupPhotoDto.setGroupId(entity.getId());
         groupPhotoDto.setCategory(PhotoCategory.EVENT);
-        return contentClient.update(GROUP_PHOTO_NAME.getDescription(), groupPhotoDto);
+        return photoUpdate.update(requestId, groupPhotoDto);
     }
 
     @Override

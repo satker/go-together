@@ -50,7 +50,7 @@ public class NotificationReceiverServiceImpl extends CommonCrudService<Notificat
     }
 
     @Override
-    public void addReceiver(UUID producerId, UUID receiverId) {
+    public void addReceiver(UUID requestId, UUID producerId, UUID receiverId) {
         Notification notification = notificationRepository.findByProducerId(producerId)
                 .orElseThrow(() -> new CannotFindEntityException("Cannot find notification by producer id " +
                         producerId));
@@ -60,50 +60,51 @@ public class NotificationReceiverServiceImpl extends CommonCrudService<Notificat
                 .map(NotificationReceiver::getUserId)
                 .noneMatch(notificationReceiver -> notificationReceiver.equals(receiverId));
         if (receiverNotPresented) {
-            addNotificationMessageReceiver(receiverId, notificationMapper.entityToDto(notification));
+            addNotificationMessageReceiver(requestId, receiverId, notificationMapper.entityToDto(notification));
         }
     }
 
-    private void addNotificationMessageReceiver(UUID receiverId, NotificationDto savedNotificationDto) {
+    private void addNotificationMessageReceiver(UUID requestId, UUID receiverId, NotificationDto savedNotificationDto) {
         NotificationReceiverDto notificationReceiverDto = new NotificationReceiverDto();
         notificationReceiverDto.setUserId(receiverId);
         notificationReceiverDto.setNotification(savedNotificationDto);
-        super.create(notificationReceiverDto);
+        super.create(requestId, notificationReceiverDto);
     }
 
     @Override
-    public void removeReceiver(UUID producerId, UUID receiverId) {
+    public void removeReceiver(UUID requestId, UUID producerId, UUID receiverId) {
         ((NotificationReceiverRepository) repository).findByProducerId(producerId).stream()
                 .filter(notificationReceiver -> notificationReceiver.getUserId().equals(receiverId))
                 .map(NotificationReceiver::getId)
-                .forEach(super::delete);
+                .forEach(notificationReceiverId -> super.delete(requestId, notificationReceiverId));
     }
 
     @Override
-    public void notificateMessageReceivers(NotificationMessage entity, NotificationMessageDto dto) {
+    public void notificateMessageReceivers(UUID requestId, NotificationMessage entity, NotificationMessageDto dto) {
         ((NotificationReceiverRepository) repository).findByNotificationId(dto.getNotificationId()).stream()
                 .map(mapper::entityToDto)
-                .forEach(notificationReceiverDto -> notificateReceivers(entity, notificationReceiverDto));
+                .forEach(notificationReceiverDto -> notificateReceivers(requestId, entity, notificationReceiverDto));
     }
 
-    private void notificateReceivers(NotificationMessage entity, NotificationReceiverDto notificationReceiverDto) {
+    private void notificateReceivers(UUID requestId, NotificationMessage entity, NotificationReceiverDto notificationReceiverDto) {
         NotificationReceiverMessageDto notificationReceiverMessageDto = new NotificationReceiverMessageDto();
         notificationReceiverMessageDto.setIsRead(false);
-        NotificationMessageDto notificationMessage = notificationMessageService.read(entity.getId());
+        NotificationMessageDto notificationMessage = notificationMessageService.read(requestId, entity.getId());
         notificationReceiverMessageDto.setNotificationMessage(notificationMessage);
         notificationReceiverMessageDto.setNotificationReceiver(notificationReceiverDto);
-        notificationReceiverMessageService.create(notificationReceiverMessageDto);
+        notificationReceiverMessageService.create(requestId, notificationReceiverMessageDto);
     }
 
 
     @Override
-    protected NotificationReceiver enrichEntity(NotificationReceiver entity,
+    protected NotificationReceiver enrichEntity(UUID requestId,
+                                                NotificationReceiver entity,
                                                 NotificationReceiverDto dto,
                                                 CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.DELETE) {
             notificationReceiverMessageService.getNotificationReceiverMessageIdsByReceiverId(entity.getUserId()).stream()
                     .map(NotificationReceiverMessage::getId)
-                    .forEach(notificationReceiverMessageService::delete);
+                    .forEach(notificationReceiverMessageId -> notificationReceiverMessageService.delete(requestId, notificationReceiverMessageId));
         }
         return entity;
     }

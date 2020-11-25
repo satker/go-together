@@ -12,10 +12,7 @@ import org.go.together.service.interfaces.GroupLocationService;
 import org.go.together.service.interfaces.LocationService;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -24,15 +21,15 @@ public class GroupLocationServiceImpl extends CommonCrudService<GroupLocationDto
     private final LocationService locationService;
 
     @Override
-    protected GroupLocation enrichEntity(GroupLocation entity, GroupLocationDto dto, CrudOperation crudOperation) {
+    protected GroupLocation enrichEntity(UUID requestId, GroupLocation entity, GroupLocationDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE) {
             Set<LocationDto> locationDtos = dto.getLocations();
-            Set<Location> savedLocations = locationService.saveOrUpdateEventRoutes(locationDtos, Collections.emptySet());
+            Set<Location> savedLocations = locationService.saveOrUpdateEventRoutes(requestId, locationDtos, Collections.emptySet());
             entity.setLocations(savedLocations);
         } else if (crudOperation == CrudOperation.UPDATE) {
             Set<LocationDto> locationDtos = dto.getLocations();
             GroupLocation groupLocation = repository.findByIdOrThrow(entity.getId());
-            Set<Location> savedLocations = locationService.saveOrUpdateEventRoutes(locationDtos, groupLocation.getLocations());
+            Set<Location> savedLocations = locationService.saveOrUpdateEventRoutes(requestId, locationDtos, groupLocation.getLocations());
             entity.setLocations(savedLocations);
         } else if (crudOperation == CrudOperation.DELETE) {
             GroupLocation groupLocation = repository.findByIdOrThrow(entity.getId());
@@ -40,7 +37,7 @@ public class GroupLocationServiceImpl extends CommonCrudService<GroupLocationDto
                     .orElse(Collections.emptySet())
                     .stream()
                     .map(Location::getId)
-                    .forEach(locationService::delete);
+                    .forEach(locationId -> locationService.delete(requestId, locationId));
             groupLocation.setLocations(Collections.emptySet());
         }
         return entity;

@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface EventLikeService extends CrudService<EventLikeDto>, FindService<EventLikeDto> {
-    void deleteByUserId(UUID userId);
+    void deleteByUserId(UUID requestId, UUID userId);
 
     Set<UUID> findLikedEventIdsByUserId(UUID userId);
 

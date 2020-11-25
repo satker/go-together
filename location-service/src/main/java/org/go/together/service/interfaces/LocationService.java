@@ -6,7 +6,8 @@ import org.go.together.dto.LocationDto;
 import org.go.together.model.Location;
 
 import java.util.Set;
+import java.util.UUID;
 
 public interface LocationService extends CrudService<LocationDto>, FindService<LocationDto> {
-    Set<Location> saveOrUpdateEventRoutes(Set<LocationDto> locationDtos, Set<Location> presentedLocations);
+    Set<Location> saveOrUpdateEventRoutes(UUID requestId, Set<LocationDto> locationDtos, Set<Location> presentedLocations);
 }

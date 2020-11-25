@@ -30,6 +30,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     compile project(":common-service:interfaces-service")
+    compile project(":common-service:exception-service")
 }
 
 test {

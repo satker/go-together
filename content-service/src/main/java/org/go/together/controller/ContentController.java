@@ -16,6 +16,6 @@ public class ContentController extends FindController implements ContentClient {
 
     @Override
     public GroupPhotoDto readGroupPhotos(UUID groupPhotoId) {
-        return groupPhotoService.read(groupPhotoId);
+        return groupPhotoService.read(null, groupPhotoId);
     }
 }

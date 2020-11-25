@@ -5,6 +5,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
+import org.go.together.kafka.impl.producers.CommonReadKafkaProducer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.context.annotation.Bean;
@@ -70,7 +71,13 @@ public abstract class ReadProducerKafkaConfig<D extends Dto> extends UpdateProdu
             beanFactory.registerSingleton(getConsumerId() + "ReadRepliesContainer", kafkaMessageListenerContainer);
             ReplyingKafkaTemplate<UUID, UUID, D> replyingKafkaTemplate = readReplyingKafkaTemplate(kafkaServer, kafkaMessageListenerContainer);
             beanFactory.registerSingleton(getConsumerId() + "ReadReplyingKafkaTemplate", replyingKafkaTemplate);
-
+            CommonReadKafkaProducer<D> commonReadKafkaProducer = new CommonReadKafkaProducer<>(replyingKafkaTemplate, kafkaGroupId) {
+                @Override
+                public String getTopicId() {
+                    return getConsumerId();
+                }
+            };
+            beanFactory.registerSingleton(getConsumerId() + "ReadKafkaProducer", commonReadKafkaProducer);
         };
     }
 

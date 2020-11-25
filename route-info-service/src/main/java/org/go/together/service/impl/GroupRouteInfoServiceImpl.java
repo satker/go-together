@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,40 +26,40 @@ public class GroupRouteInfoServiceImpl extends CommonCrudService<GroupRouteInfoD
     private final RouteInfoService routeInfoService;
 
     @Override
-    protected GroupRouteInfo enrichEntity(GroupRouteInfo entity, GroupRouteInfoDto dto, CrudOperation crudOperation) {
+    protected GroupRouteInfo enrichEntity(UUID requestId, GroupRouteInfo entity, GroupRouteInfoDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE || crudOperation == CrudOperation.UPDATE) {
             Set<RouteInfo> routeInfos = dto.getInfoRoutes().stream()
-                    .map(this::getRouteInfo)
+                    .map(routeInfoDto -> getRouteInfo(requestId, routeInfoDto))
                     .collect(Collectors.toSet());
             GroupRouteInfo groupRouteInfo = repository.findByIdOrThrow(entity.getId());
-            deleteUnneededRouteInfos(groupRouteInfo.getInfoRoutes(), routeInfos);
+            deleteUnneededRouteInfos(requestId, groupRouteInfo.getInfoRoutes(), routeInfos);
             entity.setInfoRoutes(routeInfos);
         } else if (crudOperation == CrudOperation.DELETE) {
             entity.getInfoRoutes().stream()
                     .map(RouteInfo::getId)
-                    .forEach(routeInfoService::delete);
+                    .forEach(routeInfoId -> routeInfoService.delete(requestId, routeInfoId));
         }
         return entity;
     }
 
-    private RouteInfo getRouteInfo(RouteInfoDto routeInfoDto) {
+    private RouteInfo getRouteInfo(UUID requestId, RouteInfoDto routeInfoDto) {
         Optional<RouteInfo> routeInfo = routeInfoService.readRouteInfo(routeInfoDto.getId());
         if (routeInfo.isEmpty()) {
-            IdDto createdRouteInfoId = routeInfoService.create(routeInfoDto);
+            IdDto createdRouteInfoId = routeInfoService.create(requestId, routeInfoDto);
             Optional<RouteInfo> createdRouteInfo = routeInfoService.readRouteInfo(createdRouteInfoId.getId());
             return createdRouteInfo.orElseThrow(() -> new ApplicationException("Cannot create route info by id: " +
-                    createdRouteInfoId.getId()));
+                    createdRouteInfoId.getId(), requestId));
         } else {
             return routeInfo.get();
         }
     }
 
-    private void deleteUnneededRouteInfos(Set<RouteInfo> oldRouteInfos, Set<RouteInfo> newRouteInfo) {
+    private void deleteUnneededRouteInfos(UUID requestId, Set<RouteInfo> oldRouteInfos, Set<RouteInfo> newRouteInfo) {
         Optional.ofNullable(oldRouteInfos)
                 .orElse(Collections.emptySet()).stream()
                 .map(RouteInfo::getId)
                 .filter(routeInfoId -> newRouteInfo.stream().noneMatch(routeInfo -> routeInfo.getId().equals(routeInfoId)))
-                .forEach(routeInfoService::delete);
+                .forEach(routeInfoId -> routeInfoService.delete(requestId, routeInfoId));
     }
 
     @Override

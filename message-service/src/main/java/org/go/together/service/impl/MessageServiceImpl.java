@@ -49,7 +49,7 @@ public class MessageServiceImpl extends CommonCrudService<MessageDto, Message> i
     }
 
     @Override
-    protected Message enrichEntity(Message entity, MessageDto dto, CrudOperation crudOperation) {
+    protected Message enrichEntity(UUID requestId, Message entity, MessageDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE) {
             entity.setDate(new Date());
         }

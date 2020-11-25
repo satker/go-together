@@ -1,4 +1,4 @@
-package org.go.together.producers.config;
+package org.go.together.producers;
 
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.kafka.config.ProducerKafkaConfig;

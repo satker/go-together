@@ -4,6 +4,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
+import org.go.together.kafka.impl.producers.CommonCreateKafkaProducer;
 import org.go.together.kafka.interfaces.TopicKafkaPostfix;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +53,13 @@ public abstract class CreateProducerKafkaConfig<D extends Dto> extends ReadProdu
             beanFactory.registerSingleton(getConsumerId() + "CreateRepliesContainer", createRepliesContainer);
             ReplyingKafkaTemplate<UUID, D, IdDto> createReplyingKafkaTemplate = createReplyingKafkaTemplate(createRepliesContainer, kafkaServer);
             beanFactory.registerSingleton(getConsumerId() + "CreateReplyingKafkaTemplate", createReplyingKafkaTemplate);
+            CommonCreateKafkaProducer<D> commonCreateKafkaProducer = new CommonCreateKafkaProducer<>(createReplyingKafkaTemplate, kafkaGroupId) {
+                @Override
+                public String getTopicId() {
+                    return getConsumerId();
+                }
+            };
+            beanFactory.registerSingleton(getConsumerId() + "CreateKafkaProducer", commonCreateKafkaProducer);
         };
     }
 

@@ -58,8 +58,8 @@ public abstract class CommonValidator<D extends Dto> implements Validator<D> {
         return errors.toString();
     }
 
-    protected String commonValidation(D dto, CrudOperation crudOperation) {
-        return StringUtils.EMPTY;
-    }
+     protected String commonValidation(D dto, CrudOperation crudOperation) {
+         return StringUtils.EMPTY;
+     }
 
 }

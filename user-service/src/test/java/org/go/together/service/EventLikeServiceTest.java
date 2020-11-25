@@ -118,7 +118,7 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
         assertTrue(eventLikeOptional.isPresent());
         assertEquals(1, eventLikeOptional.get().getUsers().size());
 
-        ((EventLikeService) crudService).deleteByUserId(eventLike.getUsers().iterator().next().getId());
+        ((EventLikeService) crudService).deleteByUserId(null, eventLike.getUsers().iterator().next().getId());
 
         eventLikeOptional = eventLikeRepository.findById(eventLike.getId());
         assertTrue(eventLikeOptional.isPresent());

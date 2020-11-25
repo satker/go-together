@@ -23,8 +23,8 @@ public interface ReplyKafkaProducer<T, R> {
 
     String getTopicId();
 
-    default R sendWithReply(String targetTopic, UUID id, T object) {
-        ProducerRecord<UUID, T> record = new ProducerRecord<>(targetTopic, null, id, object);
+    default R sendWithReply(String targetTopic, UUID requestId, T object) {
+        ProducerRecord<UUID, T> record = new ProducerRecord<>(targetTopic, null, requestId, object);
         String replyTopicId = targetTopic + KAFKA_REPLY_ID + getGroupId();
         record.headers().add(KafkaHeaders.REPLY_TOPIC, replyTopicId.getBytes());
         String correlationId = getGroupId() + CORRELATION_PREFIX;
@@ -34,7 +34,7 @@ public interface ReplyKafkaProducer<T, R> {
             ConsumerRecord<UUID, R> futureGet = result.get(1500, TimeUnit.MILLISECONDS);
             return futureGet.value();
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new ApplicationException(id.toString() + e.getMessage());
+            throw new ApplicationException(requestId.toString() + e.getMessage(), requestId);
         }
     }
 }

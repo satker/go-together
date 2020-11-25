@@ -59,7 +59,7 @@ public class NotificationReceiverServiceTest extends CrudServiceCommonTest<Notif
     public void removeReceiver() {
         getCreatedEntityId(dto);
         createNotificationMessage();
-        ((NotificationReceiverService) crudService).removeReceiver(dto.getNotification().getProducerId(), dto.getUserId());
+        ((NotificationReceiverService) crudService).removeReceiver(UUID.randomUUID(), dto.getNotification().getProducerId(), dto.getUserId());
 
         Collection<NotificationReceiverMessage> notificationReceiverMessages = notificationReceiverMessageRepository.findAll();
 
@@ -71,7 +71,7 @@ public class NotificationReceiverServiceTest extends CrudServiceCommonTest<Notif
         getCreatedEntityId(dto);
         UUID receiverId = UUID.randomUUID();
         createNotificationMessage();
-        ((NotificationReceiverService) crudService).addReceiver(dto.getNotification().getProducerId(), receiverId);
+        ((NotificationReceiverService) crudService).addReceiver(UUID.randomUUID(), dto.getNotification().getProducerId(), receiverId);
 
         Collection<NotificationReceiverMessage> notificationReceiverMessages = notificationReceiverMessageRepository.findAll();
         int receiverMessagesSize = notificationReceiverMessageRepository.findByReceiverId(receiverId).size();

@@ -10,9 +10,9 @@ import java.util.UUID;
 
 public interface NotificationReceiverService extends CrudService<NotificationReceiverDto>,
         FindService<NotificationReceiverDto> {
-    void addReceiver(UUID producerId, UUID receiverId);
+    void addReceiver(UUID requestId, UUID producerId, UUID receiverId);
 
-    void removeReceiver(UUID producerId, UUID receiverId);
+    void removeReceiver(UUID requestId, UUID producerId, UUID receiverId);
 
-    void notificateMessageReceivers(NotificationMessage entity, NotificationMessageDto dto);
+    void notificateMessageReceivers(UUID requestId, NotificationMessage entity, NotificationMessageDto dto);
 }

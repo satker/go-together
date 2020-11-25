@@ -81,7 +81,7 @@ class GroupPhotoServiceTest extends CrudServiceCommonTest<GroupPhoto, GroupPhoto
         groupPhotoDto.setPhotos(Set.of("photos/3.jpg", "photos/4.jpg").stream()
                 .map(this::getPhotoDto)
                 .collect(Collectors.toSet()));
-        IdDto idGroupPhotoDto = crudService.update(groupPhotoDto);
+        IdDto idGroupPhotoDto = crudService.update(null, groupPhotoDto);
         Optional<GroupPhoto> groupPhoto = repository.findById(idGroupPhotoDto.getId());
 
         assertTrue(groupPhoto.isPresent());
@@ -95,7 +95,7 @@ class GroupPhotoServiceTest extends CrudServiceCommonTest<GroupPhoto, GroupPhoto
 
     @Test
     void getGroupPhotosById() {
-        GroupPhotoDto groupPhotosById = crudService.read(groupPhoto.getId());
+        GroupPhotoDto groupPhotosById = crudService.read(null, groupPhoto.getId());
 
         Set<UUID> foundPhotosId = groupPhotosById.getPhotos().stream()
                 .map(PhotoDto::getId)

@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.UUID;
 
 public abstract class CommonFindService<D extends Dto, E extends IdentifiedEntity> implements FindService<D> {
     protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -49,7 +50,7 @@ public abstract class CommonFindService<D extends Dto, E extends IdentifiedEntit
     }
 
     @SneakyThrows
-    public ResponseDto<Object> find(FormDto formDto) {
+    public ResponseDto<Object> find(UUID requestId, FormDto formDto) {
         final ObjectMapper objectMapper = new ObjectMapper();
 
         log.info("Started find in '" + getServiceName() + "' with filter: " +
@@ -67,7 +68,7 @@ public abstract class CommonFindService<D extends Dto, E extends IdentifiedEntit
                     objectMapper.writeValueAsString(formDto));
             return new ResponseDto<>(pageDtoResult.getKey(), values);
         } catch (Exception exception) {
-            throw new ApplicationException(exception);
+            throw new ApplicationException(exception, requestId);
         }
     }
 }

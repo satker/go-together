@@ -8,6 +8,8 @@ import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ContextConfiguration(classes = RepositoryContext.class)
@@ -16,7 +18,8 @@ public class NotificationServiceTest extends CrudServiceCommonTest<Notification,
     public void getNotificationByProducerIdTest() {
         NotificationDto createdDto = getCreatedEntityId(dto);
 
-        NotificationDto notificationByProducerId = ((NotificationService) crudService).getNotificationByProducerId(createdDto.getProducerId());
+        NotificationDto notificationByProducerId = ((NotificationService) crudService).
+                getNotificationByProducerId(UUID.randomUUID(), createdDto.getProducerId());
 
         assertEquals(createdDto, notificationByProducerId);
     }

@@ -24,7 +24,7 @@ public class LocationServiceImpl extends CommonCrudService<LocationDto, Location
     private final PlaceService placeService;
     private final Mapper<PlaceDto, Place> placeMapper;
 
-    public Set<Location> saveOrUpdateEventRoutes(Set<LocationDto> locationDtos, Set<Location> presentedLocations) {
+    public Set<Location> saveOrUpdateEventRoutes(UUID requestId, Set<LocationDto> locationDtos, Set<Location> presentedLocations) {
         Set<UUID> presentedEventLocations = presentedLocations.stream()
                 .map(Location::getId)
                 .collect(Collectors.toSet());
@@ -33,14 +33,14 @@ public class LocationServiceImpl extends CommonCrudService<LocationDto, Location
         presentedEventLocations.stream()
                 .filter(eventLocationId -> locationDtos.stream()
                         .noneMatch(eventLocationDto -> eventLocationId.equals(eventLocationDto.getId())))
-                .forEach(super::delete);
+                .forEach(eventLocationId -> super.delete(requestId, eventLocationId));
 
         locationDtos
                 .forEach(eventLocationDtoEntry -> {
                     if (presentedEventLocations.contains(eventLocationDtoEntry.getId())) {
-                        result.add(super.update(eventLocationDtoEntry));
+                        result.add(super.update(requestId, eventLocationDtoEntry));
                     } else {
-                        result.add(super.create(eventLocationDtoEntry));
+                        result.add(super.create(requestId, eventLocationDtoEntry));
                     }
                 });
 
@@ -53,7 +53,7 @@ public class LocationServiceImpl extends CommonCrudService<LocationDto, Location
     }
 
     @Override
-    protected Location enrichEntity(Location entity, LocationDto dto, CrudOperation crudOperation) {
+    protected Location enrichEntity(UUID requestId, Location entity, LocationDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE) {
             PlaceDto placeDto = dto.getPlace();
             Optional<Place> placeEquals = placeService.getPlaceEquals(placeDto);
@@ -61,37 +61,37 @@ public class LocationServiceImpl extends CommonCrudService<LocationDto, Location
             Optional<Place> placeByLocationId = placeService.getPlaceByLocationId(entity.getId());
             if (placeByLocationId.isPresent() && (placeEquals.isEmpty()
                     || placeByLocationId.get().getId().equals(placeEquals.get().getId()))) {
-                removePlaceByLocationId(entity);
+                removePlaceByLocationId(requestId, entity);
             }
 
             if (placeEquals.isEmpty()) {
                 placeDto.setLocations(Collections.singleton(entity.getId()));
-                placeService.create(placeDto);
+                placeService.create(requestId, placeDto);
             } else {
                 Place place = placeEquals.get();
                 Set<Location> locations = place.getLocations();
                 locations.add(entity);
                 PlaceDto placeUpdated = placeMapper.entityToDto(place);
-                placeService.update(placeUpdated);
+                placeService.update(requestId, placeUpdated);
             }
         } else if (crudOperation == CrudOperation.DELETE) {
-            removePlaceByLocationId(entity);
+            removePlaceByLocationId(requestId, entity);
         }
         return entity;
     }
 
-    private void removePlaceByLocationId(Location entity) {
+    private void removePlaceByLocationId(UUID requestId, Location entity) {
         Place place = placeService.getPlaceByLocationId(entity.getId())
                 .orElseThrow(() -> new CannotFindEntityException("Cannot find place by id: " + entity.getId()));
         if (place.getLocations().stream()
                 .allMatch(location -> location.getId().equals(entity.getId()))) {
-            placeService.delete(place.getId());
+            placeService.delete(requestId, place.getId());
         } else {
             place.setLocations(place.getLocations().stream()
                     .filter(location -> !location.getId().equals(entity.getId()))
                     .collect(Collectors.toSet()));
             PlaceDto placeUpdated = placeMapper.entityToDto(place);
-            placeService.update(placeUpdated);
+            placeService.update(requestId, placeUpdated);
         }
     }
 
