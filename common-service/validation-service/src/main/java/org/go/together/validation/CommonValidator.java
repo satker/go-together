@@ -8,10 +8,7 @@ import org.go.together.interfaces.ImplFinder;
 import org.go.together.validation.validators.interfaces.ObjectValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -26,12 +23,14 @@ public abstract class CommonValidator<D extends Dto> implements Validator<D> {
     }
 
     @Override
-    public String validate(D dto, CrudOperation crudOperation) {
+    public String validate(UUID requestId, D dto, CrudOperation crudOperation) {
+        if (requestId == null) {
+            return "Request id is null";
+        }
         if (dto == null) {
             return "Dto is null";
         }
-        getMapsForCheck();
-        Set<String> errors = getMapsForCheck().entrySet().stream()
+        Set<String> errors = getMapsForCheck(requestId).entrySet().stream()
                 .map(entry -> getValidatorResult(entry, dto))
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.toSet());
@@ -48,14 +47,10 @@ public abstract class CommonValidator<D extends Dto> implements Validator<D> {
     }
 
     @Override
-    public String validateDtos(Collection<D> dtos, CrudOperation crudOperation) {
-        StringBuilder errors = new StringBuilder();
-
-        dtos.stream()
-                .map(dto -> validate(dto, crudOperation))
-                .forEach(errors::append);
-
-        return errors.toString();
+    public String validateDtos(UUID requestId, Collection<D> dtos, CrudOperation crudOperation) {
+        return dtos.stream()
+                .map(dto -> validate(requestId, dto, crudOperation))
+                .collect(Collectors.joining());
     }
 
      protected String commonValidation(D dto, CrudOperation crudOperation) {

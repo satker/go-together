@@ -3,7 +3,7 @@ package org.go.together.kafka.config.consumers;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.go.together.dto.Dto;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.go.together.dto.ValidationMessageDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +38,7 @@ public abstract class ValidateConsumerKafkaConfig<D extends Dto> extends DeleteC
     }
 
     private ConcurrentKafkaListenerContainerFactory<UUID, D> validateListenerContainerFactory(ConsumerFactory<UUID, D> validateConsumerFactory,
-                                                                                              KafkaTemplate<UUID, String> kafkaTemplate) {
+                                                                                              KafkaTemplate<UUID, ValidationMessageDto> kafkaTemplate) {
         ConcurrentKafkaListenerContainerFactory<UUID, D> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(validateConsumerFactory);
         factory.setReplyTemplate(kafkaTemplate);
@@ -48,10 +48,9 @@ public abstract class ValidateConsumerKafkaConfig<D extends Dto> extends DeleteC
     @Bean
     public BeanFactoryPostProcessor validateConsumerBeanFactoryPostProcessor(@Value("${kafka.server}") String kafkaServer,
                                                                              @Value("${kafka.groupId}") String kafkaGroupId,
-                                                                             @Qualifier("validateKafkaTemplate") KafkaTemplate<UUID, String> validateKafkaTemplate) {
+                                                                             KafkaTemplate<UUID, ValidationMessageDto> validateKafkaTemplate) {
         return beanFactory -> {
             ConsumerFactory<UUID, D> consumerFactory = validateConsumerFactory(kafkaServer, kafkaGroupId);
-            //beanFactory.registerSingleton(getConsumerId() + "ValidateConsumerFactory", consumerFactory);
             beanFactory.registerSingleton(getConsumerId() + "ValidateListenerContainerFactory",
                     validateListenerContainerFactory(consumerFactory, validateKafkaTemplate));
         };

@@ -6,7 +6,7 @@ import org.go.together.client.LocationClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventDto;
 import org.go.together.dto.GroupPhotoDto;
-import org.go.together.kafka.interfaces.producers.crud.ReadKafkaProducer;
+import org.go.together.kafka.interfaces.producers.CommonCrudProducer;
 import org.go.together.model.Event;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class EventMapper implements Mapper<EventDto, Event> {
     private final UserClient userClient;
     private final LocationClient locationClient;
-    private final ReadKafkaProducer<GroupPhotoDto> groupPhotoProducer;
+    private final CommonCrudProducer<GroupPhotoDto> groupPhotoProducer;
 
     @Override
     public EventDto entityToDto(Event entity) {

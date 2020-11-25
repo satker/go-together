@@ -1,6 +1,5 @@
 package org.go.together.service;
 
-import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.RouteInfoClient;
 import org.go.together.client.UserClient;
@@ -10,7 +9,8 @@ import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.ValidationMessageDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.kafka.interfaces.producers.crud.ReadKafkaProducer;
+import org.go.together.kafka.base.KafkaCrudClient;
+import org.go.together.kafka.interfaces.producers.crud.ValidateKafkaProducer;
 import org.go.together.model.Event;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,10 +39,10 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
     private LocationClient locationClient;
 
     @Autowired
-    private ReadKafkaProducer<GroupPhotoDto> groupPhotoProducer;
+    private KafkaCrudClient<GroupPhotoDto> groupPhotoProducer;
 
     @Autowired
-    private ContentClient contentClient;
+    private ValidateKafkaProducer<GroupPhotoDto> groupPhotoValidate;
 
     @Autowired
     private RouteInfoClient routeInfoClient;
@@ -76,9 +76,9 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
         when(groupPhotoProducer.read(any(UUID.class), eq(eventDto.getGroupPhoto().getId()))).thenReturn(eventDto.getGroupPhoto());
         when(locationClient.create("groupLocations", eventDto.getRoute())).thenReturn(new IdDto(eventDto.getRoute().getId()));
         when(locationClient.update("groupLocations", eventDto.getRoute())).thenReturn(new IdDto(eventDto.getRoute().getId()));
-        when(contentClient.update("groupPhotos", eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
-        when(contentClient.create("groupPhotos", eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
-        when(contentClient.validate("groupPhotos", eventDto.getGroupPhoto())).thenReturn(new ValidationMessageDto(EMPTY));
+        when(groupPhotoProducer.update(any(UUID.class), eq(eventDto.getGroupPhoto()))).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
+        when(groupPhotoProducer.create(any(UUID.class), eq(eventDto.getGroupPhoto()))).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
+        when(groupPhotoValidate.validate(any(UUID.class), eq(eventDto.getGroupPhoto()))).thenReturn(new ValidationMessageDto(EMPTY));
         when(locationClient.validate("groupLocations", eventDto.getRoute())).thenReturn(new ValidationMessageDto(EMPTY));
         when(routeInfoClient.validate("groupRouteInfo", eventDto.getRouteInfo())).thenReturn(new ValidationMessageDto(EMPTY));
         when(routeInfoClient.create("groupRouteInfo", eventDto.getRouteInfo())).thenReturn(new IdDto(eventDto.getRouteInfo().getId()));

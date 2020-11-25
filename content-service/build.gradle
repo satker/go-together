@@ -4,7 +4,6 @@ buildscript {
         springCloudVersion = '2.2.2.RELEASE'
         lombokVersion='1.18.16'
         postgresDriver='42.2.18'
-        springKafkaVersion='2.6.3'
     }
     repositories {
         mavenCentral()
@@ -42,9 +41,6 @@ dependencies {
             "org.projectlombok:lombok:${lombokVersion}"
 
     )
-
-    testCompile("org.springframework.kafka:spring-kafka-test:${springKafkaVersion}")
-
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     compile project(":common-service:notification-service")

@@ -1,12 +1,12 @@
 package org.go.together.service;
 
 import org.go.together.base.Mapper;
-import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.kafka.NotificationEvent;
+import org.go.together.kafka.base.KafkaCrudClient;
+import org.go.together.kafka.interfaces.producers.crud.ValidateKafkaProducer;
 import org.go.together.model.EventLike;
 import org.go.together.model.Interest;
 import org.go.together.model.Language;
@@ -21,7 +21,6 @@ import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.HashSet;
@@ -34,13 +33,16 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto> {
     @Autowired
-    private ContentClient contentClient;
+    private KafkaCrudClient<GroupPhotoDto> groupPhotoCrudClient;
+
+    @Autowired
+    private ValidateKafkaProducer<GroupPhotoDto> groupPhotoValidate;
 
     @Autowired
     private EventLikeRepository eventLikeRepository;
@@ -69,13 +71,9 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private KafkaTemplate<UUID, NotificationEvent> kafkaTemplate;
-
     @BeforeEach
     public void init() {
         super.init();
-        doNothing().when(kafkaTemplate.send(any(), any(), any()));
         updatedDto.setEventId(dto.getEventId());
     }
 
@@ -118,7 +116,7 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
         assertTrue(eventLikeOptional.isPresent());
         assertEquals(1, eventLikeOptional.get().getUsers().size());
 
-        ((EventLikeService) crudService).deleteByUserId(null, eventLike.getUsers().iterator().next().getId());
+        ((EventLikeService) crudService).deleteByUserId(UUID.randomUUID(), eventLike.getUsers().iterator().next().getId());
 
         eventLikeOptional = eventLikeRepository.findById(eventLike.getId());
         assertTrue(eventLikeOptional.isPresent());
@@ -159,13 +157,13 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
 
     private void prepareDto(UserDto userDto) {
         when(locationClient.validate("groupLocations", userDto.getLocation())).thenReturn(new ValidationMessageDto(EMPTY));
-        when(contentClient.validate("groupPhotos", userDto.getGroupPhoto())).thenReturn(new ValidationMessageDto(EMPTY));
-        when(contentClient.update("groupPhotos", userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
-        when(contentClient.create("groupPhotos", userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
+        when(groupPhotoValidate.validate(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new ValidationMessageDto(EMPTY));
+        when(groupPhotoCrudClient.update(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
+        when(groupPhotoCrudClient.create(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
         when(locationClient.readGroupLocations(userDto.getLocation().getId())).thenReturn(userDto.getLocation());
         when(locationClient.create("groupLocations", userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
         when(locationClient.update("groupLocations", userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
-        when(contentClient.readGroupPhotos(userDto.getGroupPhoto().getId())).thenReturn(userDto.getGroupPhoto());
+        when(groupPhotoCrudClient.read(any(UUID.class), eq(userDto.getGroupPhoto().getId()))).thenReturn(userDto.getGroupPhoto());
 
     }
 }

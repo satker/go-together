@@ -8,9 +8,7 @@ import org.go.together.client.UserClient;
 import org.go.together.compare.FieldMapper;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
-import org.go.together.kafka.impl.producers.CommonCreateKafkaProducer;
-import org.go.together.kafka.impl.producers.CommonDeleteKafkaProducer;
-import org.go.together.kafka.impl.producers.CommonUpdateKafkaProducer;
+import org.go.together.kafka.base.KafkaCrudClient;
 import org.go.together.model.Event;
 import org.go.together.service.interfaces.EventService;
 import org.springframework.stereotype.Service;
@@ -24,9 +22,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EventServiceImpl extends CommonCrudService<EventDto, Event> implements EventService {
     private final LocationClient locationClient;
-    private final CommonDeleteKafkaProducer<GroupPhotoDto> groupPhotoDeleteProducer;
-    private final CommonCreateKafkaProducer<GroupPhotoDto> photoCreate;
-    private final CommonUpdateKafkaProducer<GroupPhotoDto> photoUpdate;
+    private final KafkaCrudClient<GroupPhotoDto> groupPhotoCrudProducer;
     private final UserClient userClient;
     private final RouteInfoClient routeInfoClient;
 
@@ -54,7 +50,7 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
             entity.setRouteInfoId(groupRouteInfo.getId());
         } else if (crudOperation == CrudOperation.DELETE) {
             locationClient.delete("groupLocations", entity.getRouteId());
-            groupPhotoDeleteProducer.delete(requestId, entity.getGroupPhotoId());
+            groupPhotoCrudProducer.delete(requestId, entity.getGroupPhotoId());
             userClient.deleteEventLike(entity.getId());
         }
         return entity;
@@ -83,7 +79,7 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
         GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
         groupPhotoDto.setGroupId(entity.getId());
         groupPhotoDto.setCategory(PhotoCategory.EVENT);
-        return photoCreate.create(requestId, groupPhotoDto);
+        return groupPhotoCrudProducer.create(requestId, groupPhotoDto);
     }
 
     private IdDto createLocations(Event entity, EventDto dto) {
@@ -104,7 +100,7 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
         GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
         groupPhotoDto.setGroupId(entity.getId());
         groupPhotoDto.setCategory(PhotoCategory.EVENT);
-        return photoUpdate.update(requestId, groupPhotoDto);
+        return groupPhotoCrudProducer.update(requestId, groupPhotoDto);
     }
 
     @Override

@@ -1,16 +1,17 @@
 package org.go.together.kafka.impl.producers;
 
 import org.go.together.dto.Dto;
+import org.go.together.dto.ValidationMessageDto;
 import org.go.together.kafka.interfaces.producers.crud.ValidateKafkaProducer;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 
 import java.util.UUID;
 
 public abstract class CommonValidateKafkaProducer<D extends Dto> implements ValidateKafkaProducer<D> {
-    private final ReplyingKafkaTemplate<UUID, D, String> kafkaTemplate;
+    private final ReplyingKafkaTemplate<UUID, D, ValidationMessageDto> kafkaTemplate;
     private final String groupId;
 
-    protected CommonValidateKafkaProducer(ReplyingKafkaTemplate<UUID, D, String> kafkaTemplate, String groupId) {
+    protected CommonValidateKafkaProducer(ReplyingKafkaTemplate<UUID, D, ValidationMessageDto> kafkaTemplate, String groupId) {
         this.kafkaTemplate = kafkaTemplate;
         this.groupId = groupId;
     }
@@ -21,7 +22,7 @@ public abstract class CommonValidateKafkaProducer<D extends Dto> implements Vali
     }
 
     @Override
-    public ReplyingKafkaTemplate<UUID, D, String> getReplyingKafkaTemplate() {
+    public ReplyingKafkaTemplate<UUID, D, ValidationMessageDto> getReplyingKafkaTemplate() {
         return this.kafkaTemplate;
     }
 }

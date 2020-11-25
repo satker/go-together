@@ -7,7 +7,7 @@ import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.InterestDto;
 import org.go.together.dto.LanguageDto;
 import org.go.together.dto.UserDto;
-import org.go.together.kafka.interfaces.producers.crud.ReadKafkaProducer;
+import org.go.together.kafka.interfaces.producers.CommonCrudProducer;
 import org.go.together.model.Interest;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserMapper implements Mapper<UserDto, SystemUser> {
     private final LocationClient locationClient;
-    private final ReadKafkaProducer<GroupPhotoDto> groupPhotoProducer;
+    private final CommonCrudProducer<GroupPhotoDto> groupPhotoProducer;
     private final Mapper<LanguageDto, Language> languageMapper;
     private final Mapper<InterestDto, Interest> interestMapper;
 

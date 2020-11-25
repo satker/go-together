@@ -8,8 +8,8 @@ import org.go.together.kafka.interfaces.producers.ReplyKafkaProducer;
 import java.util.UUID;
 
 public interface FindKafkaProducer extends ReplyKafkaProducer<FormDto, ResponseDto<Object>> {
-    default ResponseDto<Object> validate(UUID id, FormDto dto) {
+    default ResponseDto<Object> validate(UUID requestId, FormDto dto) {
         String messageTopic = getTopicId() + TopicKafkaPostfix.FIND.getDescription();
-        return sendWithReply(messageTopic, id, dto);
+        return sendWithReply(messageTopic, requestId, dto);
     }
 }

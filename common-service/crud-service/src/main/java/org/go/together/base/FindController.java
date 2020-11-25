@@ -51,7 +51,7 @@ public abstract class FindController implements FindClient {
 
     public ResponseDto<Object> find(FormDto formDto) {
         String[] serviceNameField = FindUtils.getParsedFields(formDto.getMainIdField());
-        return services.get(serviceNameField[0]).find(null, formDto);
+        return services.get(serviceNameField[0]).find(formDto);
     }
 
     @Override

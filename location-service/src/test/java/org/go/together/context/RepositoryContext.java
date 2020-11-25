@@ -1,13 +1,10 @@
 package org.go.together.context;
 
 import org.go.together.configuration.H2HibernateConfig;
-import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.kafka.core.KafkaTemplate;
 
 @EnableAutoConfiguration
 @Configuration
@@ -22,8 +19,4 @@ import org.springframework.kafka.core.KafkaTemplate;
         "org.go.together.repository"
 })
 public class RepositoryContext {
-    @Bean
-    public KafkaTemplate<?, ?> kafkaTemplate() {
-        return Mockito.mock(KafkaTemplate.class);
-    }
 }

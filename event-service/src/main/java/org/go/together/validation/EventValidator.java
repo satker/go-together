@@ -1,30 +1,30 @@
 package org.go.together.validation;
 
 import lombok.RequiredArgsConstructor;
-import org.go.together.client.ContentClient;
 import org.go.together.client.LocationClient;
 import org.go.together.client.RouteInfoClient;
 import org.go.together.client.UserClient;
 import org.go.together.dto.EventDto;
+import org.go.together.dto.GroupPhotoDto;
 import org.go.together.enums.CrudOperation;
+import org.go.together.kafka.interfaces.producers.crud.ValidateKafkaProducer;
 import org.go.together.validation.dto.DateIntervalDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
-
-import static org.go.together.enums.ServiceInfo.GROUP_PHOTO_NAME;
 
 @Component
 @RequiredArgsConstructor
 public class EventValidator extends CommonValidator<EventDto> {
     private final UserClient userClient;
-    private final ContentClient contentClient;
+    private final ValidateKafkaProducer<GroupPhotoDto> photoValidator;
     private final LocationClient locationClient;
     private final RouteInfoClient routeInfoClient;
 
     @Override
-    public Map<String, Function<EventDto, ?>> getMapsForCheck() {
+    public Map<String, Function<EventDto, ?>> getMapsForCheck(UUID requestId) {
         return Map.of(
                 "event name", EventDto::getName,
                 "event description", EventDto::getDescription,
@@ -33,7 +33,7 @@ public class EventValidator extends CommonValidator<EventDto> {
                 "routes", EventDto::getRoute,
                 "photos", eventDto -> eventDto.getGroupPhoto().getPhotos(),
                 "routes locations", eventDto -> eventDto.getRoute().getLocations(),
-                "event photos", eventDto -> contentClient.validate(GROUP_PHOTO_NAME.getDescription(), eventDto.getGroupPhoto()),
+                "event photos", eventDto -> photoValidator.validate(requestId, eventDto.getGroupPhoto()),
                 "event locations", eventDto -> locationClient.validate("groupLocations", eventDto.getRoute()),
                 "routes info", eventDto -> routeInfoClient.validate("groupRouteInfo", eventDto.getRouteInfo())
         );

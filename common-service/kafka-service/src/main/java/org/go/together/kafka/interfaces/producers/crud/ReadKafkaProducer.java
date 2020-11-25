@@ -7,8 +7,8 @@ import org.go.together.kafka.interfaces.producers.ReplyKafkaProducer;
 import java.util.UUID;
 
 public interface ReadKafkaProducer<D extends Dto> extends ReplyKafkaProducer<UUID, D> {
-    default D read(UUID id, UUID dtoId) {
+    default D read(UUID requestId, UUID dtoId) {
         String messageTopic = getTopicId() + TopicKafkaPostfix.READ.getDescription();
-        return sendWithReply(messageTopic, id, dtoId);
+        return sendWithReply(messageTopic, requestId, dtoId);
     }
 }

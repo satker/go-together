@@ -152,7 +152,7 @@ class CrudServiceRevertTest {
             testServiceOverride.setValidator(testValidator);
             testServiceOverride.setRepository(testRepository);
 
-            testServiceOverride.update(null, testDto);
+            testServiceOverride.update(testDto);
         });
     }
 
@@ -170,7 +170,7 @@ class CrudServiceRevertTest {
         assertThrows(ValidationException.class, () -> {
             testServiceOverride.setValidator(testValidator);
             testServiceOverride.setRepository(testRepository);
-            testServiceOverride.update(null, null);
+            testServiceOverride.update(null);
         });
     }
 }

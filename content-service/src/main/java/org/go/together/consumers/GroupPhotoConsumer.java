@@ -8,6 +8,7 @@ import org.go.together.base.Validator;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
+import org.go.together.dto.ValidationMessageDto;
 import org.go.together.dto.form.FormDto;
 import org.go.together.kafka.impl.consumers.CommonCrudKafkaConsumer;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -65,9 +66,9 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
             ".concat(T(org.go.together.kafka.interfaces.TopicKafkaPostfix).VALIDATE.getDescription())}",
             containerFactory = "groupPhotosValidateListenerContainerFactory")
     @SendTo
-    public String handleValidate(ConsumerRecord<UUID, GroupPhotoDto> message) {
+    public ValidationMessageDto handleValidate(ConsumerRecord<UUID, GroupPhotoDto> message) {
         GroupPhotoDto dto = message.value();
-        return validator.validate(dto, null);
+        return new ValidationMessageDto(validator.validate(dto, null));
     }
 
     @Override

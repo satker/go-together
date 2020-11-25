@@ -5,12 +5,13 @@ import org.go.together.client.LocationClient;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.UserDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.kafka.impl.producers.CommonValidateKafkaProducer;
+import org.go.together.kafka.interfaces.producers.crud.ValidateKafkaProducer;
 import org.go.together.repository.interfaces.InterestRepository;
 import org.go.together.repository.interfaces.LanguageRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -19,7 +20,7 @@ public class UserValidator extends CommonValidator<UserDto> {
     private final LocationClient locationClient;
     private final LanguageRepository languageRepository;
     private final InterestRepository interestRepository;
-    private final CommonValidateKafkaProducer<GroupPhotoDto> photoValidator;
+    private final ValidateKafkaProducer<GroupPhotoDto> photoValidator;
 
     @Override
     public String commonValidation(UserDto dto, CrudOperation crudOperation) {
@@ -43,7 +44,7 @@ public class UserValidator extends CommonValidator<UserDto> {
     }
 
     @Override
-    public Map<String, Function<UserDto, ?>> getMapsForCheck() {
+    public Map<String, Function<UserDto, ?>> getMapsForCheck(UUID requestId) {
         return Map.of(
                 "first name", UserDto::getFirstName,
                 "last name", UserDto::getLastName,
@@ -51,7 +52,7 @@ public class UserValidator extends CommonValidator<UserDto> {
                 "login", UserDto::getLogin,
                 "mail", UserDto::getMail,
                 "user locations", userDto -> locationClient.validate("groupLocations", userDto.getLocation()),
-                "user photos", userDto -> photoValidator.validate(userDto.getId(), userDto.getGroupPhoto())
+                "user photos", userDto -> photoValidator.validate(requestId, userDto.getGroupPhoto())
         );
     }
 }

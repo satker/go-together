@@ -4,6 +4,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
+import org.go.together.dto.ValidationMessageDto;
 import org.go.together.dto.form.FormDto;
 
 import java.util.UUID;
@@ -17,7 +18,7 @@ public interface KafkaConsumer<D extends Dto> {
 
     D handleRead(ConsumerRecord<UUID, UUID> message);
 
-    String handleValidate(ConsumerRecord<UUID, D> message);
+    ValidationMessageDto handleValidate(ConsumerRecord<UUID, D> message);
 
     ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message);
 }

@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.io.File;
@@ -24,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(classes = RepositoryContext.class)
-@EmbeddedKafka
 class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
     @Value("${photo.store.path}")
     private String storePath;

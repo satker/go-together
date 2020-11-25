@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.io.File;
@@ -26,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(classes = RepositoryContext.class)
-@EmbeddedKafka
 class GroupPhotoServiceTest extends CrudServiceCommonTest<GroupPhoto, GroupPhotoDto> {
     @Value("${photo.store.path}")
     private String storePath;
@@ -81,7 +79,7 @@ class GroupPhotoServiceTest extends CrudServiceCommonTest<GroupPhoto, GroupPhoto
         groupPhotoDto.setPhotos(Set.of("photos/3.jpg", "photos/4.jpg").stream()
                 .map(this::getPhotoDto)
                 .collect(Collectors.toSet()));
-        IdDto idGroupPhotoDto = crudService.update(null, groupPhotoDto);
+        IdDto idGroupPhotoDto = crudService.update(groupPhotoDto);
         Optional<GroupPhoto> groupPhoto = repository.findById(idGroupPhotoDto.getId());
 
         assertTrue(groupPhoto.isPresent());
@@ -95,7 +93,7 @@ class GroupPhotoServiceTest extends CrudServiceCommonTest<GroupPhoto, GroupPhoto
 
     @Test
     void getGroupPhotosById() {
-        GroupPhotoDto groupPhotosById = crudService.read(null, groupPhoto.getId());
+        GroupPhotoDto groupPhotosById = crudService.read(groupPhoto.getId());
 
         Set<UUID> foundPhotosId = groupPhotosById.getPhotos().stream()
                 .map(PhotoDto::getId)

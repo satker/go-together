@@ -9,9 +9,7 @@ import org.go.together.compare.FieldMapper;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.kafka.impl.producers.CommonDeleteKafkaProducer;
-import org.go.together.kafka.interfaces.producers.crud.CreateKafkaProducer;
-import org.go.together.kafka.interfaces.producers.crud.UpdateKafkaProducer;
+import org.go.together.kafka.interfaces.producers.CommonCrudProducer;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
 import org.go.together.repository.interfaces.UserRepository;
@@ -29,10 +27,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> implements UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final CommonDeleteKafkaProducer<GroupPhotoDto> groupPhotoDeleteProducer;
     private final Mapper<SimpleUserDto, SystemUser> simpleUserMapper;
-    private final UpdateKafkaProducer<GroupPhotoDto> groupPhotoDtoUpdateKafkaProducer;
-    private final CreateKafkaProducer<GroupPhotoDto> groupPhotoDtoCreateKafkaProducer;
+    private final CommonCrudProducer<GroupPhotoDto> groupPhotoProducer;
     private final LanguageService languageService;
     private final InterestService interestService;
     private final EventLikeService eventLikeService;
@@ -110,7 +106,7 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.USER);
-            IdDto groupPhotoId = groupPhotoDtoUpdateKafkaProducer.update(requestId, groupPhotoDto);
+            IdDto groupPhotoId = groupPhotoProducer.update(requestId, groupPhotoDto);
             entity.setGroupPhoto(groupPhotoId.getId());
 
             entity.setRole(role);
@@ -126,7 +122,7 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.USER);
-            IdDto groupPhotoId = groupPhotoDtoCreateKafkaProducer.create(requestId, groupPhotoDto);
+            IdDto groupPhotoId = groupPhotoProducer.create(requestId, groupPhotoDto);
             entity.setGroupPhoto(groupPhotoId.getId());
             entity.setRole(Role.ROLE_USER);
             EventLikeDto eventLikeDto = new EventLikeDto();
@@ -135,7 +131,7 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             eventLikeService.create(requestId, eventLikeDto);
         } else if (crudOperation == CrudOperation.DELETE) {
             locationClient.delete("groupLocations", entity.getLocationId());
-            groupPhotoDeleteProducer.delete(requestId, entity.getGroupPhoto());
+            groupPhotoProducer.delete(requestId, entity.getGroupPhoto());
             eventLikeService.deleteByUserId(requestId, entity.getId());
         }
         return entity;

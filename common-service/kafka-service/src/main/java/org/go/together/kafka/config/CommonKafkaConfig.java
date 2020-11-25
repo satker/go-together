@@ -2,12 +2,11 @@ package org.go.together.kafka.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
+import org.go.together.dto.ValidationMessageDto;
 import org.go.together.dto.form.FormDto;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,30 +64,32 @@ public class CommonKafkaConfig {
     }
 
     @Bean
-    public ConsumerFactory<UUID, String> validateReplyConsumerFactory(@Value("${kafka.server}") String kafkaServer,
-                                                                      @Value("${kafka.groupId}") String kafkaGroupId) {
+    public ConsumerFactory<UUID, ValidationMessageDto> validateReplyConsumerFactory(@Value("${kafka.server}") String kafkaServer,
+                                                                                    @Value("${kafka.groupId}") String kafkaGroupId) {
+        JsonDeserializer<ValidationMessageDto> validationMessageDtoJsonDeserializer = new JsonDeserializer<>();
+        validationMessageDtoJsonDeserializer.addTrustedPackages("org.go.together.dto");
         return new DefaultKafkaConsumerFactory<>(createConsumerConfigs(kafkaServer, kafkaGroupId),
                 new UUIDDeserializer(),
-                new StringDeserializer());
+                validationMessageDtoJsonDeserializer);
     }
 
     private Map<String, Object> getValidateProducerConfigs(String kafkaServer) {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, "15728640");
         props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
         return props;
     }
 
     @Bean
-    public ProducerFactory<UUID, String> validateReplyProducerFactory(@Value("${kafka.server}") String kafkaServer) {
+    public ProducerFactory<UUID, ValidationMessageDto> validateReplyProducerFactory(@Value("${kafka.server}") String kafkaServer) {
         return new DefaultKafkaProducerFactory<>(getValidateProducerConfigs(kafkaServer));
     }
 
     @Bean
-    public KafkaTemplate<UUID, String> validateKafkaTemplate(@Qualifier("validateReplyProducerFactory") ProducerFactory<UUID, String> validateReplyProducerFactory) {
+    public KafkaTemplate<UUID, ValidationMessageDto> validateKafkaTemplate(ProducerFactory<UUID, ValidationMessageDto> validateReplyProducerFactory) {
         return new KafkaTemplate<>(validateReplyProducerFactory);
     }
 

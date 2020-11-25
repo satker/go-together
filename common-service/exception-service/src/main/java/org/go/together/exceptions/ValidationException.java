@@ -12,8 +12,8 @@ public class ValidationException extends RuntimeException {
     private static final Logger log = LoggerFactory.getLogger(ValidationException.class);
 
     public ValidationException(UUID requestId, String validationMessage, String serviceName) {
-        super("Errors throw validation: " + validationMessage + ". Request id: " + requestId);
+        super("Request id: " + requestId + ". Errors throw validation: " + validationMessage);
         log.error(serviceName + " validation failed: " + validationMessage);
-        log.error("Errors throw validation: '" + validationMessage + "'. Request id: " + requestId);
+        log.error("Request id: " + requestId + ". Errors throw validation: " + validationMessage);
     }
 }

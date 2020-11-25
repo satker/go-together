@@ -1,0 +1,4 @@
+kafka:
+  notificationTopicId: notification-service
+  server: localhost:9092
+  groupId: location-service

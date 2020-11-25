@@ -25,7 +25,7 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
     @Override
     public IdDto create(UUID requestId, D dto) {
         CrudOperation crudOperation = CrudOperation.CREATE;
-        String validationException = validator.validate(dto, crudOperation);
+        String validationException = validator.validate(requestId, dto, crudOperation);
         if (StringUtils.isBlank(validationException)) {
             UUID id = repository.create().getId();
             E newEntity = mapper.dtoToEntity(dto);
@@ -39,7 +39,7 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
     @Override
     public IdDto update(UUID requestId, D updatedDto) {
         CrudOperation crudOperation = CrudOperation.UPDATE;
-        String validationException = validator.validate(updatedDto, crudOperation);
+        String validationException = validator.validate(requestId, updatedDto, crudOperation);
         if (StringUtils.isBlank(validationException)) {
             E originalEntity = repository.findByIdOrThrow(updatedDto.getId());
             D originalDto = mapper.entityToDto(originalEntity);

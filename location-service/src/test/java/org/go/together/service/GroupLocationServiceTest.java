@@ -4,26 +4,24 @@ import org.go.together.base.Mapper;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
-import org.go.together.kafka.NotificationEvent;
 import org.go.together.model.Country;
 import org.go.together.model.GroupLocation;
 import org.go.together.repository.interfaces.CountryRepository;
 import org.go.together.repository.interfaces.LocationRepository;
 import org.go.together.tests.CrudServiceCommonTest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 
 
 @ContextConfiguration(classes = RepositoryContext.class)
@@ -36,16 +34,6 @@ class GroupLocationServiceTest extends CrudServiceCommonTest<GroupLocation, Grou
 
     @Autowired
     private LocationRepository locationRepository;
-
-    @Autowired
-    private KafkaTemplate<UUID, NotificationEvent> kafkaTemplate;
-
-    @Override
-    @BeforeEach
-    public void init() {
-        super.init();
-        doNothing().when(kafkaTemplate.send(any(), any(), any()));
-    }
 
     @Test
     public void updateSimilarLocationTest() {

@@ -13,6 +13,7 @@ import org.go.together.validation.test.dto.TestDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -27,7 +28,7 @@ public class TestValidator extends CommonValidator<TestDto> {
     }
 
     @Override
-    public Map<String, Function<TestDto, ?>> getMapsForCheck() {
+    public Map<String, Function<TestDto, ?>> getMapsForCheck(UUID requestId) {
         return Map.of("test name", TestDto::getName,
                 "test number", TestDto::getNumber,
                 "simple dto", TestDto::getSimpleDto,

@@ -8,6 +8,7 @@ import org.go.together.repository.interfaces.EventRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -17,7 +18,7 @@ public class EventUserValidator extends CommonValidator<EventUserDto> {
     private final EventRepository eventRepository;
 
     @Override
-    public Map<String, Function<EventUserDto, ?>> getMapsForCheck() {
+    public Map<String, Function<EventUserDto, ?>> getMapsForCheck(UUID requestId) {
         return Map.of(
                 "user id", testDto -> testDto.getUser().getId(),
                 "user status", EventUserDto::getUserStatus);
