@@ -1,4 +1,4 @@
-package org.go.together.kafka.interfaces;
+package org.go.together.enums;
 
 import org.go.together.interfaces.NamedEnum;
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -20,7 +21,7 @@ public class GroupLocationValidator extends CommonValidator<GroupLocationDto> {
     private final Validator<LocationDto> locationValidator;
 
     @Override
-    protected String commonValidation(GroupLocationDto dto, CrudOperation crudOperation) {
+    protected String commonValidation(UUID requestId, GroupLocationDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
         checkRoutes(dto.getLocations(), errors, crudOperation);
         if (dto.getCategory().equals(LocationCategory.EVENT)) {

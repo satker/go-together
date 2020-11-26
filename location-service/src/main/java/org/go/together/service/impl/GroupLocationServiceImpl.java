@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static org.go.together.enums.ServiceInfo.GROUP_LOCATION;
+
 @Service
 @RequiredArgsConstructor
 public class GroupLocationServiceImpl extends CommonCrudService<GroupLocationDto, GroupLocation>
@@ -45,7 +47,7 @@ public class GroupLocationServiceImpl extends CommonCrudService<GroupLocationDto
 
     @Override
     public String getServiceName() {
-        return "groupLocations";
+        return GROUP_LOCATION.getDescription();
     }
 
     @Override

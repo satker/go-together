@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 
@@ -46,7 +47,7 @@ class LocationServiceTest extends CrudServiceCommonTest<Location, LocationDto> {
         country.setCountryCode(placeDto.getCountry().getCountryCode().toUpperCase());
         country.setName(placeDto.getCountry().getName().toUpperCase());
         Country savedCountry = countryRepository.save(country);
-        CountryDto countryDto = countryMapper.entityToDto(savedCountry);
+        CountryDto countryDto = countryMapper.entityToDto(UUID.randomUUID(), savedCountry);
         placeDto.setId(null);
         placeDto.setCountry(countryDto);
         placeDto.setLocations(Collections.emptySet());

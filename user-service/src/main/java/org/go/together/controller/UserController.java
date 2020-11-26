@@ -5,14 +5,12 @@ import org.go.together.base.FindController;
 import org.go.together.client.UserClient;
 import org.go.together.dto.AuthUserDto;
 import org.go.together.dto.ResponseDto;
-import org.go.together.dto.SimpleUserDto;
 import org.go.together.dto.UserDto;
 import org.go.together.dto.form.FormDto;
 import org.go.together.service.interfaces.EventLikeService;
 import org.go.together.service.interfaces.UserService;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -51,11 +49,6 @@ class UserController extends FindController implements UserClient {
     @Override
     public AuthUserDto findAuthUserByLogin(String login) {
         return userService.findAuthUserByLogin(login);
-    }
-
-    @Override
-    public Collection<SimpleUserDto> findSimpleUserDtosByUserIds(Set<UUID> userIds) {
-        return userService.findSimpleUserDtosByUserIds(userIds);
     }
 
     @Override

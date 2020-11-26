@@ -1,12 +1,11 @@
 package org.go.together.service;
 
 import org.go.together.base.Mapper;
-import org.go.together.client.LocationClient;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.kafka.base.KafkaCrudClient;
-import org.go.together.kafka.interfaces.producers.crud.ValidateKafkaProducer;
+import org.go.together.kafka.producers.CommonCrudProducer;
+import org.go.together.kafka.producers.crud.ValidateKafkaProducer;
 import org.go.together.model.Interest;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
@@ -19,7 +18,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -31,10 +33,13 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = RepositoryContext.class)
 class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
     @Autowired
-    private LocationClient locationClient;
+    private CommonCrudProducer<GroupLocationDto> locationProducer;
 
     @Autowired
-    private KafkaCrudClient<GroupPhotoDto> groupPhotoCrud;
+    private ValidateKafkaProducer<GroupLocationDto> locationValidate;
+
+    @Autowired
+    private CommonCrudProducer<GroupPhotoDto> groupPhotoCrud;
 
     @Autowired
     private ValidateKafkaProducer<GroupPhotoDto> groupPhotoValidate;
@@ -150,22 +155,6 @@ class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
     }
 
     @Test
-    public void findSimpleUserDtosByUserIds() {
-        UserDto createdDto = getCreatedEntityId(dto);
-
-        Collection<SimpleUserDto> simpleUserDtosByUserIds =
-                ((UserService) crudService).findSimpleUserDtosByUserIds(Collections.singleton(createdDto.getId()));
-
-        assertEquals(1, simpleUserDtosByUserIds.size());
-        SimpleUserDto simpleUserDto = simpleUserDtosByUserIds.iterator().next();
-
-        assertEquals(createdDto.getLogin(), simpleUserDto.getLogin());
-        assertEquals(createdDto.getFirstName(), simpleUserDto.getFirstName());
-        assertEquals(createdDto.getLastName(), simpleUserDto.getLastName());
-        assertEquals(createdDto.getId(), simpleUserDto.getId());
-    }
-
-    @Test
     public void findLoginById() {
         UserDto createdDto = getCreatedEntityId(dto);
 
@@ -187,26 +176,26 @@ class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
         Set<InterestDto> interests = userDto.getInterests().stream()
                 .map(interestMapper::dtoToEntity)
                 .peek(interestRepository::save)
-                .map(interestMapper::entityToDto)
+                .map(interest -> interestMapper.entityToDto(UUID.randomUUID(), interest))
                 .collect(Collectors.toSet());
         userDto.setInterests(interests);
         Set<LanguageDto> languages = userDto.getLanguages().stream()
                 .map(languageMapper::dtoToEntity)
                 .peek(languageRepository::save)
-                .map(languageMapper::entityToDto)
+                .map(language -> languageMapper.entityToDto(UUID.randomUUID(), language))
                 .collect(Collectors.toSet());
         userDto.setLanguages(languages);
         return userDto;
     }
 
     private void prepareDto(UserDto userDto) {
-        when(locationClient.validate("groupLocations", userDto.getLocation())).thenReturn(new ValidationMessageDto(EMPTY));
+        when(locationValidate.validate(any(UUID.class), eq(userDto.getLocation()))).thenReturn(new ValidationMessageDto(EMPTY));
         when(groupPhotoValidate.validate(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new ValidationMessageDto(EMPTY));
         when(groupPhotoCrud.update(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
         when(groupPhotoCrud.create(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
-        when(locationClient.create("groupLocations", userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
-        when(locationClient.update("groupLocations", userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
-        when(locationClient.readGroupLocations(userDto.getLocation().getId())).thenReturn(userDto.getLocation());
+        when(locationProducer.create(any(UUID.class), eq(userDto.getLocation()))).thenReturn(new IdDto(userDto.getLocation().getId()));
+        when(locationProducer.update(any(UUID.class), eq(userDto.getLocation()))).thenReturn(new IdDto(userDto.getLocation().getId()));
+        when(locationProducer.read(any(UUID.class), eq(userDto.getLocation().getId()))).thenReturn(userDto.getLocation());
         when(groupPhotoCrud.read(any(UUID.class), eq(userDto.getGroupPhoto().getId()))).thenReturn(userDto.getGroupPhoto());
     }
 }

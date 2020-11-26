@@ -5,10 +5,12 @@ import org.go.together.dto.LanguageDto;
 import org.go.together.model.Language;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class LanguageMapper implements Mapper<LanguageDto, Language> {
     @Override
-    public LanguageDto entityToDto(Language entity) {
+    public LanguageDto entityToDto(UUID requestId, Language entity) {
         LanguageDto languageDto = new LanguageDto();
 
         languageDto.setId(entity.getId());

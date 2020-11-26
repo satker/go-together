@@ -42,7 +42,7 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
         String validationException = validator.validate(requestId, updatedDto, crudOperation);
         if (StringUtils.isBlank(validationException)) {
             E originalEntity = repository.findByIdOrThrow(updatedDto.getId());
-            D originalDto = mapper.entityToDto(originalEntity);
+            D originalDto = mapper.entityToDto(requestId, originalEntity);
             E updatedEntity = mapper.dtoToEntity(updatedDto);
             return dtoAction(requestId, updatedDto, crudOperation, crudOperation, originalEntity, originalDto, updatedEntity);
         } else {
@@ -55,7 +55,7 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
     public D read(UUID requestId, UUID uuid) {
         E entityById = repository.findByIdOrThrow(uuid);
         log.info("Read " + getServiceName() + " row with id: " + uuid.toString());
-        return mapper.entityToDto(entityById);
+        return mapper.entityToDto(requestId, entityById);
     }
 
     @Override
@@ -64,14 +64,19 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
         Optional<E> entityById = repository.findById(uuid);
         if (entityById.isPresent()) {
             E entity = entityById.get();
-            D originalDto = mapper.entityToDto(entity);
+            D originalDto = mapper.entityToDto(requestId, entity);
             E enrichedEntity = enrichEntity(requestId, entity, null, crudOperation);
             repository.delete(enrichedEntity);
-            sendNotification(uuid, originalDto, originalDto, NotificationStatus.DELETED);
+            sendNotification(requestId, uuid, originalDto, originalDto, NotificationStatus.DELETED);
         } else {
             String message = "Cannot find entity " + getServiceName() + "  by id " + uuid;
             log.warn(message);
         }
+    }
+
+    @Override
+    public boolean checkIfPresent(UUID requestId, UUID uuid) {
+        return repository.findById(uuid).isPresent();
     }
 
     private void rollbackAction(UUID requestId, D dto, E entity, Exception e, CrudOperation crudOperation) {
@@ -98,7 +103,7 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
             rollbackAction(requestId, originalDto, originalEntity, exception, revertCrudOperation);
             throw new ApplicationException(exception, requestId);
         }
-        sendNotification(newDto.getId(), originalDto, newDto, NotificationStatus.UPDATED);
+        sendNotification(requestId, newDto.getId(), originalDto, newDto, NotificationStatus.UPDATED);
         return new IdDto(createdEntity.getId());
     }
 

@@ -60,7 +60,7 @@ public class NotificationReceiverServiceImpl extends CommonCrudService<Notificat
                 .map(NotificationReceiver::getUserId)
                 .noneMatch(notificationReceiver -> notificationReceiver.equals(receiverId));
         if (receiverNotPresented) {
-            addNotificationMessageReceiver(requestId, receiverId, notificationMapper.entityToDto(notification));
+            addNotificationMessageReceiver(requestId, receiverId, notificationMapper.entityToDto(requestId, notification));
         }
     }
 
@@ -82,7 +82,7 @@ public class NotificationReceiverServiceImpl extends CommonCrudService<Notificat
     @Override
     public void notificateMessageReceivers(UUID requestId, NotificationMessage entity, NotificationMessageDto dto) {
         ((NotificationReceiverRepository) repository).findByNotificationId(dto.getNotificationId()).stream()
-                .map(mapper::entityToDto)
+                .map(notificationReceiver -> mapper.entityToDto(requestId, notificationReceiver))
                 .forEach(notificationReceiverDto -> notificateReceivers(requestId, entity, notificationReceiverDto));
     }
 

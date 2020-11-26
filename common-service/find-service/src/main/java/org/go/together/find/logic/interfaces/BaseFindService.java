@@ -9,9 +9,11 @@ import org.go.together.model.IdentifiedEntity;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
 public interface BaseFindService<E extends IdentifiedEntity> {
-    Pair<PageDto, Collection<Object>> find(CustomRepository<E> repository,
+    Pair<PageDto, Collection<Object>> find(UUID requestId,
+                                           CustomRepository<E> repository,
                                            FormDto formDto,
                                            String serviceName,
                                            Map<String, FieldMapper> mappingFields);

@@ -8,13 +8,14 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
 public class SenderService implements Sender {
-    public Map<FieldDto, Collection<Object>> send(Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices) {
+    public Map<FieldDto, Collection<Object>> send(UUID requestId, Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices) {
         return filtersToAnotherServices.entrySet().parallelStream()
-                .map(this::getRemoteResult)
+                .map(entry -> getRemoteResult(requestId, entry))
                 .collect(Collectors.toMap(Map.Entry::getKey,
                         Map.Entry::getValue,
                         this::resolveRequestResult));
@@ -25,9 +26,9 @@ public class SenderService implements Sender {
         return result1;
     }
 
-    private Map.Entry<FieldDto, Collection<Object>> getRemoteResult(Map.Entry<ClientLocalFieldObject, FormDto> entry) {
+    private Map.Entry<FieldDto, Collection<Object>> getRemoteResult(UUID requestId, Map.Entry<ClientLocalFieldObject, FormDto> entry) {
         try {
-            Collection<Object> result = entry.getKey().getClient().find(entry.getValue()).getResult();
+            Collection<Object> result = entry.getKey().getClient().find(requestId, entry.getValue()).getResult();
             return Map.entry(entry.getKey().getFieldDto(), result);
         } catch (Exception e) {
             throw new RemoteClientFindException(e);

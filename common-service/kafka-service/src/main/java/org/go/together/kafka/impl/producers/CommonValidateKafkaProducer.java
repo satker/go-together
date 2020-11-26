@@ -2,7 +2,7 @@ package org.go.together.kafka.impl.producers;
 
 import org.go.together.dto.Dto;
 import org.go.together.dto.ValidationMessageDto;
-import org.go.together.kafka.interfaces.producers.crud.ValidateKafkaProducer;
+import org.go.together.kafka.producers.crud.ValidateKafkaProducer;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 
 import java.util.UUID;

@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.go.together.kafka.interfaces.TopicKafkaPostfix.FIND;
-import static org.go.together.kafka.interfaces.producers.ReplyKafkaProducer.KAFKA_REPLY_ID;
+import static org.go.together.enums.TopicKafkaPostfix.FIND;
+import static org.go.together.kafka.producers.ReplyKafkaProducer.KAFKA_REPLY_ID;
 
 public abstract class FindProducerKafkaConfig<D extends Dto> extends DeleteProducerKafkaConfig<D> {
     private ProducerFactory<UUID, FormDto> findProducerFactory(String kafkaServer) {

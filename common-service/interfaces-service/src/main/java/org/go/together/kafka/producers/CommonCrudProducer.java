@@ -1,4 +1,4 @@
-package org.go.together.kafka.interfaces.producers;
+package org.go.together.kafka.producers;
 
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;

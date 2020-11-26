@@ -70,7 +70,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         for (int i = 0; i < 5; i++) {
             createTestEntity("test " + 1);
         }
-        this.testDto = mapper.entityToDto(testEntity);
+        this.testDto = mapper.entityToDto(UUID.randomUUID(), testEntity);
     }
 
     private TestEntity createTestEntity(String name) {
@@ -98,7 +98,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         Optional<TestEntity> savedEntity = repository.findById(testDto.getId());
 
         assertTrue(savedEntity.isPresent());
-        assertEquals(mapper.entityToDto(savedEntity.get()), testDto);
+        assertEquals(mapper.entityToDto(UUID.randomUUID(), savedEntity.get()), testDto);
     }
 
     @Test

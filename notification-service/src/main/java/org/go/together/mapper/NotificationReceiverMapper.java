@@ -8,16 +8,18 @@ import org.go.together.model.Notification;
 import org.go.together.model.NotificationReceiver;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class NotificationReceiverMapper implements Mapper<NotificationReceiverDto, NotificationReceiver> {
     private final Mapper<NotificationDto, Notification> notificationMapper;
 
     @Override
-    public NotificationReceiverDto entityToDto(NotificationReceiver entity) {
+    public NotificationReceiverDto entityToDto(UUID requestId, NotificationReceiver entity) {
         NotificationReceiverDto notificationReceiverDto = new NotificationReceiverDto();
         notificationReceiverDto.setId(entity.getId());
-        notificationReceiverDto.setNotification(notificationMapper.entityToDto(entity.getNotification()));
+        notificationReceiverDto.setNotification(notificationMapper.entityToDto(requestId, entity.getNotification()));
         notificationReceiverDto.setUserId(entity.getUserId());
         return notificationReceiverDto;
     }

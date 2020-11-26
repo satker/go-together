@@ -2,11 +2,11 @@ package org.go.together.kafka.base;
 
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
-import org.go.together.kafka.interfaces.producers.CommonCrudProducer;
-import org.go.together.kafka.interfaces.producers.crud.CreateKafkaProducer;
-import org.go.together.kafka.interfaces.producers.crud.DeleteKafkaProducer;
-import org.go.together.kafka.interfaces.producers.crud.ReadKafkaProducer;
-import org.go.together.kafka.interfaces.producers.crud.UpdateKafkaProducer;
+import org.go.together.kafka.producers.CommonCrudProducer;
+import org.go.together.kafka.producers.crud.CreateKafkaProducer;
+import org.go.together.kafka.producers.crud.DeleteKafkaProducer;
+import org.go.together.kafka.producers.crud.ReadKafkaProducer;
+import org.go.together.kafka.producers.crud.UpdateKafkaProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;

@@ -3,13 +3,11 @@ package org.go.together.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.CommonCrudService;
-import org.go.together.base.Mapper;
-import org.go.together.client.LocationClient;
 import org.go.together.compare.FieldMapper;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.kafka.interfaces.producers.CommonCrudProducer;
+import org.go.together.kafka.producers.CommonCrudProducer;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
 import org.go.together.repository.interfaces.UserRepository;
@@ -23,16 +21,17 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.go.together.enums.ServiceInfo.USERS;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> implements UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final Mapper<SimpleUserDto, SystemUser> simpleUserMapper;
     private final CommonCrudProducer<GroupPhotoDto> groupPhotoProducer;
     private final LanguageService languageService;
     private final InterestService interestService;
     private final EventLikeService eventLikeService;
-    private final LocationClient locationClient;
+    private final CommonCrudProducer<GroupLocationDto> locationProducer;
 
     @Override
     public AuthUserDto findAuthUserByLogin(String login) {
@@ -100,7 +99,7 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             GroupLocationDto locationDto = dto.getLocation();
             locationDto.setGroupId(entity.getId());
             locationDto.setCategory(LocationCategory.USER);
-            IdDto route = locationClient.update("groupLocations", locationDto);
+            IdDto route = locationProducer.update(requestId, locationDto);
             entity.setLocationId(route.getId());
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
@@ -116,7 +115,7 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             GroupLocationDto locationDto = dto.getLocation();
             locationDto.setGroupId(entity.getId());
             locationDto.setCategory(LocationCategory.USER);
-            IdDto route = locationClient.create("groupLocations", locationDto);
+            IdDto route = locationProducer.create(requestId, locationDto);
             entity.setLocationId(route.getId());
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
@@ -130,7 +129,7 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             eventLikeDto.setUsers(Collections.emptySet());
             eventLikeService.create(requestId, eventLikeDto);
         } else if (crudOperation == CrudOperation.DELETE) {
-            locationClient.delete("groupLocations", entity.getLocationId());
+            locationProducer.delete(requestId, entity.getLocationId());
             groupPhotoProducer.delete(requestId, entity.getGroupPhoto());
             eventLikeService.deleteByUserId(requestId, entity.getId());
         }
@@ -151,19 +150,17 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
     }
 
     @Override
-    public Collection<SimpleUserDto> findSimpleUserDtosByUserIds(Set<UUID> userIds) {
-        Collection<SystemUser> allUsersByIds = ((UserRepository) repository).findAllByIds(userIds);
-        return simpleUserMapper.entitiesToDtos(allUsersByIds);
-    }
-
-    @Override
     public String getServiceName() {
-        return "users";
+        return USERS.getDescription();
     }
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return Map.of("languages", FieldMapper.builder()
+        return Map.of(
+                "id", FieldMapper.builder()
+                        .currentServiceField("id")
+                        .fieldClass(UUID.class).build(),
+                "languages", FieldMapper.builder()
                         .innerService(languageService)
                         .currentServiceField("languages").build(),
                 "interests", FieldMapper.builder()

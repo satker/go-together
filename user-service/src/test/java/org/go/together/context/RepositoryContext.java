@@ -1,10 +1,8 @@
 package org.go.together.context;
 
-import org.go.together.client.LocationClient;
-import org.go.together.client.UserClient;
 import org.go.together.configuration.H2HibernateConfig;
 import org.go.together.kafka.base.KafkaCrudClient;
-import org.go.together.kafka.interfaces.producers.crud.*;
+import org.go.together.kafka.producers.crud.*;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.*;
@@ -25,16 +23,6 @@ public class RepositoryContext {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public UserClient userClient() {
-        return Mockito.mock(UserClient.class);
-    }
-
-    @Bean
-    public LocationClient locationClient() {
-        return Mockito.mock(LocationClient.class);
     }
 
     @Bean

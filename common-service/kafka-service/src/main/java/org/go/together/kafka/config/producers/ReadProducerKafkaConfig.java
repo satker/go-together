@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.go.together.kafka.interfaces.TopicKafkaPostfix.READ;
-import static org.go.together.kafka.interfaces.producers.ReplyKafkaProducer.KAFKA_REPLY_ID;
+import static org.go.together.enums.TopicKafkaPostfix.READ;
+import static org.go.together.kafka.producers.ReplyKafkaProducer.KAFKA_REPLY_ID;
 
 public abstract class ReadProducerKafkaConfig<D extends Dto> extends UpdateProducerKafkaConfig<D> {
     private ProducerFactory<UUID, UUID> readProducerFactory(String kafkaServer) {

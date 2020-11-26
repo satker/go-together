@@ -6,8 +6,10 @@ import org.go.together.find.dto.FieldDto;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
 public interface Finder {
-    Map<FieldDto, Collection<Object>> getFilters(Map<FieldDto, FilterDto> filters,
-                                               Map<String, FieldMapper> availableFields);
+    Map<FieldDto, Collection<Object>> getFilters(UUID requestId,
+                                                 Map<FieldDto, FilterDto> filters,
+                                                 Map<String, FieldMapper> availableFields);
 }

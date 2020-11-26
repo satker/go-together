@@ -29,4 +29,6 @@ public interface CrudService<D extends Dto> {
     }
 
     void delete(UUID requestId, UUID uuid);
+
+    boolean checkIfPresent(UUID requestId, UUID uuid);
 }

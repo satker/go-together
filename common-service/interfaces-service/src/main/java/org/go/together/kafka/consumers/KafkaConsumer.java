@@ -1,4 +1,4 @@
-package org.go.together.kafka.interfaces.consumers;
+package org.go.together.kafka.consumers;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.go.together.dto.Dto;

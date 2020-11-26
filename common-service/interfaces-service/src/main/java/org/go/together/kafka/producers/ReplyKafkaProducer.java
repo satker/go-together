@@ -1,4 +1,4 @@
-package org.go.together.kafka.interfaces.producers;
+package org.go.together.kafka.producers;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;

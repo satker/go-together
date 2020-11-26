@@ -2,7 +2,7 @@ package org.go.together.kafka.impl.producers;
 
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
-import org.go.together.kafka.interfaces.producers.crud.UpdateKafkaProducer;
+import org.go.together.kafka.producers.crud.UpdateKafkaProducer;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 
 import java.util.UUID;

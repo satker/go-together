@@ -10,10 +10,7 @@ import org.go.together.find.finders.request.Sender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.go.together.find.utils.FindUtils.getSingleGroupFields;
@@ -33,14 +30,15 @@ public class RemoteFinder implements Finder {
         this.requestConverter = requestConverter;
     }
 
-    public Map<FieldDto, Collection<Object>> getFilters(Map<FieldDto, FilterDto> filters,
+    public Map<FieldDto, Collection<Object>> getFilters(UUID requestId,
+                                                        Map<FieldDto, FilterDto> filters,
                                                         Map<String, FieldMapper> availableFields) {
         Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices = filters.entrySet().parallelStream()
                 .flatMap(entry -> getFieldMapperByRemoteField(availableFields, entry.getKey()).stream()
                         .map(fieldMapper -> requestConverter.convert(entry, fieldMapper)))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, this::resolveRemoteFormDtos));
         if (!filtersToAnotherServices.isEmpty()) {
-            return sender.send(filtersToAnotherServices);
+            return sender.send(requestId, filtersToAnotherServices);
         }
 
         return Collections.emptyMap();

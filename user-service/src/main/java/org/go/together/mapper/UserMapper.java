@@ -2,45 +2,42 @@ package org.go.together.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.go.together.base.Mapper;
-import org.go.together.client.LocationClient;
-import org.go.together.dto.GroupPhotoDto;
-import org.go.together.dto.InterestDto;
-import org.go.together.dto.LanguageDto;
-import org.go.together.dto.UserDto;
-import org.go.together.kafka.interfaces.producers.CommonCrudProducer;
+import org.go.together.dto.*;
+import org.go.together.kafka.producers.CommonCrudProducer;
 import org.go.together.model.Interest;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class UserMapper implements Mapper<UserDto, SystemUser> {
-    private final LocationClient locationClient;
+    private final CommonCrudProducer<GroupLocationDto> locationProducer;
     private final CommonCrudProducer<GroupPhotoDto> groupPhotoProducer;
     private final Mapper<LanguageDto, Language> languageMapper;
     private final Mapper<InterestDto, Interest> interestMapper;
 
     @Override
-    public UserDto entityToDto(SystemUser entity) {
+    public UserDto entityToDto(UUID requestId, SystemUser entity) {
         UserDto userDTO = new UserDto();
         userDTO.setDescription(entity.getDescription());
         userDTO.setFirstName(entity.getFirstName());
         userDTO.setId(entity.getId());
         userDTO.setLanguages(entity.getLanguages().stream()
-                .map(languageMapper::entityToDto)
+                .map(language -> languageMapper.entityToDto(requestId, language))
                 .collect(Collectors.toSet()));
         userDTO.setLastName(entity.getLastName());
-        userDTO.setLocation(locationClient.readGroupLocations(entity.getLocationId()));
+        userDTO.setLocation(locationProducer.read(requestId, entity.getLocationId()));
         userDTO.setLogin(entity.getLogin());
         userDTO.setMail(entity.getMail());
         userDTO.setRole(entity.getRole());
         userDTO.setInterests(entity.getInterests().stream()
-                .map(interestMapper::entityToDto)
+                .map(interest -> interestMapper.entityToDto(requestId, interest))
                 .collect(Collectors.toSet()));
-        userDTO.setGroupPhoto(groupPhotoProducer.read(entity.getId(), entity.getGroupPhoto()));
+        userDTO.setGroupPhoto(groupPhotoProducer.read(requestId, entity.getGroupPhoto()));
         return userDTO;
     }
 

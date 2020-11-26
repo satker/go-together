@@ -35,7 +35,7 @@ public abstract class CommonValidator<D extends Dto> implements Validator<D> {
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.toSet());
         if (errors.isEmpty()) {
-            return commonValidation(dto, crudOperation);
+            return commonValidation(requestId, dto, crudOperation);
         }
         return String.join(StringUtils.EMPTY, errors);
     }
@@ -53,8 +53,8 @@ public abstract class CommonValidator<D extends Dto> implements Validator<D> {
                 .collect(Collectors.joining());
     }
 
-     protected String commonValidation(D dto, CrudOperation crudOperation) {
-         return StringUtils.EMPTY;
-     }
+    protected String commonValidation(UUID requestId, D dto, CrudOperation crudOperation) {
+        return StringUtils.EMPTY;
+    }
 
 }

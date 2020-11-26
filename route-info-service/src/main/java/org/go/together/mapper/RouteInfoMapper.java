@@ -5,10 +5,12 @@ import org.go.together.dto.RouteInfoDto;
 import org.go.together.model.RouteInfo;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class RouteInfoMapper implements Mapper<RouteInfoDto, RouteInfo> {
     @Override
-    public RouteInfoDto entityToDto(RouteInfo entity) {
+    public RouteInfoDto entityToDto(UUID requestId, RouteInfo entity) {
         RouteInfoDto routeInfoDto = new RouteInfoDto();
         routeInfoDto.setId(entity.getId());
         routeInfoDto.setCost(entity.getCost());

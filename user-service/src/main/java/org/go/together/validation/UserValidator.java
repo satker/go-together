@@ -1,11 +1,11 @@
 package org.go.together.validation;
 
 import lombok.RequiredArgsConstructor;
-import org.go.together.client.LocationClient;
+import org.go.together.dto.GroupLocationDto;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.UserDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.kafka.interfaces.producers.crud.ValidateKafkaProducer;
+import org.go.together.kafka.producers.crud.ValidateKafkaProducer;
 import org.go.together.repository.interfaces.InterestRepository;
 import org.go.together.repository.interfaces.LanguageRepository;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,13 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class UserValidator extends CommonValidator<UserDto> {
-    private final LocationClient locationClient;
+    private final ValidateKafkaProducer<GroupLocationDto> locationValidator;
     private final LanguageRepository languageRepository;
     private final InterestRepository interestRepository;
     private final ValidateKafkaProducer<GroupPhotoDto> photoValidator;
 
     @Override
-    public String commonValidation(UserDto dto, CrudOperation crudOperation) {
+    public String commonValidation(UUID requestId, UserDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
         if (crudOperation == CrudOperation.CREATE) {
@@ -51,7 +51,7 @@ public class UserValidator extends CommonValidator<UserDto> {
                 "description", UserDto::getDescription,
                 "login", UserDto::getLogin,
                 "mail", UserDto::getMail,
-                "user locations", userDto -> locationClient.validate("groupLocations", userDto.getLocation()),
+                "user locations", userDto -> locationValidator.validate(requestId, userDto.getLocation()),
                 "user photos", userDto -> photoValidator.validate(requestId, userDto.getGroupPhoto())
         );
     }

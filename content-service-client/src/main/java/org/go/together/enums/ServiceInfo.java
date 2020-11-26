@@ -3,8 +3,7 @@ package org.go.together.enums;
 import org.go.together.interfaces.NamedEnum;
 
 public enum ServiceInfo implements NamedEnum {
-    GROUP_PHOTO_NAME("groupPhotos"),
-    SERVICE_NAME("content-service");
+    GROUP_PHOTO_NAME("groupPhotos");
 
     private final String description;
 

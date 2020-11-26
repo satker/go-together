@@ -46,8 +46,6 @@ dependencies {
 
             "org.projectlombok:lombok:${lombokVersion}"
     )
-    testCompile("org.springframework.kafka:spring-kafka-test:${springKafkaVersion}")
-
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     compile project(":event-service-client")
     compile project(":user-service-client")

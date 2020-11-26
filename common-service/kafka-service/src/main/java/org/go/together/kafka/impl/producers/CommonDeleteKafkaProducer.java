@@ -1,7 +1,7 @@
 package org.go.together.kafka.impl.producers;
 
 import org.go.together.dto.Dto;
-import org.go.together.kafka.interfaces.producers.crud.DeleteKafkaProducer;
+import org.go.together.kafka.producers.crud.DeleteKafkaProducer;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.UUID;

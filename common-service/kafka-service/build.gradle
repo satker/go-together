@@ -2,7 +2,6 @@ buildscript {
     ext {
         springBootVersion = '2.3.0.RELEASE'
         lombokVersion='1.18.16'
-        springKafkaVersion='2.6.3'
     }
     repositories {
         mavenCentral()
@@ -24,10 +23,8 @@ repositories {
 
 dependencies {
     compile(
-            "org.springframework.kafka:spring-kafka:${springKafkaVersion}",
             "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
     )
 
     compile project(":common-service:interfaces-service")
-    compile project(":common-service:exception-service")
 }

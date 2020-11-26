@@ -9,13 +9,14 @@ import org.go.together.repository.interfaces.NotificationRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class NotificationMessageMapper implements Mapper<NotificationMessageDto, NotificationMessage> {
     private final NotificationRepository notificationRepository;
 
-    public NotificationMessageDto entityToDto(NotificationMessage entity) {
+    public NotificationMessageDto entityToDto(UUID requestId, NotificationMessage entity) {
         NotificationMessageDto notificationMessageDto = new NotificationMessageDto();
         notificationMessageDto.setId(entity.getId());
         notificationMessageDto.setDate(entity.getDate());

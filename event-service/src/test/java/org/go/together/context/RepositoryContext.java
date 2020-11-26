@@ -1,11 +1,8 @@
 package org.go.together.context;
 
-import org.go.together.client.LocationClient;
-import org.go.together.client.RouteInfoClient;
-import org.go.together.client.UserClient;
 import org.go.together.configuration.H2HibernateConfig;
-import org.go.together.kafka.base.KafkaCrudClient;
-import org.go.together.kafka.interfaces.producers.crud.*;
+import org.go.together.kafka.producers.CommonCrudProducer;
+import org.go.together.kafka.producers.crud.*;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.*;
@@ -24,21 +21,6 @@ import org.springframework.context.annotation.*;
 })
 public class RepositoryContext {
     @Bean
-    public UserClient userClient() {
-        return Mockito.mock(UserClient.class);
-    }
-
-    @Bean
-    public RouteInfoClient routeInfoClient() {
-        return Mockito.mock(RouteInfoClient.class);
-    }
-
-    @Bean
-    public LocationClient locationClient() {
-        return Mockito.mock(LocationClient.class);
-    }
-
-    @Bean
     @Primary
     public ValidateKafkaProducer validateKafkaProducer() {
         return Mockito.mock(ValidateKafkaProducer.class);
@@ -46,8 +28,8 @@ public class RepositoryContext {
 
     @Bean
     @Primary
-    public KafkaCrudClient kafkaCrudClient() {
-        return Mockito.mock(KafkaCrudClient.class);
+    public CommonCrudProducer kafkaCrudClient() {
+        return Mockito.mock(CommonCrudProducer.class);
     }
 
     @Bean
@@ -68,5 +50,10 @@ public class RepositoryContext {
     @Bean
     public DeleteKafkaProducer deleteKafkaProducer() {
         return Mockito.mock(DeleteKafkaProducer.class);
+    }
+
+    @Bean
+    public FindKafkaProducer findKafkaProducer() {
+        return Mockito.mock(FindKafkaProducer.class);
     }
 }

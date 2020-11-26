@@ -36,7 +36,7 @@ public class RequestConverterService implements RequestConverter {
     }
 
     private FieldDto getRemoteMainAndGetField(String anotherServiceSearchField, FieldMapper fieldMapper) {
-        String remoteGetField = fieldMapper.getPathRemoteFieldGetter();
+        String remoteGetField = fieldMapper.getRemoteServiceFieldGetter();
 
         String[] havingCondition = FindUtils.getHavingCondition(anotherServiceSearchField);
         if (havingCondition.length > 1) {

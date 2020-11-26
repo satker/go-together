@@ -41,7 +41,7 @@ public class TestValidator extends CommonValidator<TestDto> {
     }
 
     @Override
-    protected String commonValidation(TestDto dto, CrudOperation crudOperation) {
+    protected String commonValidation(UUID requestId, TestDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
         dto.getJoinTestEntities().stream()

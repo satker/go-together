@@ -39,7 +39,7 @@ public class NotificationReceiverMessageServiceImpl extends CommonCrudService<No
     @Override
     public boolean readNotifications(UUID receiverId) {
         getNotificationReceiverMessageIdsByReceiverId(receiverId).stream()
-                .map(mapper::entityToDto)
+                .map(notificationReceiverMessage -> mapper.entityToDto(UUID.randomUUID(), notificationReceiverMessage))
                 .peek(notificationReceiverMessage -> notificationReceiverMessage.setIsRead(true))
                 .forEach(super::update);
         return true;

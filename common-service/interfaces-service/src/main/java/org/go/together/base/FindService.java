@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface FindService<D extends Dto> {
     default ResponseDto<Object> find(FormDto formDto) {
-        return find(null, formDto);
+        return find(UUID.randomUUID(), formDto);
     }
 
     ResponseDto<Object> find(UUID requestId, FormDto formDto);

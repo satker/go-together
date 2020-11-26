@@ -15,11 +15,13 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static org.go.together.enums.ServiceInfo.EVENT_LIKES;
+
 @Service
 public class EventLikeServiceImpl extends CommonCrudService<EventLikeDto, EventLike> implements EventLikeService {
     @Override
     public String getServiceName() {
-        return "eventLikes";
+        return EVENT_LIKES.getDescription();
     }
 
     @Override
@@ -61,7 +63,7 @@ public class EventLikeServiceImpl extends CommonCrudService<EventLikeDto, EventL
                 .peek(eventLike -> {
                     eventLike.getUsers().removeIf(user -> user.getId().equals(userId));
                     eventLike.setUsers(eventLike.getUsers());
-                }).map(mapper::entityToDto)
+                }).map(eventLike -> mapper.entityToDto(requestId, eventLike))
                 .forEach(eventLikeDto -> super.update(requestId, eventLikeDto));
     }
 }

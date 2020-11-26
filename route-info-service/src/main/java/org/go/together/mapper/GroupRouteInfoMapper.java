@@ -8,6 +8,7 @@ import org.go.together.model.GroupRouteInfo;
 import org.go.together.model.RouteInfo;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -16,12 +17,12 @@ public class GroupRouteInfoMapper implements Mapper<GroupRouteInfoDto, GroupRout
     private final Mapper<RouteInfoDto, RouteInfo> routeInfoMapper;
 
     @Override
-    public GroupRouteInfoDto entityToDto(GroupRouteInfo entity) {
+    public GroupRouteInfoDto entityToDto(UUID requestId, GroupRouteInfo entity) {
         GroupRouteInfoDto groupRouteInfoDto = new GroupRouteInfoDto();
         groupRouteInfoDto.setGroupId(entity.getGroupId());
         groupRouteInfoDto.setId(entity.getId());
         groupRouteInfoDto.setInfoRoutes(entity.getInfoRoutes().stream()
-                .map(routeInfoMapper::entityToDto)
+                .map(routeInfo -> routeInfoMapper.entityToDto(requestId, routeInfo))
                 .collect(Collectors.toSet()));
         return groupRouteInfoDto;
     }

@@ -1,16 +1,17 @@
 package org.go.together.validation;
 
 import lombok.RequiredArgsConstructor;
-import org.go.together.client.LocationClient;
-import org.go.together.client.RouteInfoClient;
-import org.go.together.client.UserClient;
-import org.go.together.dto.EventDto;
-import org.go.together.dto.GroupPhotoDto;
+import org.go.together.dto.*;
+import org.go.together.dto.form.FilterDto;
+import org.go.together.dto.form.FormDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.kafka.interfaces.producers.crud.ValidateKafkaProducer;
+import org.go.together.enums.FindOperator;
+import org.go.together.kafka.producers.crud.FindKafkaProducer;
+import org.go.together.kafka.producers.crud.ValidateKafkaProducer;
 import org.go.together.validation.dto.DateIntervalDto;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
@@ -18,10 +19,10 @@ import java.util.function.Function;
 @Component
 @RequiredArgsConstructor
 public class EventValidator extends CommonValidator<EventDto> {
-    private final UserClient userClient;
+    private final FindKafkaProducer<UserDto> findUserKafkaProducer;
     private final ValidateKafkaProducer<GroupPhotoDto> photoValidator;
-    private final LocationClient locationClient;
-    private final RouteInfoClient routeInfoClient;
+    private final ValidateKafkaProducer<GroupLocationDto> locationValidator;
+    private final ValidateKafkaProducer<GroupRouteInfoDto> routeInfoValidator;
 
     @Override
     public Map<String, Function<EventDto, ?>> getMapsForCheck(UUID requestId) {
@@ -34,21 +35,31 @@ public class EventValidator extends CommonValidator<EventDto> {
                 "photos", eventDto -> eventDto.getGroupPhoto().getPhotos(),
                 "routes locations", eventDto -> eventDto.getRoute().getLocations(),
                 "event photos", eventDto -> photoValidator.validate(requestId, eventDto.getGroupPhoto()),
-                "event locations", eventDto -> locationClient.validate("groupLocations", eventDto.getRoute()),
-                "routes info", eventDto -> routeInfoClient.validate("groupRouteInfo", eventDto.getRouteInfo())
+                "event locations", eventDto -> locationValidator.validate(requestId, eventDto.getRoute()),
+                "routes info", eventDto -> routeInfoValidator.validate(requestId, eventDto.getRouteInfo())
         );
     }
 
     @Override
-    protected String commonValidation(EventDto dto, CrudOperation crudOperation) {
+    protected String commonValidation(UUID requestId, EventDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
-        if (!userClient.checkIfUserPresentsById(dto.getAuthor().getId())) {
+        if (isNotPresentUser(requestId, dto.getAuthor().getId())) {
             errors.append("Author has incorrect uuid: ")
                     .append(dto.getAuthor().getId())
                     .append(". ");
         }
 
         return errors.toString();
+    }
+
+    private boolean isNotPresentUser(UUID requestId, UUID authorId) {
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(FindOperator.EQUAL);
+        filterDto.setValues(Collections.singleton(Collections.singletonMap("id", authorId)));
+        FormDto formDto = new FormDto();
+        formDto.setFilters(Collections.singletonMap("id", filterDto));
+        formDto.setMainIdField("users.id");
+        return findUserKafkaProducer.find(requestId, formDto).getResult().isEmpty();
     }
 }

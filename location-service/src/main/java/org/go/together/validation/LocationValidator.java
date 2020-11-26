@@ -33,7 +33,7 @@ public class LocationValidator extends CommonValidator<LocationDto> {
     }
 
     @Override
-    protected String commonValidation(LocationDto locationDto, CrudOperation crudOperation) {
+    protected String commonValidation(UUID requestId, LocationDto locationDto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
         Country country;
         if (Strings.isNullOrEmpty(locationDto.getPlace().getCountry().getName())) {

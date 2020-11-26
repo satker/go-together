@@ -4,8 +4,8 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
+import org.go.together.enums.TopicKafkaPostfix;
 import org.go.together.kafka.impl.producers.CommonCreateKafkaProducer;
-import org.go.together.kafka.interfaces.TopicKafkaPostfix;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -22,7 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.go.together.kafka.interfaces.producers.ReplyKafkaProducer.KAFKA_REPLY_ID;
+import static org.go.together.kafka.producers.ReplyKafkaProducer.KAFKA_REPLY_ID;
+
 
 public abstract class CreateProducerKafkaConfig<D extends Dto> extends ReadProducerKafkaConfig<D> {
     private ProducerFactory<UUID, D> createProducerFactory(String kafkaServer) {

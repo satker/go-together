@@ -75,7 +75,7 @@ class GroupPhotoServiceTest extends CrudServiceCommonTest<GroupPhoto, GroupPhoto
 
     @Test
     void updateGroupPhotos() {
-        GroupPhotoDto groupPhotoDto = mapper.entityToDto(groupPhoto);
+        GroupPhotoDto groupPhotoDto = mapper.entityToDto(UUID.randomUUID(), groupPhoto);
         groupPhotoDto.setPhotos(Set.of("photos/3.jpg", "photos/4.jpg").stream()
                 .map(this::getPhotoDto)
                 .collect(Collectors.toSet()));

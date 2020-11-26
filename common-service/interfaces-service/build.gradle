@@ -2,6 +2,7 @@ buildscript {
     ext {
         springBootVersion = '2.3.0.RELEASE'
         lombokVersion='1.18.16'
+        springKafkaVersion='2.6.3'
     }
     repositories {
         mavenCentral()
@@ -28,8 +29,10 @@ dependencies {
     compile (
             "org.projectlombok:lombok:${lombokVersion}",
             "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+            "org.springframework.kafka:spring-kafka:${springKafkaVersion}",
             'org.apache.commons:commons-lang3:3.9'
     )
     implementation("jakarta.persistence:jakarta.persistence-api:2.2.3")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    compile project(":common-service:exception-service")
 }

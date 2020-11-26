@@ -10,10 +10,7 @@ import org.go.together.find.logic.interfaces.BaseCorrectorService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.go.together.find.utils.FindUtils.mergeFilters;
 
@@ -33,11 +30,11 @@ public class BaseCorrectorServiceImpl implements BaseCorrectorService {
 
 
     @Override
-    public Map<FieldDto, FilterDto> getCorrectedFilters(FormDto formDto, Map<String, FieldMapper> mappingFields) {
+    public Map<FieldDto, FilterDto> getCorrectedFilters(UUID requestId, FormDto formDto, Map<String, FieldMapper> mappingFields) {
         Map<FieldDto, FilterDto> remoteFilters = correctorRemoteFiltersService.getCorrectedFilters(formDto.getFilters(), mappingFields);
         Map<FieldDto, Collection<Object>> resultRemoteFilters = new HashMap<>();
         if (!remoteFilters.isEmpty()) {
-            resultRemoteFilters = remoteFindService.getFilters(remoteFilters, mappingFields);
+            resultRemoteFilters = remoteFindService.getFilters(requestId, remoteFilters, mappingFields);
         }
         if (resultRemoteFilters == null) {
             return Collections.emptyMap();

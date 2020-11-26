@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -32,7 +33,7 @@ class CountryServiceTest extends CrudServiceCommonTest<Country, CountryDto> {
         country.setCountryCode(country.getCountryCode().toUpperCase());
         country.setName(country.getName().toUpperCase());
         Country savedCountry = repository.save(country);
-        return mapper.entityToDto(savedCountry);
+        return mapper.entityToDto(UUID.randomUUID(), savedCountry);
     }
 
     @Override

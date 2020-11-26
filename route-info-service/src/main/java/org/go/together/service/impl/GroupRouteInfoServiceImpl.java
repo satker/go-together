@@ -19,6 +19,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static org.go.together.enums.ServiceInfo.GROUP_ROUTE_INFO;
+
 @Service
 @RequiredArgsConstructor
 public class GroupRouteInfoServiceImpl extends CommonCrudService<GroupRouteInfoDto, GroupRouteInfo>
@@ -64,6 +66,6 @@ public class GroupRouteInfoServiceImpl extends CommonCrudService<GroupRouteInfoD
 
     @Override
     public String getServiceName() {
-        return "groupRouteInfo";
+        return GROUP_ROUTE_INFO.getDescription();
     }
 }

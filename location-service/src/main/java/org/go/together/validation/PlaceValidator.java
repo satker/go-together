@@ -23,7 +23,7 @@ public class PlaceValidator extends CommonValidator<PlaceDto> {
     }
 
     @Override
-    protected String commonValidation(PlaceDto dto, CrudOperation crudOperation) {
+    protected String commonValidation(UUID requestId, PlaceDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
         String validateCountry = countryValidator.validate(dto.getCountry(), crudOperation);
         if (StringUtils.isNotBlank(validateCountry)) {

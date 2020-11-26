@@ -13,10 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -89,7 +86,7 @@ class GroupLocationServiceTest extends CrudServiceCommonTest<GroupLocation, Grou
             country.setCountryCode(placeDto.getCountry().getCountryCode().toUpperCase());
             country.setName(placeDto.getCountry().getName().toUpperCase());
             Country savedCountry = countryRepository.save(country);
-            CountryDto countryDto = countryMapper.entityToDto(savedCountry);
+            CountryDto countryDto = countryMapper.entityToDto(UUID.randomUUID(), savedCountry);
             placeDto.setId(null);
             placeDto.setCountry(countryDto);
             enrichWithCorrectEndStartRoute(locations.size(), number, eventLocationDto);

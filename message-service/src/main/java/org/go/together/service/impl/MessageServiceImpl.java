@@ -18,7 +18,7 @@ public class MessageServiceImpl extends CommonCrudService<MessageDto, Message> i
     @Override
     public Set<MessageDto> getReceiverMessages(UUID recipientId, MessageType messageType) {
         return ((MessageRepository) repository).findReviewsByRecipientId(recipientId, messageType).stream()
-                .map(mapper::entityToDto)
+                .map(message -> mapper.entityToDto(UUID.randomUUID(), message))
                 .collect(Collectors.toSet());
     }
 
@@ -44,7 +44,7 @@ public class MessageServiceImpl extends CommonCrudService<MessageDto, Message> i
 
         return groupAuthorEventId.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
-                        element -> mapper.entityToDto(element.getValue().stream()
+                        element -> mapper.entityToDto(UUID.randomUUID(), element.getValue().stream()
                                 .max(Comparator.comparing(Message::getDate)).orElse(new Message()))));
     }
 

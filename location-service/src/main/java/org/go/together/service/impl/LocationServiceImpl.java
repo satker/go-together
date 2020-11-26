@@ -71,7 +71,7 @@ public class LocationServiceImpl extends CommonCrudService<LocationDto, Location
                 Place place = placeEquals.get();
                 Set<Location> locations = place.getLocations();
                 locations.add(entity);
-                PlaceDto placeUpdated = placeMapper.entityToDto(place);
+                PlaceDto placeUpdated = placeMapper.entityToDto(requestId, place);
                 placeService.update(requestId, placeUpdated);
             }
         } else if (crudOperation == CrudOperation.DELETE) {
@@ -90,7 +90,7 @@ public class LocationServiceImpl extends CommonCrudService<LocationDto, Location
             place.setLocations(place.getLocations().stream()
                     .filter(location -> !location.getId().equals(entity.getId()))
                     .collect(Collectors.toSet()));
-            PlaceDto placeUpdated = placeMapper.entityToDto(place);
+            PlaceDto placeUpdated = placeMapper.entityToDto(requestId, place);
             placeService.update(requestId, placeUpdated);
         }
     }

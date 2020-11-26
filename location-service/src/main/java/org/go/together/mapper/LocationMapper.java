@@ -10,13 +10,15 @@ import org.go.together.model.Place;
 import org.go.together.repository.interfaces.PlaceRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class LocationMapper implements Mapper<LocationDto, Location> {
     private final PlaceRepository placeRepository;
     private final Mapper<PlaceDto, Place> placeMapper;
 
-    public LocationDto entityToDto(Location location) {
+    public LocationDto entityToDto(UUID requestId, Location location) {
         Place place = placeRepository.findByLocationId(location.getId())
                 .orElseThrow(() -> new CannotFindEntityException("Cannot find place by location id " + location.getId()));
         LocationDto locationDto = new LocationDto();
@@ -24,7 +26,7 @@ public class LocationMapper implements Mapper<LocationDto, Location> {
         locationDto.setAddress(location.getAddress());
         locationDto.setLatitude(location.getLatitude());
         locationDto.setLongitude(location.getLongitude());
-        locationDto.setPlace(placeMapper.entityToDto(place));
+        locationDto.setPlace(placeMapper.entityToDto(requestId, place));
         locationDto.setRouteNumber(location.getRouteNumber());
         locationDto.setIsEnd(location.getIsEnd());
         locationDto.setIsStart(location.getIsStart());

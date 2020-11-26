@@ -18,10 +18,10 @@ public abstract class CommonNotificationService<D extends Dto, E extends Identif
         this.notificationService = notificationService;
     }
 
-    public void sendNotification(UUID uuid, D originalDto, D changedDto, NotificationStatus status) {
+    public void sendNotification(UUID requestId, UUID uuid, D originalDto, D changedDto, NotificationStatus status) {
         if (changedDto instanceof ComparableDto) {
             Runnable notificationRunnable = () -> {
-                String message = getNotificationMessage(originalDto, changedDto, status);
+                String message = getNotificationMessage(requestId, originalDto, changedDto, status);
                 switch (status) {
                     case CREATED -> notificationService.createNotification(uuid, originalDto, message);
                     case UPDATED, DELETED -> notificationService.updateNotification(uuid, changedDto, message);
@@ -31,7 +31,7 @@ public abstract class CommonNotificationService<D extends Dto, E extends Identif
         }
     }
 
-    public String getNotificationMessage(D originalDto, D changedDto, NotificationStatus notificationStatus) {
+    public String getNotificationMessage(UUID requestId, D originalDto, D changedDto, NotificationStatus notificationStatus) {
         String message = notificationService.getMessage(originalDto, changedDto, getServiceName(), notificationStatus);
         log.info(message);
         return message;
