@@ -6,8 +6,8 @@ import org.go.together.dto.form.FilterDto;
 import org.go.together.dto.form.FormDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.enums.FindOperator;
-import org.go.together.kafka.producers.crud.FindKafkaProducer;
-import org.go.together.kafka.producers.crud.ValidateKafkaProducer;
+import org.go.together.kafka.producers.FindProducer;
+import org.go.together.kafka.producers.ValidationProducer;
 import org.go.together.validation.dto.DateIntervalDto;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +19,10 @@ import java.util.function.Function;
 @Component
 @RequiredArgsConstructor
 public class EventValidator extends CommonValidator<EventDto> {
-    private final FindKafkaProducer<UserDto> findUserKafkaProducer;
-    private final ValidateKafkaProducer<GroupPhotoDto> photoValidator;
-    private final ValidateKafkaProducer<GroupLocationDto> locationValidator;
-    private final ValidateKafkaProducer<GroupRouteInfoDto> routeInfoValidator;
+    private final FindProducer<UserDto> findUserKafkaProducer;
+    private final ValidationProducer<GroupPhotoDto> photoValidator;
+    private final ValidationProducer<GroupLocationDto> locationValidator;
+    private final ValidationProducer<GroupRouteInfoDto> routeInfoValidator;
 
     @Override
     public Map<String, Function<EventDto, ?>> getMapsForCheck(UUID requestId) {

@@ -1,7 +1,7 @@
 package org.go.together.context;
 
 import org.go.together.configuration.H2HibernateConfig;
-import org.go.together.kafka.base.KafkaCrudClient;
+import org.go.together.kafka.base.CrudClient;
 import org.go.together.kafka.producers.crud.*;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -33,8 +33,8 @@ public class RepositoryContext {
 
     @Bean
     @Primary
-    public KafkaCrudClient kafkaCrudClient() {
-        return Mockito.mock(KafkaCrudClient.class);
+    public CrudClient kafkaCrudClient() {
+        return Mockito.mock(CrudClient.class);
     }
 
     @Bean

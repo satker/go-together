@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static org.go.together.enums.ServiceInfo.GROUP_LOCATION;
+import static org.go.together.enums.LocationServiceInfo.GROUP_LOCATION;
 
 @Service
 @RequiredArgsConstructor

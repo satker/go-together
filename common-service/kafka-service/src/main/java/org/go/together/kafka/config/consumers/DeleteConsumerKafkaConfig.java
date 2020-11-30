@@ -3,9 +3,7 @@ package org.go.together.kafka.config.consumers;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.go.together.dto.form.FormDto;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -15,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class DeleteConsumerKafkaConfig {
+public abstract class DeleteConsumerKafkaConfig implements CustomConsumerConfig {
     private Map<String, Object> getConsumerConfigs(String kafkaServer, String kafkaGroupId) {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
@@ -38,16 +36,12 @@ public abstract class DeleteConsumerKafkaConfig {
         return factory;
     }
 
-    @Bean
-    public BeanFactoryPostProcessor deleteConsumerBeanFactoryPostProcessor(@Value("${kafka.server}") String kafkaServer,
-                                                                           @Value("${kafka.groupId}") String kafkaGroupId) {
-        return beanFactory -> {
-            ConsumerFactory<UUID, FormDto> consumerFactory = deleteConsumerFactory(kafkaServer, kafkaGroupId);
-            //beanFactory.registerSingleton(getConsumerId() + "deleteConsumerFactory", consumerFactory);
-            beanFactory.registerSingleton(getConsumerId() + "DeleteListenerContainerFactory",
-                    deleteListenerContainerFactory(consumerFactory));
-        };
+    protected void deleteConsumerBeanFactoryPostProcessor(String kafkaServer,
+                                                          String kafkaGroupId,
+                                                          ConfigurableListableBeanFactory beanFactory) {
+        ConsumerFactory<UUID, FormDto> consumerFactory = deleteConsumerFactory(kafkaServer, kafkaGroupId);
+        //beanFactory.registerSingleton(getConsumerId() + "deleteConsumerFactory", consumerFactory);
+        beanFactory.registerSingleton(getConsumerId() + "DeleteListenerContainerFactory",
+                deleteListenerContainerFactory(consumerFactory));
     }
-
-    protected abstract String getConsumerId();
 }

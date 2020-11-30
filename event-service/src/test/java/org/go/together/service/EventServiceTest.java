@@ -3,9 +3,9 @@ package org.go.together.service;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
-import org.go.together.kafka.producers.CommonCrudProducer;
-import org.go.together.kafka.producers.crud.FindKafkaProducer;
-import org.go.together.kafka.producers.crud.ValidateKafkaProducer;
+import org.go.together.kafka.producers.CrudProducer;
+import org.go.together.kafka.producers.FindProducer;
+import org.go.together.kafka.producers.ValidationProducer;
 import org.go.together.model.Event;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,28 +27,28 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = RepositoryContext.class)
 public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
     @Autowired
-    private FindKafkaProducer<UserDto> findUserKafkaProducer;
+    private FindProducer<UserDto> findUserKafkaProducer;
 
     @Autowired
-    private CommonCrudProducer<GroupLocationDto> groupLocationProducer;
+    private CrudProducer<GroupLocationDto> groupLocationProducer;
 
     @Autowired
-    private ValidateKafkaProducer<GroupLocationDto> groupLocationValidate;
+    private ValidationProducer<GroupLocationDto> groupLocationValidate;
 
     @Autowired
-    private CommonCrudProducer<GroupPhotoDto> groupPhotoProducer;
+    private CrudProducer<GroupPhotoDto> groupPhotoProducer;
 
     @Autowired
-    private CommonCrudProducer<UserDto> userCrudClient;
+    private CrudProducer<UserDto> userCrudClient;
 
     @Autowired
-    private ValidateKafkaProducer<GroupPhotoDto> groupPhotoValidate;
+    private ValidationProducer<GroupPhotoDto> groupPhotoValidate;
 
     @Autowired
-    private ValidateKafkaProducer<GroupRouteInfoDto> routeInfoValidator;
+    private ValidationProducer<GroupRouteInfoDto> routeInfoValidator;
 
     @Autowired
-    private CommonCrudProducer<GroupRouteInfoDto> routeInfoProducer;
+    private CrudProducer<GroupRouteInfoDto> routeInfoProducer;
 
     @Override
     @BeforeEach

@@ -25,7 +25,7 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
     private final FindService<GroupPhotoDto> findService;
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.ContentServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).CREATE.getDescription())}",
             containerFactory = "groupPhotosChangeListenerContainerFactory"
     )
@@ -35,7 +35,7 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.ContentServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).UPDATE.getDescription())}",
             containerFactory = "groupPhotosChangeListenerContainerFactory"
     )
@@ -45,7 +45,7 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.ContentServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).DELETE.getDescription())}",
             containerFactory = "groupPhotosDeleteListenerContainerFactory")
     public void handleDelete(ConsumerRecord<UUID, UUID> message) {
@@ -53,7 +53,7 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.ContentServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).READ.getDescription())}",
             containerFactory = "groupPhotosReadListenerContainerFactory")
     @SendTo
@@ -62,7 +62,7 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.ContentServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).VALIDATE.getDescription())}",
             containerFactory = "groupPhotosValidateListenerContainerFactory")
     @SendTo
@@ -72,7 +72,7 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.ContentServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).FIND.getDescription())}",
             containerFactory = "findListenerContainerFactory")
     @SendTo

@@ -1,14 +1,15 @@
 package org.go.together.config;
 
 import org.go.together.dto.GroupRouteInfoDto;
-import org.go.together.enums.ServiceInfo;
 import org.go.together.kafka.config.ConsumerKafkaConfig;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
+import static org.go.together.enums.RouteInfoServiceInfo.GROUP_ROUTE_INFO;
+
+@Component
 public class GroupRouteInfoConsumerConfig extends ConsumerKafkaConfig<GroupRouteInfoDto> {
     @Override
     public String getConsumerId() {
-        return ServiceInfo.GROUP_ROUTE_INFO.getDescription();
+        return GROUP_ROUTE_INFO.getDescription();
     }
 }

@@ -3,8 +3,8 @@ package org.go.together.service;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
-import org.go.together.kafka.producers.CommonCrudProducer;
-import org.go.together.kafka.producers.crud.FindKafkaProducer;
+import org.go.together.kafka.producers.CrudProducer;
+import org.go.together.kafka.producers.FindProducer;
 import org.go.together.model.Event;
 import org.go.together.model.EventUser;
 import org.go.together.repository.interfaces.EventRepository;
@@ -27,10 +27,10 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = RepositoryContext.class)
 public class EventUserServiceTest extends CrudServiceCommonTest<EventUser, EventUserDto> {
     @Autowired
-    private CommonCrudProducer<UserDto> usersCrudProducer;
+    private CrudProducer<UserDto> usersCrudProducer;
 
     @Autowired
-    private FindKafkaProducer<UserDto> findUserKafkaProducer;
+    private FindProducer<UserDto> findUserKafkaProducer;
 
     @Autowired
     private EventRepository eventRepository;

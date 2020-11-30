@@ -1,9 +1,15 @@
 package org.go.together.producers;
 
 import org.go.together.dto.GroupLocationDto;
-import org.go.together.kafka.base.KafkaCrudClient;
+import org.go.together.kafka.base.CrudClient;
 import org.springframework.stereotype.Component;
 
+import static org.go.together.enums.LocationServiceInfo.GROUP_LOCATION;
+
 @Component
-public class GroupLocationCrudProducer extends KafkaCrudClient<GroupLocationDto> {
+public class GroupLocationCrudProducer extends CrudClient<GroupLocationDto> {
+    @Override
+    public String getConsumerId() {
+        return GROUP_LOCATION.getDescription();
+    }
 }

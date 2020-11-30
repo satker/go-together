@@ -1,21 +1,23 @@
 package org.go.together.kafka.config.producers;
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
 import org.go.together.enums.TopicKafkaPostfix;
 import org.go.together.kafka.impl.producers.CommonUpdateKafkaProducer;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.context.annotation.Bean;
+import org.go.together.kafka.producers.crud.UpdateKafkaProducer;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
@@ -38,32 +40,43 @@ public abstract class UpdateProducerKafkaConfig<D extends Dto> extends ValidateP
         return new ReplyingKafkaTemplate<>(updateProducerFactory(kafkaServer), updateRepliesContainer);
     }
 
-    private KafkaMessageListenerContainer<UUID, IdDto> updateRepliesContainer(@Qualifier("updateReplyConsumerFactory")
-                                                                                      ConsumerFactory<UUID, IdDto> changeReplyConsumerFactory,
+    private KafkaMessageListenerContainer<UUID, IdDto> updateRepliesContainer(ConsumerFactory<UUID, IdDto> updateReplyConsumerFactory,
                                                                               String kafkaGroupId) {
         ContainerProperties containerProperties = new ContainerProperties(getUpdateReplyTopicId() + kafkaGroupId);
-        return new KafkaMessageListenerContainer<>(changeReplyConsumerFactory, containerProperties);
+        return new KafkaMessageListenerContainer<>(updateReplyConsumerFactory, containerProperties);
     }
 
 
-    @Bean
-    public BeanFactoryPostProcessor changeProducerBeanFactoryPostProcessor(@Value("${kafka.server}") String kafkaServer,
-                                                                           @Value("${kafka.groupId}") String kafkaGroupId,
-                                                                           @Qualifier("updateReplyConsumerFactory")
-                                                                                   ConsumerFactory<UUID, IdDto> changeReplyConsumerFactory) {
-        return beanFactory -> {
-            KafkaMessageListenerContainer<UUID, IdDto> updateRepliesContainer = updateRepliesContainer(changeReplyConsumerFactory, kafkaGroupId);
-            beanFactory.registerSingleton(getConsumerId() + "UpdateRepliesContainer", updateRepliesContainer);
-            ReplyingKafkaTemplate<UUID, D, IdDto> updateReplyingKafkaTemplate = updateReplyingKafkaTemplate(updateRepliesContainer, kafkaServer);
-            beanFactory.registerSingleton(getConsumerId() + "UpdateReplyingKafkaTemplate", updateReplyingKafkaTemplate);
-            CommonUpdateKafkaProducer<D> commonUpdateKafkaProducer = new CommonUpdateKafkaProducer<>(updateReplyingKafkaTemplate, kafkaGroupId) {
-                @Override
-                public String getTopicId() {
-                    return getConsumerId();
-                }
-            };
-            beanFactory.registerSingleton(getConsumerId() + "UpdateKafkaProducer", commonUpdateKafkaProducer);
-        };
+    private Map<String, Object> updateConsumerConfigs(String kafkaServer, String kafkaGroupId) {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId);
+
+        return props;
+    }
+
+    private ConsumerFactory<UUID, IdDto> updateReplyConsumerFactory(String kafkaServer,
+                                                                    String kafkaGroupId) {
+        JsonDeserializer<IdDto> groupPhotoDtoJsonDeserializer = new JsonDeserializer<>();
+        groupPhotoDtoJsonDeserializer.addTrustedPackages("org.go.together.dto");
+        return new DefaultKafkaConsumerFactory<>(updateConsumerConfigs(kafkaServer, kafkaGroupId),
+                new UUIDDeserializer(),
+                groupPhotoDtoJsonDeserializer);
+    }
+
+    protected void updateProducerBeanFactoryPostProcessor(String kafkaServer,
+                                                          String kafkaGroupId,
+                                                          ConfigurableListableBeanFactory beanFactory) {
+        ConsumerFactory<UUID, IdDto> updateReplyConsumerFactory = updateReplyConsumerFactory(kafkaServer, kafkaGroupId);
+        KafkaMessageListenerContainer<UUID, IdDto> updateRepliesContainer = updateRepliesContainer(updateReplyConsumerFactory, kafkaGroupId);
+        beanFactory.registerSingleton(getConsumerId() + "UpdateRepliesContainer", updateRepliesContainer);
+        ReplyingKafkaTemplate<UUID, D, IdDto> updateReplyingKafkaTemplate = updateReplyingKafkaTemplate(updateRepliesContainer, kafkaServer);
+        beanFactory.registerSingleton(getConsumerId() + "UpdateReplyingKafkaTemplate", updateReplyingKafkaTemplate);
+        UpdateKafkaProducer<D> commonUpdateKafkaProducer = CommonUpdateKafkaProducer.create(updateReplyingKafkaTemplate, kafkaGroupId,
+                getConsumerId());
+        beanFactory.registerSingleton(getConsumerId() + "UpdateKafkaProducer", commonUpdateKafkaProducer);
     }
 
     private String getUpdateReplyTopicId() {

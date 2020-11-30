@@ -12,6 +12,17 @@ public abstract class CommonFindKafkaProducer<D extends Dto> implements FindKafk
     private final ReplyingKafkaTemplate<UUID, FormDto, ResponseDto<Object>> kafkaTemplate;
     private final String groupId;
 
+    public static <D extends Dto> FindKafkaProducer<D> create(ReplyingKafkaTemplate<UUID, FormDto, ResponseDto<Object>> kafkaTemplate,
+                                                              String consumerId,
+                                                              String groupId) {
+        return new CommonFindKafkaProducer<>(kafkaTemplate, groupId) {
+            @Override
+            public String getTopicId() {
+                return consumerId;
+            }
+        };
+    }
+
     protected CommonFindKafkaProducer(ReplyingKafkaTemplate<UUID, FormDto, ResponseDto<Object>> kafkaTemplate,
                                       String groupId) {
         this.kafkaTemplate = kafkaTemplate;

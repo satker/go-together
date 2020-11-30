@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.go.together.enums.ServiceInfo.EVENT_LIKES;
+import static org.go.together.enums.UserServiceInfo.EVENT_LIKES;
 
 @Service
 public class EventLikeServiceImpl extends CommonCrudService<EventLikeDto, EventLike> implements EventLikeService {

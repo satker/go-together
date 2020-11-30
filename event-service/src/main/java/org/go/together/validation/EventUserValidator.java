@@ -7,7 +7,7 @@ import org.go.together.dto.form.FilterDto;
 import org.go.together.dto.form.FormDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.enums.FindOperator;
-import org.go.together.kafka.producers.crud.FindKafkaProducer;
+import org.go.together.kafka.producers.FindProducer;
 import org.go.together.repository.interfaces.EventRepository;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,7 @@ import java.util.function.Function;
 @Component
 @RequiredArgsConstructor
 public class EventUserValidator extends CommonValidator<EventUserDto> {
-    private final FindKafkaProducer<UserDto> findUserKafkaProducer;
+    private final FindProducer<UserDto> findUserKafkaProducer;
     private final EventRepository eventRepository;
 
     @Override

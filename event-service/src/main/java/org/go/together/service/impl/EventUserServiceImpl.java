@@ -7,7 +7,7 @@ import org.go.together.compare.FieldMapper;
 import org.go.together.dto.EventUserDto;
 import org.go.together.dto.UserDto;
 import org.go.together.enums.NotificationStatus;
-import org.go.together.kafka.producers.CommonCrudProducer;
+import org.go.together.kafka.producers.CrudProducer;
 import org.go.together.model.Event;
 import org.go.together.model.EventUser;
 import org.go.together.repository.interfaces.EventRepository;
@@ -23,7 +23,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EventUserServiceImpl extends CommonCrudService<EventUserDto, EventUser> implements EventUserService {
     private final EventRepository eventRepository;
-    private final CommonCrudProducer<UserDto> usersCrudProducer;
+    private final CrudProducer<UserDto> usersCrudProducer;
 
     @Override
     public boolean deleteEventUserByEventId(EventUserDto eventUserDto) {

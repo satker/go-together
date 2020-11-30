@@ -1,12 +1,12 @@
 package org.go.together.producers;
 
 import org.go.together.dto.GroupPhotoDto;
-import org.go.together.kafka.config.ProducerKafkaConfig;
-import org.springframework.context.annotation.Configuration;
+import org.go.together.kafka.config.producers.ProducerKafkaConfig;
+import org.springframework.stereotype.Component;
 
-import static org.go.together.enums.ServiceInfo.GROUP_PHOTO_NAME;
+import static org.go.together.enums.ContentServiceInfo.GROUP_PHOTO_NAME;
 
-@Configuration
+@Component
 public class GroupPhotoProducerConfig extends ProducerKafkaConfig<GroupPhotoDto> {
     @Override
     public String getConsumerId() {

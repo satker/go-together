@@ -1,12 +1,12 @@
 package org.go.together.producers;
 
 import org.go.together.dto.GroupLocationDto;
-import org.go.together.kafka.config.ProducerKafkaConfig;
-import org.springframework.context.annotation.Configuration;
+import org.go.together.kafka.config.producers.ProducerKafkaConfig;
+import org.springframework.stereotype.Component;
 
-import static org.go.together.enums.ServiceInfo.GROUP_LOCATION;
+import static org.go.together.enums.LocationServiceInfo.GROUP_LOCATION;
 
-@Configuration
+@Component
 public class GroupLocationProducerConfig extends ProducerKafkaConfig<GroupLocationDto> {
     @Override
     public String getConsumerId() {

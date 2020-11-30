@@ -5,7 +5,7 @@ import org.go.together.base.Mapper;
 import org.go.together.dto.EventUserDto;
 import org.go.together.dto.SimpleUserDto;
 import org.go.together.dto.UserDto;
-import org.go.together.kafka.producers.CommonCrudProducer;
+import org.go.together.kafka.producers.CrudProducer;
 import org.go.together.model.EventUser;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class EventUserMapper implements Mapper<EventUserDto, EventUser> {
-    private final CommonCrudProducer<UserDto> usersCrudProducer;
+    private final CrudProducer<UserDto> usersCrudProducer;
 
     @Override
     public EventUserDto entityToDto(UUID requestId, EventUser entity) {

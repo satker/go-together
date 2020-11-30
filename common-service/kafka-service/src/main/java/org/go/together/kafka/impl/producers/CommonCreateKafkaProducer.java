@@ -11,6 +11,17 @@ public abstract class CommonCreateKafkaProducer<D extends Dto> implements Create
     private final ReplyingKafkaTemplate<UUID, D, IdDto> kafkaTemplate;
     private final String groupId;
 
+    public static <D extends Dto> CreateKafkaProducer<D> create(ReplyingKafkaTemplate<UUID, D, IdDto> kafkaTemplate,
+                                                                String groupId,
+                                                                String consumerId) {
+        return new CommonCreateKafkaProducer<>(kafkaTemplate, groupId) {
+            @Override
+            public String getTopicId() {
+                return consumerId;
+            }
+        };
+    }
+
     public CommonCreateKafkaProducer(ReplyingKafkaTemplate<UUID, D, IdDto> kafkaTemplate,
                                      String groupId) {
         this.kafkaTemplate = kafkaTemplate;

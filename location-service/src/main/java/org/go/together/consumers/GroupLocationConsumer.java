@@ -25,7 +25,7 @@ public class GroupLocationConsumer extends CommonCrudKafkaConsumer<GroupLocation
     private final FindService<GroupLocationDto> findService;
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_LOCATION.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.LocationServiceInfo).GROUP_LOCATION.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).CREATE.getDescription())}",
             containerFactory = "groupLocationsChangeListenerContainerFactory"
     )
@@ -35,7 +35,7 @@ public class GroupLocationConsumer extends CommonCrudKafkaConsumer<GroupLocation
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_LOCATION.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.LocationServiceInfo).GROUP_LOCATION.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).UPDATE.getDescription())}",
             containerFactory = "groupLocationsChangeListenerContainerFactory"
     )
@@ -45,7 +45,7 @@ public class GroupLocationConsumer extends CommonCrudKafkaConsumer<GroupLocation
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_LOCATION.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.LocationServiceInfo).GROUP_LOCATION.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).DELETE.getDescription())}",
             containerFactory = "groupLocationsDeleteListenerContainerFactory")
     public void handleDelete(ConsumerRecord<UUID, UUID> message) {
@@ -53,7 +53,7 @@ public class GroupLocationConsumer extends CommonCrudKafkaConsumer<GroupLocation
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_LOCATION.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.LocationServiceInfo).GROUP_LOCATION.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).READ.getDescription())}",
             containerFactory = "groupLocationsReadListenerContainerFactory")
     @SendTo
@@ -62,7 +62,7 @@ public class GroupLocationConsumer extends CommonCrudKafkaConsumer<GroupLocation
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_LOCATION.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.LocationServiceInfo).GROUP_LOCATION.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).VALIDATE.getDescription())}",
             containerFactory = "groupLocationsValidateListenerContainerFactory")
     @SendTo
@@ -72,7 +72,7 @@ public class GroupLocationConsumer extends CommonCrudKafkaConsumer<GroupLocation
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_LOCATION.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.LocationServiceInfo).GROUP_LOCATION.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).FIND.getDescription())}",
             containerFactory = "findListenerContainerFactory")
     @SendTo

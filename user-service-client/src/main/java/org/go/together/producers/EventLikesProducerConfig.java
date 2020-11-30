@@ -1,12 +1,12 @@
 package org.go.together.producers;
 
 import org.go.together.dto.EventLikeDto;
-import org.go.together.kafka.config.ProducerKafkaConfig;
-import org.springframework.context.annotation.Configuration;
+import org.go.together.kafka.config.producers.ProducerKafkaConfig;
+import org.springframework.stereotype.Component;
 
-import static org.go.together.enums.ServiceInfo.EVENT_LIKES;
+import static org.go.together.enums.UserServiceInfo.EVENT_LIKES;
 
-@Configuration
+@Component
 public class EventLikesProducerConfig extends ProducerKafkaConfig<EventLikeDto> {
     @Override
     public String getConsumerId() {

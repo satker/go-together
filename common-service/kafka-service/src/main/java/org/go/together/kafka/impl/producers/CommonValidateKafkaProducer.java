@@ -11,9 +11,21 @@ public abstract class CommonValidateKafkaProducer<D extends Dto> implements Vali
     private final ReplyingKafkaTemplate<UUID, D, ValidationMessageDto> kafkaTemplate;
     private final String groupId;
 
-    protected CommonValidateKafkaProducer(ReplyingKafkaTemplate<UUID, D, ValidationMessageDto> kafkaTemplate, String groupId) {
+    private CommonValidateKafkaProducer(ReplyingKafkaTemplate<UUID, D, ValidationMessageDto> kafkaTemplate, String groupId) {
         this.kafkaTemplate = kafkaTemplate;
         this.groupId = groupId;
+    }
+
+    public static <D extends Dto> ValidateKafkaProducer<D> create(ReplyingKafkaTemplate<UUID, D, ValidationMessageDto> kafkaTemplate,
+                                                                  String groupId,
+                                                                  String consumerId) {
+        return new CommonValidateKafkaProducer<>(kafkaTemplate, groupId) {
+
+            @Override
+            public String getTopicId() {
+                return consumerId;
+            }
+        };
     }
 
     @Override

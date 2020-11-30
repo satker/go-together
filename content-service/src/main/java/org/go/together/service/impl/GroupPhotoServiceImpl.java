@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.go.together.enums.ServiceInfo.GROUP_PHOTO_NAME;
+import static org.go.together.enums.ContentServiceInfo.GROUP_PHOTO_NAME;
 
 @Service
 @RequiredArgsConstructor

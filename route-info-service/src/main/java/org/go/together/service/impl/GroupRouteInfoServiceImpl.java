@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.go.together.enums.ServiceInfo.GROUP_ROUTE_INFO;
+import static org.go.together.enums.RouteInfoServiceInfo.GROUP_ROUTE_INFO;
 
 @Service
 @RequiredArgsConstructor

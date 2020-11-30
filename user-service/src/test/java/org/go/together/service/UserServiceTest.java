@@ -4,8 +4,8 @@ import org.go.together.base.Mapper;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.kafka.producers.CommonCrudProducer;
-import org.go.together.kafka.producers.crud.ValidateKafkaProducer;
+import org.go.together.kafka.producers.CrudProducer;
+import org.go.together.kafka.producers.ValidationProducer;
 import org.go.together.model.Interest;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
@@ -33,16 +33,16 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = RepositoryContext.class)
 class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
     @Autowired
-    private CommonCrudProducer<GroupLocationDto> locationProducer;
+    private CrudProducer<GroupLocationDto> locationProducer;
 
     @Autowired
-    private ValidateKafkaProducer<GroupLocationDto> locationValidate;
+    private ValidationProducer<GroupLocationDto> locationValidate;
 
     @Autowired
-    private CommonCrudProducer<GroupPhotoDto> groupPhotoCrud;
+    private CrudProducer<GroupPhotoDto> groupPhotoCrud;
 
     @Autowired
-    private ValidateKafkaProducer<GroupPhotoDto> groupPhotoValidate;
+    private ValidationProducer<GroupPhotoDto> groupPhotoValidate;
 
     @Autowired
     private InterestRepository interestRepository;

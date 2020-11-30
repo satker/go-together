@@ -10,10 +10,22 @@ public abstract class CommonReadKafkaProducer<D extends Dto> implements ReadKafk
     private final ReplyingKafkaTemplate<UUID, UUID, D> kafkaTemplate;
     private final String groupId;
 
-    public CommonReadKafkaProducer(ReplyingKafkaTemplate<UUID, UUID, D> kafkaTemplate,
-                                   String groupId) {
+    private CommonReadKafkaProducer(ReplyingKafkaTemplate<UUID, UUID, D> kafkaTemplate,
+                                    String groupId) {
         this.kafkaTemplate = kafkaTemplate;
         this.groupId = groupId;
+    }
+
+    public static <D extends Dto> ReadKafkaProducer<D> create(ReplyingKafkaTemplate<UUID, UUID, D> kafkaTemplate,
+                                                              String groupId,
+                                                              String consumerId) {
+        return new CommonReadKafkaProducer<>(kafkaTemplate, groupId) {
+
+            @Override
+            public String getTopicId() {
+                return consumerId;
+            }
+        };
     }
 
     @Override

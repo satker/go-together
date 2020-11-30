@@ -25,7 +25,7 @@ public class UsersConsumer extends CommonCrudKafkaConsumer<UserDto> {
     private final FindService<UserDto> findService;
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).USERS.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).USERS.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).CREATE.getDescription())}",
             containerFactory = "usersChangeListenerContainerFactory"
     )
@@ -35,7 +35,7 @@ public class UsersConsumer extends CommonCrudKafkaConsumer<UserDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).USERS.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).USERS.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).UPDATE.getDescription())}",
             containerFactory = "usersChangeListenerContainerFactory"
     )
@@ -45,7 +45,7 @@ public class UsersConsumer extends CommonCrudKafkaConsumer<UserDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).USERS.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).USERS.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).DELETE.getDescription())}",
             containerFactory = "usersDeleteListenerContainerFactory")
     public void handleDelete(ConsumerRecord<UUID, UUID> message) {
@@ -53,7 +53,7 @@ public class UsersConsumer extends CommonCrudKafkaConsumer<UserDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).USERS.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).USERS.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).READ.getDescription())}",
             containerFactory = "usersReadListenerContainerFactory")
     @SendTo
@@ -62,7 +62,7 @@ public class UsersConsumer extends CommonCrudKafkaConsumer<UserDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).USERS.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).USERS.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).VALIDATE.getDescription())}",
             containerFactory = "usersValidateListenerContainerFactory")
     @SendTo
@@ -72,7 +72,7 @@ public class UsersConsumer extends CommonCrudKafkaConsumer<UserDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).USERS.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).USERS.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).FIND.getDescription())}",
             containerFactory = "findListenerContainerFactory")
     @SendTo

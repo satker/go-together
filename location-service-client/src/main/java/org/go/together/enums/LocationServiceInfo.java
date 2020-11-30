@@ -2,13 +2,12 @@ package org.go.together.enums;
 
 import org.go.together.interfaces.NamedEnum;
 
-public enum ServiceInfo implements NamedEnum {
-    USERS("users"),
-    EVENT_LIKES("eventLikes");
+public enum LocationServiceInfo implements NamedEnum {
+    GROUP_LOCATION("groupLocations");
 
     private final String description;
 
-    ServiceInfo(String description) {
+    LocationServiceInfo(String description) {
         this.description = description;
     }
 

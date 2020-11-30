@@ -5,7 +5,7 @@ import org.go.together.dto.GroupLocationDto;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.UserDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.kafka.producers.crud.ValidateKafkaProducer;
+import org.go.together.kafka.producers.ValidationProducer;
 import org.go.together.repository.interfaces.InterestRepository;
 import org.go.together.repository.interfaces.LanguageRepository;
 import org.springframework.stereotype.Service;
@@ -17,10 +17,10 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class UserValidator extends CommonValidator<UserDto> {
-    private final ValidateKafkaProducer<GroupLocationDto> locationValidator;
+    private final ValidationProducer<GroupLocationDto> locationValidator;
     private final LanguageRepository languageRepository;
     private final InterestRepository interestRepository;
-    private final ValidateKafkaProducer<GroupPhotoDto> photoValidator;
+    private final ValidationProducer<GroupPhotoDto> photoValidator;
 
     @Override
     public String commonValidation(UUID requestId, UserDto dto, CrudOperation crudOperation) {

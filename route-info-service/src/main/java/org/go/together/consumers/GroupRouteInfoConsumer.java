@@ -25,7 +25,7 @@ public class GroupRouteInfoConsumer extends CommonCrudKafkaConsumer<GroupRouteIn
     private final FindService<GroupRouteInfoDto> findService;
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_ROUTE_INFO.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.RouteInfoServiceInfo).GROUP_ROUTE_INFO.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).CREATE.getDescription())}",
             containerFactory = "groupRouteInfoChangeListenerContainerFactory"
     )
@@ -35,7 +35,7 @@ public class GroupRouteInfoConsumer extends CommonCrudKafkaConsumer<GroupRouteIn
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_ROUTE_INFO.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.RouteInfoServiceInfo).GROUP_ROUTE_INFO.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).UPDATE.getDescription())}",
             containerFactory = "groupRouteInfoChangeListenerContainerFactory"
     )
@@ -45,7 +45,7 @@ public class GroupRouteInfoConsumer extends CommonCrudKafkaConsumer<GroupRouteIn
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_ROUTE_INFO.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.RouteInfoServiceInfo).GROUP_ROUTE_INFO.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).DELETE.getDescription())}",
             containerFactory = "groupRouteInfoDeleteListenerContainerFactory")
     public void handleDelete(ConsumerRecord<UUID, UUID> message) {
@@ -53,7 +53,7 @@ public class GroupRouteInfoConsumer extends CommonCrudKafkaConsumer<GroupRouteIn
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_ROUTE_INFO.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.RouteInfoServiceInfo).GROUP_ROUTE_INFO.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).READ.getDescription())}",
             containerFactory = "groupRouteInfoReadListenerContainerFactory")
     @SendTo
@@ -62,7 +62,7 @@ public class GroupRouteInfoConsumer extends CommonCrudKafkaConsumer<GroupRouteIn
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_ROUTE_INFO.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.RouteInfoServiceInfo).GROUP_ROUTE_INFO.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).VALIDATE.getDescription())}",
             containerFactory = "groupRouteInfoValidateListenerContainerFactory")
     @SendTo
@@ -72,7 +72,7 @@ public class GroupRouteInfoConsumer extends CommonCrudKafkaConsumer<GroupRouteIn
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).GROUP_ROUTE_INFO.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.RouteInfoServiceInfo).GROUP_ROUTE_INFO.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).FIND.getDescription())}",
             containerFactory = "findListenerContainerFactory")
     @SendTo

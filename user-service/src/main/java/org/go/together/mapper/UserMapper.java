@@ -3,7 +3,7 @@ package org.go.together.mapper;
 import lombok.RequiredArgsConstructor;
 import org.go.together.base.Mapper;
 import org.go.together.dto.*;
-import org.go.together.kafka.producers.CommonCrudProducer;
+import org.go.together.kafka.producers.CrudProducer;
 import org.go.together.model.Interest;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class UserMapper implements Mapper<UserDto, SystemUser> {
-    private final CommonCrudProducer<GroupLocationDto> locationProducer;
-    private final CommonCrudProducer<GroupPhotoDto> groupPhotoProducer;
+    private final CrudProducer<GroupLocationDto> locationProducer;
+    private final CrudProducer<GroupPhotoDto> groupPhotoProducer;
     private final Mapper<LanguageDto, Language> languageMapper;
     private final Mapper<InterestDto, Interest> interestMapper;
 

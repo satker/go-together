@@ -4,8 +4,8 @@ import org.go.together.base.Mapper;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.kafka.producers.CommonCrudProducer;
-import org.go.together.kafka.producers.crud.ValidateKafkaProducer;
+import org.go.together.kafka.producers.CrudProducer;
+import org.go.together.kafka.producers.ValidationProducer;
 import org.go.together.model.EventLike;
 import org.go.together.model.Interest;
 import org.go.together.model.Language;
@@ -38,10 +38,10 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = RepositoryContext.class)
 class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto> {
     @Autowired
-    private CommonCrudProducer<GroupPhotoDto> groupPhotoCrudClient;
+    private CrudProducer<GroupPhotoDto> groupPhotoCrudClient;
 
     @Autowired
-    private ValidateKafkaProducer<GroupPhotoDto> groupPhotoValidate;
+    private ValidationProducer<GroupPhotoDto> groupPhotoValidate;
 
     @Autowired
     private EventLikeRepository eventLikeRepository;
@@ -65,10 +65,10 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
     private Mapper<EventLikeDto, EventLike> eventLikeMapper;
 
     @Autowired
-    private CommonCrudProducer<GroupLocationDto> locationProducer;
+    private CrudProducer<GroupLocationDto> locationProducer;
 
     @Autowired
-    private ValidateKafkaProducer<GroupLocationDto> locationValidate;
+    private ValidationProducer<GroupLocationDto> locationValidate;
 
     @Autowired
     private UserRepository userRepository;

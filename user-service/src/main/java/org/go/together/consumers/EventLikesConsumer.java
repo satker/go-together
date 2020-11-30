@@ -25,7 +25,7 @@ public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
     private final FindService<EventLikeDto> findService;
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).EVENT_LIKES.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).EVENT_LIKES.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).CREATE.getDescription())}",
             containerFactory = "eventLikesChangeListenerContainerFactory"
     )
@@ -35,7 +35,7 @@ public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).EVENT_LIKES.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).EVENT_LIKES.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).UPDATE.getDescription())}",
             containerFactory = "eventLikesChangeListenerContainerFactory"
     )
@@ -45,7 +45,7 @@ public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).EVENT_LIKES.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).EVENT_LIKES.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).DELETE.getDescription())}",
             containerFactory = "eventLikesDeleteListenerContainerFactory")
     public void handleDelete(ConsumerRecord<UUID, UUID> message) {
@@ -53,7 +53,7 @@ public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).EVENT_LIKES.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).EVENT_LIKES.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).READ.getDescription())}",
             containerFactory = "eventLikesReadListenerContainerFactory")
     @SendTo
@@ -62,7 +62,7 @@ public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).EVENT_LIKES.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).EVENT_LIKES.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).VALIDATE.getDescription())}",
             containerFactory = "eventLikesValidateListenerContainerFactory")
     @SendTo
@@ -72,7 +72,7 @@ public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ServiceInfo).EVENT_LIKES.getDescription()" +
+    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).EVENT_LIKES.getDescription()" +
             ".concat(T(org.go.together.enums.TopicKafkaPostfix).FIND.getDescription())}",
             containerFactory = "findListenerContainerFactory")
     @SendTo

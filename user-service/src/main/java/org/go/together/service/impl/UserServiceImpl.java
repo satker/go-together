@@ -7,7 +7,7 @@ import org.go.together.compare.FieldMapper;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.kafka.producers.CommonCrudProducer;
+import org.go.together.kafka.producers.CrudProducer;
 import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
 import org.go.together.repository.interfaces.UserRepository;
@@ -21,17 +21,17 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.go.together.enums.ServiceInfo.USERS;
+import static org.go.together.enums.UserServiceInfo.USERS;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> implements UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final CommonCrudProducer<GroupPhotoDto> groupPhotoProducer;
+    private final CrudProducer<GroupPhotoDto> groupPhotoProducer;
     private final LanguageService languageService;
     private final InterestService interestService;
     private final EventLikeService eventLikeService;
-    private final CommonCrudProducer<GroupLocationDto> locationProducer;
+    private final CrudProducer<GroupLocationDto> locationProducer;
 
     @Override
     public AuthUserDto findAuthUserByLogin(String login) {

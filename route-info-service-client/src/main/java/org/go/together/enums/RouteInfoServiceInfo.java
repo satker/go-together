@@ -2,12 +2,12 @@ package org.go.together.enums;
 
 import org.go.together.interfaces.NamedEnum;
 
-public enum ServiceInfo implements NamedEnum {
+public enum RouteInfoServiceInfo implements NamedEnum {
     GROUP_ROUTE_INFO("groupRouteInfo");
 
     private final String description;
 
-    ServiceInfo(String description) {
+    RouteInfoServiceInfo(String description) {
         this.description = description;
     }
 

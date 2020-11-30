@@ -8,9 +8,8 @@ import org.go.together.dto.Dto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.form.FormDto;
 import org.go.together.kafka.impl.producers.CommonFindKafkaProducer;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.context.annotation.Bean;
+import org.go.together.kafka.producers.crud.FindKafkaProducer;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -66,23 +65,16 @@ public abstract class FindProducerKafkaConfig<D extends Dto> extends DeleteProdu
                 resultJsonDeserializer);
     }
 
-    @Bean
-    public BeanFactoryPostProcessor findProducerBeanFactoryPostProcessor(@Value("${kafka.server}") String kafkaServer,
-                                                                         @Value("${kafka.groupId}") String kafkaGroupId) {
-        return beanFactory -> {
-            ConsumerFactory<UUID, ResponseDto<Object>> consumerFactory = findReplyConsumerFactory(kafkaServer, kafkaGroupId);
-            KafkaMessageListenerContainer<UUID, ResponseDto<Object>> kafkaMessageListenerContainer = findRepliesContainer(consumerFactory, kafkaGroupId);
-            beanFactory.registerSingleton(getConsumerId() + "FindRepliesContainer", kafkaMessageListenerContainer);
-            ReplyingKafkaTemplate<UUID, FormDto, ResponseDto<Object>> replyingKafkaTemplate = findReplyingKafkaTemplate(kafkaServer, kafkaMessageListenerContainer);
-            beanFactory.registerSingleton(getConsumerId() + "FindReplyingKafkaTemplate", replyingKafkaTemplate);
-            CommonFindKafkaProducer<D> commonFindKafkaProducer = new CommonFindKafkaProducer<>(replyingKafkaTemplate, kafkaGroupId) {
-                @Override
-                public String getTopicId() {
-                    return getConsumerId();
-                }
-            };
-            beanFactory.registerSingleton(getConsumerId() + "FindKafkaProducer", commonFindKafkaProducer);
-        };
+    protected void findProducerBeanFactoryPostProcessor(String kafkaServer,
+                                                        String kafkaGroupId,
+                                                        ConfigurableListableBeanFactory beanFactory) {
+        ConsumerFactory<UUID, ResponseDto<Object>> consumerFactory = findReplyConsumerFactory(kafkaServer, kafkaGroupId);
+        KafkaMessageListenerContainer<UUID, ResponseDto<Object>> kafkaMessageListenerContainer = findRepliesContainer(consumerFactory, kafkaGroupId);
+        beanFactory.registerSingleton(getConsumerId() + "FindRepliesContainer", kafkaMessageListenerContainer);
+        ReplyingKafkaTemplate<UUID, FormDto, ResponseDto<Object>> replyingKafkaTemplate = findReplyingKafkaTemplate(kafkaServer, kafkaMessageListenerContainer);
+        beanFactory.registerSingleton(getConsumerId() + "FindReplyingKafkaTemplate", replyingKafkaTemplate);
+        FindKafkaProducer<D> commonFindKafkaProducer = CommonFindKafkaProducer.create(replyingKafkaTemplate, getConsumerId(), kafkaGroupId);
+        beanFactory.registerSingleton(getConsumerId() + "FindKafkaProducer", commonFindKafkaProducer);
     }
 
     private String getReplyTopicId() {

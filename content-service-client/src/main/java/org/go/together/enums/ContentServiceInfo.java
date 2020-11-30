@@ -2,12 +2,12 @@ package org.go.together.enums;
 
 import org.go.together.interfaces.NamedEnum;
 
-public enum ServiceInfo implements NamedEnum {
-    GROUP_LOCATION("groupLocations");
+public enum ContentServiceInfo implements NamedEnum {
+    GROUP_PHOTO_NAME("groupPhotos");
 
     private final String description;
 
-    ServiceInfo(String description) {
+    ContentServiceInfo(String description) {
         this.description = description;
     }
 

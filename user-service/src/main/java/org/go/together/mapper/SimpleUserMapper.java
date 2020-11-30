@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.go.together.base.Mapper;
 import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.SimpleUserDto;
-import org.go.together.kafka.producers.CommonCrudProducer;
+import org.go.together.kafka.producers.CrudProducer;
 import org.go.together.model.SystemUser;
 import org.go.together.repository.interfaces.UserRepository;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class SimpleUserMapper implements Mapper<SimpleUserDto, SystemUser> {
-    private final CommonCrudProducer<GroupPhotoDto> groupPhotoProducer;
+    private final CrudProducer<GroupPhotoDto> groupPhotoProducer;
     private final UserRepository userRepository;
 
     @Override

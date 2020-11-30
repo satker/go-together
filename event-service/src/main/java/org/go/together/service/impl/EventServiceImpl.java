@@ -5,8 +5,9 @@ import org.go.together.base.CommonCrudService;
 import org.go.together.compare.FieldMapper;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
-import org.go.together.kafka.producers.CommonCrudProducer;
-import org.go.together.kafka.producers.crud.FindKafkaProducer;
+import org.go.together.enums.LocationServiceInfo;
+import org.go.together.kafka.producers.CrudProducer;
+import org.go.together.kafka.producers.FindProducer;
 import org.go.together.model.Event;
 import org.go.together.service.interfaces.EventService;
 import org.springframework.stereotype.Service;
@@ -16,17 +17,17 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.go.together.enums.ServiceInfo.USERS;
+import static org.go.together.enums.UserServiceInfo.USERS;
 
 @Service
 @RequiredArgsConstructor
 public class EventServiceImpl extends CommonCrudService<EventDto, Event> implements EventService {
-    private final CommonCrudProducer<GroupLocationDto> groupLocationCrudProducer;
-    private final CommonCrudProducer<GroupPhotoDto> groupPhotoCrudProducer;
-    private final FindKafkaProducer<GroupLocationDto> findLocationKafkaProducer;
-    private final FindKafkaProducer<UserDto> findUserKafkaProducer;
-    private final CommonCrudProducer<EventLikeDto> eventLikesCrudProducer;
-    private final CommonCrudProducer<GroupRouteInfoDto> routeInfoCrudProducer;
+    private final CrudProducer<GroupLocationDto> groupLocationCrudProducer;
+    private final CrudProducer<GroupPhotoDto> groupPhotoCrudProducer;
+    private final FindProducer<GroupLocationDto> findLocationKafkaProducer;
+    private final FindProducer<UserDto> findUserKafkaProducer;
+    private final CrudProducer<EventLikeDto> eventLikesCrudProducer;
+    private final CrudProducer<GroupRouteInfoDto> routeInfoCrudProducer;
 
     @Override
     protected Event enrichEntity(UUID requestId, Event entity, EventDto dto, CrudOperation crudOperation) {
@@ -129,7 +130,7 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
                 "idEventRoutes", FieldMapper.builder()
                         .currentServiceField("id")
                         .remoteServiceClient(findLocationKafkaProducer)
-                        .remoteServiceName("groupLocations")
+                        .remoteServiceName(LocationServiceInfo.GROUP_LOCATION.getDescription())
                         .remoteServiceFieldGetter("groupId")
                         .fieldClass(UUID.class).build(),
                 "startDate", FieldMapper.builder()
