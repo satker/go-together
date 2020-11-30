@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.go.together.kafka.enums.ProducerPostfix.*;
+
 public abstract class CrudClient<D extends Dto> extends ValidateClient<D> implements CrudProducer<D> {
     private CreateKafkaProducer<D> createKafkaProducer;
     private DeleteKafkaProducer<D> deleteKafkaProducer;
@@ -20,22 +22,22 @@ public abstract class CrudClient<D extends Dto> extends ValidateClient<D> implem
 
     @Autowired
     public void setCreateKafkaProducer(Map<String, CreateKafkaProducer<D>> createKafkaProducers) {
-        this.createKafkaProducer = createKafkaProducers.get(getConsumerId());
+        this.createKafkaProducer = createKafkaProducers.get(getConsumerId() + CREATE.getDescription());
     }
 
     @Autowired
     public void setDeleteKafkaProducer(Map<String, DeleteKafkaProducer<D>> deleteKafkaProducers) {
-        this.deleteKafkaProducer = deleteKafkaProducers.get(getConsumerId());
+        this.deleteKafkaProducer = deleteKafkaProducers.get(getConsumerId() + DELETE.getDescription());
     }
 
     @Autowired
     public void setUpdateKafkaProducer(Map<String, UpdateKafkaProducer<D>> updateKafkaProducers) {
-        this.updateKafkaProducer = updateKafkaProducers.get(getConsumerId());
+        this.updateKafkaProducer = updateKafkaProducers.get(getConsumerId() + UPDATE.getDescription());
     }
 
     @Autowired
     public void setReadKafkaProducer(Map<String, ReadKafkaProducer<D>> readKafkaProducers) {
-        this.readKafkaProducer = readKafkaProducers.get(getConsumerId());
+        this.readKafkaProducer = readKafkaProducers.get(getConsumerId() + READ.getDescription());
     }
 
     @Override

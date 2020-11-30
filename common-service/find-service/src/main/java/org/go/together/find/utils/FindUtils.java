@@ -1,6 +1,6 @@
 package org.go.together.find.utils;
 
-import org.go.together.dto.form.FilterDto;
+import org.go.together.dto.FilterDto;
 import org.go.together.enums.FindOperator;
 import org.go.together.exceptions.IncorrectDtoException;
 import org.go.together.find.dto.FieldDto;

@@ -2,9 +2,9 @@ package org.go.together.validation;
 
 import lombok.RequiredArgsConstructor;
 import org.go.together.dto.EventUserDto;
+import org.go.together.dto.FilterDto;
+import org.go.together.dto.FormDto;
 import org.go.together.dto.UserDto;
-import org.go.together.dto.form.FilterDto;
-import org.go.together.dto.form.FormDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.enums.FindOperator;
 import org.go.together.kafka.producers.FindProducer;

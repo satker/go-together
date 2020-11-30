@@ -3,6 +3,7 @@ package org.go.together.kafka.config.producers;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
+import org.go.together.kafka.enums.ProducerPostfix;
 import org.go.together.kafka.impl.producers.CommonDeleteKafkaProducer;
 import org.go.together.kafka.producers.crud.DeleteKafkaProducer;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -38,6 +39,6 @@ public abstract class DeleteProducerKafkaConfig<D extends Dto> implements Custom
         KafkaTemplate<UUID, UUID> kafkaTemplate = deleteKafkaTemplate(producerFactory);
         beanFactory.registerSingleton(getConsumerId() + "DeleteKafkaTemplate", kafkaTemplate);
         DeleteKafkaProducer<D> commonDeleteKafkaProducer = CommonDeleteKafkaProducer.create(kafkaTemplate, getConsumerId());
-        beanFactory.registerSingleton(getConsumerId() + "DeleteKafkaProducer", commonDeleteKafkaProducer);
+        beanFactory.registerSingleton(getConsumerId() + ProducerPostfix.DELETE.getDescription(), commonDeleteKafkaProducer);
     }
 }

@@ -34,7 +34,7 @@ public interface ReplyKafkaProducer<T, R> {
             ConsumerRecord<UUID, R> futureGet = result.get(1500, TimeUnit.MILLISECONDS);
             return futureGet.value();
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new ApplicationException(requestId.toString() + e.getMessage(), requestId);
+            throw new ApplicationException(e.getMessage(), requestId);
         }
     }
 }

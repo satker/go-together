@@ -1,7 +1,7 @@
 package org.go.together.find.correction;
 
 import org.go.together.compare.FieldMapper;
-import org.go.together.dto.form.FilterDto;
+import org.go.together.dto.FilterDto;
 import org.go.together.find.correction.field.dto.CorrectedFieldDto;
 import org.go.together.find.correction.fieldpath.FieldPathCorrector;
 import org.go.together.find.dto.FieldDto;

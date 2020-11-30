@@ -1,6 +1,6 @@
 package org.go.together.find.finders.request;
 
-import org.go.together.dto.form.FormDto;
+import org.go.together.dto.FormDto;
 import org.go.together.find.dto.ClientLocalFieldObject;
 import org.go.together.find.dto.FieldDto;
 

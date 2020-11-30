@@ -1,11 +1,7 @@
 package org.go.together.kafka.consumers;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.go.together.dto.Dto;
-import org.go.together.dto.IdDto;
-import org.go.together.dto.ResponseDto;
-import org.go.together.dto.ValidationMessageDto;
-import org.go.together.dto.form.FormDto;
+import org.go.together.dto.*;
 
 import java.util.UUID;
 

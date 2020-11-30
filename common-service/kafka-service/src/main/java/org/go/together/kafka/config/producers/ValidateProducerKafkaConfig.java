@@ -7,6 +7,7 @@ import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
 import org.go.together.dto.ValidationMessageDto;
 import org.go.together.enums.TopicKafkaPostfix;
+import org.go.together.kafka.enums.ProducerPostfix;
 import org.go.together.kafka.impl.producers.CommonValidateKafkaProducer;
 import org.go.together.kafka.producers.crud.ValidateKafkaProducer;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -75,7 +76,7 @@ public abstract class ValidateProducerKafkaConfig<D extends Dto> extends FindPro
         beanFactory.registerSingleton(getConsumerId() + "ValidateReplyingKafkaTemplate", updateReplyingKafkaTemplate);
         ValidateKafkaProducer<D> commonValidateKafkaProducer = CommonValidateKafkaProducer.create(updateReplyingKafkaTemplate, kafkaGroupId,
                 getConsumerId());
-        beanFactory.registerSingleton(getConsumerId() + "ValidateKafkaProducer", commonValidateKafkaProducer);
+        beanFactory.registerSingleton(getConsumerId() + ProducerPostfix.VALIDATE.getDescription(), commonValidateKafkaProducer);
     }
 
     private String getValidateReplyTopicId() {

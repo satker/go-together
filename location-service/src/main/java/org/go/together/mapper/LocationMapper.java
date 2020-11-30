@@ -7,19 +7,21 @@ import org.go.together.dto.PlaceDto;
 import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.model.Location;
 import org.go.together.model.Place;
-import org.go.together.repository.interfaces.PlaceRepository;
+import org.go.together.service.interfaces.PlaceService;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class LocationMapper implements Mapper<LocationDto, Location> {
-    private final PlaceRepository placeRepository;
+    private final PlaceService placeService;
     private final Mapper<PlaceDto, Place> placeMapper;
 
+    @Transactional
     public LocationDto entityToDto(UUID requestId, Location location) {
-        Place place = placeRepository.findByLocationId(location.getId())
+        Place place = placeService.getPlaceByLocationId(location.getId())
                 .orElseThrow(() -> new CannotFindEntityException("Cannot find place by location id " + location.getId()));
         LocationDto locationDto = new LocationDto();
         locationDto.setId(location.getId());

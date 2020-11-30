@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.go.together.kafka.enums.ProducerPostfix.VALIDATE;
+
 public abstract class ValidateClient<D extends Dto> extends FindClient<D> implements ValidationProducer<D> {
     private ValidateKafkaProducer<D> validateKafkaProducer;
 
     @Autowired
     public void setValidateKafkaProducers(Map<String, ValidateKafkaProducer<D>> validateKafkaProducers) {
-        this.validateKafkaProducer = validateKafkaProducers.get(getConsumerId());
+        this.validateKafkaProducer = validateKafkaProducers.get(getConsumerId() + VALIDATE.getDescription());
     }
 
     @Override

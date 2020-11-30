@@ -7,6 +7,7 @@ import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
 import org.go.together.enums.TopicKafkaPostfix;
+import org.go.together.kafka.enums.ProducerPostfix;
 import org.go.together.kafka.impl.producers.CommonUpdateKafkaProducer;
 import org.go.together.kafka.producers.crud.UpdateKafkaProducer;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -76,7 +77,7 @@ public abstract class UpdateProducerKafkaConfig<D extends Dto> extends ValidateP
         beanFactory.registerSingleton(getConsumerId() + "UpdateReplyingKafkaTemplate", updateReplyingKafkaTemplate);
         UpdateKafkaProducer<D> commonUpdateKafkaProducer = CommonUpdateKafkaProducer.create(updateReplyingKafkaTemplate, kafkaGroupId,
                 getConsumerId());
-        beanFactory.registerSingleton(getConsumerId() + "UpdateKafkaProducer", commonUpdateKafkaProducer);
+        beanFactory.registerSingleton(getConsumerId() + ProducerPostfix.UPDATE.getDescription(), commonUpdateKafkaProducer);
     }
 
     private String getUpdateReplyTopicId() {

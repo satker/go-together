@@ -1,8 +1,8 @@
 package org.go.together.kafka.impl.producers;
 
 import org.go.together.dto.Dto;
+import org.go.together.dto.FormDto;
 import org.go.together.dto.ResponseDto;
-import org.go.together.dto.form.FormDto;
 import org.go.together.kafka.producers.crud.FindKafkaProducer;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 

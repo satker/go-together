@@ -2,7 +2,7 @@ package org.go.together.kafka.config.consumers;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
-import org.go.together.dto.form.FormDto;
+import org.go.together.dto.FormDto;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
@@ -40,7 +40,6 @@ public abstract class DeleteConsumerKafkaConfig implements CustomConsumerConfig 
                                                           String kafkaGroupId,
                                                           ConfigurableListableBeanFactory beanFactory) {
         ConsumerFactory<UUID, FormDto> consumerFactory = deleteConsumerFactory(kafkaServer, kafkaGroupId);
-        //beanFactory.registerSingleton(getConsumerId() + "deleteConsumerFactory", consumerFactory);
         beanFactory.registerSingleton(getConsumerId() + "DeleteListenerContainerFactory",
                 deleteListenerContainerFactory(consumerFactory));
     }

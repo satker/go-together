@@ -5,8 +5,9 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
+import org.go.together.dto.FormDto;
 import org.go.together.dto.ResponseDto;
-import org.go.together.dto.form.FormDto;
+import org.go.together.kafka.enums.ProducerPostfix;
 import org.go.together.kafka.impl.producers.CommonFindKafkaProducer;
 import org.go.together.kafka.producers.crud.FindKafkaProducer;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -74,7 +75,7 @@ public abstract class FindProducerKafkaConfig<D extends Dto> extends DeleteProdu
         ReplyingKafkaTemplate<UUID, FormDto, ResponseDto<Object>> replyingKafkaTemplate = findReplyingKafkaTemplate(kafkaServer, kafkaMessageListenerContainer);
         beanFactory.registerSingleton(getConsumerId() + "FindReplyingKafkaTemplate", replyingKafkaTemplate);
         FindKafkaProducer<D> commonFindKafkaProducer = CommonFindKafkaProducer.create(replyingKafkaTemplate, getConsumerId(), kafkaGroupId);
-        beanFactory.registerSingleton(getConsumerId() + "FindKafkaProducer", commonFindKafkaProducer);
+        beanFactory.registerSingleton(getConsumerId() + ProducerPostfix.FIND.getDescription(), commonFindKafkaProducer);
     }
 
     private String getReplyTopicId() {

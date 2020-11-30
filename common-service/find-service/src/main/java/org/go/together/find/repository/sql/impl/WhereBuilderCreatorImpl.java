@@ -3,7 +3,7 @@ package org.go.together.find.repository.sql.impl;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.CustomRepository;
-import org.go.together.dto.form.FilterDto;
+import org.go.together.dto.FilterDto;
 import org.go.together.enums.FindOperator;
 import org.go.together.find.dto.FieldDto;
 import org.go.together.find.repository.sql.interfaces.QueryFindOperator;

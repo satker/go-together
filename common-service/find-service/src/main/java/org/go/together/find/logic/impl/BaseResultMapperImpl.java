@@ -3,7 +3,7 @@ package org.go.together.find.logic.impl;
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.base.Mapper;
 import org.go.together.dto.Dto;
-import org.go.together.dto.form.PageDto;
+import org.go.together.dto.PageDto;
 import org.go.together.find.logic.interfaces.BaseResultMapper;
 import org.go.together.interfaces.Identified;
 import org.go.together.model.IdentifiedEntity;

@@ -13,11 +13,11 @@ import java.util.Set;
 public class Place extends NamedIdentifiedEntity {
     private String state;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "country_id")
     private Country country;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "place_id")
     private Set<Location> locations;
 }

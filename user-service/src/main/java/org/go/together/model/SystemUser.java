@@ -31,14 +31,14 @@ public class SystemUser extends IdentifiedEntity {
     @Column(columnDefinition = "uuid")
     private UUID groupPhoto;
 
-    @ManyToMany(cascade = CascadeType.REFRESH)
+    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinTable(schema = "user_service",
             name = "system_user_interest",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "interest_id"))
     private Set<Interest> interests = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.REFRESH)
+    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinTable(schema = "user_service",
             name = "system_user_language",
             joinColumns = @JoinColumn(name = "user_id"),

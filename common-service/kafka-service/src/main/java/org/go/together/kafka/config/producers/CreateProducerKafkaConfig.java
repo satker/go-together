@@ -7,6 +7,7 @@ import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
 import org.go.together.enums.TopicKafkaPostfix;
+import org.go.together.kafka.enums.ProducerPostfix;
 import org.go.together.kafka.impl.producers.CommonCreateKafkaProducer;
 import org.go.together.kafka.producers.crud.CreateKafkaProducer;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -75,7 +76,7 @@ public abstract class CreateProducerKafkaConfig<D extends Dto> extends ReadProdu
         beanFactory.registerSingleton(getConsumerId() + "CreateReplyingKafkaTemplate", createReplyingKafkaTemplate);
         CreateKafkaProducer<D> commonCreateKafkaProducer =
                 this.new CustomCreateProducer(createReplyingKafkaTemplate, kafkaGroupId);
-        beanFactory.registerSingleton(getConsumerId() + "CreateKafkaProducer", commonCreateKafkaProducer);
+        beanFactory.registerSingleton(getConsumerId() + ProducerPostfix.CREATE.getDescription(), commonCreateKafkaProducer);
     }
 
     private class CustomCreateProducer extends CommonCreateKafkaProducer<D> {

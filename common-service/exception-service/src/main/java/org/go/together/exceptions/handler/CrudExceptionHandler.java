@@ -26,6 +26,6 @@ public class CrudExceptionHandler {
     })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionDto processApplicationError(RuntimeException exception) {
-        return ExceptionDto.builder().exceptionMessage("Server error: contanct to system administrator.").build();
+        return ExceptionDto.builder().exceptionMessage("Server error: contact to system administrator.").build();
     }
 }

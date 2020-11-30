@@ -16,7 +16,7 @@ public class GroupLocation extends IdentifiedEntity {
     private UUID groupId;
     private LocationCategory category;
 
-    @OneToMany(cascade = CascadeType.REFRESH)
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "group_location_id")
     private Set<Location> locations;
 }

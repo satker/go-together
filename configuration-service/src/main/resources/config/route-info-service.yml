@@ -1,5 +1,5 @@
 server:
-  port: 8099
+  port: 8098
 datasource:
   url: jdbc:postgresql://localhost:5432/go-together
   username: postgres

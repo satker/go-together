@@ -1,9 +1,9 @@
 package org.go.together.base;
 
+import org.go.together.dto.FormDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.ValidationMessageDto;
-import org.go.together.dto.form.FormDto;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
