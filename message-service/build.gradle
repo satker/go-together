@@ -37,6 +37,7 @@ dependencies {
 
             "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
             "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}",
+            "org.springframework.cloud:spring-cloud-starter-openfeign:${springCloudVersion}",
 
             "org.projectlombok:lombok:${lombokVersion}"
     )
@@ -45,6 +46,7 @@ dependencies {
 
     compile project(":message-service-client")
     compile project(":common-service:notification-service")
+    compile project(":common-service:crud-service")
 }
 
 test {

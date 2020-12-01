@@ -15,7 +15,7 @@ export const addMeToList = (meObject) => (dispatch) => {
 export const deleteMeFromList = (meObject) => (dispatch) => {
     dispatch({
         type: PARTICIPATION_BUTTON_FROM_LIST,
-        url: EVENT_SERVICE_URL + '/events/users',
+        url: EVENT_SERVICE_URL + '/eventUsers',
         method: DELETE,
         data: meObject
     });

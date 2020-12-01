@@ -38,6 +38,7 @@ dependencies {
 
             "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
             "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}",
+            "org.springframework.cloud:spring-cloud-starter-openfeign:${springCloudVersion}",
 
             "org.springframework.kafka:spring-kafka:${springKafkaVersion}",
             "org.projectlombok:lombok:${lombokVersion}"
@@ -46,6 +47,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     compile project(":notification-service-client")
+    compile project(":common-service:crud-service")
 }
 
 test {

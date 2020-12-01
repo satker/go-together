@@ -1,7 +1,7 @@
 package org.go.together.producers;
 
 import org.go.together.dto.UserDto;
-import org.go.together.kafka.config.producers.ProducerKafkaConfig;
+import org.go.together.kafka.producer.config.ProducerKafkaConfig;
 import org.springframework.stereotype.Component;
 
 import static org.go.together.enums.UserServiceInfo.USERS;

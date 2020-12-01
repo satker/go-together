@@ -160,20 +160,14 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
                 "id", FieldMapper.builder()
                         .currentServiceField("id")
                         .fieldClass(UUID.class).build(),
+                "login", FieldMapper.builder()
+                        .currentServiceField("login")
+                        .fieldClass(String.class).build(),
                 "languages", FieldMapper.builder()
                         .innerService(languageService)
                         .currentServiceField("languages").build(),
                 "interests", FieldMapper.builder()
                         .innerService(interestService)
                         .currentServiceField("interests").build());
-    }
-
-    @Override
-    public String findLoginById(UUID id) {
-        Optional<SystemUser> userById = repository.findById(id);
-        if (userById.isPresent()) {
-            return userById.get().getLogin();
-        }
-        throw new CannotFindEntityException("Cannot find user by login");
     }
 }

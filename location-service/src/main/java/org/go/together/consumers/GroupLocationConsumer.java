@@ -6,9 +6,7 @@ import org.go.together.base.CrudService;
 import org.go.together.base.FindService;
 import org.go.together.base.Validator;
 import org.go.together.dto.*;
-import org.go.together.kafka.impl.consumers.CommonCrudKafkaConsumer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.go.together.kafka.consumer.impl.CommonCrudKafkaConsumer;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
@@ -21,8 +19,6 @@ public class GroupLocationConsumer extends CommonCrudKafkaConsumer<GroupLocation
     private final CrudService<GroupLocationDto> service;
     private final Validator<GroupLocationDto> validator;
     private final FindService<GroupLocationDto> findService;
-
-    private static final Logger log = LoggerFactory.getLogger(GroupLocationConsumer.class);
 
     @Override
     @KafkaListener(topics = "#{T(org.go.together.enums.LocationServiceInfo).GROUP_LOCATION.getDescription()" +

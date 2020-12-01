@@ -7,7 +7,6 @@ import org.go.together.notification.helpers.interfaces.KafkaSender;
 import org.go.together.notification.helpers.interfaces.ReceiverSender;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Component
@@ -16,7 +15,7 @@ public class ReceiverAddSender implements ReceiverSender {
     private final KafkaSender kafkaSender;
 
     @Override
-    public void send(UUID id, @NotNull UUID producerId, @NotNull UUID receiverId) {
+    public void send(UUID id, UUID producerId, UUID receiverId) {
         if (receiverId == null || producerId == null) {
             throw new IllegalArgumentException("Cannot send add receiver action to notification service: producerId or receiverId is null");
         }

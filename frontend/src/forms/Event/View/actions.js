@@ -9,10 +9,10 @@ export const getEvent = (id) => (dispatch) => {
     });
 };
 
-export const getStatuses = (id) => (dispatch) => {
+export const getStatuses = () => (dispatch) => {
     dispatch({
         type: EVENT_VIEW_STATUSES,
-        url: EVENT_SERVICE_URL + '/events/' + id + '/users/statuses'
+        url: EVENT_SERVICE_URL + '/eventUsers/statuses'
     });
 };
 

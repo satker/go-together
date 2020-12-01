@@ -4,7 +4,8 @@ import org.go.together.interfaces.NamedEnum;
 
 public enum UserServiceInfo implements NamedEnum {
     USERS("users"),
-    EVENT_LIKES("eventLikes");
+    EVENT_LIKES("eventLikes"),
+    AUTH_USER("authUser");
 
     private final String description;
 

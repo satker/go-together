@@ -3,7 +3,6 @@ package org.go.together.service;
 import org.go.together.base.Mapper;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
-import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.kafka.producers.CrudProducer;
 import org.go.together.kafka.producers.ValidationProducer;
 import org.go.together.model.Interest;
@@ -152,21 +151,6 @@ class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
         boolean isUserPresented = ((UserService) crudService).checkIfUserPresentsById(UUID.randomUUID());
 
         assertFalse(isUserPresented);
-    }
-
-    @Test
-    public void findLoginById() {
-        UserDto createdDto = getCreatedEntityId(dto);
-
-        String login = ((UserService) crudService).findLoginById(createdDto.getId());
-
-        assertEquals(createdDto.getLogin(), login);
-    }
-
-
-    @Test
-    public void findLoginByNotPresentedId() {
-        assertThrows(CannotFindEntityException.class, () -> ((UserService) crudService).findLoginById(UUID.randomUUID()));
     }
 
     @Override

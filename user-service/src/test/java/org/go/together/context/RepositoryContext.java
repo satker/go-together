@@ -1,7 +1,7 @@
 package org.go.together.context;
 
 import org.go.together.configuration.H2HibernateConfig;
-import org.go.together.kafka.base.CrudClient;
+import org.go.together.kafka.producer.base.CrudClient;
 import org.go.together.kafka.producers.crud.*;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

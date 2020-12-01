@@ -43,10 +43,12 @@ dependencies {
 
             "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
             "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}",
+            "org.springframework.cloud:spring-cloud-starter-openfeign:${springCloudVersion}",
 
             "org.projectlombok:lombok:${lombokVersion}"
     )
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    compile project(":common-service:crud-service")
     compile project(":event-service-client")
     compile project(":user-service-client")
     compile project(":location-service-client")

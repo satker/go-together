@@ -6,7 +6,7 @@ import org.go.together.base.CrudService;
 import org.go.together.base.FindService;
 import org.go.together.base.Validator;
 import org.go.together.dto.*;
-import org.go.together.kafka.impl.consumers.CommonCrudKafkaConsumer;
+import org.go.together.kafka.consumer.impl.CommonCrudKafkaConsumer;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;

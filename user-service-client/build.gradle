@@ -22,13 +22,10 @@ repositories {
 }
 
 dependencies {
-    compile (
-            "org.springframework.cloud:spring-cloud-starter-openfeign:${springCloudVersion}",
+    compile "org.projectlombok:lombok:${lombokVersion}"
 
-            "org.projectlombok:lombok:${lombokVersion}"
-    )
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    compile project(":common-service:crud-service")
+    compile project(":common-service:kafka-producer")
     compile project(":location-service-client")
     compile project(":content-service-client")
 }

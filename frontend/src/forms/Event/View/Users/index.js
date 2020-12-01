@@ -15,8 +15,8 @@ const Users = ({event, users, statuses, userId, postUserStatus, userStatus, getU
     const [flag, setFlag] = useState(false);
 
     useEffect(() => {
-        getStatuses(event.id);
-    }, [getStatuses, event]);
+        getStatuses();
+    }, [getStatuses]);
 
     useEffect(() => {
         if (event.author.id !== userId) {

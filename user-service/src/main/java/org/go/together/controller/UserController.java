@@ -3,8 +3,8 @@ package org.go.together.controller;
 import lombok.RequiredArgsConstructor;
 import org.go.together.base.FindController;
 import org.go.together.client.UserClient;
-import org.go.together.dto.AuthUserDto;
 import org.go.together.dto.FormDto;
+import org.go.together.dto.IdDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.dto.UserDto;
 import org.go.together.service.interfaces.EventLikeService;
@@ -47,16 +47,6 @@ class UserController extends FindController implements UserClient {
     }
 
     @Override
-    public AuthUserDto findAuthUserByLogin(String login) {
-        return userService.findAuthUserByLogin(login);
-    }
-
-    @Override
-    public String findLoginById(UUID id) {
-        return userService.findLoginById(id);
-    }
-
-    @Override
     public boolean checkIfUserPresentsById(UUID id) {
         return userService.checkIfUserPresentsById(id);
     }
@@ -74,5 +64,15 @@ class UserController extends FindController implements UserClient {
     @Override
     public UserDto readUser(UUID authorId) {
         return userService.read(authorId);
+    }
+
+    @Override
+    public IdDto createUser(UserDto dto) {
+        return userService.create(dto);
+    }
+
+    @Override
+    public IdDto updateUser(UserDto dto) {
+        return userService.update(dto);
     }
 }

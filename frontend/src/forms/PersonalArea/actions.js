@@ -5,7 +5,6 @@ import {PERSONAL_AREA_ALL_INTERESTS, PERSONAL_AREA_ALL_LANGUAGES, PERSONAL_AREA_
 
 export const URL_USER = USER_SERVICE_URL + "/users/";
 const URL_USER_ID = URL_USER + "_id_";
-const URLtoCheck = USER_SERVICE_URL + '/users/check/mail/_mail_';
 
 export const getUserInfo = () => (dispatch, state) => {
     dispatch({

@@ -10,8 +10,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface UserService extends CrudService<UserDto>, FindService<UserDto> {
-    String findLoginById(UUID id);
-
     boolean checkIfUserPresentsById(UUID id);
 
     Set<UUID> getIdLanguagesByOwnerId(UUID userId);
