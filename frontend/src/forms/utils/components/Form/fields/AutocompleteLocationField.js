@@ -1,10 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 
 import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
 import ItemContainer from "../../Container/ItemContainer";
 
 const AutocompleteLocationField = ({name, placeholder, setValue, error, value}) => {
+    const [currentValue, setCurrentValue] = useState();
+
     const onChange = (latLng, loc) => {
         let location = {
             ...value,
@@ -19,10 +21,12 @@ const AutocompleteLocationField = ({name, placeholder, setValue, error, value}) 
         };
         setValue(name, location);
     };
+
     return <ItemContainer style={{height: 70}}>
         <AutocompleteLocation onChangeLocation={(place, {lat, lng}) => onChange({lat, lng}, place)}
                               placeholder={placeholder}
-                              value={value && value.locations[0].place}
+                              setValueCenter={setCurrentValue}
+                              value={currentValue || (value && value.locations[0].place)}
                               name='place'
                               error={error}
         />

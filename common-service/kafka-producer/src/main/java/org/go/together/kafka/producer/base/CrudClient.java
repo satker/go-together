@@ -7,12 +7,8 @@ import org.go.together.kafka.producers.crud.CreateKafkaProducer;
 import org.go.together.kafka.producers.crud.DeleteKafkaProducer;
 import org.go.together.kafka.producers.crud.ReadKafkaProducer;
 import org.go.together.kafka.producers.crud.UpdateKafkaProducer;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Map;
 import java.util.UUID;
-
-import static org.go.together.kafka.producer.enums.ProducerPostfix.*;
 
 public abstract class CrudClient<D extends Dto> extends ValidateClient<D> implements CrudProducer<D> {
     private CreateKafkaProducer<D> createKafkaProducer;
@@ -20,24 +16,20 @@ public abstract class CrudClient<D extends Dto> extends ValidateClient<D> implem
     private UpdateKafkaProducer<D> updateKafkaProducer;
     private ReadKafkaProducer<D> readKafkaProducer;
 
-    @Autowired
-    public void setCreateKafkaProducer(Map<String, CreateKafkaProducer<D>> createKafkaProducers) {
-        this.createKafkaProducer = createKafkaProducers.get(getConsumerId() + CREATE.getDescription());
+    public void setCreateKafkaProducer(CreateKafkaProducer<D> createKafkaProducer) {
+        this.createKafkaProducer = createKafkaProducer;
     }
 
-    @Autowired
-    public void setDeleteKafkaProducer(Map<String, DeleteKafkaProducer<D>> deleteKafkaProducers) {
-        this.deleteKafkaProducer = deleteKafkaProducers.get(getConsumerId() + DELETE.getDescription());
+    public void setDeleteKafkaProducer(DeleteKafkaProducer<D> deleteKafkaProducer) {
+        this.deleteKafkaProducer = deleteKafkaProducer;
     }
 
-    @Autowired
-    public void setUpdateKafkaProducer(Map<String, UpdateKafkaProducer<D>> updateKafkaProducers) {
-        this.updateKafkaProducer = updateKafkaProducers.get(getConsumerId() + UPDATE.getDescription());
+    public void setUpdateKafkaProducer(UpdateKafkaProducer<D> updateKafkaProducer) {
+        this.updateKafkaProducer = updateKafkaProducer;
     }
 
-    @Autowired
-    public void setReadKafkaProducer(Map<String, ReadKafkaProducer<D>> readKafkaProducers) {
-        this.readKafkaProducer = readKafkaProducers.get(getConsumerId() + READ.getDescription());
+    public void setReadKafkaProducer(ReadKafkaProducer<D> readKafkaProducer) {
+        this.readKafkaProducer = readKafkaProducer;
     }
 
     @Override
