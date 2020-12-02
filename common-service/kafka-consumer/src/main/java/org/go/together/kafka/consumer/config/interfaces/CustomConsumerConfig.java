@@ -1,4 +1,4 @@
-package org.go.together.kafka.consumer.config;
+package org.go.together.kafka.consumer.config.interfaces;
 
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 

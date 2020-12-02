@@ -7,6 +7,4 @@ import java.util.UUID;
 
 public interface ValidationProducer<D extends Dto> {
     ValidationMessageDto validate(UUID requestId, D dto);
-
-    String getConsumerId();
 }

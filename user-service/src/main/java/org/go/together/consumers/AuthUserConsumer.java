@@ -14,6 +14,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 
+import static org.go.together.enums.TopicKafkaPostfix.FIND;
+import static org.go.together.enums.UserServiceInfo.AUTH_USER;
+import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
+
 @Component
 @RequiredArgsConstructor
 public class AuthUserConsumer extends CommonCrudKafkaConsumer<AuthUserDto> {
@@ -45,9 +49,8 @@ public class AuthUserConsumer extends CommonCrudKafkaConsumer<AuthUserDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).AUTH_USER.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).FIND.getDescription())}",
-            containerFactory = "findListenerContainerFactory")
+    @KafkaListener(topics = AUTH_USER + FIND,
+            containerFactory = AUTH_USER + FIND + LISTENER_FACTORY)
     @SendTo
     public ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message) {
         ResponseDto<Object> objectResponseDto = service.find(message.value());

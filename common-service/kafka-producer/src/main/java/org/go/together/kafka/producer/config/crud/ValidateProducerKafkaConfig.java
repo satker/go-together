@@ -1,4 +1,4 @@
-package org.go.together.kafka.producer.config;
+package org.go.together.kafka.producer.config.crud;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -79,6 +79,6 @@ public abstract class ValidateProducerKafkaConfig<D extends Dto> extends FindPro
     }
 
     private String getValidateReplyTopicId() {
-        return getConsumerId() + TopicKafkaPostfix.VALIDATE.getDescription() + ReplyKafkaProducer.KAFKA_REPLY_ID;
+        return getConsumerId() + TopicKafkaPostfix.VALIDATE + ReplyKafkaProducer.KAFKA_REPLY_ID;
     }
 }

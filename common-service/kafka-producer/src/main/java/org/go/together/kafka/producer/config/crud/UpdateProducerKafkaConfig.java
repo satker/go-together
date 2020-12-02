@@ -1,4 +1,4 @@
-package org.go.together.kafka.producer.config;
+package org.go.together.kafka.producer.config.crud;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -80,6 +80,6 @@ public abstract class UpdateProducerKafkaConfig<D extends Dto> extends ValidateP
     }
 
     private String getUpdateReplyTopicId() {
-        return getConsumerId() + TopicKafkaPostfix.UPDATE.getDescription() + ReplyKafkaProducer.KAFKA_REPLY_ID;
+        return getConsumerId() + TopicKafkaPostfix.UPDATE + ReplyKafkaProducer.KAFKA_REPLY_ID;
     }
 }

@@ -10,6 +10,6 @@ import static org.go.together.enums.UserServiceInfo.EVENT_LIKES;
 public class EventLikesConsumerConfig extends ConsumerKafkaConfig<EventLikeDto> {
     @Override
     public String getConsumerId() {
-        return EVENT_LIKES.getDescription();
+        return EVENT_LIKES;
     }
 }

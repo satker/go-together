@@ -151,7 +151,7 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
 
     @Override
     public String getServiceName() {
-        return USERS.getDescription();
+        return USERS;
     }
 
     @Override

@@ -10,6 +10,6 @@ import static org.go.together.enums.UserServiceInfo.USERS;
 public class UsersConsumerConfig extends ConsumerKafkaConfig<UserDto> {
     @Override
     public String getConsumerId() {
-        return USERS.getDescription();
+        return USERS;
     }
 }

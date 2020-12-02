@@ -20,9 +20,4 @@ public class AnotherClient implements FindProducer<FakeDto> {
     public ResponseDto<Object> find(UUID requestId, FormDto dto) {
         return responseDto;
     }
-
-    @Override
-    public String getConsumerId() {
-        return null;
-    }
 }

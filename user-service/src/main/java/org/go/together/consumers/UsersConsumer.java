@@ -13,6 +13,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+import static org.go.together.enums.TopicKafkaPostfix.*;
+import static org.go.together.enums.UserServiceInfo.USERS;
+import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
+
 @Component
 @RequiredArgsConstructor
 public class UsersConsumer extends CommonCrudKafkaConsumer<UserDto> {
@@ -21,46 +25,39 @@ public class UsersConsumer extends CommonCrudKafkaConsumer<UserDto> {
     private final FindService<UserDto> findService;
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).USERS.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).CREATE.getDescription())}",
-            containerFactory = "usersChangeListenerContainerFactory"
-    )
+    @KafkaListener(topics = USERS + CREATE,
+            containerFactory = USERS + CHANGE + LISTENER_FACTORY)
     @SendTo
     public IdDto handleCreate(ConsumerRecord<UUID, UserDto> message) {
         return service.create(message.key(), message.value());
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).USERS.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).UPDATE.getDescription())}",
-            containerFactory = "usersChangeListenerContainerFactory"
-    )
+    @KafkaListener(topics = USERS + UPDATE,
+            containerFactory = USERS + CHANGE + LISTENER_FACTORY)
     @SendTo
     public IdDto handleUpdate(ConsumerRecord<UUID, UserDto> message) {
         return service.update(message.key(), message.value());
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).USERS.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).DELETE.getDescription())}",
-            containerFactory = "usersDeleteListenerContainerFactory")
+    @KafkaListener(topics = USERS + DELETE,
+            containerFactory = USERS + DELETE + LISTENER_FACTORY)
     public void handleDelete(ConsumerRecord<UUID, UUID> message) {
         service.delete(message.key(), message.value());
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).USERS.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).READ.getDescription())}",
-            containerFactory = "usersReadListenerContainerFactory")
+    @KafkaListener(topics = USERS + READ,
+            containerFactory = USERS + READ + LISTENER_FACTORY)
     @SendTo
     public UserDto handleRead(ConsumerRecord<UUID, UUID> message) {
         return service.read(message.key(), message.value());
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).USERS.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).VALIDATE.getDescription())}",
-            containerFactory = "usersValidateListenerContainerFactory")
+    @KafkaListener(topics = USERS + VALIDATE,
+            containerFactory = USERS + VALIDATE + LISTENER_FACTORY)
     @SendTo
     public ValidationMessageDto handleValidate(ConsumerRecord<UUID, UserDto> message) {
         UserDto dto = message.value();
@@ -68,9 +65,8 @@ public class UsersConsumer extends CommonCrudKafkaConsumer<UserDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).USERS.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).FIND.getDescription())}",
-            containerFactory = "findListenerContainerFactory")
+    @KafkaListener(topics = USERS + FIND,
+            containerFactory = USERS + FIND + LISTENER_FACTORY)
     @SendTo
     public ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message) {
         return findService.find(message.key(), message.value());

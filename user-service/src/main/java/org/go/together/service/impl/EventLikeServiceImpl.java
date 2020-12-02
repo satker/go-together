@@ -21,7 +21,7 @@ import static org.go.together.enums.UserServiceInfo.EVENT_LIKES;
 public class EventLikeServiceImpl extends CommonCrudService<EventLikeDto, EventLike> implements EventLikeService {
     @Override
     public String getServiceName() {
-        return EVENT_LIKES.getDescription();
+        return EVENT_LIKES;
     }
 
     @Override

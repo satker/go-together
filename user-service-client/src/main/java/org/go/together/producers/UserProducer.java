@@ -8,11 +8,7 @@ import org.springframework.stereotype.Component;
 import static org.go.together.enums.UserServiceInfo.USERS;
 
 @Component
-@EnableAutoConfigurationKafkaProducer
+@EnableAutoConfigurationKafkaProducer(producerId = USERS)
 public class UserProducer extends CrudClient<UserDto> {
-    @Override
-    public String getConsumerId() {
-        return USERS.getDescription();
-    }
 }
 

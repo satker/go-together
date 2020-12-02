@@ -9,6 +9,6 @@ import org.springframework.stereotype.Component;
 public class GroupLocationConsumerConfig extends ConsumerKafkaConfig<GroupLocationDto> {
     @Override
     public String getConsumerId() {
-        return LocationServiceInfo.GROUP_LOCATION.getDescription();
+        return LocationServiceInfo.GROUP_LOCATION;
     }
 }

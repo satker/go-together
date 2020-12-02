@@ -1,6 +1,7 @@
 package org.go.together.kafka.producer.config;
 
 import org.go.together.dto.Dto;
+import org.go.together.kafka.producer.config.crud.CreateProducerKafkaConfig;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
 public abstract class ProducerKafkaConfig<D extends Dto> extends CreateProducerKafkaConfig<D> {

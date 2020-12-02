@@ -66,6 +66,6 @@ public class GroupRouteInfoServiceImpl extends CommonCrudService<GroupRouteInfoD
 
     @Override
     public String getServiceName() {
-        return GROUP_ROUTE_INFO.getDescription();
+        return GROUP_ROUTE_INFO;
     }
 }

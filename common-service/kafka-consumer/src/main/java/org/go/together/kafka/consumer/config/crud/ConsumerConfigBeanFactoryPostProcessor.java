@@ -1,5 +1,6 @@
-package org.go.together.kafka.consumer.config;
+package org.go.together.kafka.consumer.config.crud;
 
+import org.go.together.kafka.consumer.config.interfaces.CustomConsumerConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.context.annotation.Bean;

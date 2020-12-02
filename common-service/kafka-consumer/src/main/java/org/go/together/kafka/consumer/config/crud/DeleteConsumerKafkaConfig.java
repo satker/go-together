@@ -1,4 +1,4 @@
-package org.go.together.kafka.consumer.config;
+package org.go.together.kafka.consumer.config.crud;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class DeleteConsumerKafkaConfig implements CustomConsumerConfig {
+public abstract class DeleteConsumerKafkaConfig extends FindConsumerKafkaConfig {
     private Map<String, Object> getConsumerConfigs(String kafkaServer, String kafkaGroupId) {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);

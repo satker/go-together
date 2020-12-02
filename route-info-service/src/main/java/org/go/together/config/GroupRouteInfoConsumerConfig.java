@@ -10,6 +10,6 @@ import static org.go.together.enums.RouteInfoServiceInfo.GROUP_ROUTE_INFO;
 public class GroupRouteInfoConsumerConfig extends ConsumerKafkaConfig<GroupRouteInfoDto> {
     @Override
     public String getConsumerId() {
-        return GROUP_ROUTE_INFO.getDescription();
+        return GROUP_ROUTE_INFO;
     }
 }

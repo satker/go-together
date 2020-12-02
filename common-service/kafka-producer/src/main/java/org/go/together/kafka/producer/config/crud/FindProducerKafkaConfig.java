@@ -1,4 +1,4 @@
-package org.go.together.kafka.producer.config;
+package org.go.together.kafka.producer.config.crud;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -78,6 +78,6 @@ public abstract class FindProducerKafkaConfig<D extends Dto> extends DeleteProdu
     }
 
     private String getReplyTopicId() {
-        return getConsumerId() + TopicKafkaPostfix.FIND.getDescription() + ReplyKafkaProducer.KAFKA_REPLY_ID;
+        return getConsumerId() + TopicKafkaPostfix.FIND + ReplyKafkaProducer.KAFKA_REPLY_ID;
     }
 }

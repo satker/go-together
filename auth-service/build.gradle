@@ -45,5 +45,4 @@ dependencies {
 
     compile project(":auth-service-client")
     compile project(":user-service-client")
-    compile project(":common-service:crud-service")
 }

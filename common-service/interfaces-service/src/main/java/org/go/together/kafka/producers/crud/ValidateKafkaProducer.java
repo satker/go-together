@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface ValidateKafkaProducer<D extends Dto> extends ReplyKafkaProducer<D, ValidationMessageDto> {
     default ValidationMessageDto validate(UUID requestId, D dto) {
-        String messageTopic = getTopicId() + TopicKafkaPostfix.VALIDATE.getDescription();
+        String messageTopic = getTopicId() + TopicKafkaPostfix.VALIDATE;
         return sendWithReply(messageTopic, requestId, dto);
     }
 }

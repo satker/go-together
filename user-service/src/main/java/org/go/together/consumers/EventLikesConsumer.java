@@ -13,6 +13,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+import static org.go.together.enums.TopicKafkaPostfix.*;
+import static org.go.together.enums.UserServiceInfo.EVENT_LIKES;
+import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
+
 @Component
 @RequiredArgsConstructor
 public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
@@ -21,46 +25,39 @@ public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
     private final FindService<EventLikeDto> findService;
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).EVENT_LIKES.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).CREATE.getDescription())}",
-            containerFactory = "eventLikesChangeListenerContainerFactory"
-    )
+    @KafkaListener(topics = EVENT_LIKES + CREATE,
+            containerFactory = EVENT_LIKES + CHANGE + LISTENER_FACTORY)
     @SendTo
     public IdDto handleCreate(ConsumerRecord<UUID, EventLikeDto> message) {
         return service.create(message.key(), message.value());
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).EVENT_LIKES.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).UPDATE.getDescription())}",
-            containerFactory = "eventLikesChangeListenerContainerFactory"
-    )
+    @KafkaListener(topics = EVENT_LIKES + UPDATE,
+            containerFactory = EVENT_LIKES + CHANGE + LISTENER_FACTORY)
     @SendTo
     public IdDto handleUpdate(ConsumerRecord<UUID, EventLikeDto> message) {
         return service.update(message.key(), message.value());
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).EVENT_LIKES.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).DELETE.getDescription())}",
-            containerFactory = "eventLikesDeleteListenerContainerFactory")
+    @KafkaListener(topics = EVENT_LIKES + DELETE,
+            containerFactory = EVENT_LIKES + DELETE + LISTENER_FACTORY)
     public void handleDelete(ConsumerRecord<UUID, UUID> message) {
         service.delete(message.key(), message.value());
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).EVENT_LIKES.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).READ.getDescription())}",
-            containerFactory = "eventLikesReadListenerContainerFactory")
+    @KafkaListener(topics = EVENT_LIKES + READ,
+            containerFactory = EVENT_LIKES + READ + LISTENER_FACTORY)
     @SendTo
     public EventLikeDto handleRead(ConsumerRecord<UUID, UUID> message) {
         return service.read(message.key(), message.value());
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).EVENT_LIKES.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).VALIDATE.getDescription())}",
-            containerFactory = "eventLikesValidateListenerContainerFactory")
+    @KafkaListener(topics = EVENT_LIKES + VALIDATE,
+            containerFactory = EVENT_LIKES + VALIDATE + LISTENER_FACTORY)
     @SendTo
     public ValidationMessageDto handleValidate(ConsumerRecord<UUID, EventLikeDto> message) {
         EventLikeDto dto = message.value();
@@ -68,9 +65,8 @@ public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.UserServiceInfo).EVENT_LIKES.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).FIND.getDescription())}",
-            containerFactory = "findListenerContainerFactory")
+    @KafkaListener(topics = EVENT_LIKES + FIND,
+            containerFactory = EVENT_LIKES + FIND + LISTENER_FACTORY)
     @SendTo
     public ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message) {
         return findService.find(message.key(), message.value());

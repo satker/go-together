@@ -124,13 +124,13 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
                 "author", FieldMapper.builder()
                         .currentServiceField("authorId")
                         .remoteServiceClient(findUserKafkaProducer)
-                        .remoteServiceName(USERS.getDescription())
+                        .remoteServiceName(USERS)
                         .remoteServiceFieldGetter("id")
                         .fieldClass(UUID.class).build(),
                 "idEventRoutes", FieldMapper.builder()
                         .currentServiceField("id")
                         .remoteServiceClient(findLocationKafkaProducer)
-                        .remoteServiceName(LocationServiceInfo.GROUP_LOCATION.getDescription())
+                        .remoteServiceName(LocationServiceInfo.GROUP_LOCATION)
                         .remoteServiceFieldGetter("groupId")
                         .fieldClass(UUID.class).build(),
                 "startDate", FieldMapper.builder()

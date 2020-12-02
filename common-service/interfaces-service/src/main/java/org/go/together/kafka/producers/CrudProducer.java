@@ -13,6 +13,4 @@ public interface CrudProducer<D extends Dto> extends ValidationProducer<D>, Find
     D read(UUID requestId, UUID uuid);
 
     void delete(UUID requestId, UUID uuid);
-
-    String getConsumerId();
 }

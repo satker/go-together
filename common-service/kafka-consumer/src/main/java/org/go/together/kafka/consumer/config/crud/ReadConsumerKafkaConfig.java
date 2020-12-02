@@ -1,4 +1,4 @@
-package org.go.together.kafka.consumer.config;
+package org.go.together.kafka.consumer.config.crud;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;

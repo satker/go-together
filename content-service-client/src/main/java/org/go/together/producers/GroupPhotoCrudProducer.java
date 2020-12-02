@@ -8,10 +8,6 @@ import org.springframework.stereotype.Component;
 import static org.go.together.enums.ContentServiceInfo.GROUP_PHOTO_NAME;
 
 @Component
-@EnableAutoConfigurationKafkaProducer
+@EnableAutoConfigurationKafkaProducer(producerId = GROUP_PHOTO_NAME)
 public class GroupPhotoCrudProducer extends CrudClient<GroupPhotoDto> {
-    @Override
-    public String getConsumerId() {
-        return GROUP_PHOTO_NAME.getDescription();
-    }
 }

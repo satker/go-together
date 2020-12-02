@@ -64,6 +64,6 @@ public class GroupPhotoServiceImpl extends CommonCrudService<GroupPhotoDto, Grou
 
     @Override
     public String getServiceName() {
-        return GROUP_PHOTO_NAME.getDescription();
+        return GROUP_PHOTO_NAME;
     }
 }

@@ -13,6 +13,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+import static org.go.together.enums.ContentServiceInfo.GROUP_PHOTO_NAME;
+import static org.go.together.enums.TopicKafkaPostfix.*;
+import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
+
 @Component
 @RequiredArgsConstructor
 public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
@@ -21,46 +25,39 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
     private final FindService<GroupPhotoDto> findService;
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ContentServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).CREATE.getDescription())}",
-            containerFactory = "groupPhotosChangeListenerContainerFactory"
-    )
+    @KafkaListener(topics = GROUP_PHOTO_NAME + CREATE,
+            containerFactory = GROUP_PHOTO_NAME + CHANGE + LISTENER_FACTORY)
     @SendTo
     public IdDto handleCreate(ConsumerRecord<UUID, GroupPhotoDto> message) {
         return service.create(message.key(), message.value());
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ContentServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).UPDATE.getDescription())}",
-            containerFactory = "groupPhotosChangeListenerContainerFactory"
-    )
+    @KafkaListener(topics = GROUP_PHOTO_NAME + UPDATE,
+            containerFactory = GROUP_PHOTO_NAME + CHANGE + LISTENER_FACTORY)
     @SendTo
     public IdDto handleUpdate(ConsumerRecord<UUID, GroupPhotoDto> message) {
         return service.update(message.key(), message.value());
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ContentServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).DELETE.getDescription())}",
-            containerFactory = "groupPhotosDeleteListenerContainerFactory")
+    @KafkaListener(topics = GROUP_PHOTO_NAME + DELETE,
+            containerFactory = GROUP_PHOTO_NAME + DELETE + LISTENER_FACTORY)
     public void handleDelete(ConsumerRecord<UUID, UUID> message) {
         service.delete(message.key(), message.value());
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ContentServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).READ.getDescription())}",
-            containerFactory = "groupPhotosReadListenerContainerFactory")
+    @KafkaListener(topics = GROUP_PHOTO_NAME + READ,
+            containerFactory = GROUP_PHOTO_NAME + READ + LISTENER_FACTORY)
     @SendTo
     public GroupPhotoDto handleRead(ConsumerRecord<UUID, UUID> message) {
         return service.read(message.key(), message.value());
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ContentServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).VALIDATE.getDescription())}",
-            containerFactory = "groupPhotosValidateListenerContainerFactory")
+    @KafkaListener(topics = GROUP_PHOTO_NAME + VALIDATE,
+            containerFactory = GROUP_PHOTO_NAME + VALIDATE + LISTENER_FACTORY)
     @SendTo
     public ValidationMessageDto handleValidate(ConsumerRecord<UUID, GroupPhotoDto> message) {
         GroupPhotoDto dto = message.value();
@@ -68,9 +65,8 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
     }
 
     @Override
-    @KafkaListener(topics = "#{T(org.go.together.enums.ContentServiceInfo).GROUP_PHOTO_NAME.getDescription()" +
-            ".concat(T(org.go.together.enums.TopicKafkaPostfix).FIND.getDescription())}",
-            containerFactory = "findListenerContainerFactory")
+    @KafkaListener(topics = GROUP_PHOTO_NAME + FIND,
+            containerFactory = GROUP_PHOTO_NAME + FIND + LISTENER_FACTORY)
     @SendTo
     public ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message) {
         return findService.find(message.key(), message.value());

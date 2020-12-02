@@ -9,6 +9,6 @@ import org.springframework.stereotype.Component;
 public class GroupPhotoConsumerKafkaConfig extends ConsumerKafkaConfig<GroupPhotoDto> {
     @Override
     public String getConsumerId() {
-        return ContentServiceInfo.GROUP_PHOTO_NAME.getDescription();
+        return ContentServiceInfo.GROUP_PHOTO_NAME;
     }
 }

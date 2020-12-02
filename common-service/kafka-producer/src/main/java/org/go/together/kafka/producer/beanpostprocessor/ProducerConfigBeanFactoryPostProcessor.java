@@ -30,7 +30,7 @@ public class ProducerConfigBeanFactoryPostProcessor {
                     .collect(Collectors.toSet());
 
             crudClients.stream()
-                    .map(CrudClient::getConsumerId)
+                    .map(ProducerConfigBeanFactoryPostProcessor::getConsumerId)
                     .map(ProducerKafkaConfig::create)
                     .forEach(producerKafkaConfig -> producerKafkaConfig.configureProducer(kafkaServer, kafkaGroupId, beanFactory));
 
@@ -38,8 +38,12 @@ public class ProducerConfigBeanFactoryPostProcessor {
         };
     }
 
+    private static String getConsumerId(CrudClient<?> crudProducer) {
+        return crudProducer.getClass().getAnnotation(EnableAutoConfigurationKafkaProducer.class).producerId();
+    }
+
     private static <D extends Dto> void enrichCrudClient(CrudClient<D> crudClient, ConfigurableListableBeanFactory beanFactory) {
-        String consumerId = crudClient.getConsumerId();
+        String consumerId = getConsumerId(crudClient);
         crudClient.setCreateKafkaProducer(getKafkaProducer(beanFactory, consumerId, CREATE));
         crudClient.setUpdateKafkaProducer(getKafkaProducer(beanFactory, consumerId, UPDATE));
         crudClient.setReadKafkaProducer(getKafkaProducer(beanFactory, consumerId, READ));

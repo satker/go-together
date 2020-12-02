@@ -47,7 +47,7 @@ public class GroupLocationServiceImpl extends CommonCrudService<GroupLocationDto
 
     @Override
     public String getServiceName() {
-        return GROUP_LOCATION.getDescription();
+        return GROUP_LOCATION;
     }
 
     @Override

@@ -1,8 +1,9 @@
-package org.go.together.kafka.producer.config;
+package org.go.together.kafka.producer.config.crud;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
+import org.go.together.kafka.producer.config.interfaces.CustomProducerConfig;
 import org.go.together.kafka.producer.enums.ProducerPostfix;
 import org.go.together.kafka.producer.impl.CommonDeleteKafkaProducer;
 import org.go.together.kafka.producers.crud.DeleteKafkaProducer;

@@ -33,7 +33,7 @@ public class UserClientService {
 
     private ResponseDto<Object> findResult(UUID requestId, String userName) {
         FormDto formDto = new FormDto();
-        formDto.setMainIdField(USERS.getDescription() + "." + LOGIN);
+        formDto.setMainIdField(USERS + "." + LOGIN);
         FilterDto filterDto = new FilterDto();
         filterDto.setFilterType(FindOperator.EQUAL);
         filterDto.setValues(Set.of(Map.of(LOGIN, userName)));

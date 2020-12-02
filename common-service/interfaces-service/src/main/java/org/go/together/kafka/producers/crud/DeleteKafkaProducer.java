@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface DeleteKafkaProducer<D extends Dto> extends KafkaProducer<UUID> {
     default void delete(UUID requestId, UUID dtoId) {
-        String messageTopic = getTopicId() + TopicKafkaPostfix.DELETE.getDescription();
+        String messageTopic = getTopicId() + TopicKafkaPostfix.DELETE;
         send(messageTopic, requestId, dtoId);
     }
 }

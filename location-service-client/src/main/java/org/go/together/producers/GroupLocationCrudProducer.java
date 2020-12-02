@@ -8,10 +8,6 @@ import org.springframework.stereotype.Component;
 import static org.go.together.enums.LocationServiceInfo.GROUP_LOCATION;
 
 @Component
-@EnableAutoConfigurationKafkaProducer
+@EnableAutoConfigurationKafkaProducer(producerId = GROUP_LOCATION)
 public class GroupLocationCrudProducer extends CrudClient<GroupLocationDto> {
-    @Override
-    public String getConsumerId() {
-        return GROUP_LOCATION.getDescription();
-    }
 }
