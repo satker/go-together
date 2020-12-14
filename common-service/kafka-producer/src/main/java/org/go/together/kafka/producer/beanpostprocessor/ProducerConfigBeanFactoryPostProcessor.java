@@ -11,8 +11,6 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.go.together.kafka.producer.enums.ProducerPostfix.*;
@@ -22,34 +20,56 @@ public class ProducerConfigBeanFactoryPostProcessor {
     @Bean
     public static BeanFactoryPostProcessor producerBeanFactoryPostProcessor(@Value("${kafka.server}") String kafkaServer,
                                                                             @Value("${kafka.groupId}") String kafkaGroupId) {
-        return beanFactory -> {
-            Set<CrudClient<?>> crudClients = Stream.of(beanFactory.getBeanNamesForType(CrudClient.class))
-                    .map(beanFactory::getBean)
-                    .filter(client -> client.getClass().isAnnotationPresent(EnableAutoConfigurationKafkaProducer.class))
-                    .map(producer -> (CrudClient<?>) producer)
-                    .collect(Collectors.toSet());
-
-            crudClients.stream()
-                    .map(ProducerConfigBeanFactoryPostProcessor::getConsumerId)
-                    .map(ProducerKafkaConfig::create)
-                    .forEach(producerKafkaConfig -> producerKafkaConfig.configureProducer(kafkaServer, kafkaGroupId, beanFactory));
-
-            crudClients.forEach(producer -> enrichCrudClient(producer, beanFactory));
-        };
+        return beanFactory -> Stream.of(beanFactory.getBeanNamesForType(CrudClient.class))
+                .map(beanFactory::getBean)
+                .filter(client -> client.getClass().isAnnotationPresent(EnableAutoConfigurationKafkaProducer.class))
+                .map(ProducerConfigBeanFactoryPostProcessor::getProducerRights)
+                .forEach(producerRights -> configure(producerRights, kafkaServer, kafkaGroupId, beanFactory));
     }
 
-    private static String getConsumerId(CrudClient<?> crudProducer) {
-        return crudProducer.getClass().getAnnotation(EnableAutoConfigurationKafkaProducer.class).producerId();
+    private static ProducerRights getProducerRights(Object producer) {
+        CrudClient<?> crudClient = (CrudClient<?>) producer;
+        EnableAutoConfigurationKafkaProducer configurationKafkaProducer =
+                crudClient.getClass().getAnnotation(EnableAutoConfigurationKafkaProducer.class);
+        return ProducerRights.builder()
+                .producer(crudClient)
+                .isCreate(configurationKafkaProducer.isCreate())
+                .isFind(configurationKafkaProducer.isFind())
+                .isRead(configurationKafkaProducer.isRead())
+                .isUpdate(configurationKafkaProducer.isUpdate())
+                .isValidate(configurationKafkaProducer.isValidate())
+                .isDelete(configurationKafkaProducer.isDelete())
+                .producerId(configurationKafkaProducer.producerId()).build();
     }
 
-    private static <D extends Dto> void enrichCrudClient(CrudClient<D> crudClient, ConfigurableListableBeanFactory beanFactory) {
-        String consumerId = getConsumerId(crudClient);
-        crudClient.setCreateKafkaProducer(getKafkaProducer(beanFactory, consumerId, CREATE));
-        crudClient.setUpdateKafkaProducer(getKafkaProducer(beanFactory, consumerId, UPDATE));
-        crudClient.setReadKafkaProducer(getKafkaProducer(beanFactory, consumerId, READ));
-        crudClient.setDeleteKafkaProducer(getKafkaProducer(beanFactory, consumerId, DELETE));
-        crudClient.setFindKafkaProducer(getKafkaProducer(beanFactory, consumerId, FIND));
-        crudClient.setValidateKafkaProducers(getKafkaProducer(beanFactory, consumerId, VALIDATE));
+    private static void configure(ProducerRights producerRights, String kafkaServer,
+                                  String kafkaGroupId, ConfigurableListableBeanFactory configurableListableBeanFactory) {
+        ProducerKafkaConfig<Dto> producerKafkaConfig = ProducerKafkaConfig.create(producerRights.getProducerId());
+        producerKafkaConfig.configureProducer(kafkaServer, kafkaGroupId, configurableListableBeanFactory, producerRights);
+        enrichCrudClient(producerRights, configurableListableBeanFactory);
+    }
+
+    private static void enrichCrudClient(ProducerRights producerRights, ConfigurableListableBeanFactory beanFactory) {
+        String consumerId = producerRights.getProducerId();
+        CrudClient<? extends Dto> crudClient = producerRights.getProducer();
+        if (producerRights.isCreate()) {
+            crudClient.setCreateKafkaProducer(getKafkaProducer(beanFactory, consumerId, CREATE));
+        }
+        if (producerRights.isUpdate()) {
+            crudClient.setUpdateKafkaProducer(getKafkaProducer(beanFactory, consumerId, UPDATE));
+        }
+        if (producerRights.isRead()) {
+            crudClient.setReadKafkaProducer(getKafkaProducer(beanFactory, consumerId, READ));
+        }
+        if (producerRights.isDelete()) {
+            crudClient.setDeleteKafkaProducer(getKafkaProducer(beanFactory, consumerId, DELETE));
+        }
+        if (producerRights.isFind()) {
+            crudClient.setFindKafkaProducer(getKafkaProducer(beanFactory, consumerId, FIND));
+        }
+        if (producerRights.isValidate()) {
+            crudClient.setValidateKafkaProducers(getKafkaProducer(beanFactory, consumerId, VALIDATE));
+        }
     }
 
     private static <T> T getKafkaProducer(ConfigurableListableBeanFactory beanFactory,

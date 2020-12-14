@@ -22,7 +22,10 @@ repositories {
 }
 
 dependencies {
-    compile"org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-
+    compile (
+            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+            "org.projectlombok:lombok:${lombokVersion}"
+    )
     compile project(":common-service:interfaces-service")
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }

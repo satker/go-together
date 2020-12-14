@@ -43,6 +43,7 @@ dependencies {
 
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
+    compile project(":common-service:crud-service")
     compile project(":auth-service-client")
     compile project(":user-service-client")
 }
