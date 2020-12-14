@@ -122,7 +122,7 @@ const onDataConverter = (data) => {
 const RegisterForm = createReduxForm({
     FORM_ID,
     validation,
-    url: USER_SERVICE_URL + "/",
+    url: USER_SERVICE_URL + "/users",
     method: PUT,
     dataConverter: onDataConverter
 });

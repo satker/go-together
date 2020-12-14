@@ -73,20 +73,8 @@ public abstract class CreateProducerKafkaConfig<D extends Dto> extends ReadProdu
         KafkaMessageListenerContainer<UUID, IdDto> createRepliesContainer = createRepliesContainer(replyConsumerFactory, kafkaGroupId);
         ReplyingKafkaTemplate<UUID, D, IdDto> createReplyingKafkaTemplate = createReplyingKafkaTemplate(createRepliesContainer, kafkaServer);
         beanFactory.registerSingleton(getConsumerId() + "CreateReplyingKafkaTemplate", createReplyingKafkaTemplate);
-        CreateKafkaProducer<D> commonCreateKafkaProducer =
-                this.new CustomCreateProducer(createReplyingKafkaTemplate, kafkaGroupId);
+        CreateKafkaProducer<D> commonCreateKafkaProducer = CommonCreateKafkaProducer.create(createReplyingKafkaTemplate, kafkaGroupId, getConsumerId());
         beanFactory.registerSingleton(getConsumerId() + ProducerPostfix.CREATE.getDescription(), commonCreateKafkaProducer);
-    }
-
-    private class CustomCreateProducer extends CommonCreateKafkaProducer<D> {
-        public CustomCreateProducer(ReplyingKafkaTemplate<UUID, D, IdDto> kafkaTemplate, String groupId) {
-            super(kafkaTemplate, groupId);
-        }
-
-        @Override
-        public String getTopicId() {
-            return getConsumerId();
-        }
     }
 
     private String getCreateReplyTopicId() {
