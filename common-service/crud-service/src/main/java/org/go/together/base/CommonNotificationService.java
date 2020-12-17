@@ -2,6 +2,7 @@ package org.go.together.base;
 
 import org.go.together.compare.ComparableDto;
 import org.go.together.dto.Dto;
+import org.go.together.enums.CrudOperation;
 import org.go.together.enums.NotificationStatus;
 import org.go.together.find.CommonFindService;
 import org.go.together.model.IdentifiedEntity;
@@ -18,17 +19,31 @@ public abstract class CommonNotificationService<D extends Dto, E extends Identif
         this.notificationService = notificationService;
     }
 
-    public void sendNotification(UUID requestId, UUID uuid, D originalDto, D changedDto, NotificationStatus status) {
-        if (changedDto instanceof ComparableDto) {
-            Runnable notificationRunnable = () -> {
-                String message = getNotificationMessage(requestId, originalDto, changedDto, status);
-                switch (status) {
-                    case CREATED -> notificationService.createNotification(uuid, originalDto, message);
-                    case UPDATED, DELETED -> notificationService.updateNotification(uuid, changedDto, message);
-                }
-            };
-            new Thread(notificationRunnable).start();
+    public void sendNotification(UUID requestId, UUID uuid, D originalDto, D changedDto, CrudOperation crudOperation) {
+        if (isNotifiable(changedDto)) {
+            NotificationStatus status = getNotificationStatusByCrud(crudOperation);
+            String message = getNotificationMessage(requestId, originalDto, changedDto, status);
+            switch (status) {
+                case CREATED -> notificationService.createNotification(requestId, uuid, originalDto, message);
+                case UPDATED, DELETED -> notificationService.updateNotification(requestId, uuid, changedDto, message);
+            }
         }
+    }
+
+    private boolean isNotifiable(D dto) {
+        if (dto instanceof ComparableDto) {
+            ComparableDto comparableDto = (ComparableDto) dto;
+            return comparableDto.getOwnerId() != null;
+        }
+        return false;
+    }
+
+    private NotificationStatus getNotificationStatusByCrud(CrudOperation crudOperation) {
+        return switch (crudOperation) {
+            case CREATE -> NotificationStatus.CREATED;
+            case DELETE -> NotificationStatus.DELETED;
+            case UPDATE -> NotificationStatus.UPDATED;
+        };
     }
 
     public String getNotificationMessage(UUID requestId, D originalDto, D changedDto, NotificationStatus notificationStatus) {

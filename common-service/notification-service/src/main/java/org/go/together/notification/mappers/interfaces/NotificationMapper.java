@@ -1,12 +1,13 @@
-package org.go.together.notification.helpers.interfaces;
+package org.go.together.notification.mappers.interfaces;
 
 import org.go.together.dto.Dto;
 import org.go.together.dto.NotificationMessageDto;
+import org.go.together.kafka.NotificationEvent;
 
 import java.util.Date;
 import java.util.UUID;
 
-public interface NotificationSender {
+public interface NotificationMapper {
     default NotificationMessageDto getNotificationMessageDto(String resultMessage) {
         NotificationMessageDto notificationMessageDto = new NotificationMessageDto();
         notificationMessageDto.setMessage(resultMessage);
@@ -14,5 +15,5 @@ public interface NotificationSender {
         return notificationMessageDto;
     }
 
-    <D extends Dto> void send(UUID id, D dto, String resultMessage);
+    <D extends Dto> NotificationEvent getNotificationEvent(UUID id, D dto, String resultMessage);
 }

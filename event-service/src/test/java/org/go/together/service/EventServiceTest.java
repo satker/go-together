@@ -88,6 +88,7 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
         when(groupLocationValidate.validate(any(UUID.class), eq(eventDto.getRoute()))).thenReturn(new ValidationMessageDto(EMPTY));
         when(routeInfoValidator.validate(any(UUID.class), eq(eventDto.getRouteInfo()))).thenReturn(new ValidationMessageDto(EMPTY));
         when(routeInfoProducer.create(any(UUID.class), eq(eventDto.getRouteInfo()))).thenReturn(new IdDto(eventDto.getRouteInfo().getId()));
+        when(routeInfoProducer.read(any(UUID.class), eq(eventDto.getRouteInfo().getId()))).thenReturn(eventDto.getRouteInfo());
         when(routeInfoProducer.update(any(UUID.class), eq(eventDto.getRouteInfo()))).thenReturn(new IdDto(eventDto.getRouteInfo().getId()));
     }
 

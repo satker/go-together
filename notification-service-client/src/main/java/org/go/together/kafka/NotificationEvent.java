@@ -8,7 +8,7 @@ import org.go.together.dto.NotificationMessageDto;
 
 import java.util.UUID;
 
-@Builder
+@Builder(toBuilder = true)
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

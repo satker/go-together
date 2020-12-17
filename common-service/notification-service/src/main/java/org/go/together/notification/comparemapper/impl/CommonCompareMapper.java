@@ -1,10 +1,10 @@
-package org.go.together.notification.transport.impl;
+package org.go.together.notification.comparemapper.impl;
 
 import org.go.together.compare.ComparableDto;
 import org.go.together.compare.ComparingObject;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.go.together.notification.comparators.transformers.interfaces.Transformer;
-import org.go.together.notification.transport.interfaces.CompareTransport;
+import org.go.together.notification.comparemapper.interfaces.CompareMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import java.util.Map;
 import static org.go.together.utils.ReflectionUtils.getClazz;
 
 @Component
-public class CommonCompareTransport implements CompareTransport {
+public class CommonCompareMapper implements CompareMapper {
     private Transformer<Comparator> compareTransformer;
 
     @Autowired

@@ -7,9 +7,11 @@ import org.go.together.base.NotificationService;
 import org.go.together.compare.ComparableDto;
 import org.go.together.dto.Dto;
 import org.go.together.enums.NotificationStatus;
+import org.go.together.kafka.NotificationEvent;
 import org.go.together.notification.comparators.interfaces.Comparator;
-import org.go.together.notification.helpers.interfaces.NotificationSender;
-import org.go.together.notification.helpers.interfaces.ReceiverSender;
+import org.go.together.notification.senders.interfaces.KafkaSender;
+import org.go.together.notification.mappers.interfaces.NotificationMapper;
+import org.go.together.notification.mappers.interfaces.ReceiverMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -18,18 +20,24 @@ import java.util.UUID;
 
 @Component
 public class CommonNotificationService<D extends Dto> implements NotificationService<D> {
-    private final NotificationSender createNotificationSender;
-    private final NotificationSender updateNotificationSender;
-    private final ReceiverSender removeReceiverSender;
+    private final NotificationMapper createNotificationMapper;
+    private final NotificationMapper updateNotificationMapper;
+    private final KafkaSender kafkaSender;
+    private final ReceiverMapper removeReceiverMapper;
+    private final ReceiverMapper addReceiverMapper;
     private final Comparator<D> dtoComparator;
 
-    public CommonNotificationService(@Qualifier("createNotificationSender") NotificationSender createNotificationSender,
-                                     @Qualifier("updateNotificationSender") NotificationSender updateNotificationSender,
-                                     @Qualifier("receiverRemoveSender") ReceiverSender removeReceiverSender,
+    public CommonNotificationService(@Qualifier("createNotificationMapper") NotificationMapper createNotificationMapper,
+                                     @Qualifier("updateNotificationMapper") NotificationMapper updateNotificationMapper,
+                                     KafkaSender kafkaSender,
+                                     @Qualifier("receiverRemoveMapper") ReceiverMapper removeReceiverMapper,
+                                     @Qualifier("receiverAddMapper") ReceiverMapper addReceiverMapper,
                                      Comparator<D> dtoComparator) {
-        this.createNotificationSender = createNotificationSender;
-        this.updateNotificationSender = updateNotificationSender;
-        this.removeReceiverSender = removeReceiverSender;
+        this.createNotificationMapper = createNotificationMapper;
+        this.updateNotificationMapper = updateNotificationMapper;
+        this.kafkaSender = kafkaSender;
+        this.removeReceiverMapper = removeReceiverMapper;
+        this.addReceiverMapper = addReceiverMapper;
         this.dtoComparator = dtoComparator;
     }
 
@@ -46,13 +54,20 @@ public class CommonNotificationService<D extends Dto> implements NotificationSer
     }
 
     @Override
-    public void createNotification(UUID id, D dto, String resultMessage) {
-        createNotificationSender.send(id, dto, resultMessage);
+    public void createNotification(UUID requestId, UUID id, D dto, String resultMessage) {
+        Optional.ofNullable(createNotificationMapper.getNotificationEvent(id, dto, resultMessage))
+                .ifPresent(event -> {
+                    NotificationEvent addReceiverEvent =
+                            addReceiverMapper.getNotificationEvent(event.getProducerId(), ((ComparableDto) dto).getOwnerId());
+                    kafkaSender.send(requestId, addReceiverEvent);
+                    kafkaSender.send(requestId, event);
+                });
     }
 
     @Override
-    public void updateNotification(UUID id, D dto, String resultMessage) {
-        updateNotificationSender.send(id, dto, resultMessage);
+    public void updateNotification(UUID requestId, UUID id, D dto, String resultMessage) {
+        Optional.ofNullable(updateNotificationMapper.getNotificationEvent(id, dto, resultMessage))
+                .ifPresent(event -> kafkaSender.send(requestId, event));
     }
 
     @SneakyThrows
@@ -63,13 +78,16 @@ public class CommonNotificationService<D extends Dto> implements NotificationSer
 
 
     @Override
-    public void removeReceiver(D dto) {
+    public void removeReceiver(UUID requestId, D dto) {
         Optional.ofNullable(dto)
                 .map(d -> (ComparableDto) d)
                 .ifPresent(comparableDto -> {
                     UUID ownerId = comparableDto.getOwnerId();
                     Optional.ofNullable(comparableDto.getParentId())
-                            .ifPresent(producerId -> removeReceiverSender.send(comparableDto.getId(), producerId, ownerId));
+                            .ifPresent(producerId -> {
+                                NotificationEvent notificationEvent = removeReceiverMapper.getNotificationEvent(producerId, ownerId);
+                                kafkaSender.send(requestId, notificationEvent);
+                            });
                 });
     }
 }

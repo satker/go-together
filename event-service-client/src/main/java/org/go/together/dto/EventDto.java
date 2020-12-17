@@ -29,7 +29,7 @@ public class EventDto extends ComparableDto {
     @ComparingField("routes")
     private GroupLocationDto route;
 
-    @ComparingField("info routes")
+    @ComparingField("group info routes")
     private GroupRouteInfoDto routeInfo;
 
     @ComparingField("start date")

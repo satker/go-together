@@ -1,7 +1,7 @@
-package org.go.together.notification.helpers.impl;
+package org.go.together.notification.senders.impl;
 
 import org.go.together.kafka.NotificationEvent;
-import org.go.together.notification.helpers.interfaces.KafkaSender;
+import org.go.together.notification.senders.interfaces.KafkaSender;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;

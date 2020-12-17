@@ -3,7 +3,7 @@ package org.go.together.notification.comparators.impl;
 import org.go.together.compare.ComparingObject;
 import org.go.together.dto.Dto;
 import org.go.together.notification.comparators.interfaces.Comparator;
-import org.go.together.notification.transport.interfaces.CompareTransport;
+import org.go.together.notification.comparemapper.interfaces.CompareMapper;
 import org.go.together.utils.NotificationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,12 +15,12 @@ import java.util.function.Function;
 
 @Component
 public class DtoComparator<T extends Dto> implements Comparator<T> {
-    private CompareTransport transformer;
+    private CompareMapper transformer;
     private final Map<Class<? extends Dto>, Map<String, ComparingObject>> classFieldProperties =
             new HashMap<>();
 
     @Autowired
-    public void setTransformer(CompareTransport transformer) {
+    public void setTransformer(CompareMapper transformer) {
         this.transformer = transformer;
     }
 

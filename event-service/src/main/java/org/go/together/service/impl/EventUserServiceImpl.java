@@ -27,14 +27,15 @@ public class EventUserServiceImpl extends CommonCrudService<EventUserDto, EventU
 
     @Override
     public boolean deleteEventUserByEventId(EventUserDto eventUserDto) {
+        UUID requestId = UUID.randomUUID();
         Optional<EventUser> eventUserByUserIdAndEventId =
                 ((EventUserRepository) repository).findEventUserByUserIdAndEventId(eventUserDto.getUser().getId(),
                         eventUserDto.getEventId());
         if (eventUserByUserIdAndEventId.isEmpty()) {
             return false;
         }
-        super.delete(eventUserByUserIdAndEventId.get().getId());
-        notificationService.removeReceiver(eventUserDto);
+        super.delete(requestId, eventUserByUserIdAndEventId.get().getId());
+        notificationService.removeReceiver(requestId, eventUserDto);
         return true;
     }
 

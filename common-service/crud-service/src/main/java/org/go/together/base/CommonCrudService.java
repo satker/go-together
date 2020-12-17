@@ -67,7 +67,7 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
             D originalDto = mapper.entityToDto(requestId, entity);
             E enrichedEntity = enrichEntity(requestId, entity, null, crudOperation);
             repository.delete(enrichedEntity);
-            sendNotification(requestId, uuid, originalDto, originalDto, NotificationStatus.DELETED);
+            sendNotification(requestId, uuid, originalDto, originalDto, crudOperation);
         } else {
             String message = "Cannot find entity " + getServiceName() + "  by id " + uuid;
             log.warn(message);
@@ -77,15 +77,6 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
     @Override
     public boolean checkIfPresent(UUID requestId, UUID uuid) {
         return repository.findById(uuid).isPresent();
-    }
-
-    private void rollbackAction(UUID requestId, D dto, E entity, Exception e, CrudOperation crudOperation) {
-        final String serviceName = getServiceName();
-        final String operation = crudOperation.getDescription();
-        log.error("Cannot " + operation + StringUtils.SPACE + serviceName + ": " + e.getMessage() +
-                ". Try rollback " + serviceName + " with id = " + entity.getId());
-        enrichEntity(requestId, entity, dto, crudOperation);
-        log.error("Rollback " + operation + " successful for " + serviceName + " with id = " + entity.getId());
     }
 
     private IdDto dtoAction(UUID requestId,
@@ -99,12 +90,21 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
         try {
             E enrichedEntity = enrichEntity(requestId, updatedEntity, newDto, crudOperation);
             createdEntity = repository.save(enrichedEntity);
+            sendNotification(requestId, newDto.getId(), originalDto, newDto, crudOperation);
         } catch (Exception exception) {
             rollbackAction(requestId, originalDto, originalEntity, exception, revertCrudOperation);
             throw new ApplicationException(exception, requestId);
         }
-        sendNotification(requestId, newDto.getId(), originalDto, newDto, NotificationStatus.UPDATED);
         return new IdDto(createdEntity.getId());
+    }
+
+    private void rollbackAction(UUID requestId, D dto, E entity, Exception e, CrudOperation crudOperation) {
+        final String serviceName = getServiceName();
+        final String operation = crudOperation.getDescription();
+        log.error("Cannot " + operation + StringUtils.SPACE + serviceName + ": " + e.getMessage() +
+                ". Try rollback " + serviceName + " with id = " + entity.getId());
+        enrichEntity(requestId, entity, dto, crudOperation);
+        log.error("Rollback " + operation + " successful for " + serviceName + " with id = " + entity.getId());
     }
 
     protected E enrichEntity(UUID requestId, E entity, D dto, CrudOperation crudOperation) {

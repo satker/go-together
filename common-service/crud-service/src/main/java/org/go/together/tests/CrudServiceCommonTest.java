@@ -10,6 +10,7 @@ import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.interfaces.Identified;
 import org.go.together.model.IdentifiedEntity;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,7 +65,7 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
 
     @Test
     public void validateDto() {
-        assertTrue(StringUtils.isBlank(validator.validate(dto, null)));
+        Assertions.assertTrue(StringUtils.isBlank(validator.validate(dto, null)));
     }
 
     @Test
@@ -92,20 +93,20 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
     public void deleteTest() {
         D createdDto = getCreatedEntityId(dto);
         Optional<E> entityById = repository.findById(createdDto.getId());
-        assertTrue(entityById.isPresent());
+        Assertions.assertTrue(entityById.isPresent());
         crudService.delete(createdDto.getId());
         Optional<E> deletedEntityById = repository.findById(createdDto.getId());
-        assertTrue(deletedEntityById.isEmpty());
+        Assertions.assertTrue(deletedEntityById.isEmpty());
     }
 
     @Test
     public void deleteTestIfNotPresent() {
         UUID deletedUUID = UUID.randomUUID();
         Optional<E> deletedEntityById = repository.findById(deletedUUID);
-        assertTrue(deletedEntityById.isEmpty());
+        Assertions.assertTrue(deletedEntityById.isEmpty());
         crudService.delete(deletedUUID);
         deletedEntityById = repository.findById(deletedUUID);
-        assertTrue(deletedEntityById.isEmpty());
+        Assertions.assertTrue(deletedEntityById.isEmpty());
     }
 
     @Test
@@ -124,7 +125,7 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
                 formDto.setMainIdField(findService.getServiceName());
                 ResponseDto<Object> objectResponseDto = findService.find(formDto);
 
-                assertEquals(1, objectResponseDto.getResult().size());
+                Assertions.assertEquals(1, objectResponseDto.getResult().size());
                 objectResponseDto.getResult().stream()
                         .map(Identified::<D>cast)
                         .forEach(foundDto -> checkDtos(foundDto, dto, CrudOperation.CREATE));
@@ -166,7 +167,7 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
     }
 
     protected void checkDtos(D dto, D savedObject, CrudOperation operation) {
-        assertEquals(dto, savedObject);
+        Assertions.assertEquals(dto, savedObject);
     }
 
     protected abstract D createDto();

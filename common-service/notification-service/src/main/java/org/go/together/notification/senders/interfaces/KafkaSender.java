@@ -1,4 +1,4 @@
-package org.go.together.notification.helpers.interfaces;
+package org.go.together.notification.senders.interfaces;
 
 import org.go.together.kafka.NotificationEvent;
 
