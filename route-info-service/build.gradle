@@ -46,6 +46,7 @@ dependencies {
     compile project(":route-info-service-client")
     compile project(":common-service:notification-service")
     compile project(":common-service:crud-service")
+    testCompile project(":common-service:crud-service-tests")
 }
 
 test {

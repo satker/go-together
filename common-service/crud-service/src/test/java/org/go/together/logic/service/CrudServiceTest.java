@@ -20,7 +20,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
@@ -33,7 +32,6 @@ import static org.go.together.test.TestUtils.createTestDto;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ContextConfiguration(classes = RepositoryContext.class)
-@EmbeddedKafka
 @TestPropertySource(locations = "/application.properties")
 class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
     TestDto testDto;

@@ -53,6 +53,7 @@ dependencies {
     compile project(":user-service-client")
     compile project(":location-service-client")
     compile project(":common-service:notification-service")
+    testCompile project(":common-service:crud-service-tests")
 }
 test {
     useJUnitPlatform()

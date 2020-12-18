@@ -47,6 +47,7 @@ dependencies {
     compile project(":common-service:notification-service")
     compile project(":content-service-client")
     compile project(":common-service:crud-service")
+    testCompile project(":common-service:crud-service-tests")
 }
 
 

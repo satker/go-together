@@ -1,8 +1,6 @@
 buildscript {
     ext {
         springBootVersion = '2.3.0.RELEASE'
-        lombokVersion='1.18.16'
-        springKafkaVersion='2.6.3'
     }
     repositories {
         mavenCentral()
@@ -30,18 +28,12 @@ dependencies {
     compile (
             "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
             "org.junit.jupiter:junit-jupiter-engine:5.2.0",
-
-            "org.projectlombok:lombok:${lombokVersion}",
+            "uk.co.jemos.podam:podam:7.2.3.RELEASE",
             "com.h2database:h2:1.4.200",
     )
-    compile project(":common-service:find-service")
-    compile project(":common-service:kafka-consumer")
-    compile project(":common-service:validation-service")
-    testCompile project(":common-service:notification-service")
-    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    testCompile project(":common-service:crud-service-tests")
+    compile project(":common-service:interfaces-service")
 }
 
 test {

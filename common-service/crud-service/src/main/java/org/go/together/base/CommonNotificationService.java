@@ -31,7 +31,7 @@ public abstract class CommonNotificationService<D extends Dto, E extends Identif
     }
 
     private boolean isNotifiable(D dto) {
-        if (dto instanceof ComparableDto) {
+        if (notificationService != null && dto instanceof ComparableDto) {
             ComparableDto comparableDto = (ComparableDto) dto;
             return comparableDto.getOwnerId() != null;
         }

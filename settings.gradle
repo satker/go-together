@@ -39,4 +39,6 @@ include 'common-service:kafka-producer'
 findProject(':common-service:kafka-producer')?.name = 'kafka-producer'
 include 'common-service:kafka-consumer'
 findProject(':common-service:kafka-consumer')?.name = 'kafka-consumer'
+include 'common-service:crud-service-tests'
+findProject(':common-service:crud-service-tests')?.name = 'crud-service-tests'
 

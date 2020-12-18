@@ -25,7 +25,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
