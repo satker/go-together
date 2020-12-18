@@ -7,6 +7,7 @@ import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
 import org.go.together.enums.TopicKafkaPostfix;
+import org.go.together.kafka.producer.config.interfaces.KafkaProducerConfigurator;
 import org.go.together.kafka.producer.enums.ProducerPostfix;
 import org.go.together.kafka.producer.impl.CommonCreateKafkaProducer;
 import org.go.together.kafka.producers.ReplyKafkaProducer;
@@ -21,13 +22,15 @@ import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 
-public abstract class CreateProducerKafkaConfig<D extends Dto> extends ReadProducerKafkaConfig<D> {
+@Component
+public class CreateProducerKafkaConfig<D extends Dto> implements KafkaProducerConfigurator {
     private ProducerFactory<UUID, D> createProducerFactory(String kafkaServer) {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
@@ -42,8 +45,9 @@ public abstract class CreateProducerKafkaConfig<D extends Dto> extends ReadProdu
     }
 
     private KafkaMessageListenerContainer<UUID, IdDto> createRepliesContainer(ConsumerFactory<UUID, IdDto> createReplyConsumerFactory,
-                                                                              String kafkaGroupId) {
-        ContainerProperties containerProperties = new ContainerProperties(getCreateReplyTopicId() + kafkaGroupId);
+                                                                              String kafkaGroupId,
+                                                                              String consumerId) {
+        ContainerProperties containerProperties = new ContainerProperties(getCreateReplyTopicId(consumerId) + kafkaGroupId);
         return new KafkaMessageListenerContainer<>(createReplyConsumerFactory, containerProperties);
     }
 
@@ -66,18 +70,19 @@ public abstract class CreateProducerKafkaConfig<D extends Dto> extends ReadProdu
                 groupPhotoDtoJsonDeserializer);
     }
 
-    protected void createProducerBeanFactoryPostProcessor(String kafkaServer,
-                                                          String kafkaGroupId,
-                                                          ConfigurableListableBeanFactory beanFactory) {
+    public void configure(String kafkaServer,
+                             String kafkaGroupId,
+                             ConfigurableListableBeanFactory beanFactory,
+                             String consumerId) {
         ConsumerFactory<UUID, IdDto> replyConsumerFactory = createReplyConsumerFactory(kafkaServer, kafkaGroupId);
-        KafkaMessageListenerContainer<UUID, IdDto> createRepliesContainer = createRepliesContainer(replyConsumerFactory, kafkaGroupId);
+        KafkaMessageListenerContainer<UUID, IdDto> createRepliesContainer = createRepliesContainer(replyConsumerFactory, kafkaGroupId, consumerId);
         ReplyingKafkaTemplate<UUID, D, IdDto> createReplyingKafkaTemplate = createReplyingKafkaTemplate(createRepliesContainer, kafkaServer);
-        beanFactory.registerSingleton(getConsumerId() + "CreateReplyingKafkaTemplate", createReplyingKafkaTemplate);
-        CreateKafkaProducer<D> commonCreateKafkaProducer = CommonCreateKafkaProducer.create(createReplyingKafkaTemplate, kafkaGroupId, getConsumerId());
-        beanFactory.registerSingleton(getConsumerId() + ProducerPostfix.CREATE.getDescription(), commonCreateKafkaProducer);
+        beanFactory.registerSingleton(consumerId + "CreateReplyingKafkaTemplate", createReplyingKafkaTemplate);
+        CreateKafkaProducer<D> commonCreateKafkaProducer = CommonCreateKafkaProducer.create(createReplyingKafkaTemplate, kafkaGroupId, consumerId);
+        beanFactory.registerSingleton(consumerId + ProducerPostfix.CREATE.getDescription(), commonCreateKafkaProducer);
     }
 
-    private String getCreateReplyTopicId() {
-        return getConsumerId() + TopicKafkaPostfix.CREATE + ReplyKafkaProducer.KAFKA_REPLY_ID;
+    private String getCreateReplyTopicId(String consumerId) {
+        return consumerId + TopicKafkaPostfix.CREATE + ReplyKafkaProducer.KAFKA_REPLY_ID;
     }
 }

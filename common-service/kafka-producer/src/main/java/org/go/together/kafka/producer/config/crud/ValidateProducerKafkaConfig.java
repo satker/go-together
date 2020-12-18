@@ -7,6 +7,7 @@ import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
 import org.go.together.dto.ValidationMessageDto;
 import org.go.together.enums.TopicKafkaPostfix;
+import org.go.together.kafka.producer.config.interfaces.KafkaProducerConfigurator;
 import org.go.together.kafka.producer.enums.ProducerPostfix;
 import org.go.together.kafka.producer.impl.CommonValidateKafkaProducer;
 import org.go.together.kafka.producers.ReplyKafkaProducer;
@@ -21,12 +22,14 @@ import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class ValidateProducerKafkaConfig<D extends Dto> extends FindProducerKafkaConfig<D> {
+@Component
+public class ValidateProducerKafkaConfig<D extends Dto> implements KafkaProducerConfigurator {
     private ProducerFactory<UUID, D> validateProducerFactory(String kafkaServer) {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
@@ -51,8 +54,9 @@ public abstract class ValidateProducerKafkaConfig<D extends Dto> extends FindPro
     }
 
     private KafkaMessageListenerContainer<UUID, ValidationMessageDto> validateRepliesContainer(ConsumerFactory<UUID, ValidationMessageDto> validateReplyConsumerFactory,
-                                                                                               String kafkaGroupId) {
-        ContainerProperties containerProperties = new ContainerProperties(getValidateReplyTopicId() + kafkaGroupId);
+                                                                                               String kafkaGroupId,
+                                                                                               String consumerId) {
+        ContainerProperties containerProperties = new ContainerProperties(getValidateReplyTopicId(consumerId) + kafkaGroupId);
         return new KafkaMessageListenerContainer<>(validateReplyConsumerFactory, containerProperties);
     }
 
@@ -65,20 +69,23 @@ public abstract class ValidateProducerKafkaConfig<D extends Dto> extends FindPro
                 validationMessageDtoJsonDeserializer);
     }
 
-    protected void validateProducerBeanFactoryPostProcessor(String kafkaServer,
-                                                            String kafkaGroupId,
-                                                            ConfigurableListableBeanFactory beanFactory) {
+    public void configure(String kafkaServer,
+                          String kafkaGroupId,
+                          ConfigurableListableBeanFactory beanFactory,
+                          String consumerId) {
         ConsumerFactory<UUID, ValidationMessageDto> replyConsumerFactory = validateReplyConsumerFactory(kafkaServer, kafkaGroupId);
-        KafkaMessageListenerContainer<UUID, ValidationMessageDto> updateRepliesContainer = validateRepliesContainer(replyConsumerFactory, kafkaGroupId);
-        beanFactory.registerSingleton(getConsumerId() + "ValidateRepliesContainer", updateRepliesContainer);
-        ReplyingKafkaTemplate<UUID, D, ValidationMessageDto> updateReplyingKafkaTemplate = validateReplyingKafkaTemplate(updateRepliesContainer, kafkaServer);
-        beanFactory.registerSingleton(getConsumerId() + "ValidateReplyingKafkaTemplate", updateReplyingKafkaTemplate);
-        ValidateKafkaProducer<D> commonValidateKafkaProducer = CommonValidateKafkaProducer.create(updateReplyingKafkaTemplate, kafkaGroupId,
-                getConsumerId());
-        beanFactory.registerSingleton(getConsumerId() + ProducerPostfix.VALIDATE.getDescription(), commonValidateKafkaProducer);
+        KafkaMessageListenerContainer<UUID, ValidationMessageDto> updateRepliesContainer =
+                validateRepliesContainer(replyConsumerFactory, kafkaGroupId, consumerId);
+        beanFactory.registerSingleton(consumerId + "ValidateRepliesContainer", updateRepliesContainer);
+        ReplyingKafkaTemplate<UUID, D, ValidationMessageDto> updateReplyingKafkaTemplate =
+                validateReplyingKafkaTemplate(updateRepliesContainer, kafkaServer);
+        beanFactory.registerSingleton(consumerId + "ValidateReplyingKafkaTemplate", updateReplyingKafkaTemplate);
+        ValidateKafkaProducer<D> commonValidateKafkaProducer =
+                CommonValidateKafkaProducer.create(updateReplyingKafkaTemplate, kafkaGroupId, consumerId);
+        beanFactory.registerSingleton(consumerId + ProducerPostfix.VALIDATE.getDescription(), commonValidateKafkaProducer);
     }
 
-    private String getValidateReplyTopicId() {
-        return getConsumerId() + TopicKafkaPostfix.VALIDATE + ReplyKafkaProducer.KAFKA_REPLY_ID;
+    private String getValidateReplyTopicId(String consumerId) {
+        return consumerId + TopicKafkaPostfix.VALIDATE + ReplyKafkaProducer.KAFKA_REPLY_ID;
     }
 }

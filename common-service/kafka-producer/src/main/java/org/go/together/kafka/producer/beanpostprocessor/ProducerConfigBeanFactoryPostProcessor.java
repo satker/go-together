@@ -3,14 +3,16 @@ package org.go.together.kafka.producer.beanpostprocessor;
 import org.go.together.annotations.EnableAutoConfigurationKafkaProducer;
 import org.go.together.dto.Dto;
 import org.go.together.kafka.producer.base.CrudClient;
-import org.go.together.kafka.producer.config.ProducerKafkaConfig;
+import org.go.together.kafka.producer.config.interfaces.KafkaProducerConfigurator;
 import org.go.together.kafka.producer.enums.ProducerPostfix;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.go.together.kafka.producer.enums.ProducerPostfix.*;
@@ -19,12 +21,15 @@ import static org.go.together.kafka.producer.enums.ProducerPostfix.*;
 public class ProducerConfigBeanFactoryPostProcessor {
     @Bean
     public static BeanFactoryPostProcessor producerBeanFactoryPostProcessor(@Value("${kafka.server}") String kafkaServer,
-                                                                            @Value("${kafka.groupId}") String kafkaGroupId) {
+                                                                            @Value("${kafka.groupId}") String kafkaGroupId,
+                                                                            @Autowired List<KafkaProducerConfigurator> configurators) {
         return beanFactory -> Stream.of(beanFactory.getBeanNamesForType(CrudClient.class))
                 .map(beanFactory::getBean)
                 .filter(client -> client.getClass().isAnnotationPresent(EnableAutoConfigurationKafkaProducer.class))
                 .map(ProducerConfigBeanFactoryPostProcessor::getProducerRights)
-                .forEach(producerRights -> configure(producerRights, kafkaServer, kafkaGroupId, beanFactory));
+                .peek(producerRights -> configurators.forEach(configurator ->
+                        configurator.configure(kafkaServer, kafkaGroupId, beanFactory, producerRights.getProducerId())))
+                .forEach(producerRights -> enrichCrudClient(producerRights, beanFactory));
     }
 
     private static ProducerRights getProducerRights(Object producer) {
@@ -40,13 +45,6 @@ public class ProducerConfigBeanFactoryPostProcessor {
                 .isValidate(configurationKafkaProducer.isValidate())
                 .isDelete(configurationKafkaProducer.isDelete())
                 .producerId(configurationKafkaProducer.producerId()).build();
-    }
-
-    private static void configure(ProducerRights producerRights, String kafkaServer,
-                                  String kafkaGroupId, ConfigurableListableBeanFactory configurableListableBeanFactory) {
-        ProducerKafkaConfig<Dto> producerKafkaConfig = ProducerKafkaConfig.create(producerRights.getProducerId());
-        producerKafkaConfig.configureProducer(kafkaServer, kafkaGroupId, configurableListableBeanFactory, producerRights);
-        enrichCrudClient(producerRights, configurableListableBeanFactory);
     }
 
     private static void enrichCrudClient(ProducerRights producerRights, ConfigurableListableBeanFactory beanFactory) {
