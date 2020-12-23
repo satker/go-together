@@ -17,7 +17,6 @@ import static org.go.together.enums.TopicKafkaPostfix.*;
 import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
 
 @Component
-@RequiredArgsConstructor
 public class GroupLocationConsumer extends CommonCrudKafkaConsumer<GroupLocationDto> {
     @Override
     @KafkaListener(topics = GROUP_LOCATION + CREATE,
