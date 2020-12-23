@@ -7,6 +7,7 @@ import org.go.together.base.FindService;
 import org.go.together.base.Validator;
 import org.go.together.dto.*;
 import org.go.together.kafka.consumer.impl.CommonCrudKafkaConsumer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
@@ -14,16 +15,13 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 import static org.go.together.enums.TopicKafkaPostfix.*;
+import static org.go.together.enums.UserServiceInfo.AUTH_USER;
 import static org.go.together.enums.UserServiceInfo.EVENT_LIKES;
 import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
 
 @Component
 @RequiredArgsConstructor
 public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
-    private final CrudService<EventLikeDto> service;
-    private final Validator<EventLikeDto> validator;
-    private final FindService<EventLikeDto> findService;
-
     @Override
     @KafkaListener(topics = EVENT_LIKES + CREATE,
             containerFactory = EVENT_LIKES + CHANGE + LISTENER_FACTORY)
