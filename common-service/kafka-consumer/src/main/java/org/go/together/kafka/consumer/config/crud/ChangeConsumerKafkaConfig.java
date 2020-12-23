@@ -14,18 +14,28 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.util.backoff.FixedBackOff;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.go.together.enums.TopicKafkaPostfix.CHANGE;
+import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
+
 public abstract class ChangeConsumerKafkaConfig<D extends Dto> extends ValidateConsumerKafkaConfig<D> {
     private Map<String, Object> getConsumerConfigs(String kafkaServer, String kafkaGroupId) {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId);
-        return props;
+        return Map.of(
+                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
+                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class,
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
+                ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId
+        );
+    }
+
+    private Map<String, Object> getChangeProducerConfigs(String kafkaServer) {
+        return Map.of(
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class,
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class
+        );
     }
 
     private ConsumerFactory<UUID, D> changeConsumerFactory(String kafkaServer, String kafkaGroupId) {
@@ -44,14 +54,6 @@ public abstract class ChangeConsumerKafkaConfig<D extends Dto> extends ValidateC
         return factory;
     }
 
-    private Map<String, Object> getChangeProducerConfigs(String kafkaServer) {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        return props;
-    }
-
     public ProducerFactory<UUID, IdDto> changeReplyProducerFactory(String kafkaServer) {
         return new DefaultKafkaProducerFactory<>(getChangeProducerConfigs(kafkaServer));
     }
@@ -68,7 +70,7 @@ public abstract class ChangeConsumerKafkaConfig<D extends Dto> extends ValidateC
         KafkaTemplate<UUID, IdDto> kafkaTemplate = changeKafkaTemplate(producerFactory);
         beanFactory.registerSingleton(getConsumerId() + "ChangeKafkaTemplate", kafkaTemplate);
         ConsumerFactory<UUID, D> consumerFactory = changeConsumerFactory(kafkaServer, kafkaGroupId);
-        beanFactory.registerSingleton(getConsumerId() + "ChangeListenerContainerFactory",
+        beanFactory.registerSingleton(getConsumerId() + CHANGE + LISTENER_FACTORY,
                 changeListenerContainerFactory(consumerFactory, kafkaTemplate));
     }
 }

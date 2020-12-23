@@ -18,7 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.Collections;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 class LocationServiceTest extends CrudServiceCommonTest<Location, LocationDto> {

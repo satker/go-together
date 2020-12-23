@@ -1,41 +1,50 @@
 buildscript {
     ext {
-        springBootVersion = '2.3.0.RELEASE'
-        springCloudVersion = '2.2.2.RELEASE'
+        springBootVersion = '2.3.7.RELEASE'
+        springCloudDependenciesVersion = 'Hoxton.SR9'
+        dependencyManagementVersion = '1.0.10.RELEASE'
         jsonWebTokenVersion = '0.9.1'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
 
 plugins {
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
     id 'java'
 }
 
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
-sourceCompatibility = 15
-targetCompatibility = 15
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
 }
+
+sourceCompatibility = 15
+targetCompatibility = 15
+
 
 dependencies {
     compile(
-            "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-security",
 
-            "org.springframework.cloud:spring-cloud-starter-netflix-zuul:${springCloudVersion}",
-            "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
-            "org.springframework.cloud:spring-cloud-netflix-eureka-server:${springCloudVersion}",
+            "org.springframework.cloud:spring-cloud-starter-netflix-zuul",
+            "org.springframework.cloud:spring-cloud-starter-config",
+            "org.springframework.cloud:spring-cloud-netflix-eureka-server",
+    )
 
+    compile (
             "io.jsonwebtoken:jjwt:${jsonWebTokenVersion}",
     )
     compile project(":auth-service-client")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudDependenciesVersion}"
+    }
 }

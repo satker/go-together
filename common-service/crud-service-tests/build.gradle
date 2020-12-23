@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.3.0.RELEASE'
+        springBootVersion = '2.3.7.RELEASE'
         springKafkaVersion='2.6.4'
     }
     repositories {
@@ -27,8 +27,6 @@ repositories {
 
 dependencies {
     compile (
-            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
             "org.junit.jupiter:junit-jupiter-engine:5.2.0",
             "uk.co.jemos.podam:podam:7.2.3.RELEASE",

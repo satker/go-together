@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.3.0.RELEASE'
+        springBootVersion = '2.3.7.RELEASE'
         lombokVersion='1.18.16'
     }
     repositories {
@@ -32,8 +32,8 @@ dependencies {
             "org.junit.jupiter:junit-jupiter-engine:5.2.0",
 
             "org.projectlombok:lombok:${lombokVersion}",
-            "com.h2database:h2:1.4.200",
     )
+
     compile project(":common-service:find-service")
     compile project(":common-service:kafka-consumer")
     compile project(":common-service:validation-service")

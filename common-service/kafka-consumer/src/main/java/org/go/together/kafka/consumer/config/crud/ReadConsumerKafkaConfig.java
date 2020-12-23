@@ -12,28 +12,30 @@ import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.util.backoff.FixedBackOff;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.go.together.enums.TopicKafkaPostfix.READ;
+import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
+
 public abstract class ReadConsumerKafkaConfig<D extends Dto> extends ChangeConsumerKafkaConfig<D> {
     private Map<String, Object> getProducerConfigs(String kafkaServer) {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, "15728640");
-        props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
-        return props;
+        return Map.of(
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class,
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class,
+                ProducerConfig.MAX_REQUEST_SIZE_CONFIG, "15728640",
+                ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy"
+        );
     }
 
     private Map<String, Object> getReadConsumerConfigs(String kafkaServer, String kafkaGroupId) {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class);
-        return props;
+        return Map.of(
+                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
+                ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId,
+                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class,
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class
+        );
     }
 
     public ConsumerFactory<UUID, UUID> readConsumerFactory(String kafkaServer,
@@ -56,7 +58,7 @@ public abstract class ReadConsumerKafkaConfig<D extends Dto> extends ChangeConsu
         beanFactory.registerSingleton(getConsumerId() + "ReadReplyProducerFactory", producerFactory);
         KafkaTemplate<UUID, D> kafkaTemplate = readKafkaTemplate(producerFactory);
         beanFactory.registerSingleton(getConsumerId() + "ReadKafkaTemplate", kafkaTemplate);
-        beanFactory.registerSingleton(getConsumerId() + "ReadListenerContainerFactory",
+        beanFactory.registerSingleton(getConsumerId() + READ + LISTENER_FACTORY,
                 readListenerContainerFactory(readConsumerFactory(kafkaServer, kafkaGroupId), kafkaTemplate));
     }
 

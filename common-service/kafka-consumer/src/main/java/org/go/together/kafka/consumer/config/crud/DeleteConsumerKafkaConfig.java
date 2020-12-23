@@ -11,18 +11,20 @@ import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.util.backoff.FixedBackOff;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.go.together.enums.TopicKafkaPostfix.DELETE;
+import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
+
 public abstract class DeleteConsumerKafkaConfig extends FindConsumerKafkaConfig {
     private Map<String, Object> getConsumerConfigs(String kafkaServer, String kafkaGroupId) {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId);
-        return props;
+        return Map.of(
+                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
+                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class,
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
+                ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId
+        );
     }
 
     private ConsumerFactory<UUID, FormDto> deleteConsumerFactory(String kafkaServer, String kafkaGroupId) {
@@ -43,7 +45,7 @@ public abstract class DeleteConsumerKafkaConfig extends FindConsumerKafkaConfig 
                                                           String kafkaGroupId,
                                                           ConfigurableListableBeanFactory beanFactory) {
         ConsumerFactory<UUID, FormDto> consumerFactory = deleteConsumerFactory(kafkaServer, kafkaGroupId);
-        beanFactory.registerSingleton(getConsumerId() + "DeleteListenerContainerFactory",
+        beanFactory.registerSingleton(getConsumerId() + DELETE + LISTENER_FACTORY,
                 deleteListenerContainerFactory(consumerFactory));
     }
 }

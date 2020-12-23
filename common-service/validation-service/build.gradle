@@ -1,7 +1,7 @@
 buildscript {
     ext {
         lombokVersion='1.18.16'
-        springBootVersion = '2.3.0.RELEASE'
+        springBootVersion = '2.3.7.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -24,7 +24,6 @@ dependencies {
             'org.apache.commons:commons-lang3:3.9',
             "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
             "org.projectlombok:lombok:${lombokVersion}",
-            "org.junit.jupiter:junit-jupiter-engine:5.2.0"
     )
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"

@@ -17,7 +17,6 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,11 +25,11 @@ public class DeleteProducerKafkaConfig implements KafkaProducerConfigurator {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private Map<String, Object> getDeleteProducerConfigs(String kafkaServer) {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        return props;
+        return Map.of(
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class,
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class
+        );
     }
 
     private ProducerFactory<UUID, UUID> deleteProducerFactory(String kafkaServer) {

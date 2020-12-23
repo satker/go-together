@@ -27,7 +27,6 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -36,21 +35,21 @@ public class ValidateProducerKafkaConfig implements KafkaProducerConfigurator {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private <D extends Dto> ProducerFactory<UUID, D> validateProducerFactory(String kafkaServer) {
-        Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class);
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        Map<String, Object> configProps = Map.of(
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class,
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class
+        );
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
     private Map<String, Object> validateConsumerConfigs(String kafkaServer, String kafkaGroupId) {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId);
-
-        return props;
+        return Map.of(
+                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
+                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class,
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
+                ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId
+        );
     }
 
     private <D extends Dto> ReplyingKafkaTemplate<UUID, D, ValidationMessageDto> validateReplyingKafkaTemplate(KafkaMessageListenerContainer<UUID, ValidationMessageDto> validateRepliesContainer,
@@ -61,7 +60,8 @@ public class ValidateProducerKafkaConfig implements KafkaProducerConfigurator {
     private KafkaMessageListenerContainer<UUID, ValidationMessageDto> validateRepliesContainer(ConsumerFactory<UUID, ValidationMessageDto> validateReplyConsumerFactory,
                                                                                                String kafkaGroupId,
                                                                                                String consumerId) {
-        ContainerProperties containerProperties = new ContainerProperties(getValidateReplyTopicId(consumerId) + kafkaGroupId);
+        String validateReplyTopicId = getValidateReplyTopicId(consumerId, kafkaGroupId);
+        ContainerProperties containerProperties = new ContainerProperties(validateReplyTopicId);
         return new KafkaMessageListenerContainer<>(validateReplyConsumerFactory, containerProperties);
     }
 
@@ -96,7 +96,7 @@ public class ValidateProducerKafkaConfig implements KafkaProducerConfigurator {
         log.info("Validation producer for " + producerId + " successfully configured!");
     }
 
-    private String getValidateReplyTopicId(String consumerId) {
-        return consumerId + TopicKafkaPostfix.VALIDATE + ReplyKafkaProducer.KAFKA_REPLY_ID;
+    private String getValidateReplyTopicId(String consumerId, String kafkaGroupId) {
+        return consumerId + TopicKafkaPostfix.VALIDATE + ReplyKafkaProducer.KAFKA_REPLY_ID + kafkaGroupId;
     }
 }

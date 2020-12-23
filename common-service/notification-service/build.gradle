@@ -1,7 +1,7 @@
 buildscript {
     ext {
         lombokVersion='1.18.16'
-        springBootVersion = '2.3.0.RELEASE'
+        springBootVersion = '2.3.7.RELEASE'
     }
     repositories {
         mavenCentral()

@@ -1,12 +1,11 @@
 buildscript {
     ext {
-        springCloudVersion = '2.2.2.RELEASE'
-    }
-    repositories {
-        mavenCentral()
+        springCloudDependenciesVersion = '2020.0.0'
+        dependencyManagementVersion = '1.0.10.RELEASE'
     }
 }
 plugins {
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
     id 'java'
 }
 
@@ -19,11 +18,15 @@ targetCompatibility = 15
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
 }
 
 dependencies {
-    compile(
-            "org.springframework.boot:spring-boot-starter-test:${springCloudVersion}",
-            "org.springframework.cloud:spring-cloud-config-server:${springCloudVersion}"
-    )
+    implementation "org.springframework.cloud:spring-cloud-config-server"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudDependenciesVersion}"
+    }
 }

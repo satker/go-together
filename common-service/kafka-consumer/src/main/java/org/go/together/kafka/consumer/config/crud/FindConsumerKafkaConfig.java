@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.go.together.enums.TopicKafkaPostfix.FIND;
+import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
+
 public abstract class FindConsumerKafkaConfig implements CustomConsumerConfig {
     private Map<String, Object> getFindProducerConfigs(String kafkaServer) {
         Map<String, Object> props = new HashMap<>();
@@ -29,12 +32,12 @@ public abstract class FindConsumerKafkaConfig implements CustomConsumerConfig {
     }
 
     private Map<String, Object> getConsumerConfigs(String kafkaServer, String kafkaGroupId) {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId);
-        return props;
+        return Map.of(
+                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
+                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class,
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
+                ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId
+        );
     }
 
     private ProducerFactory<UUID, ResponseDto<Object>> findReplyProducerFactory(String kafkaServer) {
@@ -69,6 +72,6 @@ public abstract class FindConsumerKafkaConfig implements CustomConsumerConfig {
         ConsumerFactory<UUID, FormDto> consumerFactory = findConsumerFactory(kafkaServer, kafkaGroupId);
         ConcurrentKafkaListenerContainerFactory<UUID, FormDto> listenerContainerFactory =
                 findListenerContainerFactory(consumerFactory, kafkaTemplate);
-        beanFactory.registerSingleton(getConsumerId() + "FindListenerContainerFactory", listenerContainerFactory);
+        beanFactory.registerSingleton(getConsumerId() + FIND + LISTENER_FACTORY, listenerContainerFactory);
     }
 }

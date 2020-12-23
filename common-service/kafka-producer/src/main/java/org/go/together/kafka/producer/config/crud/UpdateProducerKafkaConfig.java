@@ -27,7 +27,6 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -36,34 +35,34 @@ public class UpdateProducerKafkaConfig implements KafkaProducerConfigurator {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private <D extends Dto> ProducerFactory<UUID, D> updateProducerFactory(String kafkaServer) {
-        Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class);
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        Map<String, Object> configProps = Map.of(
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class,
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class
+        );
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
+    private Map<String, Object> updateConsumerConfigs(String kafkaServer, String kafkaGroupId) {
+        return Map.of(
+                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
+                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class,
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
+                ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId
+        );
+    }
+
     private <D extends Dto> ReplyingKafkaTemplate<UUID, D, IdDto> updateReplyingKafkaTemplate(KafkaMessageListenerContainer<UUID, IdDto> updateRepliesContainer,
-                                                                              String kafkaServer) {
+                                                                                              String kafkaServer) {
         return new ReplyingKafkaTemplate<>(updateProducerFactory(kafkaServer), updateRepliesContainer);
     }
 
     private KafkaMessageListenerContainer<UUID, IdDto> updateRepliesContainer(ConsumerFactory<UUID, IdDto> updateReplyConsumerFactory,
                                                                               String kafkaGroupId,
                                                                               String consumerId) {
-        ContainerProperties containerProperties = new ContainerProperties(getUpdateReplyTopicId(consumerId) + kafkaGroupId);
+        String updateReplyTopicId = getUpdateReplyTopicId(consumerId, kafkaGroupId);
+        ContainerProperties containerProperties = new ContainerProperties(updateReplyTopicId);
         return new KafkaMessageListenerContainer<>(updateReplyConsumerFactory, containerProperties);
-    }
-
-
-    private Map<String, Object> updateConsumerConfigs(String kafkaServer, String kafkaGroupId) {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId);
-
-        return props;
     }
 
     private ConsumerFactory<UUID, IdDto> updateReplyConsumerFactory(String kafkaServer,
@@ -96,7 +95,7 @@ public class UpdateProducerKafkaConfig implements KafkaProducerConfigurator {
         log.info("Update producer for " + producerId + " successfully configured!");
     }
 
-    private String getUpdateReplyTopicId(String consumerId) {
-        return consumerId + TopicKafkaPostfix.UPDATE + ReplyKafkaProducer.KAFKA_REPLY_ID;
+    private String getUpdateReplyTopicId(String consumerId, String kafkaGroupId) {
+        return consumerId + TopicKafkaPostfix.UPDATE + ReplyKafkaProducer.KAFKA_REPLY_ID + kafkaGroupId;
     }
 }

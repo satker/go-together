@@ -1,10 +1,6 @@
 buildscript {
     ext {
-        springCloudVersion = '2.2.2.RELEASE'
         lombokVersion='1.18.16'
-    }
-    repositories {
-        mavenCentral()
     }
 }
 plugins {
@@ -24,5 +20,6 @@ repositories {
 dependencies {
     compile "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
     compile project(":common-service:kafka-producer")
 }
