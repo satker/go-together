@@ -89,7 +89,7 @@ const validation = (fields) => {
     }
 }
 
-const RegisterForm = createReduxForm({FORM_ID, validation, url: URL_USER + '/users'});
+const RegisterForm = createReduxForm({FORM_ID, validation, url: URL_USER});
 
 export default connect(mapStateToProps, {
     getUserInfo,
