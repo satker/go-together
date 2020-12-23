@@ -10,8 +10,10 @@ import org.go.together.kafka.consumer.config.interfaces.CustomConsumerConfig;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +57,7 @@ public abstract class FindConsumerKafkaConfig implements CustomConsumerConfig {
         ConcurrentKafkaListenerContainerFactory<UUID, FormDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(findConsumerFactory);
         factory.setReplyTemplate(findKafkaTemplate);
+        factory.setErrorHandler(new SeekToCurrentErrorHandler(new FixedBackOff(500L, 2L)));
         return factory;
     }
 

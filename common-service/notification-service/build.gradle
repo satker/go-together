@@ -1,7 +1,6 @@
 buildscript {
     ext {
         lombokVersion='1.18.16'
-        springKafkaVersion='2.6.3'
         springBootVersion = '2.3.0.RELEASE'
     }
     repositories {
@@ -26,15 +25,11 @@ repositories {
 dependencies {
     compile(
             "org.projectlombok:lombok:${lombokVersion}",
-            "org.springframework.kafka:spring-kafka:${springKafkaVersion}",
             "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
             "org.junit.jupiter:junit-jupiter-engine:5.2.0",
     )
 
-    testCompile(
-            "org.springframework.kafka:spring-kafka-test:${springKafkaVersion}",
-            'junit:junit:4.12'
-    )
+    testCompile ('junit:junit:4.12')
     compile project(":notification-service-client")
     compile project(":common-service:exception-service")
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")

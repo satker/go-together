@@ -1,11 +1,9 @@
-
 buildscript {
     ext {
         springBootVersion = '2.3.0.RELEASE'
         springCloudVersion = '2.2.2.RELEASE'
         lombokVersion='1.18.16'
         postgresDriver='42.2.18'
-        springKafkaVersion='2.6.3'
     }
     repositories {
         mavenCentral()
@@ -22,9 +20,7 @@ group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
 apply plugin: 'java'
-//apply plugin: 'jacoco'
 apply plugin: 'org.springframework.boot'
-//apply plugin: "com.palantir.docker"
 
 repositories {
     mavenCentral()
@@ -58,36 +54,3 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-/*
-tasks.getByName("docker").dependsOn("build")
-
-test.testLogging.showStandardStreams = true
-
-docker {
-    name "${group}/${rootProject.name}"
-    tags 'latest', "$version"
-    files jar.archivePath
-    buildArgs(['JAR_FILE' : "${jar.archiveName}"])
-}
-
-task docker_backend
-tasks.getByName("docker_backend").dependsOn("docker")
-
-jacoco {
-    toolVersion = '0.7.9'
-}
-
-jacocoTestReport {
-    group = "Reporting"
-    reports {
-        xml.enabled true
-        csv.enabled false
-        html.destination "${buildDir}/reports/coverage"
-    }
-}
-
-clean.doFirst {
-    delete "${rootDir}\\out"
-    println "delete ${rootDir}\\out"
-}
-*/

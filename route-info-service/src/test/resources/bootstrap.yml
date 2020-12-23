@@ -1,4 +1,4 @@
 kafka:
   notificationTopicId: notification-service
-  server: localhost:9092
+  server: localhost:9094
   groupId: route-info-service

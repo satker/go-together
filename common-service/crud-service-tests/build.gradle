@@ -1,6 +1,7 @@
 buildscript {
     ext {
         springBootVersion = '2.3.0.RELEASE'
+        springKafkaVersion='2.6.4'
     }
     repositories {
         mavenCentral()
@@ -32,6 +33,7 @@ dependencies {
             "org.junit.jupiter:junit-jupiter-engine:5.2.0",
             "uk.co.jemos.podam:podam:7.2.3.RELEASE",
             "com.h2database:h2:1.4.200",
+            "org.springframework.kafka:spring-kafka-test:${springKafkaVersion}"
     )
     compile project(":common-service:interfaces-service")
 }

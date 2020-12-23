@@ -9,8 +9,10 @@ import org.go.together.dto.ValidationMessageDto;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +43,7 @@ public abstract class ValidateConsumerKafkaConfig<D extends Dto> extends DeleteC
         ConcurrentKafkaListenerContainerFactory<UUID, D> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(validateConsumerFactory);
         factory.setReplyTemplate(kafkaTemplate);
+        factory.setErrorHandler(new SeekToCurrentErrorHandler(new FixedBackOff(500L, 2L)));
         return factory;
     }
 

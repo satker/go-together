@@ -7,7 +7,9 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +35,7 @@ public abstract class DeleteConsumerKafkaConfig extends FindConsumerKafkaConfig 
     private ConcurrentKafkaListenerContainerFactory<UUID, FormDto> deleteListenerContainerFactory(ConsumerFactory<UUID, FormDto> deleteConsumerFactory) {
         ConcurrentKafkaListenerContainerFactory<UUID, FormDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(deleteConsumerFactory);
+        factory.setErrorHandler(new SeekToCurrentErrorHandler(new FixedBackOff(500L, 2L)));
         return factory;
     }
 

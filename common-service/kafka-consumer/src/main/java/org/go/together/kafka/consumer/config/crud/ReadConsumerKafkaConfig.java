@@ -8,7 +8,9 @@ import org.go.together.dto.Dto;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +47,7 @@ public abstract class ReadConsumerKafkaConfig<D extends Dto> extends ChangeConsu
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(readConsumerFactory);
         factory.setReplyTemplate(kafkaTemplate);
+        factory.setErrorHandler(new SeekToCurrentErrorHandler(new FixedBackOff(500L, 2L)));
         return factory;
     }
 
