@@ -3,10 +3,13 @@ package org.go.together.kafka.producer.config.crud;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
+import org.go.together.kafka.producer.beanpostprocessor.ProducerRights;
 import org.go.together.kafka.producer.config.interfaces.KafkaProducerConfigurator;
 import org.go.together.kafka.producer.enums.ProducerPostfix;
 import org.go.together.kafka.producer.impl.CommonDeleteKafkaProducer;
 import org.go.together.kafka.producers.crud.DeleteKafkaProducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -19,7 +22,9 @@ import java.util.Map;
 import java.util.UUID;
 
 @Component
-public class DeleteProducerKafkaConfig<D extends Dto> implements KafkaProducerConfigurator {
+public class DeleteProducerKafkaConfig implements KafkaProducerConfigurator {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     private Map<String, Object> getDeleteProducerConfigs(String kafkaServer) {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
@@ -36,15 +41,21 @@ public class DeleteProducerKafkaConfig<D extends Dto> implements KafkaProducerCo
         return new KafkaTemplate<>(deleteProducerFactory);
     }
 
-    public void configure(String kafkaServer,
+    public <D extends Dto> void configure(String kafkaServer,
                              String kafkaGroupId,
                              ConfigurableListableBeanFactory beanFactory,
-                             String consumerId) {
+                                          ProducerRights<D> producerConfig) {
+        if (!producerConfig.isDelete()) {
+            return;
+        }
         ProducerFactory<UUID, UUID> producerFactory = deleteProducerFactory(kafkaServer);
-        beanFactory.registerSingleton(consumerId + "DeleteProducerFactory", producerFactory);
+        String producerId = producerConfig.getProducerId();
+        beanFactory.registerSingleton(producerId + "DeleteProducerFactory", producerFactory);
         KafkaTemplate<UUID, UUID> kafkaTemplate = deleteKafkaTemplate(producerFactory);
-        beanFactory.registerSingleton(consumerId + "DeleteKafkaTemplate", kafkaTemplate);
-        DeleteKafkaProducer<D> commonDeleteKafkaProducer = CommonDeleteKafkaProducer.create(kafkaTemplate, consumerId);
-        beanFactory.registerSingleton(consumerId + ProducerPostfix.DELETE.getDescription(), commonDeleteKafkaProducer);
+        beanFactory.registerSingleton(producerId + "DeleteKafkaTemplate", kafkaTemplate);
+        DeleteKafkaProducer<D> commonDeleteKafkaProducer = CommonDeleteKafkaProducer.create(kafkaTemplate, producerId);
+        beanFactory.registerSingleton(producerId + ProducerPostfix.DELETE.getDescription(), commonDeleteKafkaProducer);
+        producerConfig.getProducer().setDeleteKafkaProducer(commonDeleteKafkaProducer);
+        log.info("Delete producer for " + producerId + " successfully configured!");
     }
 }

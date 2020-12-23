@@ -6,11 +6,14 @@ import org.apache.kafka.common.serialization.UUIDDeserializer;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
 import org.go.together.enums.TopicKafkaPostfix;
+import org.go.together.kafka.producer.beanpostprocessor.ProducerRights;
 import org.go.together.kafka.producer.config.interfaces.KafkaProducerConfigurator;
 import org.go.together.kafka.producer.enums.ProducerPostfix;
 import org.go.together.kafka.producer.impl.CommonReadKafkaProducer;
 import org.go.together.kafka.producers.ReplyKafkaProducer;
 import org.go.together.kafka.producers.crud.ReadKafkaProducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -27,7 +30,9 @@ import java.util.Map;
 import java.util.UUID;
 
 @Component
-public class ReadProducerKafkaConfig<D extends Dto> implements KafkaProducerConfigurator  {
+public class ReadProducerKafkaConfig implements KafkaProducerConfigurator  {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     private ProducerFactory<UUID, UUID> readProducerFactory(String kafkaServer) {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
@@ -45,12 +50,12 @@ public class ReadProducerKafkaConfig<D extends Dto> implements KafkaProducerConf
         return props;
     }
 
-    private ReplyingKafkaTemplate<UUID, UUID, D> readReplyingKafkaTemplate(String kafkaServer,
+    private <D extends Dto> ReplyingKafkaTemplate<UUID, UUID, D> readReplyingKafkaTemplate(String kafkaServer,
                                                                            KafkaMessageListenerContainer<UUID, D> repliesContainer) {
         return new ReplyingKafkaTemplate<>(readProducerFactory(kafkaServer), repliesContainer);
     }
 
-    private KafkaMessageListenerContainer<UUID, D> readRepliesContainer(ConsumerFactory<UUID, D> readReplyConsumerFactory,
+    private <D extends Dto> KafkaMessageListenerContainer<UUID, D> readRepliesContainer(ConsumerFactory<UUID, D> readReplyConsumerFactory,
                                                                         String kafkaGroupId,
                                                                         String consumerId) {
         String replyTopic = getReplyTopicId(consumerId) + kafkaGroupId;
@@ -58,24 +63,30 @@ public class ReadProducerKafkaConfig<D extends Dto> implements KafkaProducerConf
         return new KafkaMessageListenerContainer<>(readReplyConsumerFactory, containerProperties);
     }
 
-    private ConsumerFactory<UUID, D> readReplyConsumerFactory(String kafkaServer, String kafkaGroupId) {
+    private <D extends Dto> ConsumerFactory<UUID, D> readReplyConsumerFactory(String kafkaServer, String kafkaGroupId) {
         JsonDeserializer<D> readDtoJsonDeserializer = new JsonDeserializer<>();
         readDtoJsonDeserializer.addTrustedPackages("org.go.together.dto");
         return new DefaultKafkaConsumerFactory<>(readConsumerConfigs(kafkaServer, kafkaGroupId), new UUIDDeserializer(),
                 readDtoJsonDeserializer);
     }
 
-    public void configure(String kafkaServer,
+    public <D extends Dto> void configure(String kafkaServer,
                           String kafkaGroupId,
                           ConfigurableListableBeanFactory beanFactory,
-                          String consumerId) {
+                          ProducerRights<D> producerConfig) {
+        if (!producerConfig.isRead()) {
+            return;
+        }
         ConsumerFactory<UUID, D> consumerFactory = readReplyConsumerFactory(kafkaServer, kafkaGroupId);
-        KafkaMessageListenerContainer<UUID, D> kafkaMessageListenerContainer = readRepliesContainer(consumerFactory, kafkaGroupId, consumerId);
-        beanFactory.registerSingleton(consumerId + "ReadRepliesContainer", kafkaMessageListenerContainer);
+        String producerId = producerConfig.getProducerId();
+        KafkaMessageListenerContainer<UUID, D> kafkaMessageListenerContainer = readRepliesContainer(consumerFactory, kafkaGroupId, producerId);
+        beanFactory.registerSingleton(producerId + "ReadRepliesContainer", kafkaMessageListenerContainer);
         ReplyingKafkaTemplate<UUID, UUID, D> replyingKafkaTemplate = readReplyingKafkaTemplate(kafkaServer, kafkaMessageListenerContainer);
-        beanFactory.registerSingleton(consumerId + "ReadReplyingKafkaTemplate", replyingKafkaTemplate);
-        ReadKafkaProducer<D> commonReadKafkaProducer = CommonReadKafkaProducer.create(replyingKafkaTemplate, kafkaGroupId, consumerId);
-        beanFactory.registerSingleton(consumerId + ProducerPostfix.READ.getDescription(), commonReadKafkaProducer);
+        beanFactory.registerSingleton(producerId + "ReadReplyingKafkaTemplate", replyingKafkaTemplate);
+        ReadKafkaProducer<D> commonReadKafkaProducer = CommonReadKafkaProducer.create(replyingKafkaTemplate, kafkaGroupId, producerId);
+        beanFactory.registerSingleton(producerId + ProducerPostfix.READ.getDescription(), commonReadKafkaProducer);
+        producerConfig.getProducer().setReadKafkaProducer(commonReadKafkaProducer);
+        log.info("Read producer for " + producerId + " successfully configured!");
     }
 
     private String getReplyTopicId(String consumerId) {

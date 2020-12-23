@@ -8,11 +8,14 @@ import org.go.together.dto.Dto;
 import org.go.together.dto.FormDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.enums.TopicKafkaPostfix;
+import org.go.together.kafka.producer.beanpostprocessor.ProducerRights;
 import org.go.together.kafka.producer.config.interfaces.KafkaProducerConfigurator;
 import org.go.together.kafka.producer.enums.ProducerPostfix;
 import org.go.together.kafka.producer.impl.CommonFindKafkaProducer;
 import org.go.together.kafka.producers.ReplyKafkaProducer;
 import org.go.together.kafka.producers.crud.FindKafkaProducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -30,7 +33,9 @@ import java.util.Map;
 import java.util.UUID;
 
 @Component
-public class FindProducerKafkaConfig<D extends Dto> implements KafkaProducerConfigurator {
+public class FindProducerKafkaConfig implements KafkaProducerConfigurator {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     private ProducerFactory<UUID, FormDto> findProducerFactory(String kafkaServer) {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
@@ -69,18 +74,24 @@ public class FindProducerKafkaConfig<D extends Dto> implements KafkaProducerConf
                 resultJsonDeserializer);
     }
 
-    public void configure(String kafkaServer,
+    public <D extends Dto> void configure(String kafkaServer,
                           String kafkaGroupId,
                           ConfigurableListableBeanFactory beanFactory,
-                          String consumerId) {
+                          ProducerRights<D> producerConfig) {
+        if (!producerConfig.isFind()) {
+            return;
+        }
         ConsumerFactory<UUID, ResponseDto<Object>> consumerFactory = findReplyConsumerFactory(kafkaServer, kafkaGroupId);
+        String producerId = producerConfig.getProducerId();
         KafkaMessageListenerContainer<UUID, ResponseDto<Object>> kafkaMessageListenerContainer =
-                findRepliesContainer(consumerFactory, kafkaGroupId, consumerId);
-        beanFactory.registerSingleton(consumerId + "FindRepliesContainer", kafkaMessageListenerContainer);
+                findRepliesContainer(consumerFactory, kafkaGroupId, producerId);
+        beanFactory.registerSingleton(producerId + "FindRepliesContainer", kafkaMessageListenerContainer);
         ReplyingKafkaTemplate<UUID, FormDto, ResponseDto<Object>> replyingKafkaTemplate = findReplyingKafkaTemplate(kafkaServer, kafkaMessageListenerContainer);
-        beanFactory.registerSingleton(consumerId + "FindReplyingKafkaTemplate", replyingKafkaTemplate);
-        FindKafkaProducer<D> commonFindKafkaProducer = CommonFindKafkaProducer.create(replyingKafkaTemplate, consumerId, kafkaGroupId);
-        beanFactory.registerSingleton(consumerId + ProducerPostfix.FIND.getDescription(), commonFindKafkaProducer);
+        beanFactory.registerSingleton(producerId + "FindReplyingKafkaTemplate", replyingKafkaTemplate);
+        FindKafkaProducer<D> commonFindKafkaProducer = CommonFindKafkaProducer.create(replyingKafkaTemplate, producerId, kafkaGroupId);
+        beanFactory.registerSingleton(producerId + ProducerPostfix.FIND.getDescription(), commonFindKafkaProducer);
+        producerConfig.getProducer().setFindKafkaProducer(commonFindKafkaProducer);
+        log.info("Find producer for " + producerId + " successfully configured!");
     }
 
     private String getReplyTopicId(String consumerId) {

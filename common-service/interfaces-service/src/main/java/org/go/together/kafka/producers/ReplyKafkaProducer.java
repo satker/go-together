@@ -1,6 +1,5 @@
 package org.go.together.kafka.producers;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.go.together.exceptions.ApplicationException;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
@@ -24,17 +23,21 @@ public interface ReplyKafkaProducer<T, R> {
     String getTopicId();
 
     default R sendWithReply(String targetTopic, UUID requestId, T object) {
+        ProducerRecord<UUID, T> record = getRecordToSend(targetTopic, requestId, object);
+        RequestReplyFuture<UUID, T, R> result = getReplyingKafkaTemplate().sendAndReceive(record);
+        try {
+            return result.get(1500, TimeUnit.MILLISECONDS).value();
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new ApplicationException("Kafka exception. Cannot send request", requestId);
+        }
+    }
+
+    private ProducerRecord<UUID, T> getRecordToSend(String targetTopic, UUID requestId, T object) {
         ProducerRecord<UUID, T> record = new ProducerRecord<>(targetTopic, null, requestId, object);
         String replyTopicId = targetTopic + KAFKA_REPLY_ID + getGroupId();
         record.headers().add(KafkaHeaders.REPLY_TOPIC, replyTopicId.getBytes());
         String correlationId = getGroupId() + CORRELATION_PREFIX;
         record.headers().add(KafkaHeaders.CORRELATION_ID, correlationId.getBytes());
-        RequestReplyFuture<UUID, T, R> result = getReplyingKafkaTemplate().sendAndReceive(record);
-        try {
-            ConsumerRecord<UUID, R> futureGet = result.get(1500, TimeUnit.MILLISECONDS);
-            return futureGet.value();
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new ApplicationException(e.getMessage(), requestId);
-        }
+        return record;
     }
 }
