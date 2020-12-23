@@ -22,6 +22,10 @@ import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LI
 @Component
 @RequiredArgsConstructor
 public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
+    private final CrudService<EventLikeDto> service;
+    private final Validator<EventLikeDto> validator;
+    private final FindService<EventLikeDto> findService;
+
     @Override
     @KafkaListener(topics = EVENT_LIKES + CREATE,
             containerFactory = EVENT_LIKES + CHANGE + LISTENER_FACTORY)

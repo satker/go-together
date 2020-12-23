@@ -22,6 +22,10 @@ import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LI
 @Component
 @RequiredArgsConstructor
 public class UsersConsumer extends CommonCrudKafkaConsumer<UserDto> {
+    private final CrudService<UserDto> service;
+    private final Validator<UserDto> validator;
+    private final FindService<UserDto> findService;
+
     @Override
     @KafkaListener(topics = USERS + CREATE,
             containerFactory = USERS + CHANGE + LISTENER_FACTORY)

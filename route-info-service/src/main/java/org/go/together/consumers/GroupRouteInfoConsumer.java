@@ -1,5 +1,6 @@
 package org.go.together.consumers;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.go.together.base.CrudService;
 import org.go.together.base.FindService;
@@ -17,7 +18,12 @@ import static org.go.together.enums.TopicKafkaPostfix.*;
 import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
 
 @Component
+@RequiredArgsConstructor
 public class GroupRouteInfoConsumer extends CommonCrudKafkaConsumer<GroupRouteInfoDto> {
+    private final CrudService<GroupRouteInfoDto> service;
+    private final Validator<GroupRouteInfoDto> validator;
+    private final FindService<GroupRouteInfoDto> findService;
+
     @Override
     @KafkaListener(topics = GROUP_ROUTE_INFO + CREATE,
             containerFactory = GROUP_ROUTE_INFO + CHANGE + LISTENER_FACTORY)

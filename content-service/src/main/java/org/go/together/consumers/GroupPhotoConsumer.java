@@ -20,6 +20,10 @@ import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LI
 @Component
 @RequiredArgsConstructor
 public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
+    private final CrudService<GroupPhotoDto> service;
+    private final Validator<GroupPhotoDto> validator;
+    private final FindService<GroupPhotoDto> findService;
+
     @Override
     @KafkaListener(topics = GROUP_PHOTO_NAME + CREATE,
             containerFactory = GROUP_PHOTO_NAME + CHANGE + LISTENER_FACTORY)
