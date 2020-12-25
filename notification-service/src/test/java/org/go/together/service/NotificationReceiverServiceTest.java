@@ -1,17 +1,17 @@
 package org.go.together.service;
 
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.IdDto;
 import org.go.together.dto.NotificationDto;
 import org.go.together.dto.NotificationMessageDto;
 import org.go.together.dto.NotificationReceiverDto;
+import org.go.together.enums.CrudOperation;
+import org.go.together.model.Notification;
 import org.go.together.model.NotificationReceiver;
 import org.go.together.model.NotificationReceiverMessage;
 import org.go.together.repository.interfaces.NotificationMessageRepository;
 import org.go.together.repository.interfaces.NotificationReceiverMessageRepository;
 import org.go.together.repository.interfaces.NotificationRepository;
 import org.go.together.service.interfaces.NotificationMessageService;
-import org.go.together.service.interfaces.NotificationReceiverService;
 import org.go.together.service.interfaces.NotificationService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
@@ -58,8 +58,8 @@ public class NotificationReceiverServiceTest extends CrudServiceCommonTest<Notif
     @Test
     public void removeReceiver() {
         getCreatedEntityId(dto);
-        createNotificationMessage();
-        ((NotificationReceiverService) crudService).removeReceiver(UUID.randomUUID(), dto.getNotification().getProducerId(), dto.getUserId());
+        createNotificationMessage(dto);
+        crudService.delete(UUID.randomUUID(), dto.getId());
 
         Collection<NotificationReceiverMessage> notificationReceiverMessages = notificationReceiverMessageRepository.findAll();
 
@@ -69,23 +69,21 @@ public class NotificationReceiverServiceTest extends CrudServiceCommonTest<Notif
     @Test
     public void addReceiver() {
         getCreatedEntityId(dto);
-        UUID receiverId = UUID.randomUUID();
-        createNotificationMessage();
-        ((NotificationReceiverService) crudService).addReceiver(UUID.randomUUID(), dto.getNotification().getProducerId(), receiverId);
+        createNotificationMessage(dto);
 
         Collection<NotificationReceiverMessage> notificationReceiverMessages = notificationReceiverMessageRepository.findAll();
-        int receiverMessagesSize = notificationReceiverMessageRepository.findByReceiverId(receiverId).size();
+        int receiverMessagesSize = notificationReceiverMessageRepository.findByReceiverId(dto.getUserId()).size();
 
         assertEquals(1, notificationReceiverMessages.size());
-        assertEquals(0, receiverMessagesSize);
+        assertEquals(1, receiverMessagesSize);
 
-        createNotificationMessage();
+        createNotificationMessage(dto);
 
-        int receiverAddMessagesSize = notificationReceiverMessageRepository.findByReceiverId(receiverId).size();
+        int receiverAddMessagesSize = notificationReceiverMessageRepository.findByReceiverId(dto.getUserId()).size();
         Collection<NotificationReceiverMessage> notificationReceiverNewMessages = notificationReceiverMessageRepository.findAll();
 
-        assertEquals(1, receiverAddMessagesSize);
-        assertEquals(3, notificationReceiverNewMessages.size());
+        assertEquals(2, receiverAddMessagesSize);
+        assertEquals(2, notificationReceiverNewMessages.size());
 
         assertFalse(notificationReceiverNewMessages.iterator().next().getIsRead());
         assertEquals(CREATED, notificationReceiverMessages.iterator().next().getNotificationMessage().getMessage());
@@ -97,18 +95,24 @@ public class NotificationReceiverServiceTest extends CrudServiceCommonTest<Notif
 
         NotificationDto notificationDto = new NotificationDto();
         notificationDto.setProducerId(UUID.randomUUID());
-        IdDto notificationId = notificationService.create(notificationDto);
 
-
-        notificationReceiverDto.setNotification(notificationService.read(notificationId.getId()));
+        notificationReceiverDto.setNotification(notificationDto);
         return notificationReceiverDto;
     }
 
-    private void createNotificationMessage() {
+    private void createNotificationMessage(NotificationReceiverDto dto) {
         NotificationMessageDto notificationMessageDto = new NotificationMessageDto();
         notificationMessageDto.setMessage(CREATED);
-        notificationMessageDto.setNotificationId(dto.getNotification().getId());
+        Notification notification = notificationRepository.findByProducerId(dto.getNotification().getProducerId()).orElse(null);
+        notificationMessageDto.setNotification(notificationService.read(notification.getId()));
         notificationMessageDto.setDate(new Date());
         notificationMessageService.create(notificationMessageDto);
+    }
+
+    @Override
+    protected void checkDtos(NotificationReceiverDto dto, NotificationReceiverDto savedObject, CrudOperation operation) {
+        assertEquals(dto.getId(), savedObject.getId());
+        assertEquals(dto.getUserId(), savedObject.getUserId());
+        assertEquals(dto.getNotification().getProducerId(), savedObject.getNotification().getProducerId());
     }
 }

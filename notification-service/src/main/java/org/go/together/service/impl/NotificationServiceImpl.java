@@ -8,6 +8,7 @@ import org.go.together.repository.interfaces.NotificationRepository;
 import org.go.together.service.interfaces.NotificationService;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -19,6 +20,12 @@ public class NotificationServiceImpl extends CommonCrudService<NotificationDto, 
                 .map(Notification::getId)
                 .map(notificationId -> super.read(requestId, notificationId))
                 .orElseThrow(() -> new CannotFindEntityException("Cannot find notification by producer id: " + producerId));
+    }
+
+    public Notification getPresentedNotificationByDto(UUID requestId, NotificationDto notificationDto) {
+        Optional<Notification> notificationByProducer =
+                ((NotificationRepository) repository).findByProducerId(notificationDto.getProducerId());
+        return notificationByProducer.orElse(repository.findByIdOrThrow(super.create(requestId, notificationDto).getId()));
     }
 
     @Override

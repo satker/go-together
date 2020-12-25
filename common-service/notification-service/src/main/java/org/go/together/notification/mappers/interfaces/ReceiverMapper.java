@@ -1,9 +1,9 @@
 package org.go.together.notification.mappers.interfaces;
 
-import org.go.together.kafka.NotificationEvent;
+import org.go.together.dto.NotificationReceiverDto;
 
 import java.util.UUID;
 
 public interface ReceiverMapper {
-    NotificationEvent getNotificationEvent(UUID producerId, UUID receiverId);
+    NotificationReceiverDto getReceiverDto(UUID producerId, UUID receiverId);
 }

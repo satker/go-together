@@ -1,42 +1,41 @@
 package org.go.together.service.impl;
 
 import org.go.together.base.CommonCrudService;
-import org.go.together.base.Mapper;
 import org.go.together.compare.FieldMapper;
-import org.go.together.dto.NotificationDto;
 import org.go.together.dto.NotificationMessageDto;
 import org.go.together.dto.NotificationReceiverDto;
 import org.go.together.dto.NotificationReceiverMessageDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.exceptions.CannotFindEntityException;
 import org.go.together.model.Notification;
 import org.go.together.model.NotificationMessage;
 import org.go.together.model.NotificationReceiver;
 import org.go.together.model.NotificationReceiverMessage;
+import org.go.together.repository.interfaces.NotificationMessageRepository;
 import org.go.together.repository.interfaces.NotificationReceiverRepository;
-import org.go.together.repository.interfaces.NotificationRepository;
 import org.go.together.service.interfaces.NotificationMessageService;
 import org.go.together.service.interfaces.NotificationReceiverMessageService;
 import org.go.together.service.interfaces.NotificationReceiverService;
+import org.go.together.service.interfaces.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
+
+import static org.go.together.enums.NotificationServiceInfo.NOTIFICATION_RECEIVER;
 
 @Service
 public class NotificationReceiverServiceImpl extends CommonCrudService<NotificationReceiverDto, NotificationReceiver>
         implements NotificationReceiverService {
     private NotificationMessageService notificationMessageService;
-    private final NotificationRepository notificationRepository;
-    private final Mapper<NotificationDto, Notification> notificationMapper;
+    private final NotificationMessageRepository notificationMessageRepository;
     private NotificationReceiverMessageService notificationReceiverMessageService;
+    private final NotificationService notificationService;
 
-    protected NotificationReceiverServiceImpl(NotificationRepository notificationRepository,
-                                              Mapper<NotificationDto, Notification> notificationMapper) {
-        this.notificationRepository = notificationRepository;
-        this.notificationMapper = notificationMapper;
+    protected NotificationReceiverServiceImpl(NotificationMessageRepository notificationMessageRepository,
+                                              NotificationService notificationService) {
+        this.notificationService = notificationService;
+        this.notificationMessageRepository = notificationMessageRepository;
     }
 
     @Autowired
@@ -49,58 +48,37 @@ public class NotificationReceiverServiceImpl extends CommonCrudService<Notificat
         this.notificationReceiverMessageService = notificationReceiverMessageService;
     }
 
-    @Override
-    public void addReceiver(UUID requestId, UUID producerId, UUID receiverId) {
-        Notification notification = notificationRepository.findByProducerId(producerId)
-                .orElseThrow(() -> new CannotFindEntityException("Cannot find notification by producer id " +
-                        producerId));
-        Collection<NotificationReceiver> notificationReceivers =
-                ((NotificationReceiverRepository) repository).findByProducerId(producerId);
-        boolean receiverNotPresented = notificationReceivers.stream()
-                .map(NotificationReceiver::getUserId)
-                .noneMatch(notificationReceiver -> notificationReceiver.equals(receiverId));
-        if (receiverNotPresented) {
-            addNotificationMessageReceiver(requestId, receiverId, notificationMapper.entityToDto(requestId, notification));
-        }
-    }
-
-    private void addNotificationMessageReceiver(UUID requestId, UUID receiverId, NotificationDto savedNotificationDto) {
-        NotificationReceiverDto notificationReceiverDto = new NotificationReceiverDto();
-        notificationReceiverDto.setUserId(receiverId);
-        notificationReceiverDto.setNotification(savedNotificationDto);
-        super.create(requestId, notificationReceiverDto);
-    }
-
-    @Override
-    public void removeReceiver(UUID requestId, UUID producerId, UUID receiverId) {
-        ((NotificationReceiverRepository) repository).findByProducerId(producerId).stream()
-                .filter(notificationReceiver -> notificationReceiver.getUserId().equals(receiverId))
-                .map(NotificationReceiver::getId)
-                .forEach(notificationReceiverId -> super.delete(requestId, notificationReceiverId));
-    }
-
-    @Override
-    public void notificateMessageReceivers(UUID requestId, NotificationMessage entity, NotificationMessageDto dto) {
-        ((NotificationReceiverRepository) repository).findByNotificationId(dto.getNotificationId()).stream()
-                .map(notificationReceiver -> mapper.entityToDto(requestId, notificationReceiver))
-                .forEach(notificationReceiverDto -> notificateReceivers(requestId, entity, notificationReceiverDto));
-    }
-
-    private void notificateReceivers(UUID requestId, NotificationMessage entity, NotificationReceiverDto notificationReceiverDto) {
+    private void enrichByMessages(UUID requestId, NotificationMessage notificationMessage, NotificationReceiver entity) {
         NotificationReceiverMessageDto notificationReceiverMessageDto = new NotificationReceiverMessageDto();
         notificationReceiverMessageDto.setIsRead(false);
-        NotificationMessageDto notificationMessage = notificationMessageService.read(requestId, entity.getId());
-        notificationReceiverMessageDto.setNotificationMessage(notificationMessage);
+        NotificationMessageDto notificationMessageDto = notificationMessageService.read(requestId, notificationMessage.getId());
+        notificationReceiverMessageDto.setNotificationMessage(notificationMessageDto);
+        NotificationReceiverDto notificationReceiverDto = mapper.entityToDto(requestId, entity);
         notificationReceiverMessageDto.setNotificationReceiver(notificationReceiverDto);
         notificationReceiverMessageService.create(requestId, notificationReceiverMessageDto);
     }
 
+    @Override
+    public void notificateMessageReceivers(UUID requestId, NotificationMessage entity) {
+        ((NotificationReceiverRepository) repository).findByNotificationId(entity.getNotification().getId())
+                .forEach(notificationReceiver -> enrichByMessages(requestId, entity, notificationReceiver));
+    }
 
     @Override
     protected NotificationReceiver enrichEntity(UUID requestId,
                                                 NotificationReceiver entity,
                                                 NotificationReceiverDto dto,
                                                 CrudOperation crudOperation) {
+        if (crudOperation == CrudOperation.CREATE) {
+            Notification presentedNotificationByDto = notificationService.getPresentedNotificationByDto(requestId, dto.getNotification());
+            entity.setNotification(presentedNotificationByDto);
+            notificationMessageRepository.findByNotificationId(presentedNotificationByDto.getId())
+                    .forEach(notificationMessage -> enrichByMessages(requestId, notificationMessage, entity));
+        }
+        if (crudOperation == CrudOperation.UPDATE) {
+            Notification presentedNotificationByDto = notificationService.getPresentedNotificationByDto(requestId, dto.getNotification());
+            entity.setNotification(presentedNotificationByDto);
+        }
         if (crudOperation == CrudOperation.DELETE) {
             notificationReceiverMessageService.getNotificationReceiverMessageIdsByReceiverId(entity.getUserId()).stream()
                     .map(NotificationReceiverMessage::getId)
@@ -111,7 +89,7 @@ public class NotificationReceiverServiceImpl extends CommonCrudService<Notificat
 
     @Override
     public String getServiceName() {
-        return "notificationReceivers";
+        return NOTIFICATION_RECEIVER;
     }
 
     @Override

@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface NotificationReceiverMessageRepository extends CustomRepository<NotificationReceiverMessage> {
     Collection<NotificationReceiverMessage> findByReceiverId(UUID receiverId);
+
+    Collection<NotificationReceiverMessage> findByNotificationId(UUID notificationId);
 }

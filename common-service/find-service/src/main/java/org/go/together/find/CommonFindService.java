@@ -53,7 +53,7 @@ public abstract class CommonFindService<D extends Dto, E extends IdentifiedEntit
     public ResponseDto<Object> find(UUID requestId, FormDto formDto) {
         final ObjectMapper objectMapper = new ObjectMapper();
 
-        log.info("Started find in '" + getServiceName() + "' with filter: " +
+        log.info(requestId + ". Started find in '" + getServiceName() + "' with filter: " +
                 objectMapper.writeValueAsString(formDto));
         try {
             Pair<PageDto, Collection<Object>> pageDtoResult = baseFindService.find(
@@ -64,7 +64,7 @@ public abstract class CommonFindService<D extends Dto, E extends IdentifiedEntit
                     getMappingFields());
 
             Collection<Object> values = resultMapper.getParsedResult(requestId, pageDtoResult, mapper);
-            log.info("Find in '" + getServiceName() + "' " + Optional.ofNullable(values)
+            log.info(requestId + ". Find in '" + getServiceName() + "' " + Optional.ofNullable(values)
                     .map(Collection::size)
                     .orElse(0) + " rows with filter: " +
                     objectMapper.writeValueAsString(formDto));

@@ -1,14 +1,18 @@
 package org.go.together.service;
 
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.NotificationDto;
 import org.go.together.dto.NotificationMessageDto;
 import org.go.together.dto.NotificationReceiverDto;
 import org.go.together.dto.NotificationReceiverMessageDto;
+import org.go.together.mapper.NotificationMessageMapper;
+import org.go.together.mapper.NotificationReceiverMapper;
+import org.go.together.model.Notification;
+import org.go.together.model.NotificationMessage;
+import org.go.together.model.NotificationReceiver;
 import org.go.together.model.NotificationReceiverMessage;
-import org.go.together.service.interfaces.NotificationMessageService;
-import org.go.together.service.interfaces.NotificationReceiverService;
-import org.go.together.service.interfaces.NotificationService;
+import org.go.together.repository.interfaces.NotificationMessageRepository;
+import org.go.together.repository.interfaces.NotificationReceiverRepository;
+import org.go.together.repository.interfaces.NotificationRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -21,40 +25,45 @@ public class NotificationReceiverMessageServiceTest
     private static final String CREATED = "Created";
 
     @Autowired
-    private NotificationService notificationService;
+    private NotificationMessageRepository notificationMessageRepository;
 
     @Autowired
-    private NotificationMessageService notificationMessageService;
+    private NotificationRepository notificationRepository;
 
     @Autowired
-    private NotificationReceiverService notificationReceiverService;
+    private NotificationMessageMapper notificationMessageMapper;
+
+    @Autowired
+    private NotificationReceiverRepository notificationReceiverRepository;
+
+    @Autowired
+    private NotificationReceiverMapper notificationReceiverMapper;
 
     @Override
     protected NotificationReceiverMessageDto createDto() {
         NotificationReceiverMessageDto notificationReceiverMessageDto = factory.manufacturePojo(NotificationReceiverMessageDto.class);
         notificationReceiverMessageDto.setIsRead(false);
 
-        NotificationMessageDto notificationMessageDto = factory.manufacturePojo(NotificationMessageDto.class);
-        NotificationDto notificationDto = new NotificationDto();
-        notificationDto.setProducerId(UUID.randomUUID());
-        UUID notificationId = notificationService.create(notificationDto).getId();
-        notificationMessageDto.setNotificationId(notificationId);
-        notificationMessageDto.setMessage(CREATED);
+        NotificationMessage notificationMessage = notificationMessageRepository.create();
+        Notification notification = notificationRepository.create();
+        notification.setProducerId(UUID.randomUUID());
+        Notification savedNotification = notificationRepository.save(notification);
+        notificationMessage.setNotification(savedNotification);
+        notificationMessage.setMessage(CREATED);
+        NotificationMessage savedNotificationMessage = notificationMessageRepository.save(notificationMessage);
 
-        UUID createdNotificationMessage = notificationMessageService.create(notificationMessageDto).getId();
-        NotificationMessageDto readNotificationMessage = notificationMessageService.read(createdNotificationMessage);
-        notificationReceiverMessageDto.setNotificationMessage(readNotificationMessage);
+        NotificationMessageDto notificationMessageDto = notificationMessageMapper.entityToDto(UUID.randomUUID(), savedNotificationMessage);
+        notificationReceiverMessageDto.setNotificationMessage(notificationMessageDto);
 
-        notificationReceiverMessageDto.setNotificationReceiver(createNotificationReceiver(notificationId));
+        notificationReceiverMessageDto.setNotificationReceiver(createNotificationReceiver(notification));
 
         return notificationReceiverMessageDto;
     }
 
-    private NotificationReceiverDto createNotificationReceiver(UUID notificationId) {
-        NotificationReceiverDto notificationReceiverDto = factory.manufacturePojo(NotificationReceiverDto.class);
-        NotificationDto notificationDto = notificationService.read(notificationId);
-        notificationReceiverDto.setNotification(notificationDto);
-        UUID createdNotificationReceiver = notificationReceiverService.create(notificationReceiverDto).getId();
-        return notificationReceiverService.read(createdNotificationReceiver);
+    private NotificationReceiverDto createNotificationReceiver(Notification notification) {
+        NotificationReceiver notificationReceiver = notificationReceiverRepository.create();
+        notificationReceiver.setNotification(notification);
+        notificationReceiver.setUserId(UUID.randomUUID());
+        return notificationReceiverMapper.entityToDto(UUID.randomUUID(), notificationReceiver);
     }
 }

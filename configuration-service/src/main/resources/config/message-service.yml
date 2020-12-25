@@ -10,6 +10,5 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:1111/eureka
 kafka:
-  notificationTopicId: notification-service
   groupId: message-service
   server: localhost:9092

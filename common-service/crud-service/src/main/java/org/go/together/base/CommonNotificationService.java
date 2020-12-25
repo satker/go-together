@@ -47,8 +47,6 @@ public abstract class CommonNotificationService<D extends Dto, E extends Identif
     }
 
     public String getNotificationMessage(UUID requestId, D originalDto, D changedDto, NotificationStatus notificationStatus) {
-        String message = notificationService.getMessage(originalDto, changedDto, getServiceName(), notificationStatus);
-        log.info(message);
-        return message;
+        return notificationService.getMessage(originalDto, changedDto, getServiceName(), notificationStatus);
     }
 }

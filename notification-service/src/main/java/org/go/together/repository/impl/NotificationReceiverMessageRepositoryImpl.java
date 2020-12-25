@@ -19,4 +19,12 @@ public class NotificationReceiverMessageRepositoryImpl extends CustomRepositoryI
                 .build()
                 .fetchAll();
     }
+
+    @Override
+    public Collection<NotificationReceiverMessage> findByNotificationId(UUID notificationId) {
+        return createQuery()
+                .where(createWhere().condition("notificationReceiver.notification.id", SqlOperator.EQUAL, notificationId))
+                .build()
+                .fetchAll();
+    }
 }
