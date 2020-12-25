@@ -1,61 +1,65 @@
 package org.go.together.service;
 
-import org.go.together.client.ContentClient;
-import org.go.together.client.LocationClient;
+import org.go.together.base.Mapper;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
-import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.mapper.InterestMapper;
-import org.go.together.mapper.LanguageMapper;
+import org.go.together.kafka.producers.CrudProducer;
+import org.go.together.kafka.producers.ValidationProducer;
+import org.go.together.model.Interest;
+import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
 import org.go.together.repository.interfaces.InterestRepository;
 import org.go.together.repository.interfaces.LanguageRepository;
+import org.go.together.service.interfaces.UserService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
     @Autowired
-    private LocationClient locationClient;
+    private CrudProducer<GroupLocationDto> locationProducer;
 
     @Autowired
-    private ContentClient contentClient;
+    private ValidationProducer<GroupLocationDto> locationValidate;
+
+    @Autowired
+    private CrudProducer<GroupPhotoDto> groupPhotoCrud;
+
+    @Autowired
+    private ValidationProducer<GroupPhotoDto> groupPhotoValidate;
 
     @Autowired
     private InterestRepository interestRepository;
 
     @Autowired
-    private InterestMapper interestMapper;
+    private Mapper<InterestDto, Interest> interestMapper;
 
     @Autowired
     private LanguageRepository languageRepository;
 
     @Autowired
-    private LanguageMapper languageMapper;
+    private Mapper<LanguageDto, Language> languageMapper;
 
     @BeforeEach
     public void init() {
         super.init();
         prepareDto(dto);
         prepareDto(updatedDto);
-    }
-
-    @Test
-    public void findUserByLogin() {
-        UserDto createdDto = getCreatedEntityId(dto);
-        UserDto userByLogin = ((UserService) crudService).findUserByLogin(createdDto.getLogin());
-
-        assertEquals(createdDto, userByLogin);
     }
 
     @Test
@@ -149,37 +153,6 @@ class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
         assertFalse(isUserPresented);
     }
 
-    @Test
-    public void findSimpleUserDtosByUserIds() {
-        UserDto createdDto = getCreatedEntityId(dto);
-
-        Collection<SimpleUserDto> simpleUserDtosByUserIds =
-                ((UserService) crudService).findSimpleUserDtosByUserIds(Collections.singleton(createdDto.getId()));
-
-        assertEquals(1, simpleUserDtosByUserIds.size());
-        SimpleUserDto simpleUserDto = simpleUserDtosByUserIds.iterator().next();
-
-        assertEquals(createdDto.getLogin(), simpleUserDto.getLogin());
-        assertEquals(createdDto.getFirstName(), simpleUserDto.getFirstName());
-        assertEquals(createdDto.getLastName(), simpleUserDto.getLastName());
-        assertEquals(createdDto.getId(), simpleUserDto.getId());
-    }
-
-    @Test
-    public void findLoginById() {
-        UserDto createdDto = getCreatedEntityId(dto);
-
-        String login = ((UserService) crudService).findLoginById(createdDto.getId());
-
-        assertEquals(createdDto.getLogin(), login);
-    }
-
-
-    @Test
-    public void findLoginByNotPresentedId() {
-        assertThrows(CannotFindEntityException.class, () -> ((UserService) crudService).findLoginById(UUID.randomUUID()));
-    }
-
     @Override
     protected UserDto createDto() {
         UserDto userDto = factory.manufacturePojo(UserDto.class);
@@ -187,26 +160,26 @@ class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
         Set<InterestDto> interests = userDto.getInterests().stream()
                 .map(interestMapper::dtoToEntity)
                 .peek(interestRepository::save)
-                .map(interestMapper::entityToDto)
+                .map(interest -> interestMapper.entityToDto(UUID.randomUUID(), interest))
                 .collect(Collectors.toSet());
         userDto.setInterests(interests);
         Set<LanguageDto> languages = userDto.getLanguages().stream()
                 .map(languageMapper::dtoToEntity)
                 .peek(languageRepository::save)
-                .map(languageMapper::entityToDto)
+                .map(language -> languageMapper.entityToDto(UUID.randomUUID(), language))
                 .collect(Collectors.toSet());
         userDto.setLanguages(languages);
         return userDto;
     }
 
     private void prepareDto(UserDto userDto) {
-        when(locationClient.validateRoute(userDto.getLocation())).thenReturn(EMPTY);
-        when(contentClient.validate(userDto.getGroupPhoto())).thenReturn(EMPTY);
-        when(contentClient.updateGroup(userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
-        when(contentClient.createGroup(userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
-        when(locationClient.createRoute(userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
-        when(locationClient.updateRoute(userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
-        when(locationClient.getRouteById(userDto.getLocation().getId())).thenReturn(userDto.getLocation());
-        when(contentClient.readGroupPhotosById(userDto.getGroupPhoto().getId())).thenReturn(userDto.getGroupPhoto());
+        when(locationValidate.validate(any(UUID.class), eq(userDto.getLocation()))).thenReturn(new ValidationMessageDto(EMPTY));
+        when(groupPhotoValidate.validate(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new ValidationMessageDto(EMPTY));
+        when(groupPhotoCrud.update(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
+        when(groupPhotoCrud.create(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
+        when(locationProducer.create(any(UUID.class), eq(userDto.getLocation()))).thenReturn(new IdDto(userDto.getLocation().getId()));
+        when(locationProducer.update(any(UUID.class), eq(userDto.getLocation()))).thenReturn(new IdDto(userDto.getLocation().getId()));
+        when(locationProducer.read(any(UUID.class), eq(userDto.getLocation().getId()))).thenReturn(userDto.getLocation());
+        when(groupPhotoCrud.read(any(UUID.class), eq(userDto.getGroupPhoto().getId()))).thenReturn(userDto.getGroupPhoto());
     }
 }

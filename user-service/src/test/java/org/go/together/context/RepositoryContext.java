@@ -1,16 +1,11 @@
 package org.go.together.context;
 
-import org.go.together.client.ContentClient;
-import org.go.together.client.LocationClient;
-import org.go.together.client.NotificationClient;
-import org.go.together.client.UserClient;
 import org.go.together.configuration.H2HibernateConfig;
+import org.go.together.kafka.producer.base.CrudClient;
+import org.go.together.kafka.producers.crud.*;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableAutoConfiguration
@@ -31,22 +26,34 @@ public class RepositoryContext {
     }
 
     @Bean
-    public NotificationClient notificationClient() {
-        return Mockito.mock(NotificationClient.class);
+    @Primary
+    public ValidateKafkaProducer validateKafkaProducer() {
+        return Mockito.mock(ValidateKafkaProducer.class);
     }
 
     @Bean
-    public UserClient userClient() {
-        return Mockito.mock(UserClient.class);
+    @Primary
+    public CrudClient kafkaCrudClient() {
+        return Mockito.mock(CrudClient.class);
     }
 
     @Bean
-    public LocationClient locationClient() {
-        return Mockito.mock(LocationClient.class);
+    public CreateKafkaProducer createKafkaProducer() {
+        return Mockito.mock(CreateKafkaProducer.class);
     }
 
     @Bean
-    public ContentClient contentClient() {
-        return Mockito.mock(ContentClient.class);
+    public UpdateKafkaProducer updateKafkaProducer() {
+        return Mockito.mock(UpdateKafkaProducer.class);
+    }
+
+    @Bean
+    public ReadKafkaProducer readKafkaProducer() {
+        return Mockito.mock(ReadKafkaProducer.class);
+    }
+
+    @Bean
+    public DeleteKafkaProducer deleteKafkaProducer() {
+        return Mockito.mock(DeleteKafkaProducer.class);
     }
 }

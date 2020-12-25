@@ -1,36 +1,39 @@
 package org.go.together.validation;
 
-import org.go.together.client.UserClient;
+import lombok.RequiredArgsConstructor;
 import org.go.together.dto.EventUserDto;
+import org.go.together.dto.FilterDto;
+import org.go.together.dto.FormDto;
+import org.go.together.dto.UserDto;
 import org.go.together.enums.CrudOperation;
+import org.go.together.enums.FindOperator;
+import org.go.together.kafka.producers.FindProducer;
 import org.go.together.repository.interfaces.EventRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
+import java.util.function.Function;
 
 @Component
-public class EventUserValidator extends Validator<EventUserDto> {
-    private final UserClient userClient;
+@RequiredArgsConstructor
+public class EventUserValidator extends CommonValidator<EventUserDto> {
+    private final FindProducer<UserDto> findUserKafkaProducer;
     private final EventRepository eventRepository;
 
-    public EventUserValidator(UserClient userClient,
-                              EventRepository eventRepository) {
-        this.userClient = userClient;
-        this.eventRepository = eventRepository;
-    }
-
     @Override
-    public void getMapsForCheck(EventUserDto dto) {
-        super.OBJECT_NULL_CHECK = Map.of(
+    public Map<String, Function<EventUserDto, ?>> getMapsForCheck(UUID requestId) {
+        return Map.of(
                 "user id", testDto -> testDto.getUser().getId(),
                 "user status", EventUserDto::getUserStatus);
     }
 
     @Override
-    protected String commonValidation(EventUserDto dto, CrudOperation crudOperation) {
+    protected String commonValidation(UUID requestId, EventUserDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
-        if (!userClient.checkIfUserPresentsById(dto.getUser().getId())) {
+        if (isNotPresentUser(requestId, dto.getUser().getId())) {
             errors.append("Author has incorrect uuid: ")
                     .append(dto.getUser().getId())
                     .append(". ");
@@ -43,5 +46,15 @@ public class EventUserValidator extends Validator<EventUserDto> {
         }
 
         return errors.toString();
+    }
+
+    private boolean isNotPresentUser(UUID requestId, UUID authorId) {
+        FormDto formDto = new FormDto();
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(FindOperator.EQUAL);
+        filterDto.setValues(Collections.singleton(Collections.singletonMap("id", authorId)));
+        formDto.setFilters(Collections.singletonMap("id", filterDto));
+        formDto.setMainIdField("users.id");
+        return findUserKafkaProducer.find(requestId, formDto).getResult().isEmpty();
     }
 }

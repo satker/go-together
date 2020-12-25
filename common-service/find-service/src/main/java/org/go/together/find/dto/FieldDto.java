@@ -2,6 +2,7 @@ package org.go.together.find.dto;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.go.together.compare.FieldMapper;
 import org.go.together.exceptions.IncorrectFindObject;
 
 import java.util.Map;

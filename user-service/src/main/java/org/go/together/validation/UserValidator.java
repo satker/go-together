@@ -1,43 +1,32 @@
 package org.go.together.validation;
 
-import org.apache.commons.lang3.StringUtils;
-import org.go.together.client.ContentClient;
-import org.go.together.client.LocationClient;
+import lombok.RequiredArgsConstructor;
+import org.go.together.dto.GroupLocationDto;
+import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.UserDto;
 import org.go.together.enums.CrudOperation;
+import org.go.together.kafka.producers.ValidationProducer;
 import org.go.together.repository.interfaces.InterestRepository;
 import org.go.together.repository.interfaces.LanguageRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.UUID;
+import java.util.function.Function;
 
 @Service
-public class UserValidator extends Validator<UserDto> {
-    private final LocationClient locationClient;
+@RequiredArgsConstructor
+public class UserValidator extends CommonValidator<UserDto> {
+    private final ValidationProducer<GroupLocationDto> locationValidator;
     private final LanguageRepository languageRepository;
     private final InterestRepository interestRepository;
-    private final ContentClient contentClient;
-
-    public UserValidator(LocationClient locationClient,
-                         LanguageRepository languageRepository,
-                         ContentClient contentClient,
-                         InterestRepository interestRepository) {
-        this.locationClient = locationClient;
-        this.contentClient = contentClient;
-        this.languageRepository = languageRepository;
-        this.interestRepository = interestRepository;
-    }
+    private final ValidationProducer<GroupPhotoDto> photoValidator;
 
     @Override
-    public String commonValidation(UserDto dto, CrudOperation crudOperation) {
+    public String commonValidation(UUID requestId, UserDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
         if (crudOperation == CrudOperation.CREATE) {
-            String validatedLocation = locationClient.validateRoute(dto.getLocation());
-            if (StringUtils.isNotBlank(validatedLocation)) {
-                errors.append(validatedLocation);
-            }
-
             if (dto.getLanguages().isEmpty() || dto.getLanguages()
                     .stream()
                     .anyMatch(lang -> languageRepository.findById(lang.getId()).isEmpty())) {
@@ -49,23 +38,21 @@ public class UserValidator extends Validator<UserDto> {
                     .anyMatch(lang -> interestRepository.findById(lang.getId()).isEmpty())) {
                 errors.append("User interests are empty or incorrect");
             }
-
-            String contentValidation = contentClient.validate(dto.getGroupPhoto());
-            if (StringUtils.isNotBlank(contentValidation)) {
-                errors.append(contentValidation);
-            }
         }
 
         return errors.toString();
     }
 
     @Override
-    public void getMapsForCheck(UserDto dto) {
-        super.STRINGS_FOR_BLANK_CHECK = Map.of(
+    public Map<String, Function<UserDto, ?>> getMapsForCheck(UUID requestId) {
+        return Map.of(
                 "first name", UserDto::getFirstName,
                 "last name", UserDto::getLastName,
                 "description", UserDto::getDescription,
                 "login", UserDto::getLogin,
-                "mail", UserDto::getMail);
+                "mail", UserDto::getMail,
+                "user locations", userDto -> locationValidator.validate(requestId, userDto.getLocation()),
+                "user photos", userDto -> photoValidator.validate(requestId, userDto.getGroupPhoto())
+        );
     }
 }

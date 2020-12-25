@@ -1,8 +1,8 @@
 package org.go.together.find.correction.field;
 
+import org.go.together.compare.FieldMapper;
 import org.go.together.find.correction.field.dto.CorrectedFieldDto;
 import org.go.together.find.dto.FieldDto;
-import org.go.together.find.dto.FieldMapper;
 
 import java.util.Map;
 

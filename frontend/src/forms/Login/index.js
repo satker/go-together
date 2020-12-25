@@ -1,35 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import PropTypes from "prop-types";
 import MenuItem from "@material-ui/core/MenuItem";
-import {connect} from "App/Context";
 import {navigate} from "hookrouter";
 
+import {connect} from "App/Context";
 import LabeledInput from "forms/utils/components/LabeledInput";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import CustomButton from "forms/utils/components/CustomButton";
 
-import {getLoginId, postLogin, setAuth} from "./actions";
+import {postLogin} from "./actions";
 import './style.css'
 
-const Login = ({
-                   formId, postLogin, handleMenuClose, loginId, getLoginId,
-                   setAuth, loginToken
-               }) => {
+const Login = ({formId, postLogin, handleMenuClose}) => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
-
-    useEffect(() => {
-        if (loginToken.token && !loginToken.inProcess && login && login !== "") {
-            getLoginId(login);
-        }
-    }, [loginToken, getLoginId, login]);
-
-    useEffect(() => {
-        if (loginId.response.id) {
-            setAuth(loginId.response.id, loginToken.token);
-        }
-    }, [loginId, setAuth]);
 
     const handleSubmit = () => {
         postLogin(login, password);
@@ -86,10 +71,4 @@ Login.propTypes = {
     handleMenuClose: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => ({
-    loginId: state.components.forms.login.loginId,
-    loginToken: state.components.forms.login.loginToken,
-});
-
-export default connect(mapStateToProps,
-    {postLogin, getLoginId, setAuth})(Login);
+export default connect(null, {postLogin})(Login);

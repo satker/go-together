@@ -6,7 +6,7 @@ import {PARTICIPATION_BUTTON_FROM_LIST, PARTICIPATION_BUTTON_TO_LIST} from "./co
 export const addMeToList = (meObject) => (dispatch) => {
     dispatch({
         type: PARTICIPATION_BUTTON_TO_LIST,
-        url: EVENT_SERVICE_URL + '/events/users',
+        url: EVENT_SERVICE_URL + '/eventUsers',
         method: PUT,
         data: meObject
     });
@@ -15,7 +15,7 @@ export const addMeToList = (meObject) => (dispatch) => {
 export const deleteMeFromList = (meObject) => (dispatch) => {
     dispatch({
         type: PARTICIPATION_BUTTON_FROM_LIST,
-        url: EVENT_SERVICE_URL + '/events/users',
+        url: EVENT_SERVICE_URL + '/eventUsers',
         method: DELETE,
         data: meObject
     });

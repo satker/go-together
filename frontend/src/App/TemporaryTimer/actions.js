@@ -16,3 +16,12 @@ export const clearTimer = (intervalId) => (dispatch, state) => {
         value: intervals.filter(interval => interval !== intervalId)
     });
 };
+
+export const clearTimers = () => (dispatch, state) => {
+    const intervals = state.temporary.interval.value;
+    intervals.forEach(intervalId => clearInterval(intervalId));
+    dispatch({
+        type: TEMPORARY_TIMER,
+        value: []
+    });
+};

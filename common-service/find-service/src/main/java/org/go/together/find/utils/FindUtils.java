@@ -1,9 +1,9 @@
 package org.go.together.find.utils;
 
+import org.go.together.dto.FilterDto;
+import org.go.together.enums.FindOperator;
 import org.go.together.exceptions.IncorrectDtoException;
 import org.go.together.find.dto.FieldDto;
-import org.go.together.find.dto.form.FilterDto;
-import org.go.together.find.dto.utils.FindSqlOperator;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -58,10 +58,10 @@ public class FindUtils {
                                                         Map<FieldDto, FilterDto> localFilters) {
         boolean isNotFound = remoteFilters.values().stream().anyMatch(Collection::isEmpty);
         if (isNotFound) {
-            return null;
+            return Collections.emptyMap();
         }
         remoteFilters.forEach((key, values) -> {
-            FilterDto filterDto = new FilterDto(FindSqlOperator.IN,
+            FilterDto filterDto = new FilterDto(FindOperator.IN,
                     Collections.singleton(Collections.singletonMap(getCorrectFilterValuesKey(key), values)));
             localFilters.remove(key);
             localFilters.put(key, filterDto);

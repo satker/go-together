@@ -1,50 +1,46 @@
 package org.go.together.find.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
+import org.go.together.base.CustomRepository;
+import org.go.together.compare.FieldMapper;
+import org.go.together.dto.FilterDto;
+import org.go.together.dto.FormDto;
+import org.go.together.dto.PageDto;
 import org.go.together.find.correction.field.dto.CorrectedFieldDto;
 import org.go.together.find.correction.fieldpath.FieldPathCorrector;
 import org.go.together.find.dto.FieldDto;
-import org.go.together.find.dto.FieldMapper;
-import org.go.together.find.dto.form.FilterDto;
-import org.go.together.find.dto.form.FormDto;
-import org.go.together.find.dto.form.PageDto;
-import org.go.together.find.repository.sql.SqlBuilderCreator;
-import org.go.together.find.repository.sql.WhereBuilderCreator;
-import org.go.together.repository.CustomRepository;
-import org.go.together.repository.builder.Sql;
-import org.go.together.repository.entities.IdentifiedEntity;
-import org.go.together.repository.interfaces.SqlBuilder;
-import org.go.together.repository.interfaces.WhereBuilder;
+import org.go.together.find.repository.sql.impl.SqlBuilderCreatorImpl;
+import org.go.together.find.repository.sql.interfaces.WhereBuilderCreator;
+import org.go.together.model.IdentifiedEntity;
+import org.go.together.repository.builders.Sql;
+import org.go.together.repository.query.SqlBuilder;
+import org.go.together.repository.query.WhereBuilder;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepository {
-    private final SqlBuilderCreator<E> sqlBuilderCreator;
-    private final WhereBuilderCreator<E> whereBuilderCreator;
-    private final Map<String, FieldMapper> fieldMappers;
+@Component
+@RequiredArgsConstructor
+public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepository<E> {
+    private final SqlBuilderCreatorImpl<E> sqlBuilderCreator;
     private final FieldPathCorrector fieldPathCorrector;
-
-    public FindRepositoryImpl(String serviceName,
-                              CustomRepository<E> repository,
-                              Map<String, FieldMapper> fieldMappers,
-                              FieldPathCorrector fieldPathCorrector) {
-        this.sqlBuilderCreator = new SqlBuilderCreator<>(repository, serviceName);
-        this.whereBuilderCreator = new WhereBuilderCreator<>(repository);
-        this.fieldMappers = fieldMappers;
-        this.fieldPathCorrector = fieldPathCorrector;
-    }
+    private final WhereBuilderCreator<E> whereBuilderCreator;
 
     @Override
     public Pair<PageDto, Collection<Object>> getResult(FormDto formDto,
-                                                       Map<FieldDto, FilterDto> filters) {
-        SqlBuilder<E> query = sqlBuilderCreator.getSqlBuilder(formDto.getMainIdField());
+                                                       Map<FieldDto, FilterDto> filters,
+                                                       String serviceName,
+                                                       CustomRepository<E> repository,
+                                                       Map<String, FieldMapper> fieldMappers) {
+        SqlBuilder<E> query = sqlBuilderCreator.getSqlBuilder(formDto.getMainIdField(), repository, serviceName);
 
-        enrichWhere(filters, query);
+        enrichWhere(filters, query, repository);
 
         PageDto page = formDto.getPage();
-        enrichSort(query, page);
+        enrichSort(query, page, fieldMappers);
 
         Sql<E> sql = query.build();
         long countRows = sql.getCountRows();
@@ -54,22 +50,22 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
         return Pair.of(pageDto, result);
     }
 
-    private void enrichSort(SqlBuilder<E> query, PageDto page) {
+    private void enrichSort(SqlBuilder<E> query, PageDto page, Map<String, FieldMapper> fieldMappers) {
         if (page != null) {
             page.getSort().stream()
-                    .map(sortDto -> Map.entry(getSortField(sortDto.getField()), sortDto.getDirection()))
+                    .map(sortDto -> Map.entry(getSortField(sortDto.getField(), fieldMappers), sortDto.getDirection()))
                     .forEach(entry -> query.sort(entry.getKey(), entry.getValue()));
         }
     }
 
-    private void enrichWhere(Map<FieldDto, FilterDto> filters, SqlBuilder<E> query) {
+    private void enrichWhere(Map<FieldDto, FilterDto> filters, SqlBuilder<E> query, CustomRepository<E> repository) {
         if (filters != null && !filters.isEmpty()) {
-            WhereBuilder<E> where = whereBuilderCreator.getWhereBuilder(filters);
+            WhereBuilder<E> where = whereBuilderCreator.getWhereBuilder(filters, repository);
             query.where(where);
         }
     }
 
-    private String getSortField(String field) {
+    private String getSortField(String field, Map<String, FieldMapper> fieldMappers) {
         FieldDto fieldDto = new FieldDto(field);
         CorrectedFieldDto correctedFieldDto = fieldPathCorrector.getCorrectedFieldDto(fieldDto, fieldMappers);
         return correctedFieldDto.getFieldDto().getLocalField();

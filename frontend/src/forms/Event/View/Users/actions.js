@@ -6,7 +6,7 @@ import {USER_PARTICIPATION_USERS_STATUS} from "./constants";
 export const postUserStatus = (approvedUser) => (dispatch) => {
     dispatch({
         type: USER_PARTICIPATION_USERS_STATUS,
-        url: EVENT_SERVICE_URL + '/events/users',
+        url: EVENT_SERVICE_URL + '/eventUsers',
         method: POST,
         data: approvedUser
     });

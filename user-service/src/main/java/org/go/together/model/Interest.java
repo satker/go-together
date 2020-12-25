@@ -5,7 +5,6 @@ package org.go.together.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.go.together.repository.entities.NamedIdentifiedEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

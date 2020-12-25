@@ -1,29 +1,30 @@
 package org.go.together.mapper;
 
-import org.go.together.client.ContentClient;
+import lombok.RequiredArgsConstructor;
+import org.go.together.base.Mapper;
+import org.go.together.dto.GroupPhotoDto;
 import org.go.together.dto.SimpleUserDto;
+import org.go.together.kafka.producers.CrudProducer;
 import org.go.together.model.SystemUser;
 import org.go.together.repository.interfaces.UserRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
+@RequiredArgsConstructor
 public class SimpleUserMapper implements Mapper<SimpleUserDto, SystemUser> {
-    private final ContentClient contentClient;
+    private final CrudProducer<GroupPhotoDto> groupPhotoProducer;
     private final UserRepository userRepository;
 
-    public SimpleUserMapper(ContentClient contentClient, UserRepository userRepository) {
-        this.contentClient = contentClient;
-        this.userRepository = userRepository;
-    }
-
     @Override
-    public SimpleUserDto entityToDto(SystemUser entity) {
+    public SimpleUserDto entityToDto(UUID requestId, SystemUser entity) {
         SimpleUserDto simpleUserDto = new SimpleUserDto();
         simpleUserDto.setId(entity.getId());
         simpleUserDto.setFirstName(entity.getFirstName());
         simpleUserDto.setLastName(entity.getLastName());
         simpleUserDto.setLogin(entity.getLogin());
-        simpleUserDto.setUserPhoto(contentClient.readGroupPhotosById(entity.getGroupPhoto()).getPhotos()
+        simpleUserDto.setUserPhoto(groupPhotoProducer.read(requestId, entity.getGroupPhoto()).getPhotos()
                 .iterator().next());
         return simpleUserDto;
     }

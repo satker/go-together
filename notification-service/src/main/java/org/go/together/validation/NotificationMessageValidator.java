@@ -4,11 +4,13 @@ import org.go.together.dto.NotificationMessageDto;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.UUID;
+import java.util.function.Function;
 
 @Component
-public class NotificationMessageValidator extends Validator<NotificationMessageDto> {
+public class NotificationMessageValidator extends CommonValidator<NotificationMessageDto> {
     @Override
-    public void getMapsForCheck(NotificationMessageDto dto) {
-        super.STRINGS_FOR_BLANK_CHECK = Map.of("messsage", NotificationMessageDto::getMessage);
+    public Map<String, Function<NotificationMessageDto, ?>> getMapsForCheck(UUID requestId) {
+        return Map.of("message", NotificationMessageDto::getMessage);
     }
 }

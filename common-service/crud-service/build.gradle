@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.3.0.RELEASE'
+        springBootVersion = '2.3.7.RELEASE'
         lombokVersion='1.18.16'
     }
     repositories {
@@ -18,8 +18,8 @@ plugins {
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
-sourceCompatibility = 14
-targetCompatibility = 14
+sourceCompatibility = 15
+targetCompatibility = 15
 
 repositories {
     mavenCentral()
@@ -29,19 +29,18 @@ dependencies {
     compile (
             "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
             "org.junit.jupiter:junit-jupiter-engine:5.2.0",
-            "uk.co.jemos.podam:podam:7.2.3.RELEASE",
 
             "org.projectlombok:lombok:${lombokVersion}",
-            "com.h2database:h2:1.4.200",
     )
-    compile project(":common-service:find-service")
-    compile project(":common-service:validation-service")
-    compile project(":common-service:mapper-service")
-    testCompile project(":common-service:notification-service")
 
+    compile project(":common-service:find-service")
+    compile project(":common-service:kafka-consumer")
+    compile project(":common-service:validation-service")
+    testCompile project(":common-service:notification-service")
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testCompile project(":common-service:crud-service-tests")
 }
 
 test {

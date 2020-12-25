@@ -1,92 +1,63 @@
 package org.go.together.validation;
 
-import org.apache.commons.lang3.StringUtils;
-import org.go.together.client.ContentClient;
-import org.go.together.client.LocationClient;
-import org.go.together.client.UserClient;
-import org.go.together.dto.CashCategory;
-import org.go.together.dto.EventDto;
-import org.go.together.dto.EventPaidThingDto;
-import org.go.together.dto.UserDto;
+import lombok.RequiredArgsConstructor;
+import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
+import org.go.together.enums.FindOperator;
+import org.go.together.kafka.producers.FindProducer;
+import org.go.together.kafka.producers.ValidationProducer;
 import org.go.together.validation.dto.DateIntervalDto;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Function;
 
 @Component
-public class EventValidator extends Validator<EventDto> {
-    private final UserClient userClient;
-    private final ContentClient contentClient;
-    private final LocationClient locationClient;
-    private final EventPaidThingValidator eventPaidThingValidator;
-
-    public EventValidator(UserClient userClient,
-                          ContentClient contentClient,
-                          LocationClient locationClient,
-                          EventPaidThingValidator eventPaidThingValidator) {
-        this.userClient = userClient;
-        this.contentClient = contentClient;
-        this.locationClient = locationClient;
-        this.eventPaidThingValidator = eventPaidThingValidator;
-    }
+@RequiredArgsConstructor
+public class EventValidator extends CommonValidator<EventDto> {
+    private final FindProducer<UserDto> findUserKafkaProducer;
+    private final ValidationProducer<GroupPhotoDto> photoValidator;
+    private final ValidationProducer<GroupLocationDto> locationValidator;
+    private final ValidationProducer<GroupRouteInfoDto> routeInfoValidator;
 
     @Override
-    public void getMapsForCheck(EventDto dto) {
-        super.STRINGS_FOR_BLANK_CHECK = Map.of(
+    public Map<String, Function<EventDto, ?>> getMapsForCheck(UUID requestId) {
+        return Map.of(
                 "event name", EventDto::getName,
-                "event description", EventDto::getDescription);
-        super.NUMBER_CORRECT_ZERO_OR_NEGATIVE_CHECK = Map.of(
-                "event people capacity", EventDto::getPeopleCount);
-        super.DATES_CORRECT_CHECK = Map.of(
-                "event dates", new DateIntervalDto(dto.getStartDate(), dto.getEndDate()));
-        super.OBJECT_NULL_CHECK = Map.of(
-                "routes", EventDto::getRoute);
-        super.COLLECTION_CORRECT_CHECK = Map.of(
-                "photos", testDto -> testDto.getGroupPhoto().getPhotos(),
-                "routes", testDto -> testDto.getRoute().getLocations());
+                "event description", EventDto::getDescription,
+                "event people capacity", EventDto::getPeopleCount,
+                "event dates", eventDto -> new DateIntervalDto(eventDto.getStartDate(), eventDto.getEndDate()),
+                "routes", EventDto::getRoute,
+                "photos", eventDto -> eventDto.getGroupPhoto().getPhotos(),
+                "routes locations", eventDto -> eventDto.getRoute().getLocations(),
+                "event photos", eventDto -> photoValidator.validate(requestId, eventDto.getGroupPhoto()),
+                "event locations", eventDto -> locationValidator.validate(requestId, eventDto.getRoute()),
+                "routes info", eventDto -> routeInfoValidator.validate(requestId, eventDto.getRouteInfo())
+        );
     }
 
     @Override
-    protected String commonValidation(EventDto dto, CrudOperation crudOperation) {
+    protected String commonValidation(UUID requestId, EventDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
-        if (Optional.ofNullable(dto.getAuthor()).map(UserDto::getId).isEmpty()) {
-            errors.append("Should be an event author. ");
-        }
-
-        if (!userClient.checkIfUserPresentsById(dto.getAuthor().getId())) {
+        if (isNotPresentUser(requestId, dto.getAuthor().getId())) {
             errors.append("Author has incorrect uuid: ")
                     .append(dto.getAuthor().getId())
                     .append(". ");
         }
 
-        checkCashCategories(dto.getPaidThings(), errors, crudOperation);
-
-        String contentValidation = contentClient.validate(dto.getGroupPhoto());
-        if (StringUtils.isNotBlank(contentValidation)) {
-            errors.append(contentValidation);
-        }
-
-        locationClient.validateRoute(dto.getRoute());
-
         return errors.toString();
     }
 
-    private void checkCashCategories(Collection<EventPaidThingDto> paidThingDtos, StringBuilder errors,
-                                     CrudOperation crudOperation) {
-        List<CashCategory> cashCategories = paidThingDtos.stream()
-                .map(EventPaidThingDto::getCashCategory)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-        if (cashCategories.size() != paidThingDtos.size()) {
-            errors.append("Collection paid things is incorrect.");
-        } else {
-            paidThingDtos.stream()
-                    .map(paidThingDto -> eventPaidThingValidator.validate(paidThingDto, crudOperation))
-                    .filter(StringUtils::isNotBlank)
-                    .forEach(errors::append);
-        }
+    private boolean isNotPresentUser(UUID requestId, UUID authorId) {
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(FindOperator.EQUAL);
+        filterDto.setValues(Collections.singleton(Collections.singletonMap("id", authorId)));
+        FormDto formDto = new FormDto();
+        formDto.setFilters(Collections.singletonMap("id", filterDto));
+        formDto.setMainIdField("users.id");
+        return findUserKafkaProducer.find(requestId, formDto).getResult().isEmpty();
     }
 }

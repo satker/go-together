@@ -1,16 +1,20 @@
 package org.go.together.dto;
 
 import lombok.Data;
-import org.go.together.interfaces.ComparingField;
-import org.go.together.interfaces.Dto;
+import lombok.EqualsAndHashCode;
+import org.go.together.compare.ComparableDto;
+import org.go.together.compare.ComparingField;
 
-import java.util.UUID;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class LanguageDto implements Dto {
-    private UUID id;
-    @ComparingField(value = "name", isMain = true)
+public class LanguageDto extends ComparableDto {
+    @ComparingField("name")
     private String name;
     @ComparingField("code")
     private String code;
+
+    @Override
+    public String getMainField() {
+        return name;
+    }
 }

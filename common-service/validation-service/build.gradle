@@ -1,6 +1,7 @@
 buildscript {
     ext {
         lombokVersion='1.18.16'
+        springBootVersion = '2.3.7.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -20,9 +21,17 @@ repositories {
 
 dependencies {
     compile (
-            'org.apache.commons:commons-lang3:3.9'
+            'org.apache.commons:commons-lang3:3.9',
+            "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
+            "org.projectlombok:lombok:${lombokVersion}",
     )
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     compile project(":common-service:interfaces-service")
+    compile project(":common-service:exception-service")
+}
+
+test {
+    useJUnitPlatform()
 }

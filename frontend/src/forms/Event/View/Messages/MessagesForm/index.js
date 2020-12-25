@@ -56,7 +56,7 @@ const MessagesForm = ({event, userMessageId, userId, messagesByEvent, getMessage
 MessagesForm.propTypes = {};
 
 const mapStateToProps = state => ({
-    userId: state.auth.value.userId,
+    userId: state.auth.response.userId,
     messagesByEvent: state.components.forms.event.eventView.messages.messagesByEvent,
     event: state.components.forms.event.eventView.event.response
 });

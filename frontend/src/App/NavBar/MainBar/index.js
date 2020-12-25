@@ -8,8 +8,6 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import AppBar from "@material-ui/core/AppBar";
 
 import {fade, makeStyles} from "@material-ui/core/styles";
-import {EVENT_SERVICE_URL} from "forms/utils/constants";
-import {AutosuggestionEvents} from "forms/utils/components/Autosuggestion";
 import ToolbarButtons from "../ToolbarButtons";
 
 const useStyles = makeStyles(theme => ({
@@ -85,14 +83,6 @@ const MainBar = ({menuId, handleMenuClose, mobileMenuId, handleMobileMenuOpen}) 
                         onClick={() => navigate('/events')}>
                 Events
             </Typography>
-            <div className={classes.search}>
-                <AutosuggestionEvents formId='menu_'
-                                      setResult={(event) => navigate('/events/' + event.id)}
-                                      placeholder={'Search an event'}
-                                      url={EVENT_SERVICE_URL + '/events'}
-                                      urlParam={'name'}
-                />
-            </div>
             <div className={classes.grow}/>
             <div className={classes.sectionDesktop}>
                 <ToolbarButtons menuId={menuId}

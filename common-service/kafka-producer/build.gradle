@@ -1,0 +1,31 @@
+buildscript {
+    ext {
+        springBootVersion = '2.3.7.RELEASE'
+        lombokVersion='1.18.16'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+plugins {
+    id 'java'
+}
+
+group 'org.go.together'
+version '1.0.1.SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile (
+            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+            "org.projectlombok:lombok:${lombokVersion}"
+    )
+    compile project(":common-service:interfaces-service")
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}

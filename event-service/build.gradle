@@ -1,19 +1,16 @@
-
 buildscript {
     ext {
-        springBootVersion = '2.3.0.RELEASE'
-        springCloudVersion = '2.2.2.RELEASE'
+        springBootVersion = '2.3.7.RELEASE'
+        springCloudDependenciesVersion = 'Hoxton.SR9'
+        dependencyManagementVersion = '1.0.10.RELEASE'
         lombokVersion='1.18.16'
         postgresDriver='42.2.18'
     }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
 }
+
 plugins {
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
     id 'java'
 }
 
@@ -21,69 +18,46 @@ group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
 apply plugin: 'java'
-//apply plugin: 'jacoco'
 apply plugin: 'org.springframework.boot'
-//apply plugin: "com.palantir.docker"
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
 }
 
-sourceCompatibility = 14
-targetCompatibility = 14
+sourceCompatibility = 15
+targetCompatibility = 15
 
 dependencies {
     compile (
-            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
-            "org.postgresql:postgresql:${postgresDriver}",
+            "org.springframework.boot:spring-boot-starter-web",
+            "org.springframework.boot:spring-boot-starter-data-jpa",
+            "org.springframework.boot:spring-boot-starter-actuator",
 
-            "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
-            "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}",
-
-            "org.projectlombok:lombok:${lombokVersion}"
+            "org.springframework.cloud:spring-cloud-starter-config",
+            "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client",
+            "org.springframework.cloud:spring-cloud-starter-openfeign",
     )
 
+    compile(
+            "org.postgresql:postgresql:${postgresDriver}",
+            "org.projectlombok:lombok:${lombokVersion}"
+    )
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    compile project(":common-service:crud-service")
     compile project(":event-service-client")
     compile project(":user-service-client")
     compile project(":location-service-client")
     compile project(":common-service:notification-service")
-}
-test {
-    useJUnitPlatform()
-}
-/*
-tasks.getByName("docker").dependsOn("build")
-
-test.testLogging.showStandardStreams = true
-
-docker {
-    name "${group}/${rootProject.name}"
-    tags 'latest', "$version"
-    files jar.archivePath
-    buildArgs(['JAR_FILE' : "${jar.archiveName}"])
+    testCompile project(":common-service:crud-service-tests")
 }
 
-task docker_backend
-tasks.getByName("docker_backend").dependsOn("docker")
-
-jacoco {
-    toolVersion = '0.7.9'
-}
-
-jacocoTestReport {
-    group = "Reporting"
-    reports {
-        xml.enabled true
-        csv.enabled false
-        html.destination "${buildDir}/reports/coverage"
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudDependenciesVersion}"
     }
 }
 
-clean.doFirst {
-    delete "${rootDir}\\out"
-    println "delete ${rootDir}\\out"
+test {
+    useJUnitPlatform()
 }
-*/

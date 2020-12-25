@@ -1,0 +1,1 @@
+create schema if not exists route_info_service;

@@ -1,12 +1,13 @@
 package org.go.together.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.go.together.base.FindController;
 import org.go.together.client.MessageClient;
+import org.go.together.dto.FormDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.MessageDto;
-import org.go.together.find.controller.FindController;
-import org.go.together.find.dto.ResponseDto;
-import org.go.together.find.dto.form.FormDto;
-import org.go.together.service.MessageService;
+import org.go.together.dto.ResponseDto;
+import org.go.together.service.interfaces.MessageService;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -16,12 +17,9 @@ import java.util.UUID;
 import static org.go.together.dto.MessageType.TO_EVENT;
 
 @RestController
+@RequiredArgsConstructor
 public class MessageController extends FindController implements MessageClient {
     private final MessageService messageService;
-
-    public MessageController(MessageService messageService) {
-        this.messageService = messageService;
-    }
 
     @Override
     public Map<UUID, MessageDto> getAllChatsByEvent(UUID eventId) {

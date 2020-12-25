@@ -1,11 +1,13 @@
 package org.go.together.service;
 
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.IdDto;
 import org.go.together.dto.NotificationDto;
 import org.go.together.dto.NotificationMessageDto;
+import org.go.together.enums.CrudOperation;
+import org.go.together.model.Notification;
 import org.go.together.model.NotificationMessage;
 import org.go.together.repository.interfaces.NotificationMessageRepository;
+import org.go.together.service.interfaces.NotificationService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +32,11 @@ public class NotificationMessageServiceTest extends CrudServiceCommonTest<Notifi
     @Test
     public void notificate() {
         NotificationMessageDto createdNotificationMessageDto = getCreatedEntityId(dto);
+        Notification presentedNotificationByDto = notificationService.getPresentedNotificationByDto(UUID.randomUUID(),
+                createdNotificationMessageDto.getNotification());
 
         Collection<NotificationMessage> notificationMessages =
-                notificationMessageRepository.findByNotificationId(createdNotificationMessageDto.getNotificationId());
+                notificationMessageRepository.findByNotificationId(presentedNotificationByDto.getId());
 
         assertEquals(1, notificationMessages.size());
         assertEquals(dto.getMessage(), notificationMessages.iterator().next().getMessage());
@@ -42,14 +46,18 @@ public class NotificationMessageServiceTest extends CrudServiceCommonTest<Notifi
     public void notificateWithPresented() {
         String updated = "Updated";
         NotificationMessageDto createdEntityId = getCreatedEntityId(dto);
+
         NotificationMessageDto notificationMessageDto = new NotificationMessageDto();
         notificationMessageDto.setDate(new Date());
-        notificationMessageDto.setNotificationId(createdEntityId.getNotificationId());
+        notificationMessageDto.setNotification(createdEntityId.getNotification());
         notificationMessageDto.setMessage(updated);
         NotificationMessageDto createdNotificationMessageDto = getCreatedEntityId(notificationMessageDto);
 
+        Notification presentedNotificationByDto = notificationService.getPresentedNotificationByDto(UUID.randomUUID(),
+                createdNotificationMessageDto.getNotification());
+
         Collection<NotificationMessage> notificationMessages =
-                notificationMessageRepository.findByNotificationId(createdNotificationMessageDto.getNotificationId());
+                notificationMessageRepository.findByNotificationId(presentedNotificationByDto.getId());
 
         assertEquals(2, notificationMessages.size());
 
@@ -65,8 +73,14 @@ public class NotificationMessageServiceTest extends CrudServiceCommonTest<Notifi
         NotificationMessageDto notificationMessageDto = factory.manufacturePojo(NotificationMessageDto.class);
         NotificationDto notificationDto = new NotificationDto();
         notificationDto.setProducerId(UUID.randomUUID());
-        IdDto notificationId = notificationService.create(notificationDto);
-        notificationMessageDto.setNotificationId(notificationId.getId());
+        notificationMessageDto.setNotification(notificationDto);
         return notificationMessageDto;
+    }
+
+    @Override
+    protected void checkDtos(NotificationMessageDto dto, NotificationMessageDto savedObject, CrudOperation operation) {
+        assertEquals(dto.getMessage(), savedObject.getMessage());
+        assertEquals(dto.getDate(), savedObject.getDate());
+        assertEquals(dto.getNotification().getProducerId(), savedObject.getNotification().getProducerId());
     }
 }

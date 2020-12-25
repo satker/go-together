@@ -1,26 +1,31 @@
 package org.go.together.test.mapper;
 
+import org.go.together.base.Mapper;
 import org.go.together.dto.SimpleDto;
-import org.go.together.mapper.Mapper;
+import org.go.together.test.dto.JoinTestDto;
+import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.dto.TestDto;
+import org.go.together.test.entities.JoinTestEntity;
+import org.go.together.test.entities.ManyJoinEntity;
 import org.go.together.test.entities.TestEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
 public class TestMapper implements Mapper<TestDto, TestEntity> {
-    private final ManyJoinMapper manyJoinMapper;
-    private final JoinTestMapper joinTestMapper;
+    private final Mapper<ManyJoinDto, ManyJoinEntity> manyJoinMapper;
+    private final Mapper<JoinTestDto, JoinTestEntity> joinTestMapper;
 
-    public TestMapper(ManyJoinMapper manyJoinMapper,
-                      JoinTestMapper joinTestMapper) {
+    public TestMapper(Mapper<ManyJoinDto, ManyJoinEntity> manyJoinMapper,
+                      Mapper<JoinTestDto, JoinTestEntity> joinTestMapper) {
         this.manyJoinMapper = manyJoinMapper;
         this.joinTestMapper = joinTestMapper;
     }
 
     @Override
-    public TestDto entityToDto(TestEntity entity) {
+    public TestDto entityToDto(UUID requestId, TestEntity entity) {
         TestDto testDto = new TestDto();
         testDto.setId(entity.getId());
         testDto.setEndDate(entity.getEndDate());
@@ -34,8 +39,12 @@ public class TestMapper implements Mapper<TestDto, TestEntity> {
         testDto.setName(entity.getName());
         testDto.setNumber(entity.getNumber());
         testDto.setElements(entity.getElements());
-        testDto.setJoinTestEntities(entity.getJoinTestEntities().stream().map(joinTestMapper::entityToDto).collect(Collectors.toSet()));
-        testDto.setManyJoinEntities(entity.getManyJoinEntities().stream().map(manyJoinMapper::entityToDto).collect(Collectors.toSet()));
+        testDto.setJoinTestEntities(entity.getJoinTestEntities().stream()
+                .map(joinTest -> joinTestMapper.entityToDto(UUID.randomUUID(), joinTest))
+                .collect(Collectors.toSet()));
+        testDto.setManyJoinEntities(entity.getManyJoinEntities().stream()
+                .map(manyJoin -> manyJoinMapper.entityToDto(requestId, manyJoin))
+                .collect(Collectors.toSet()));
         return testDto;
     }
 

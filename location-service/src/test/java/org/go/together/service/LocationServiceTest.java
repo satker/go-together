@@ -1,11 +1,11 @@
 package org.go.together.service;
 
+import org.go.together.base.Mapper;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.CountryDto;
 import org.go.together.dto.LocationDto;
 import org.go.together.dto.PlaceDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.mapper.CountryMapper;
 import org.go.together.model.Country;
 import org.go.together.model.Location;
 import org.go.together.repository.interfaces.CountryRepository;
@@ -16,8 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collections;
+import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 class LocationServiceTest extends CrudServiceCommonTest<Location, LocationDto> {
@@ -25,7 +26,7 @@ class LocationServiceTest extends CrudServiceCommonTest<Location, LocationDto> {
     private CountryRepository countryRepository;
 
     @Autowired
-    private CountryMapper countryMapper;
+    private Mapper<CountryDto, Country> countryMapper;
 
     @Autowired
     private PlaceRepository placeRepository;
@@ -46,7 +47,7 @@ class LocationServiceTest extends CrudServiceCommonTest<Location, LocationDto> {
         country.setCountryCode(placeDto.getCountry().getCountryCode().toUpperCase());
         country.setName(placeDto.getCountry().getName().toUpperCase());
         Country savedCountry = countryRepository.save(country);
-        CountryDto countryDto = countryMapper.entityToDto(savedCountry);
+        CountryDto countryDto = countryMapper.entityToDto(UUID.randomUUID(), savedCountry);
         placeDto.setId(null);
         placeDto.setCountry(countryDto);
         placeDto.setLocations(Collections.emptySet());
@@ -56,7 +57,16 @@ class LocationServiceTest extends CrudServiceCommonTest<Location, LocationDto> {
 
     @Override
     protected void checkDtos(LocationDto dto, LocationDto savedObject, CrudOperation operation) {
-        super.checkDtos(dto, savedObject, operation);
+        assertEquals(dto.getIsEnd(), savedObject.getIsEnd());
+        assertEquals(dto.getIsStart(), savedObject.getIsStart());
+        assertEquals(dto.getAddress(), savedObject.getAddress());
+        assertEquals(dto.getRouteNumber(), savedObject.getRouteNumber());
+        assertEquals(dto.getLatitude(), savedObject.getLatitude());
+        assertEquals(dto.getLongitude(), savedObject.getLongitude());
+        assertEquals(dto.getPlace().getLocations(), savedObject.getPlace().getLocations());
+        assertEquals(dto.getPlace().getCountry(), savedObject.getPlace().getCountry());
+        assertEquals(dto.getPlace().getState(), savedObject.getPlace().getState());
+        assertEquals(dto.getPlace().getName(), savedObject.getPlace().getName());
         assertEquals(repository.findAll().size(), placeRepository.findAll().size());
     }
 }

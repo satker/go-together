@@ -1,20 +1,21 @@
 package org.go.together.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.go.together.interfaces.ComparingField;
-import org.go.together.interfaces.Dto;
+import lombok.EqualsAndHashCode;
+import org.go.together.compare.ComparableDto;
+import org.go.together.compare.ComparingField;
 
-import java.util.UUID;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class CountryDto implements Dto {
-    private UUID id;
+public class CountryDto extends ComparableDto {
     @ComparingField("country code")
     private String countryCode;
-    @ComparingField(value = "country name", isMain = true)
+
+    @ComparingField("country name")
     private String name;
+
+    @Override
+    public String getMainField() {
+        return name;
+    }
 }

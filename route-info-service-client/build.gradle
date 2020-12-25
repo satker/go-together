@@ -1,0 +1,26 @@
+buildscript {
+    ext {
+        lombokVersion='1.18.16'
+    }
+}
+plugins {
+    id 'java'
+}
+
+group 'org.go.together'
+version '1.0.1.SNAPSHOT'
+
+sourceCompatibility = 15
+targetCompatibility = 15
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    compile project(":common-service:kafka-producer")
+    compile project(":location-service-client")
+}

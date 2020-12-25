@@ -3,7 +3,6 @@ package org.go.together.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.go.together.dto.LocationCategory;
-import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -17,7 +16,7 @@ public class GroupLocation extends IdentifiedEntity {
     private UUID groupId;
     private LocationCategory category;
 
-    @OneToMany(cascade = CascadeType.REFRESH)
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "group_location_id")
     private Set<Location> locations;
 }

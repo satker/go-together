@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.3.0.RELEASE'
+        springBootVersion = '2.3.7.RELEASE'
         lombokVersion='1.18.16'
     }
     repositories {
@@ -16,8 +16,8 @@ apply plugin: 'java'
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
-sourceCompatibility = 14
-targetCompatibility = 14
+sourceCompatibility = 15
+targetCompatibility = 15
 
 repositories {
     mavenCentral()
@@ -38,6 +38,7 @@ dependencies {
 
     compile project(":common-service:interfaces-service")
     compile project(":common-service:exception-service")
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
 

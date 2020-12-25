@@ -1,22 +1,16 @@
-import React, {useEffect} from "react";
+import React from "react";
 import moment from "moment";
 
-import SelectBox from "forms/utils/components/SelectBox";
 import CheckInOutDates from "forms/utils/components/CheckInOutDates";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import {Event, ResponseData} from "forms/utils/types";
 
 import LabeledInput from "forms/utils/components/LabeledInput";
-import {getHousingTypes} from "../actions";
 import {connect} from "App/Context";
 import PropTypes from "prop-types";
 import {updateEvent} from "../../actions";
 
-const CommonInfo = ({event, updateEvent, getHousingTypes, housingTypes}) => {
-    useEffect(() => {
-        getHousingTypes();
-    }, [getHousingTypes]);
-
+const CommonInfo = ({event, updateEvent}) => {
     return <>
         <ItemContainer>
             <LabeledInput
@@ -25,13 +19,6 @@ const CommonInfo = ({event, updateEvent, getHousingTypes, housingTypes}) => {
                 value={event.name}
                 onChange={(value) => updateEvent('name', value)}
             />
-        </ItemContainer>
-        <ItemContainer>
-            <SelectBox onChange={(value) => updateEvent('housingType', housingTypes.response
-                .filter(type => type.id === value)[0].id)}
-                       labelText='Housing type'
-                       value={event.housingType}
-                       items={housingTypes.response}/>
         </ItemContainer>
         <ItemContainer>
             <LabeledInput
@@ -69,8 +56,7 @@ CommonInfo.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    housingTypes: state.components.forms.event.eventEdit.mainInfo.commonInfo.housingTypes,
     event: state.components.forms.event.eventEdit.event.response
 });
 
-export default connect(mapStateToProps, {getHousingTypes, updateEvent})(CommonInfo);
+export default connect(mapStateToProps, {updateEvent})(CommonInfo);

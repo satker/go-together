@@ -9,6 +9,10 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:1111/eureka
+kafka:
+  server: localhost:9092
+  groupId: content-service
+
 photo:
   store:
     path: store/

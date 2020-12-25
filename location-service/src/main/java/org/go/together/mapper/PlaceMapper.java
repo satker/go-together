@@ -1,5 +1,8 @@
 package org.go.together.mapper;
 
+import lombok.RequiredArgsConstructor;
+import org.go.together.base.Mapper;
+import org.go.together.dto.CountryDto;
 import org.go.together.dto.PlaceDto;
 import org.go.together.model.Country;
 import org.go.together.model.Location;
@@ -8,22 +11,18 @@ import org.go.together.repository.interfaces.LocationRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class PlaceMapper implements Mapper<PlaceDto, Place> {
-    private final CountryMapper countryMapper;
+    private final Mapper<CountryDto, Country> countryMapper;
     private final LocationRepository locationRepository;
 
-    public PlaceMapper(CountryMapper countryMapper,
-                       LocationRepository locationRepository) {
-        this.countryMapper = countryMapper;
-        this.locationRepository = locationRepository;
-    }
-
-    public PlaceDto entityToDto(Place place) {
+    public PlaceDto entityToDto(UUID requestId, Place place) {
         PlaceDto placeDto = new PlaceDto();
-        placeDto.setCountry(countryMapper.entityToDto(place.getCountry()));
+        placeDto.setCountry(countryMapper.entityToDto(requestId, place.getCountry()));
         placeDto.setId(place.getId());
         placeDto.setState(place.getState());
         placeDto.setName(place.getName());

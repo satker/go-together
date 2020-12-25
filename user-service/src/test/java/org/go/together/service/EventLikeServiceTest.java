@@ -1,19 +1,21 @@
 package org.go.together.service;
 
-import org.go.together.client.ContentClient;
-import org.go.together.client.LocationClient;
+import org.go.together.base.Mapper;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
 import org.go.together.exceptions.CannotFindEntityException;
-import org.go.together.mapper.EventLikeMapper;
-import org.go.together.mapper.InterestMapper;
-import org.go.together.mapper.LanguageMapper;
+import org.go.together.kafka.producers.CrudProducer;
+import org.go.together.kafka.producers.ValidationProducer;
 import org.go.together.model.EventLike;
+import org.go.together.model.Interest;
+import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
 import org.go.together.repository.interfaces.EventLikeRepository;
 import org.go.together.repository.interfaces.InterestRepository;
 import org.go.together.repository.interfaces.LanguageRepository;
 import org.go.together.repository.interfaces.UserRepository;
+import org.go.together.service.interfaces.EventLikeService;
+import org.go.together.service.interfaces.UserService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,14 +28,20 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto> {
     @Autowired
-    private ContentClient contentClient;
+    private CrudProducer<GroupPhotoDto> groupPhotoCrudClient;
+
+    @Autowired
+    private ValidationProducer<GroupPhotoDto> groupPhotoValidate;
 
     @Autowired
     private EventLikeRepository eventLikeRepository;
@@ -42,26 +50,28 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
     private InterestRepository interestRepository;
 
     @Autowired
-    private InterestMapper interestMapper;
+    private Mapper<InterestDto, Interest> interestMapper;
 
     @Autowired
     private LanguageRepository languageRepository;
 
     @Autowired
-    private LanguageMapper languageMapper;
+    private Mapper<LanguageDto, Language> languageMapper;
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    private EventLikeMapper eventLikeMapper;
+    private Mapper<EventLikeDto, EventLike> eventLikeMapper;
 
     @Autowired
-    private LocationClient locationClient;
+    private CrudProducer<GroupLocationDto> locationProducer;
+
+    @Autowired
+    private ValidationProducer<GroupLocationDto> locationValidate;
 
     @Autowired
     private UserRepository userRepository;
-
 
     @BeforeEach
     public void init() {
@@ -108,7 +118,7 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
         assertTrue(eventLikeOptional.isPresent());
         assertEquals(1, eventLikeOptional.get().getUsers().size());
 
-        ((EventLikeService) crudService).deleteByUserId(eventLike.getUsers().iterator().next().getId());
+        ((EventLikeService) crudService).deleteByUserId(UUID.randomUUID(), eventLike.getUsers().iterator().next().getId());
 
         eventLikeOptional = eventLikeRepository.findById(eventLike.getId());
         assertTrue(eventLikeOptional.isPresent());
@@ -128,32 +138,35 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
     protected EventLikeDto createDto() {
         UserDto userDto = factory.manufacturePojo(UserDto.class);
         userDto.setRole(Role.ROLE_USER);
+        UUID requestId = UUID.randomUUID();
         Set<InterestDto> interests = userDto.getInterests().stream()
                 .map(interestMapper::dtoToEntity)
                 .peek(interestRepository::save)
-                .map(interestMapper::entityToDto)
+                .map(interest -> interestMapper.entityToDto(requestId, interest))
                 .collect(Collectors.toSet());
         userDto.setInterests(interests);
         Set<LanguageDto> languages = userDto.getLanguages().stream()
                 .map(languageMapper::dtoToEntity)
                 .peek(languageRepository::save)
-                .map(languageMapper::entityToDto)
+                .map(language -> languageMapper.entityToDto(requestId, language))
                 .collect(Collectors.toSet());
         userDto.setLanguages(languages);
         prepareDto(userDto);
         IdDto idDto = userService.create(userDto);
         Optional<EventLike> eventLike = eventLikeRepository.findByEventId(idDto.getId());
         assertTrue(eventLike.isPresent());
-        return eventLikeMapper.entityToDto(eventLike.get());
+        return eventLikeMapper.entityToDto(requestId, eventLike.get());
     }
 
     private void prepareDto(UserDto userDto) {
-        when(contentClient.updateGroup(userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
-        when(contentClient.createGroup(userDto.getGroupPhoto())).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
-        when(locationClient.getRouteById(userDto.getLocation().getId())).thenReturn(userDto.getLocation());
-        when(locationClient.createRoute(userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
-        when(locationClient.updateRoute(userDto.getLocation())).thenReturn(new IdDto(userDto.getLocation().getId()));
-        when(contentClient.readGroupPhotosById(userDto.getGroupPhoto().getId())).thenReturn(userDto.getGroupPhoto());
+        when(locationValidate.validate(any(UUID.class), eq(userDto.getLocation()))).thenReturn(new ValidationMessageDto(EMPTY));
+        when(groupPhotoValidate.validate(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new ValidationMessageDto(EMPTY));
+        when(groupPhotoCrudClient.update(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
+        when(groupPhotoCrudClient.create(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
+        when(locationProducer.read(any(UUID.class), eq(userDto.getLocation().getId()))).thenReturn(userDto.getLocation());
+        when(locationProducer.create(any(UUID.class), eq(userDto.getLocation()))).thenReturn(new IdDto(userDto.getLocation().getId()));
+        when(locationProducer.update(any(UUID.class), eq(userDto.getLocation()))).thenReturn(new IdDto(userDto.getLocation().getId()));
+        when(groupPhotoCrudClient.read(any(UUID.class), eq(userDto.getGroupPhoto().getId()))).thenReturn(userDto.getGroupPhoto());
 
     }
 }

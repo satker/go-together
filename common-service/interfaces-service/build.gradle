@@ -1,7 +1,8 @@
 buildscript {
     ext {
-        springBootVersion = '2.3.0.RELEASE'
+        springBootVersion = '2.3.7.RELEASE'
         lombokVersion='1.18.16'
+        springKafkaVersion='2.6.4'
     }
     repositories {
         mavenCentral()
@@ -17,8 +18,8 @@ plugins {
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
-sourceCompatibility = 14
-targetCompatibility = 14
+sourceCompatibility = 15
+targetCompatibility = 15
 
 repositories {
     mavenCentral()
@@ -27,7 +28,11 @@ repositories {
 dependencies {
     compile (
             "org.projectlombok:lombok:${lombokVersion}",
-            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+            "org.springframework.kafka:spring-kafka:${springKafkaVersion}",
+            'org.apache.commons:commons-lang3:3.9'
     )
+    implementation("jakarta.persistence:jakarta.persistence-api:2.2.3")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    compile project(":common-service:exception-service")
 }

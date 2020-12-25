@@ -1,14 +1,18 @@
 package org.go.together.dto;
 
 import lombok.Data;
-import org.go.together.interfaces.ComparingField;
-import org.go.together.interfaces.Dto;
+import lombok.EqualsAndHashCode;
+import org.go.together.compare.ComparableDto;
+import org.go.together.compare.ComparingField;
 
-import java.util.UUID;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class InterestDto implements Dto {
-    private UUID id;
-    @ComparingField(value = "name", isMain = true)
+public class InterestDto extends ComparableDto {
+    @ComparingField("name")
     private String name;
+
+    @Override
+    public String getMainField() {
+        return name;
+    }
 }

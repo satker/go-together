@@ -1,24 +1,22 @@
 package org.go.together.validation;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.base.Validator;
 import org.go.together.dto.GroupPhotoDto;
+import org.go.together.dto.PhotoDto;
 import org.go.together.enums.CrudOperation;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
-public class GroupPhotoValidator extends Validator<GroupPhotoDto> {
-    private final PhotoValidator photoValidator;
-
-    public GroupPhotoValidator(PhotoValidator photoValidator) {
-        this.photoValidator = photoValidator;
-    }
+@RequiredArgsConstructor
+public class GroupPhotoValidator extends CommonValidator<GroupPhotoDto> {
+    private final Validator<PhotoDto> photoValidator;
 
     @Override
-    public void getMapsForCheck(GroupPhotoDto dto) {
-    }
-
-    @Override
-    protected String commonValidation(GroupPhotoDto dto, CrudOperation crudOperation) {
+    protected String commonValidation(UUID requestId, GroupPhotoDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
         dto.getPhotos().stream()

@@ -1,42 +1,32 @@
 package org.go.together.mapper;
 
-import org.go.together.client.ContentClient;
-import org.go.together.client.LocationClient;
-import org.go.together.client.UserClient;
-import org.go.together.dto.EventDto;
+import lombok.RequiredArgsConstructor;
+import org.go.together.base.Mapper;
+import org.go.together.dto.*;
+import org.go.together.kafka.producers.CrudProducer;
 import org.go.together.model.Event;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
+import java.util.UUID;
 
 @Component
+@RequiredArgsConstructor
 public class EventMapper implements Mapper<EventDto, Event> {
-    private final UserClient userClient;
-    private final LocationClient locationClient;
-    private final EventPaidThingMapper eventPaidThingMapper;
-    private final ContentClient contentClient;
-
-    public EventMapper(UserClient userClient,
-                       LocationClient locationClient,
-                       EventPaidThingMapper eventPaidThingMapper,
-                       ContentClient contentClient) {
-        this.userClient = userClient;
-        this.locationClient = locationClient;
-        this.eventPaidThingMapper = eventPaidThingMapper;
-        this.contentClient = contentClient;
-    }
+    private final CrudProducer<UserDto> usersCrudProducer;
+    private final CrudProducer<GroupLocationDto> groupLocationProducer;
+    private final CrudProducer<GroupPhotoDto> groupPhotoProducer;
+    private final CrudProducer<GroupRouteInfoDto> routeInfoProducer;
 
     @Override
-    public EventDto entityToDto(Event entity) {
+    public EventDto entityToDto(UUID requestId, Event entity) {
         EventDto eventDto = new EventDto();
         eventDto.setId(entity.getId());
-        eventDto.setAuthor(userClient.findById(entity.getAuthorId()));
+        eventDto.setAuthor(usersCrudProducer.read(requestId, entity.getAuthorId()));
         eventDto.setDescription(entity.getDescription());
-        eventDto.setHousingType(entity.getHousingType());
-        eventDto.setPaidThings(eventPaidThingMapper.entitiesToDtos(entity.getPaidThings()));
         eventDto.setPeopleCount(entity.getPeopleCount());
-        eventDto.setRoute(locationClient.getRouteById(entity.getRouteId()));
-        eventDto.setGroupPhoto(contentClient.readGroupPhotosById(entity.getGroupPhotoId()));
+        eventDto.setRoute(groupLocationProducer.read(requestId, entity.getRouteId()));
+        eventDto.setGroupPhoto(groupPhotoProducer.read(requestId, entity.getGroupPhotoId()));
+        eventDto.setRouteInfo(routeInfoProducer.read(requestId, entity.getRouteInfoId()));
         eventDto.setName(entity.getName());
         eventDto.setStartDate(entity.getStartDate());
         eventDto.setEndDate(entity.getEndDate());
@@ -49,8 +39,6 @@ public class EventMapper implements Mapper<EventDto, Event> {
         event.setId(dto.getId());
         event.setAuthorId(dto.getAuthor().getId());
         event.setDescription(dto.getDescription());
-        event.setHousingType(dto.getHousingType());
-        event.setPaidThings(new HashSet<>(eventPaidThingMapper.dtosToEntities(dto.getPaidThings())));
         event.setPeopleCount(dto.getPeopleCount());
         event.setName(dto.getName());
         event.setStartDate(dto.getStartDate());

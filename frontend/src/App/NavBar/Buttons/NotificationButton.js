@@ -10,9 +10,7 @@ import {getUnreadUserNotifications} from "forms/Notifications/actions";
 
 const NotificationButton = ({menuId, userNotificationsSize, getUnreadUserNotifications, userId}) => {
     useEffect(() => {
-        if (userId) {
-            getUnreadUserNotifications(userId);
-        }
+        userId && getUnreadUserNotifications(userId);
     }, [getUnreadUserNotifications, userId]);
 
     return <IconButton onClick={() => navigate('/notifications', true)}
@@ -39,7 +37,7 @@ const mapStateToProps = state => {
         userNotificationsSize: (notifications.response?.result || [])
             .filter(notificationMessage => !notificationMessage.isRead)
             .length,
-        userId: state.auth.value.userId
+        userId: state.auth.response.userId
     });
 }
 

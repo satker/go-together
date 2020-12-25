@@ -29,7 +29,6 @@ const ItemEvent = ({event, onDelete, userId, eventIds}) => <Card>
             <Typography>Going to travel through {event.route.locations.map(location => location.place.name + ", " +
                 location.place.country.name).join(" -> ")}</Typography>
             <Typography>With {event.peopleCount} friends</Typography>
-            <Typography>Live by {event.housingType}</Typography>
         </CardContent>
     </CardActionArea>
         <CardActions>
@@ -46,7 +45,7 @@ ItemEvent.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    userId: state.auth.value.userId
+    userId: state.auth.response.userId
 });
 
 export default connect(mapStateToProps, null)(ItemEvent);

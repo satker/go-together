@@ -6,7 +6,7 @@ import {EVENT_LIKES, EVENT_LIKES_NEW_LIKE} from "./constants";
 export const updateEventLike = (eventLike) => (dispatch) => {
     dispatch({
         type: EVENT_LIKES_NEW_LIKE,
-        url: USER_SERVICE_URL + '/users/likes',
+        url: USER_SERVICE_URL + '/eventLikes',
         method: POST,
         data: eventLike
     });
@@ -15,7 +15,7 @@ export const updateEventLike = (eventLike) => (dispatch) => {
 export const createEventLike = (eventLike) => (dispatch) => {
     dispatch({
         type: EVENT_LIKES_NEW_LIKE,
-        url: USER_SERVICE_URL + '/users/likes',
+        url: USER_SERVICE_URL + '/eventLikes',
         method: PUT,
         data: eventLike
     });
@@ -27,7 +27,7 @@ export const getEventsLikes = (eventIds) => (dispatch) => {
         method: POST,
         url: USER_SERVICE_URL + '/find',
         data: {
-            mainIdField: "eventLike",
+            mainIdField: "eventLikes",
             filters: {
                 eventId: {
                     filterType: 'IN',

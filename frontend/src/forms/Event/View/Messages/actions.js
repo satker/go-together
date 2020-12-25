@@ -9,7 +9,7 @@ export const getMessagesByEvent = (eventId, authorId) => (dispatch) => {
         method: POST,
         url: MESSAGE_SERVICE_URL + '/find',
         data: {
-            mainIdField: "message",
+            mainIdField: "messages",
             filters: {
                 "messageType": {
                     filterType: 'EQUAL',

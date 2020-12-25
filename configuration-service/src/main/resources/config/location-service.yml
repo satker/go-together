@@ -16,3 +16,6 @@ feign:
         connectTimeout: 5000
         readTimeout: 5000
         loggerLevel: full
+kafka:
+  groupId: location-service
+  server: localhost:9092

@@ -1,6 +1,7 @@
 buildscript {
     ext {
         lombokVersion='1.18.16'
+        springBootVersion = '2.3.7.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -14,17 +15,27 @@ plugins {
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
-sourceCompatibility = 14
-targetCompatibility = 14
+sourceCompatibility = 15
+targetCompatibility = 15
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile("org.projectlombok:lombok:${lombokVersion}")
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile(
+            "org.projectlombok:lombok:${lombokVersion}",
+            "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
+            "org.junit.jupiter:junit-jupiter-engine:5.2.0",
+    )
+
+    testCompile ('junit:junit:4.12')
     compile project(":notification-service-client")
     compile project(":common-service:exception-service")
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}
+
+test {
+    useJUnitPlatform()
 }

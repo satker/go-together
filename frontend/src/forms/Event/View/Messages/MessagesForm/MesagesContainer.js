@@ -28,7 +28,7 @@ MessagesContainer.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    userId: state.auth.value.userId,
+    userId: state.auth.response.userId,
     event: state.components.forms.event.eventView.event.response
 });
 

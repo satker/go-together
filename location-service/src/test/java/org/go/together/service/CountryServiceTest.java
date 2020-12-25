@@ -4,11 +4,13 @@ import org.go.together.context.RepositoryContext;
 import org.go.together.dto.CountryDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.model.Country;
+import org.go.together.service.interfaces.CountryService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -31,7 +33,7 @@ class CountryServiceTest extends CrudServiceCommonTest<Country, CountryDto> {
         country.setCountryCode(country.getCountryCode().toUpperCase());
         country.setName(country.getName().toUpperCase());
         Country savedCountry = repository.save(country);
-        return mapper.entityToDto(savedCountry);
+        return mapper.entityToDto(UUID.randomUUID(), savedCountry);
     }
 
     @Override

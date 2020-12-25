@@ -32,8 +32,8 @@ module.exports = {
     },
     resolve: {
         alias: {
-            App: path.resolve(__dirname, '/Users/satker/IdeaProjects/go-together/frontend/src/App'),
-            forms: path.resolve(__dirname, '/Users/satker/IdeaProjects/go-together/frontend/src/forms')
+            App: path.resolve(__dirname, '/Users/kunats1-ay/IdeaProjects/go-together/frontend/src/App'),
+            forms: path.resolve(__dirname, '/Users/kunats1-ay/IdeaProjects/go-together/frontend/src/forms')
         }
     },
     plugins: [

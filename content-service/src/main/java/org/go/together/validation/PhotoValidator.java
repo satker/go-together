@@ -5,19 +5,16 @@ import org.go.together.dto.PhotoDto;
 import org.go.together.enums.CrudOperation;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 @Component
-public class PhotoValidator extends Validator<PhotoDto> {
+public class PhotoValidator extends CommonValidator<PhotoDto> {
     private static final String REGEX_CHECK_URL =
             "\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
 
     @Override
-    public void getMapsForCheck(PhotoDto photoDto) {
-    }
-
-    @Override
-    protected String commonValidation(PhotoDto photo, CrudOperation crudOperation) {
+    protected String commonValidation(UUID requestId, PhotoDto photo, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
         boolean contentIsNull = photo.getContent() == null || (Strings.isNullOrEmpty(photo.getContent().getType()) &&
                 (photo.getContent().getPhotoContent() == null ||

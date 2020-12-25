@@ -1,16 +1,16 @@
 package org.go.together.dto;
 
 import lombok.Data;
-import org.go.together.interfaces.ComparableDto;
-import org.go.together.interfaces.ComparingField;
-import org.go.together.interfaces.Dto;
+import lombok.EqualsAndHashCode;
+import org.go.together.compare.ComparableDto;
+import org.go.together.compare.ComparingField;
 
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class EventUserDto implements ComparableDto, Dto {
-    private UUID id;
-    @ComparingField(value = "user", isMain = true)
+public class EventUserDto extends ComparableDto {
+    @ComparingField("user")
     private SimpleUserDto user;
     @ComparingField("user status")
     private EventUserStatus userStatus;
@@ -24,5 +24,10 @@ public class EventUserDto implements ComparableDto, Dto {
     @Override
     public UUID getParentId() {
         return this.getEventId();
+    }
+
+    @Override
+    public String getMainField() {
+        return user.getMainField();
     }
 }

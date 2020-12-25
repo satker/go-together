@@ -1,11 +1,11 @@
 package org.go.together.find.finders.converter;
 
+import org.go.together.compare.FieldMapper;
+import org.go.together.dto.FilterDto;
+import org.go.together.dto.FormDto;
 import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.find.dto.ClientLocalFieldObject;
 import org.go.together.find.dto.FieldDto;
-import org.go.together.find.dto.FieldMapper;
-import org.go.together.find.dto.form.FilterDto;
-import org.go.together.find.dto.form.FormDto;
 import org.go.together.find.utils.FindUtils;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +36,7 @@ public class RequestConverterService implements RequestConverter {
     }
 
     private FieldDto getRemoteMainAndGetField(String anotherServiceSearchField, FieldMapper fieldMapper) {
-        String remoteGetField = fieldMapper.getPathRemoteFieldGetter();
+        String remoteGetField = fieldMapper.getRemoteServiceFieldGetter();
 
         String[] havingCondition = FindUtils.getHavingCondition(anotherServiceSearchField);
         if (havingCondition.length > 1) {

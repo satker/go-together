@@ -4,3 +4,6 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:1111/eureka
+kafka:
+  groupId: auth-service
+  server: localhost:9092

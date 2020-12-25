@@ -2,6 +2,7 @@ package org.go.together.mapper;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.go.together.base.Mapper;
 import org.go.together.dto.ContentDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.model.Photo;
@@ -13,14 +14,15 @@ import java.util.UUID;
 
 @Component
 public class PhotoMapper implements Mapper<PhotoDto, Photo> {
-    public PhotoDto entityToDto(Photo photo) {
+    public PhotoDto entityToDto(UUID requestId, Photo photo) {
         PhotoDto photoDto = new PhotoDto();
         if (StringUtils.isNotBlank(photo.getPathName())) {
             try {
                 byte[] bytes = FileUtils.readFileToByteArray(new File(photo.getPathName()));
                 photoDto.setContent(new ContentDto(photo.getContentType(), bytes));
             } catch (IOException e) {
-                throw new RuntimeException("Cannot read image");
+                photoDto.setContent(new ContentDto(photo.getContentType(), new byte[]{}));
+                //throw new RuntimeException("Cannot read image");
             }
         } else {
             photoDto.setPhotoUrl(photo.getPhotoUrl());

@@ -3,7 +3,6 @@ package org.go.together.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.go.together.dto.PhotoCategory;
-import org.go.together.repository.entities.IdentifiedEntity;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -19,7 +18,7 @@ public class GroupPhoto extends IdentifiedEntity {
 
     private PhotoCategory category;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "group_photo_id")
     private Set<Photo> photos;
 }

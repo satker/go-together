@@ -1,6 +1,7 @@
 package org.go.together.logic.mapper;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.go.together.base.Mapper;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.SimpleDto;
 import org.go.together.interfaces.Identified;
@@ -10,26 +11,27 @@ import org.go.together.test.dto.TestDto;
 import org.go.together.test.entities.JoinTestEntity;
 import org.go.together.test.entities.ManyJoinEntity;
 import org.go.together.test.entities.TestEntity;
-import org.go.together.test.mapper.TestMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = RepositoryContext.class)
+@TestPropertySource(locations = "/application.properties")
 class MapperTest {
     @Autowired
-    private TestMapper testMapper;
+    private Mapper<TestDto, TestEntity> testMapper;
 
     TestDto testDto;
     TestEntity testEntity;
@@ -66,16 +68,40 @@ class MapperTest {
 
     @Test
     void entityToDto() {
-        TestDto actualTestDto = testMapper.entityToDto(testEntity);
+        TestDto actualTestDto = testMapper.entityToDto(UUID.randomUUID(), testEntity);
 
-        assertEquals(testDto, actualTestDto);
+        assertEquals(testDto.getDate(), actualTestDto.getDate());
+        assertEquals(testDto.getEndDate(), actualTestDto.getEndDate());
+        assertEquals(testDto.getStartDate(), actualTestDto.getStartDate());
+        assertEquals(testDto.getElements(), actualTestDto.getElements());
+        assertEquals(testDto.getEndNumber(), actualTestDto.getEndNumber());
+        compareCollections(testDto.getJoinTestEntities(), actualTestDto.getJoinTestEntities());
+        assertEquals(testDto.getLatitude(), actualTestDto.getLatitude());
+        assertEquals(testDto.getLongitude(), actualTestDto.getLongitude());
+        assertEquals(testDto.getStartNumber(), actualTestDto.getStartNumber());
+        assertEquals(testDto.getSimpleDto(), actualTestDto.getSimpleDto());
+        assertEquals(testDto.getId(), actualTestDto.getId());
+        assertEquals(testDto.getName(), actualTestDto.getName());
+        compareCollections(testDto.getManyJoinEntities(), actualTestDto.getManyJoinEntities());
     }
 
     @Test
     void dtoToEntity() {
         TestEntity actualTestEntity = testMapper.dtoToEntity(testDto);
 
-        assertEquals(testEntity, actualTestEntity);
+        assertEquals(testEntity.getDate(), actualTestEntity.getDate());
+        assertEquals(testEntity.getEndDate(), actualTestEntity.getEndDate());
+        assertEquals(testEntity.getStartDate(), actualTestEntity.getStartDate());
+        assertEquals(testEntity.getElements(), actualTestEntity.getElements());
+        assertEquals(testEntity.getEndNumber(), actualTestEntity.getEndNumber());
+        compareCollections(testEntity.getJoinTestEntities(), actualTestEntity.getJoinTestEntities());
+        assertEquals(testEntity.getLatitude(), actualTestEntity.getLatitude());
+        assertEquals(testEntity.getLongitude(), actualTestEntity.getLongitude());
+        assertEquals(testEntity.getStartNumber(), actualTestEntity.getStartNumber());
+        assertEquals(testEntity.getSimpleDto(), actualTestEntity.getSimpleDto());
+        assertEquals(testEntity.getId(), actualTestEntity.getId());
+        assertEquals(testEntity.getName(), actualTestEntity.getName());
+        compareCollections(testEntity.getManyJoinEntities(), actualTestEntity.getManyJoinEntities());
     }
 
     @Test
@@ -101,10 +127,10 @@ class MapperTest {
         Collection<TestDto> testDtos = Set.of(testDto, testDtoAndEntity.getRight());
         Collection<TestEntity> testEntities = Set.of(testEntity, testDtoAndEntity.getLeft());
 
-        Collection<TestDto> actualTestDtos = testMapper.entitiesToDtos(testEntities);
+        Collection<TestDto> actualTestDtos = testMapper.entitiesToDtos(UUID.randomUUID(), testEntities);
 
         assertEquals(2, actualTestDtos.size());
-        assertTrue(compareCollections(testDtos, actualTestDtos));
+        compareCollections(testDtos, actualTestDtos);
     }
 
     @Test
@@ -133,18 +159,17 @@ class MapperTest {
         Collection<TestEntity> actualTestEntites = testMapper.dtosToEntities(testDtos);
 
         assertEquals(2, actualTestEntites.size());
-        assertTrue(compareCollections(testEntities, actualTestEntites));
+        compareCollections(testEntities, actualTestEntites);
     }
 
-    private boolean compareCollections(Collection<? extends Identified> oneCollection,
-                                       Collection<? extends Identified> anotherCollection) {
-        Map<UUID, Set<Identified>> oneMap = oneCollection.stream()
-                .collect(Collectors.groupingBy(Identified::getId, Collectors.toSet()));
-        Map<UUID, Set<Identified>> anotherMap = anotherCollection.stream()
-                .collect(Collectors.groupingBy(Identified::getId, Collectors.toSet()));
+    private void compareCollections(Collection<? extends Identified> oneCollection,
+                                    Collection<? extends Identified> anotherCollection) {
+        Map<UUID, Identified> oneMap = oneCollection.stream()
+                .collect(Collectors.toMap(Identified::getId, Function.identity()));
+        Map<UUID, Identified> anotherMap = anotherCollection.stream()
+                .collect(Collectors.toMap(Identified::getId, Function.identity()));
 
-        return oneMap.keySet().stream()
-                .allMatch(key -> oneMap.get(key).equals(anotherMap.get(key)));
+        oneMap.keySet().forEach(key -> assertEquals(oneMap.get(key), anotherMap.get(key)));
     }
 
 
@@ -170,7 +195,7 @@ class MapperTest {
 
         Set<ManyJoinEntity> manyJoinEntities = new HashSet<>();
         Set<ManyJoinDto> manyJoinDtos = new HashSet<>();
-        for (int i = 0; i < 15; i++) {
+        for (long i = 0; i < 15; i++) {
             UUID id = UUID.randomUUID();
             String name = "many join test " + i;
             ManyJoinEntity manyJoinEntity = new ManyJoinEntity();

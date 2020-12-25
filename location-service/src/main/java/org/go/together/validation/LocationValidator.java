@@ -1,39 +1,39 @@
 package org.go.together.validation;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Strings;
+import org.go.together.base.Mapper;
+import org.go.together.base.Validator;
+import org.go.together.dto.CountryDto;
 import org.go.together.dto.LocationDto;
+import org.go.together.dto.PlaceDto;
 import org.go.together.enums.CrudOperation;
-import org.go.together.mapper.CountryMapper;
 import org.go.together.model.Country;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.UUID;
+import java.util.function.Function;
 
 @Component
-public class LocationValidator extends Validator<LocationDto> {
-    private final CountryMapper countryMapper;
-    private final PlaceValidator placeValidator;
-
-    public LocationValidator(CountryMapper countryMapper,
-                             PlaceValidator placeValidator) {
-        this.countryMapper = countryMapper;
-        this.placeValidator = placeValidator;
-    }
+@RequiredArgsConstructor
+public class LocationValidator extends CommonValidator<LocationDto> {
+    private final Mapper<CountryDto, Country> countryMapper;
+    private final Validator<PlaceDto> placeValidator;
 
     @Override
-    public void getMapsForCheck(LocationDto locationDto) {
-        super.STRINGS_FOR_BLANK_CHECK = Map.of(
+    public Map<String, Function<LocationDto, ?>> getMapsForCheck(UUID requestId) {
+        return Map.of(
                 "address", LocationDto::getAddress,
-                "city name", dto -> dto.getPlace().getName());
-        super.OBJECT_NULL_CHECK = Map.of(
+                "city name", dto -> dto.getPlace().getName(),
                 "place", LocationDto::getPlace,
                 "end location", LocationDto::getIsEnd,
                 "start location", LocationDto::getIsStart);
     }
 
     @Override
-    protected String commonValidation(LocationDto locationDto, CrudOperation crudOperation) {
+    protected String commonValidation(UUID requestId, LocationDto locationDto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
         Country country;
         if (Strings.isNullOrEmpty(locationDto.getPlace().getCountry().getName())) {

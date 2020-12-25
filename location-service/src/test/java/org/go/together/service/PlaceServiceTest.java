@@ -1,13 +1,14 @@
 package org.go.together.service;
 
+import org.go.together.base.Mapper;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.CountryDto;
 import org.go.together.dto.PlaceDto;
 import org.go.together.dto.SimpleDto;
-import org.go.together.mapper.CountryMapper;
 import org.go.together.model.Country;
 import org.go.together.model.Place;
 import org.go.together.repository.interfaces.CountryRepository;
+import org.go.together.service.interfaces.PlaceService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -24,7 +26,7 @@ class PlaceServiceTest extends CrudServiceCommonTest<Place, PlaceDto> {
     private CountryRepository countryRepository;
 
     @Autowired
-    private CountryMapper countryMapper;
+    private Mapper<CountryDto, Country> countryMapper;
 
     @Test
     void getLocationsByName() {
@@ -59,7 +61,7 @@ class PlaceServiceTest extends CrudServiceCommonTest<Place, PlaceDto> {
         country.setCountryCode(placeDto.getCountry().getCountryCode().toUpperCase());
         country.setName(placeDto.getCountry().getName().toUpperCase());
         Country savedCountry = countryRepository.save(country);
-        CountryDto countryDto = countryMapper.entityToDto(savedCountry);
+        CountryDto countryDto = countryMapper.entityToDto(UUID.randomUUID(), savedCountry);
         placeDto.setCountry(countryDto);
 
         placeDto.setLocations(Collections.emptySet());

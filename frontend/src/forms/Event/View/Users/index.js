@@ -15,8 +15,8 @@ const Users = ({event, users, statuses, userId, postUserStatus, userStatus, getU
     const [flag, setFlag] = useState(false);
 
     useEffect(() => {
-        getStatuses(event.id);
-    }, [getStatuses, event]);
+        getStatuses();
+    }, [getStatuses]);
 
     useEffect(() => {
         if (event.author.id !== userId) {
@@ -42,16 +42,16 @@ const Users = ({event, users, statuses, userId, postUserStatus, userStatus, getU
 
     return <>
         <LoadableContent loadableData={statuses}>
-                {userId === event.author.id && <ElementTabs elements={users.response.result}
-                                                            onClick={updateUserStatus('APPROVED')}
-                                                            onDelete={updateUserStatus('REJECTED')}
-                                                            onAction={setUserMessageId}
-                                                            isUsers={true}
-                                                            elementsFieldTab={"userStatus"}
-                                                            tabs={statuses.response}/>}
+            {userId === event.author.id && <ElementTabs elements={users.response.result}
+                                                        onClick={updateUserStatus('APPROVED')}
+                                                        onDelete={updateUserStatus('REJECTED')}
+                                                        onAction={setUserMessageId}
+                                                        isUsers={true}
+                                                        elementsFieldTab={"userStatus"}
+                                                        tabs={statuses.response}/>}
         </LoadableContent>
-        <Messages userMessageId={userMessageId}
-                  setUserMessageId={setUserMessageId}/>
+        {userId && <Messages userMessageId={userMessageId}
+                             setUserMessageId={setUserMessageId}/>}
     </>;
 };
 
@@ -67,7 +67,7 @@ Users.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    userId: state.auth.value.userId,
+    userId: state.auth.response.userId,
     userStatus: state.components.forms.event.eventView.usersParticipation.userStatus,
     statuses: state.components.forms.event.eventView.statuses,
     users: state.components.forms.event.eventView.users,

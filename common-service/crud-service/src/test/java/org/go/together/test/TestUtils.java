@@ -69,7 +69,7 @@ public class TestUtils {
             ManyJoinDto manyJoinDto = new ManyJoinDto();
             manyJoinDto.setId(id);
             manyJoinDto.setName(name);
-            manyJoinDto.setNumber(i);
+            manyJoinDto.setNumber((long) i);
             manyJoinDtos.add(manyJoinDto);
         }
         return manyJoinDtos;

@@ -67,11 +67,8 @@ const ModalWindow = ({modal, hideModal}) => {
     </Modal>
 };
 
-const mapStateToProps = (state) => {
-    console.log(state.components.utils.modals.modal.value)
-    return ({
-        modal: state.components.utils.modals.modal.value
-    });
-}
+const mapStateToProps = (state) => ({
+    modal: state.components.utils.modals.modal.value
+});
 
 export default connect(mapStateToProps, {hideModal})(ModalWindow);

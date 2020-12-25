@@ -105,17 +105,6 @@ export const GroupPhoto = PropTypes.exact({
     photos: PropTypes.arrayOf(PhotoObject)
 });
 
-export const PaidThing = PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired
-});
-
-export const CashPaidThing = PropTypes.exact({
-    id: PropTypes.string,
-    cashCategory: PropTypes.string,
-    paidThing: PaidThing
-});
-
 export const Location = PropTypes.exact({
     id: PropTypes.string,
     routeNumber: PropTypes.number.isRequired,
@@ -132,10 +121,8 @@ export const Event = PropTypes.exact({
     name: PropTypes.string.isRequired,
     author: User,
     peopleCount: PropTypes.number.isRequired,
-    housingType: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     groupPhoto: GroupPhoto,
-    paidThings: PropTypes.arrayOf(CashPaidThing),
     route: GroupLocation,
     startDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     endDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object])

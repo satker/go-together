@@ -8,7 +8,6 @@ import CustomButton from "forms/utils/components/CustomButton";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import Container from "forms/utils/components/Container/ContainerRow";
 
-import PaidThings from "./PaidThings";
 import MainInfo from "./MainInfo";
 import Route from "./Route";
 import {postUpdatedEvent, putNewEvent, updateEvent} from "./actions";
@@ -53,7 +52,6 @@ const EditForm = ({
 
     return <Container>
         <MainInfo/>
-        <PaidThings/>
         <Route/>
         <ItemContainer>
             <CustomButton color="primary"
@@ -73,7 +71,7 @@ EditForm.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    userId: state.auth.value.userId,
+    userId: state.auth.response.userId,
     updatedEvent: state.components.forms.event.eventEdit.updatedEvent,
     newEvent: state.components.forms.event.eventEdit.newEvent,
     event: state.components.forms.event.eventEdit.event.response

@@ -10,9 +10,9 @@ const CheckInOutDates = ({startDate, endDate, setStartDate, setEndDate, readOnly
         readOnly={readOnly}
         small={true}
         startDate={startDate} // momentPropTypes.momentObj or null,
-        startDateId="your_unique_start_date_id" // PropTypes.string.isRequired,
+        startDateId="start_date_id" // PropTypes.string.isRequired,
         endDate={endDate} // momentPropTypes.momentObj or null,
-        endDateId="your_unique_end_date_id" // PropTypes.string.isRequired,
+        endDateId="end_date_id" // PropTypes.string.isRequired,
         onDatesChange={({startDate, endDate}) => {
             setStartDate(startDate);
             setEndDate(endDate);

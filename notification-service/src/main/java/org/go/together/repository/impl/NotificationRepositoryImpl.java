@@ -1,9 +1,9 @@
 package org.go.together.repository.impl;
 
+import org.go.together.enums.SqlOperator;
 import org.go.together.model.Notification;
 import org.go.together.repository.CustomRepositoryImpl;
 import org.go.together.repository.interfaces.NotificationRepository;
-import org.go.together.repository.sql.SqlOperator;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

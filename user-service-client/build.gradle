@@ -1,10 +1,6 @@
 buildscript {
     ext {
-        springCloudVersion = '2.2.2.RELEASE'
         lombokVersion='1.18.16'
-    }
-    repositories {
-        mavenCentral()
     }
 }
 plugins {
@@ -14,21 +10,18 @@ plugins {
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
-sourceCompatibility = 14
-targetCompatibility = 14
+sourceCompatibility = 15
+targetCompatibility = 15
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile (
-            "org.springframework.cloud:spring-cloud-starter-openfeign:${springCloudVersion}",
+    compile "org.projectlombok:lombok:${lombokVersion}"
 
-            "org.projectlombok:lombok:${lombokVersion}"
-    )
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    compile project(":common-service:crud-service")
+    compile project(":common-service:kafka-producer")
     compile project(":location-service-client")
     compile project(":content-service-client")
 }

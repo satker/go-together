@@ -1,16 +1,14 @@
 package org.go.together.dto;
 
 import lombok.Data;
-import org.go.together.interfaces.ComparingField;
-import org.go.together.interfaces.Dto;
+import lombok.EqualsAndHashCode;
+import org.go.together.compare.ComparableDto;
+import org.go.together.compare.ComparingField;
 
-import java.util.UUID;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class SimpleUserDto implements Dto {
-    private UUID id;
-
-    @ComparingField(value = "login", isMain = true)
+public class SimpleUserDto extends ComparableDto {
+    @ComparingField("login")
     private String login;
 
     @ComparingField("first name")
@@ -21,4 +19,9 @@ public class SimpleUserDto implements Dto {
 
     @ComparingField("user photo")
     private PhotoDto userPhoto;
+
+    @Override
+    public String getMainField() {
+        return login;
+    }
 }

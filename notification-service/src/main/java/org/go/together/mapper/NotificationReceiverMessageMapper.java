@@ -1,27 +1,30 @@
 package org.go.together.mapper;
 
+import lombok.RequiredArgsConstructor;
+import org.go.together.base.Mapper;
+import org.go.together.dto.NotificationMessageDto;
+import org.go.together.dto.NotificationReceiverDto;
 import org.go.together.dto.NotificationReceiverMessageDto;
+import org.go.together.model.NotificationMessage;
+import org.go.together.model.NotificationReceiver;
 import org.go.together.model.NotificationReceiverMessage;
 import org.springframework.stereotype.Component;
 
-@Component
-public class NotificationReceiverMessageMapper implements Mapper<NotificationReceiverMessageDto, NotificationReceiverMessage> {
-    private final NotificationMessageMapper notificationMessageMapper;
-    private final NotificationReceiverMapper notificationReceiverMapper;
+import java.util.UUID;
 
-    public NotificationReceiverMessageMapper(NotificationMessageMapper notificationMessageMapper,
-                                             NotificationReceiverMapper notificationReceiverMapper) {
-        this.notificationMessageMapper = notificationMessageMapper;
-        this.notificationReceiverMapper = notificationReceiverMapper;
-    }
+@Component
+@RequiredArgsConstructor
+public class NotificationReceiverMessageMapper implements Mapper<NotificationReceiverMessageDto, NotificationReceiverMessage> {
+    private final Mapper<NotificationMessageDto, NotificationMessage> notificationMessageMapper;
+    private final Mapper<NotificationReceiverDto, NotificationReceiver> notificationReceiverMapper;
 
     @Override
-    public NotificationReceiverMessageDto entityToDto(NotificationReceiverMessage entity) {
+    public NotificationReceiverMessageDto entityToDto(UUID requestId, NotificationReceiverMessage entity) {
         NotificationReceiverMessageDto notificationReceiverMessageDto = new NotificationReceiverMessageDto();
         notificationReceiverMessageDto.setId(entity.getId());
         notificationReceiverMessageDto.setIsRead(entity.getIsRead());
-        notificationReceiverMessageDto.setNotificationReceiver(notificationReceiverMapper.entityToDto(entity.getNotificationReceiver()));
-        notificationReceiverMessageDto.setNotificationMessage(notificationMessageMapper.entityToDto(entity.getNotificationMessage()));
+        notificationReceiverMessageDto.setNotificationReceiver(notificationReceiverMapper.entityToDto(requestId, entity.getNotificationReceiver()));
+        notificationReceiverMessageDto.setNotificationMessage(notificationMessageMapper.entityToDto(requestId, entity.getNotificationMessage()));
         return notificationReceiverMessageDto;
     }
 

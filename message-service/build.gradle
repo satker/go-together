@@ -1,43 +1,46 @@
 buildscript {
     ext {
-        springBootVersion = '2.3.0.RELEASE'
-        springCloudVersion = '2.2.2.RELEASE'
+        springBootVersion = '2.3.7.RELEASE'
+        springCloudDependenciesVersion = 'Hoxton.SR9'
+        dependencyManagementVersion = '1.0.10.RELEASE'
         lombokVersion='1.18.16'
         postgresDriver='42.2.18'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
 
 plugins {
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
     id 'java'
 }
 
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
-sourceCompatibility = 14
-targetCompatibility = 14
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
 }
+
+sourceCompatibility = 15
+targetCompatibility = 15
 
 dependencies {
     compile (
-            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-websocket:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-web",
+            "org.springframework.boot:spring-boot-starter-data-jpa",
+            "org.springframework.boot:spring-boot-starter-actuator",
+
+            "org.springframework.cloud:spring-cloud-starter-config",
+            "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client",
+            "org.springframework.cloud:spring-cloud-starter-openfeign",
+    )
+
+    compile(
             "org.postgresql:postgresql:${postgresDriver}",
-
-            "org.springframework.cloud:spring-cloud-starter-config:${springCloudVersion}",
-            "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudVersion}",
-
             "org.projectlombok:lombok:${lombokVersion}"
     )
 
@@ -45,6 +48,14 @@ dependencies {
 
     compile project(":message-service-client")
     compile project(":common-service:notification-service")
+    compile project(":common-service:crud-service")
+    testCompile project(":common-service:crud-service-tests")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudDependenciesVersion}"
+    }
 }
 
 test {

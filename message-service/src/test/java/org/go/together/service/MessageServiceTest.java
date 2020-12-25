@@ -5,6 +5,7 @@ import org.go.together.dto.MessageDto;
 import org.go.together.dto.MessageType;
 import org.go.together.enums.CrudOperation;
 import org.go.together.model.Message;
+import org.go.together.service.interfaces.MessageService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 public class MessageServiceTest extends CrudServiceCommonTest<Message, MessageDto> {

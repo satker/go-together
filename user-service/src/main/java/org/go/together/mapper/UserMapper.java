@@ -1,48 +1,43 @@
 package org.go.together.mapper;
 
-import org.go.together.client.ContentClient;
-import org.go.together.client.LocationClient;
-import org.go.together.dto.UserDto;
+import lombok.RequiredArgsConstructor;
+import org.go.together.base.Mapper;
+import org.go.together.dto.*;
+import org.go.together.kafka.producers.CrudProducer;
+import org.go.together.model.Interest;
+import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class UserMapper implements Mapper<UserDto, SystemUser> {
-    private final LocationClient locationClient;
-    private final ContentClient contentClient;
-    private final LanguageMapper languageMapper;
-    private final InterestMapper interestMapper;
-
-    public UserMapper(LocationClient locationClient,
-                      ContentClient contentClient,
-                      LanguageMapper languageMapper,
-                      InterestMapper interestMapper) {
-        this.locationClient = locationClient;
-        this.contentClient = contentClient;
-        this.languageMapper = languageMapper;
-        this.interestMapper = interestMapper;
-    }
+    private final CrudProducer<GroupLocationDto> locationProducer;
+    private final CrudProducer<GroupPhotoDto> groupPhotoProducer;
+    private final Mapper<LanguageDto, Language> languageMapper;
+    private final Mapper<InterestDto, Interest> interestMapper;
 
     @Override
-    public UserDto entityToDto(SystemUser entity) {
+    public UserDto entityToDto(UUID requestId, SystemUser entity) {
         UserDto userDTO = new UserDto();
         userDTO.setDescription(entity.getDescription());
         userDTO.setFirstName(entity.getFirstName());
         userDTO.setId(entity.getId());
         userDTO.setLanguages(entity.getLanguages().stream()
-                .map(languageMapper::entityToDto)
+                .map(language -> languageMapper.entityToDto(requestId, language))
                 .collect(Collectors.toSet()));
         userDTO.setLastName(entity.getLastName());
-        userDTO.setLocation(locationClient.getRouteById(entity.getLocationId()));
+        userDTO.setLocation(locationProducer.read(requestId, entity.getLocationId()));
         userDTO.setLogin(entity.getLogin());
         userDTO.setMail(entity.getMail());
         userDTO.setRole(entity.getRole());
         userDTO.setInterests(entity.getInterests().stream()
-                .map(interestMapper::entityToDto)
+                .map(interest -> interestMapper.entityToDto(requestId, interest))
                 .collect(Collectors.toSet()));
-        userDTO.setGroupPhoto(contentClient.readGroupPhotosById(entity.getGroupPhoto()));
+        userDTO.setGroupPhoto(groupPhotoProducer.read(requestId, entity.getGroupPhoto()));
         return userDTO;
     }
 

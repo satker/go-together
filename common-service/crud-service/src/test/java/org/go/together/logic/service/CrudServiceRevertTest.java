@@ -1,20 +1,22 @@
 package org.go.together.logic.service;
 
-import org.go.together.base.impl.CrudServiceImpl;
+import org.go.together.base.CommonCrudService;
+import org.go.together.base.Mapper;
+import org.go.together.base.Validator;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.SimpleDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.exceptions.ApplicationException;
 import org.go.together.exceptions.ValidationException;
+import org.go.together.test.dto.JoinTestDto;
+import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.dto.TestDto;
+import org.go.together.test.entities.JoinTestEntity;
+import org.go.together.test.entities.ManyJoinEntity;
 import org.go.together.test.entities.TestEntity;
-import org.go.together.test.mapper.JoinTestMapper;
-import org.go.together.test.mapper.ManyJoinMapper;
-import org.go.together.test.mapper.TestMapper;
 import org.go.together.test.repository.interfaces.JoinTestRepository;
 import org.go.together.test.repository.interfaces.ManyJoinRepository;
 import org.go.together.test.repository.interfaces.TestRepository;
-import org.go.together.test.validation.TestValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Calendar;
@@ -41,15 +44,16 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = RepositoryContext.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@TestPropertySource(locations = "/application.properties")
 class CrudServiceRevertTest {
     private static final String TEST_NAME = "test name";
     private static final String CREATED_TEST_NAME = "create test name";
 
     @Autowired
-    private JoinTestMapper joinTestMapper;
+    private Mapper<JoinTestDto, JoinTestEntity> joinTestMapper;
 
     @Autowired
-    private ManyJoinMapper manyJoinMapper;
+    private Mapper<ManyJoinDto, ManyJoinEntity> manyJoinMapper;
 
     @Autowired
     private ManyJoinRepository manyJoinRepository;
@@ -61,19 +65,19 @@ class CrudServiceRevertTest {
     private TestRepository testRepository;
 
     @Autowired
-    private TestValidator testValidator;
+    private Validator<TestDto> testValidator;
 
     @Autowired
-    private TestMapper testMapper;
+    private Mapper<TestDto, TestEntity> testMapper;
 
-    private CrudServiceImpl<TestDto, TestEntity> testServiceOverride;
+    private CommonCrudService<TestDto, TestEntity> testServiceOverride;
 
     @BeforeEach
     public void init() {
         MockitoAnnotations.initMocks(this);
-        testServiceOverride = new CrudServiceImpl<>() {
+        testServiceOverride = new CommonCrudService<>() {
             @Override
-            protected TestEntity enrichEntity(TestEntity entity, TestDto dto, CrudOperation crudOperation) {
+            protected TestEntity enrichEntity(UUID requestId, TestEntity entity, TestDto dto, CrudOperation crudOperation) {
                 if (crudOperation == CrudOperation.CREATE) {
                     assertEquals(TEST_NAME, entity.getName());
                     entity.setName(CREATED_TEST_NAME);

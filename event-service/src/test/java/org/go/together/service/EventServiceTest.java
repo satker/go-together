@@ -1,64 +1,61 @@
 package org.go.together.service;
 
-import org.go.together.client.ContentClient;
-import org.go.together.client.LocationClient;
-import org.go.together.client.UserClient;
 import org.go.together.context.RepositoryContext;
-import org.go.together.dto.EventDto;
-import org.go.together.dto.EventPaidThingDto;
-import org.go.together.dto.IdDto;
-import org.go.together.dto.SimpleDto;
+import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
-import org.go.together.mapper.PaidThingMapper;
+import org.go.together.kafka.producers.CrudProducer;
+import org.go.together.kafka.producers.FindProducer;
+import org.go.together.kafka.producers.ValidationProducer;
 import org.go.together.model.Event;
-import org.go.together.model.PaidThing;
-import org.go.together.repository.interfaces.PaidThingRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
 public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
     @Autowired
-    private UserClient userClient;
+    private FindProducer<UserDto> findUserKafkaProducer;
 
     @Autowired
-    private LocationClient locationClient;
+    private CrudProducer<GroupLocationDto> groupLocationProducer;
 
     @Autowired
-    private ContentClient contentClient;
+    private ValidationProducer<GroupLocationDto> groupLocationValidate;
 
     @Autowired
-    private PaidThingMapper paidThingMapper;
+    private CrudProducer<GroupPhotoDto> groupPhotoProducer;
 
     @Autowired
-    private PaidThingRepository paidThingRepository;
+    private CrudProducer<UserDto> userCrudClient;
 
+    @Autowired
+    private ValidationProducer<GroupPhotoDto> groupPhotoValidate;
+
+    @Autowired
+    private ValidationProducer<GroupRouteInfoDto> routeInfoValidator;
+
+    @Autowired
+    private CrudProducer<GroupRouteInfoDto> routeInfoProducer;
+
+    @Override
     @BeforeEach
     public void init() {
         super.init();
         prepareDto(dto);
         prepareDto(updatedDto);
-    }
-
-    @Test
-    public void autocompleteEventTest() {
-        IdDto idDto = crudService.create(dto);
-        Set<SimpleDto> events = ((EventService) crudService).autocompleteEvents(dto.getName());
-
-        assertEquals(1, events.size());
-        assertEquals(idDto.getId(), UUID.fromString(events.iterator().next().getId()));
     }
 
     @Override
@@ -72,24 +69,27 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
 
         calendar.add(Calendar.MONTH, rand.nextInt(10) + 1);
         eventDto.setEndDate(calendar.getTime());
-        for (EventPaidThingDto paidThingDto : eventDto.getPaidThings()) {
-            PaidThing paidThing = paidThingMapper.dtoToEntity(paidThingDto.getPaidThing());
-            PaidThing savedPaidThing = paidThingRepository.save(paidThing);
-            paidThingDto.setPaidThing(paidThingMapper.entityToDto(savedPaidThing));
-        }
-
         return eventDto;
     }
 
     private void prepareDto(EventDto eventDto) {
-        when(userClient.checkIfUserPresentsById(eventDto.getAuthor().getId())).thenReturn(true);
-        when(userClient.findById(eventDto.getAuthor().getId())).thenReturn(eventDto.getAuthor());
-        when(locationClient.getRouteById(eventDto.getRoute().getId())).thenReturn(eventDto.getRoute());
-        when(contentClient.readGroupPhotosById(eventDto.getGroupPhoto().getId())).thenReturn(eventDto.getGroupPhoto());
-        when(locationClient.createRoute(eventDto.getRoute())).thenReturn(new IdDto(eventDto.getRoute().getId()));
-        when(locationClient.updateRoute(eventDto.getRoute())).thenReturn(new IdDto(eventDto.getRoute().getId()));
-        when(contentClient.updateGroup(eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
-        when(contentClient.createGroup(eventDto.getGroupPhoto())).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
+        ResponseDto<Object> objectResponseDto = new ResponseDto<>();
+        objectResponseDto.setPage(null);
+        objectResponseDto.setResult(Collections.singleton(eventDto.getAuthor().getId()));
+        when(findUserKafkaProducer.find(any(UUID.class), any())).thenReturn(objectResponseDto);
+        when(userCrudClient.read(any(UUID.class), eq(eventDto.getAuthor().getId()))).thenReturn(eventDto.getAuthor());
+        when(groupLocationProducer.read(any(UUID.class), eq(eventDto.getRoute().getId()))).thenReturn(eventDto.getRoute());
+        when(groupPhotoProducer.read(any(UUID.class), eq(eventDto.getGroupPhoto().getId()))).thenReturn(eventDto.getGroupPhoto());
+        when(groupLocationProducer.create(any(UUID.class), eq(eventDto.getRoute()))).thenReturn(new IdDto(eventDto.getRoute().getId()));
+        when(groupLocationProducer.update(any(UUID.class), eq(eventDto.getRoute()))).thenReturn(new IdDto(eventDto.getRoute().getId()));
+        when(groupPhotoProducer.update(any(UUID.class), eq(eventDto.getGroupPhoto()))).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
+        when(groupPhotoProducer.create(any(UUID.class), eq(eventDto.getGroupPhoto()))).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
+        when(groupPhotoValidate.validate(any(UUID.class), eq(eventDto.getGroupPhoto()))).thenReturn(new ValidationMessageDto(EMPTY));
+        when(groupLocationValidate.validate(any(UUID.class), eq(eventDto.getRoute()))).thenReturn(new ValidationMessageDto(EMPTY));
+        when(routeInfoValidator.validate(any(UUID.class), eq(eventDto.getRouteInfo()))).thenReturn(new ValidationMessageDto(EMPTY));
+        when(routeInfoProducer.create(any(UUID.class), eq(eventDto.getRouteInfo()))).thenReturn(new IdDto(eventDto.getRouteInfo().getId()));
+        when(routeInfoProducer.read(any(UUID.class), eq(eventDto.getRouteInfo().getId()))).thenReturn(eventDto.getRouteInfo());
+        when(routeInfoProducer.update(any(UUID.class), eq(eventDto.getRouteInfo()))).thenReturn(new IdDto(eventDto.getRouteInfo().getId()));
     }
 
     @Override
@@ -103,6 +103,5 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
         assertEquals(dto.getStartDate(), savedObject.getStartDate());
         assertEquals(dto.getGroupPhoto(), savedObject.getGroupPhoto());
         assertEquals(dto.getPeopleCount(), savedObject.getPeopleCount());
-        assertEquals(dto.getHousingType(), savedObject.getHousingType());
     }
 }

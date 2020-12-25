@@ -9,6 +9,8 @@ zuul:
       url: http://localhost:8081
     content-service:
       url: http://localhost:8099
+    route-info-service:
+      url: http://localhost:8098
     location-service:
       url: http://localhost:8090
     auth-service:
