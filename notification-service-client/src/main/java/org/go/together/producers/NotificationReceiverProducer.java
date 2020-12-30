@@ -1,4 +1,4 @@
-package org.go.together.notification.producers;
+package org.go.together.producers;
 
 import org.go.together.annotations.EnableAutoConfigurationKafkaProducer;
 import org.go.together.dto.NotificationReceiverDto;

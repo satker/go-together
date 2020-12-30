@@ -1,23 +1,16 @@
 import PropTypes from "prop-types";
 
-export const Place = PropTypes.exact({
-    id: PropTypes.string,
-    name: PropTypes.string,
-    state: PropTypes.string,
-    country: Country
-});
-
 export const Country = PropTypes.exact({
     id: PropTypes.string,
     countryCode: PropTypes.string,
     name: PropTypes.string
 })
 
-export const GroupLocation = PropTypes.exact({
+export const Place = PropTypes.exact({
     id: PropTypes.string,
-    groupId: PropTypes.string,
-    locations: PropTypes.arrayOf(Location),
-    category: PropTypes.string
+    name: PropTypes.string,
+    state: PropTypes.string,
+    country: Country
 });
 
 export const SimpleObject = PropTypes.exact({
@@ -68,13 +61,28 @@ export const Interest = PropTypes.exact({
     name: PropTypes.string.isRequired,
 });
 
+export const GroupPhoto = PropTypes.exact({
+    id: PropTypes.string,
+    groupId: PropTypes.string,
+    category: PropTypes.string,
+    photos: PropTypes.arrayOf(PhotoObject)
+});
+
+export const Location = PropTypes.exact({
+    id: PropTypes.string,
+    address: PropTypes.string,
+    latitude: PropTypes.number,
+    longitude: PropTypes.number,
+    place: Place
+});
+
 export const User = PropTypes.exact({
     id: PropTypes.string,
     login: PropTypes.string,
     mail: PropTypes.string,
     firstName: PropTypes.string,
     lastName: PropTypes.string,
-    location: GroupLocation,
+    location: Location,
     description: PropTypes.string,
     password: PropTypes.string,
     role: PropTypes.string,
@@ -98,32 +106,30 @@ export const EventUser = PropTypes.exact({
     eventId: PropTypes.string
 });
 
-export const GroupPhoto = PropTypes.exact({
-    id: PropTypes.string,
-    groupId: PropTypes.string,
-    category: PropTypes.string,
-    photos: PropTypes.arrayOf(PhotoObject)
+export const RouteInfoItem = PropTypes.exact({
+    location: Location,
+    transportType: PropTypes.string,
+    cost: PropTypes.number,
+    movementDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    movementDuration: PropTypes.number,
+    routeNumber: PropTypes.number,
+    isStart: PropTypes.bool,
+    isEnd: PropTypes.bool
 });
 
-export const Location = PropTypes.exact({
-    id: PropTypes.string,
-    routeNumber: PropTypes.number.isRequired,
-    address: PropTypes.string,
-    latitude: PropTypes.number,
-    longitude: PropTypes.number,
-    place: Place,
-    isStart: PropTypes.bool,
-    isEnd: PropTypes.bool,
+export const RouteInfo = PropTypes.exact({
+    groupId: PropTypes.string,
+    infoRoutes: PropTypes.arrayOf(RouteInfoItem)
 });
 
 export const Event = PropTypes.exact({
     id: PropTypes.string,
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string,
     author: User,
-    peopleCount: PropTypes.number.isRequired,
-    description: PropTypes.string.isRequired,
+    peopleCount: PropTypes.number,
+    description: PropTypes.string,
     groupPhoto: GroupPhoto,
-    route: GroupLocation,
+    routeInfo: RouteInfo,
     startDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     endDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
 });
@@ -149,7 +155,13 @@ export const SearchObject = PropTypes.exact({
     filters: PropTypes.object
 });
 
-export const CoordinateCenter = PropTypes.exact({
-    lat: PropTypes.number.isRequired,
-    lng: PropTypes.number.isRequired,
-});
+export const MapRoute = PropTypes.exact({
+    routeNumber: PropTypes.number,
+    location: Location
+})
+
+export const EventMapRoute = PropTypes.exact({
+    id: PropTypes.string,
+    name: PropTypes.string,
+    locations: PropTypes.arrayOf(MapRoute)
+})

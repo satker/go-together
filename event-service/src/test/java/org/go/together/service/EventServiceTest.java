@@ -19,7 +19,6 @@ import java.util.UUID;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -28,12 +27,6 @@ import static org.mockito.Mockito.when;
 public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
     @Autowired
     private FindProducer<UserDto> findUserKafkaProducer;
-
-    @Autowired
-    private CrudProducer<GroupLocationDto> groupLocationProducer;
-
-    @Autowired
-    private ValidationProducer<GroupLocationDto> groupLocationValidate;
 
     @Autowired
     private CrudProducer<GroupPhotoDto> groupPhotoProducer;
@@ -78,14 +71,10 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
         objectResponseDto.setResult(Collections.singleton(eventDto.getAuthor().getId()));
         when(findUserKafkaProducer.find(any(UUID.class), any())).thenReturn(objectResponseDto);
         when(userCrudClient.read(any(UUID.class), eq(eventDto.getAuthor().getId()))).thenReturn(eventDto.getAuthor());
-        when(groupLocationProducer.read(any(UUID.class), eq(eventDto.getRoute().getId()))).thenReturn(eventDto.getRoute());
         when(groupPhotoProducer.read(any(UUID.class), eq(eventDto.getGroupPhoto().getId()))).thenReturn(eventDto.getGroupPhoto());
-        when(groupLocationProducer.create(any(UUID.class), eq(eventDto.getRoute()))).thenReturn(new IdDto(eventDto.getRoute().getId()));
-        when(groupLocationProducer.update(any(UUID.class), eq(eventDto.getRoute()))).thenReturn(new IdDto(eventDto.getRoute().getId()));
         when(groupPhotoProducer.update(any(UUID.class), eq(eventDto.getGroupPhoto()))).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
         when(groupPhotoProducer.create(any(UUID.class), eq(eventDto.getGroupPhoto()))).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
         when(groupPhotoValidate.validate(any(UUID.class), eq(eventDto.getGroupPhoto()))).thenReturn(new ValidationMessageDto(EMPTY));
-        when(groupLocationValidate.validate(any(UUID.class), eq(eventDto.getRoute()))).thenReturn(new ValidationMessageDto(EMPTY));
         when(routeInfoValidator.validate(any(UUID.class), eq(eventDto.getRouteInfo()))).thenReturn(new ValidationMessageDto(EMPTY));
         when(routeInfoProducer.create(any(UUID.class), eq(eventDto.getRouteInfo()))).thenReturn(new IdDto(eventDto.getRouteInfo().getId()));
         when(routeInfoProducer.read(any(UUID.class), eq(eventDto.getRouteInfo().getId()))).thenReturn(eventDto.getRouteInfo());
@@ -95,8 +84,6 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
     @Override
     protected void checkDtos(EventDto dto, EventDto savedObject, CrudOperation operation) {
         assertEquals(dto.getAuthor(), savedObject.getAuthor());
-        assertTrue(dto.getRoute().getLocations().stream()
-                .allMatch(route -> savedObject.getRoute().getLocations().stream().anyMatch(route::equals)));
         assertEquals(dto.getDescription(), savedObject.getDescription());
         assertEquals(dto.getName(), savedObject.getName());
         assertEquals(dto.getEndDate(), savedObject.getEndDate());

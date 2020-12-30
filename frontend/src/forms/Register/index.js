@@ -105,26 +105,11 @@ const validation = (fields) => {
     }
 }
 
-const onDataConverter = (data) => {
-    const location = {
-        ...data.location,
-        category: 'USER',
-        locations: [{
-            ...data.location.locations[0],
-            routeNumber: 1,
-            isStart: true,
-            isEnd: false
-        }]
-    }
-    return {...data, location}
-};
-
 const RegisterForm = createReduxForm({
     FORM_ID,
     validation,
     url: USER_SERVICE_URL + "/users",
-    method: PUT,
-    dataConverter: onDataConverter
+    method: PUT
 });
 
 export default connect(mapStateToProps,

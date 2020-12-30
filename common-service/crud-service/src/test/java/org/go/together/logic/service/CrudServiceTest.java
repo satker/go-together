@@ -5,6 +5,7 @@ import org.go.together.base.Mapper;
 import org.go.together.base.Validator;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.*;
+import org.go.together.enums.FindOperator;
 import org.go.together.exceptions.ApplicationException;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.dto.ManyJoinDto;
@@ -34,6 +35,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes = RepositoryContext.class)
 @TestPropertySource(locations = "/application.properties")
 class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
+    private static final String MAIN_FIELD_TEST = "test";
+
     TestDto testDto;
 
     @Autowired
@@ -53,7 +56,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     Random random = new Random();
 
-    private UUID requestId = UUID.randomUUID();
+    private final UUID requestId = UUID.randomUUID();
 
     @Override
     @BeforeEach
@@ -191,18 +194,8 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void find() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(LIKE);
-        filterDto.setValues(Set.of(Map.of("name", "name")));
-        formDto.setFilters(Map.of("name", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, LIKE, "name",
+                Set.of(Map.of("name", "name")));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
@@ -214,18 +207,8 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void findWithOneField() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test.id");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(LIKE);
-        filterDto.setValues(Set.of(Map.of("name", "name")));
-        formDto.setFilters(Map.of("name", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST + ".id", LIKE, "name",
+                Set.of(Map.of("name", "name")));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
@@ -238,22 +221,13 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void findByManyToManyTable() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(IN);
         Set<UUID> uuids = new HashSet<>();
         for (ManyJoinDto manyJoinDto : testDto.getManyJoinEntities()) {
             uuids.add(manyJoinDto.getId());
         }
-        filterDto.setValues(Set.of(Map.of("id", uuids)));
-        formDto.setFilters(Map.of("manyJoinEntities.id", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, IN, "manyJoinEntities.id",
+                Set.of(Map.of("id", uuids)));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
@@ -269,42 +243,23 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         assertThrows(
                 ApplicationException.class,
                 () -> {
-                    FormDto formDto = new FormDto();
-                    formDto.setMainIdField("test");
-                    FilterDto filterDto = new FilterDto();
-                    filterDto.setFilterType(IN);
                     Set<UUID> uuids = new HashSet<>();
                     for (ManyJoinDto manyJoinDto : testDto.getManyJoinEntities()) {
                         uuids.add(manyJoinDto.getId());
                     }
-                    filterDto.setValues(Set.of(Map.of("someUndefinedField", uuids)));
-                    formDto.setFilters(Map.of("someUndefinedField", filterDto));
-                    PageDto pageDto = new PageDto();
-                    pageDto.setPage(0);
-                    pageDto.setSize(3);
-                    pageDto.setSort(Collections.emptyList());
-                    pageDto.setTotalSize(0L);
-                    formDto.setPage(pageDto);
+                    FormDto formDto = getFormDto(MAIN_FIELD_TEST, IN, "someUndefinedField",
+                            Set.of(Map.of("someUndefinedField", uuids)));
                     findService.find(requestId, formDto);
                 });
     }
 
     @Test
     void findFromRemoteServiceToElements() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(IN);
-        filterDto.setValues(Set.of(Map.of("id", Set.of("filter"))));
         Collection<Object> uuids = new HashSet<>(testDto.getElements());
         ((TestService) crudService).setAnotherClient(uuids);
-        formDto.setFilters(Map.of("elements?element.id", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, IN, "elements?element.id",
+                Set.of(Map.of("id", Set.of("filter"))));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
@@ -317,23 +272,14 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void findFromRemoteServiceToJoinTable() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(IN);
-        filterDto.setValues(Set.of(Map.of("id", Set.of("filter"))));
         Collection<Object> uuids = new HashSet<>();
         for (JoinTestDto joinTestDto : testDto.getJoinTestEntities()) {
             uuids.add(joinTestDto.getId());
         }
         ((TestService) crudService).setAnotherClient(uuids);
-        formDto.setFilters(Map.of("joinTestEntities.id?join.id", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, IN, "joinTestEntities.id?join.id",
+                Set.of(Map.of("id", Set.of("filter"))));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
@@ -346,19 +292,10 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void findFromRemoteServiceEmptyResult() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(IN);
-        filterDto.setValues(Set.of(Map.of("id", "filter")));
         ((TestService) crudService).setAnotherClient(Collections.emptyList());
-        formDto.setFilters(Map.of("joinTestEntities.id?join.id", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, IN, "joinTestEntities.id?join.id",
+                Set.of(Map.of("id", "filter")));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(0, objectResponseDto.getResult().size());
@@ -367,21 +304,12 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void findWithGroupOr() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(EQUAL);
-        Map<String, Object> values = new HashMap<>();
-        values.put("name", "test name");
-        values.put("number", 1);
-        filterDto.setValues(Set.of(values));
-        formDto.setFilters(Map.of("[name|number]", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+        Map<String, Object> values = Map.of(
+                "name", "test name",
+                "number", 1
+        );
+
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, EQUAL, "[name|number]", Set.of(values));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
@@ -394,21 +322,12 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void findWithGroupAnd() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(EQUAL);
-        Map<String, Object> values = new HashMap<>();
-        values.put("name", "test name");
-        values.put("number", testDto.getNumber());
-        filterDto.setValues(Set.of(values));
-        formDto.setFilters(Map.of("[name&number]", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+        Map<String, Object> values = Map.of(
+                "name", "test name",
+                "number", testDto.getNumber()
+        );
+
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, EQUAL, "[name&number]", Set.of(values));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
@@ -421,24 +340,16 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void findWithMultipleGroup() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(EQUAL);
-        Map<String, Object> values = new HashMap<>();
-        values.put("name", "test name");
-        values.put("number", testDto.getNumber());
-        Map<String, Object> values1 = new HashMap<>();
-        values1.put("name", "test");
-        values1.put("number", 2);
-        filterDto.setValues(Set.of(values, values1));
-        formDto.setFilters(Map.of("[name&number]", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+        Map<String, Object> values = Map.of(
+                "name", "test name",
+                "number", testDto.getNumber()
+        );
+        Map<String, Object> values1 = Map.of(
+                "name", "test",
+                "number", 2
+        );
+
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, EQUAL, "[name&number]", Set.of(values, values1));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
@@ -451,28 +362,20 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void findWithMultipleGroupAndJoinTable() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(IN);
-        Map<String, Object> values = new HashMap<>();
         Set<UUID> uuids = new HashSet<>();
         for (ManyJoinDto manyJoinDto : testDto.getManyJoinEntities()) {
             uuids.add(manyJoinDto.getId());
         }
-        values.put("name", Set.of("test name"));
-        values.put("manyJoinEntities.idw", uuids);
-        Map<String, Object> values1 = new HashMap<>();
-        values1.put("name", Set.of("test"));
-        values1.put("manyJoinEntities.idw", Collections.emptyList());
-        filterDto.setValues(Set.of(values, values1));
-        formDto.setFilters(Map.of("[name&manyJoinEntities.idw]", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+        Map<String, Object> values = Map.of(
+                "name", Set.of("test name"),
+                "manyJoinEntities.idw", uuids
+        );
+        Map<String, Object> values1 = Map.of(
+                "name", Set.of(MAIN_FIELD_TEST),
+                "manyJoinEntities.idw", Collections.emptyList()
+        );
+
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, IN, "[name&manyJoinEntities.idw]", Set.of(values, values1));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
@@ -485,24 +388,16 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void findWithMultipleGroupAndMaskField() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(EQUAL);
-        Map<String, Object> values = new HashMap<>();
-        values.put("names", "test name");
-        values.put("numbers", testDto.getNumber());
-        Map<String, Object> values1 = new HashMap<>();
-        values1.put("names", "test");
-        values1.put("numbers", 2);
-        filterDto.setValues(Set.of(values, values1));
-        formDto.setFilters(Map.of("[names&numbers]", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+        Map<String, Object> values = Map.of(
+                "names", "test name",
+                "numbers", testDto.getNumber()
+        );
+        Map<String, Object> values1 = Map.of(
+                "names", MAIN_FIELD_TEST,
+                "numbers", 2
+        );
+
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, EQUAL, "[names&numbers]", Set.of(values, values1));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
@@ -515,20 +410,10 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void findFromRemoteServiceToElementsWithMaskedFields() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(IN);
-        filterDto.setValues(Set.of(Map.of("id", Set.of("filter"))));
         Collection<Object> uuids = new HashSet<>(testDto.getElements());
         ((TestService) crudService).setAnotherClient(uuids);
-        formDto.setFilters(Map.of("elementss?element.id", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, IN, "elementss?element.id", Set.of(Map.of("id", Set.of("filter"))));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
@@ -541,23 +426,15 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void findFromRemoteServiceToElementsWithGroupFields() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(IN);
-        Map<String, Object> objectObjectHashMap = new HashMap<>();
-        objectObjectHashMap.put("id", Set.of("filter"));
-        objectObjectHashMap.put("name", Set.of("filtername"));
-        filterDto.setValues(Set.of(objectObjectHashMap));
+        Map<String, Object> objectObjectHashMap = Map.of(
+                "id", Set.of("filter"),
+                "name", Set.of("filtername")
+        );
         Collection<Object> uuids = new HashSet<>(testDto.getElements());
+
         ((TestService) crudService).setAnotherClient(uuids);
-        formDto.setFilters(Map.of("elements?element.[id|name]", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, IN, "elements?element.[id|name]", Set.of(objectObjectHashMap));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
@@ -570,25 +447,15 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void findByManyToManyTableWithGroupValues() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(IN);
         Set<UUID> uuids = new HashSet<>();
         for (ManyJoinDto manyJoinDto : testDto.getManyJoinEntities()) {
             uuids.add(manyJoinDto.getId());
         }
-        Map<String, Object> map = new HashMap<>();
-        map.put("idw", uuids);
-        map.put("namew", Set.of("many join test 1"));
-        filterDto.setValues(Set.of(map));
-        formDto.setFilters(Map.of("manyJoinEntities.[idw&namew]", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+        Map<String, Object> map = Map.of(
+                "idw", uuids,
+                "namew", Set.of("many join test 1")
+        );
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, IN, "manyJoinEntities.[idw&namew]", Set.of(map));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
@@ -601,25 +468,15 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void findByManyToManyTableWithGroupHavingValues() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test.id:2");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(IN);
         Set<UUID> uuids = new HashSet<>();
         for (ManyJoinDto manyJoinDto : testDto.getManyJoinEntities()) {
             uuids.add(manyJoinDto.getId());
         }
-        Map<String, Object> map = new HashMap<>();
-        map.put("idw", uuids);
-        map.put("namew", Set.of("many join test 1"));
-        filterDto.setValues(Set.of(map));
-        formDto.setFilters(Map.of("manyJoinEntities.[idw&namew]", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+        Map<String, Object> map = Map.of(
+                "idw", uuids,
+                "namew", Set.of("many join test 1")
+        );
+        FormDto formDto = getFormDto("test.id:2", IN, "manyJoinEntities.[idw&namew]", Set.of(map));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(0, objectResponseDto.getResult().size());
@@ -628,23 +485,13 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
     @Test
     void findByManyToManyTableWithRemoteGroupHavingValues() {
-        FormDto formDto = new FormDto();
-        formDto.setMainIdField("test");
-        FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(IN);
-        Map<String, Object> objectObjectHashMap = new HashMap<>();
-        objectObjectHashMap.put("id", Set.of("filter"));
-        objectObjectHashMap.put("name", Set.of("filtername"));
-        filterDto.setValues(Set.of(objectObjectHashMap));
+        Map<String, Object> objectObjectHashMap = Map.of(
+                "id", Set.of("filter"),
+                "name", Set.of("filtername")
+        );
         Collection<Object> uuids = new HashSet<>(testDto.getElements());
         ((TestService) crudService).setAnotherClient(uuids);
-        formDto.setFilters(Map.of("elements?element.[id|name]:2", filterDto));
-        PageDto pageDto = new PageDto();
-        pageDto.setPage(0);
-        pageDto.setSize(3);
-        pageDto.setSort(Collections.emptyList());
-        pageDto.setTotalSize(0L);
-        formDto.setPage(pageDto);
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, IN, "elements?element.[id|name]:2", Set.of(objectObjectHashMap));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
         assertEquals(1, objectResponseDto.getResult().size());
@@ -653,6 +500,25 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
 
         assertTrue(result instanceof TestDto);
         assertEquals(testDto, result);
+    }
+
+    private FormDto getFormDto(String mainField,
+                               FindOperator findOperator,
+                               String searchField,
+                               Collection<Map<String, Object>> values) {
+        FormDto formDto = new FormDto();
+        formDto.setMainIdField(mainField);
+        FilterDto filterDto = new FilterDto();
+        filterDto.setFilterType(findOperator);
+        filterDto.setValues(values);
+        formDto.setFilters(Map.of(searchField, filterDto));
+        PageDto pageDto = new PageDto();
+        pageDto.setPage(0);
+        pageDto.setSize(3);
+        pageDto.setSort(Collections.emptyList());
+        pageDto.setTotalSize(0L);
+        formDto.setPage(pageDto);
+        return formDto;
     }
 
     @Override

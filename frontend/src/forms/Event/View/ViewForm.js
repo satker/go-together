@@ -19,7 +19,10 @@ const ViewForm = ({event, getUsers}) => {
         <MainInfo/>
         <SingleMap
             editable={false}
-            route={event.route.locations}
+            route={event.routeInfo.infoRoutes.map(route => ({
+                routeNumber: route.routeNumber,
+                location: route.location
+            }))}
         />
         <Users/>
     </Container>;

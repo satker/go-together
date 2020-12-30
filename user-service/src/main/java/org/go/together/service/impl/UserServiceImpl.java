@@ -31,7 +31,7 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
     private final LanguageService languageService;
     private final InterestService interestService;
     private final EventLikeService eventLikeService;
-    private final CrudProducer<GroupLocationDto> locationProducer;
+    private final CrudProducer<LocationDto> locationProducer;
 
     @Override
     public AuthUserDto findAuthUserByLogin(String login) {
@@ -96,9 +96,7 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
 
             Role role = user.map(SystemUser::getRole).orElse(Role.ROLE_USER);
 
-            GroupLocationDto locationDto = dto.getLocation();
-            locationDto.setGroupId(entity.getId());
-            locationDto.setCategory(LocationCategory.USER);
+            LocationDto locationDto = dto.getLocation();
             IdDto route = locationProducer.update(requestId, locationDto);
             entity.setLocationId(route.getId());
 
@@ -112,9 +110,7 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
         } else if (crudOperation == CrudOperation.CREATE) {
             updatePassword(entity);
 
-            GroupLocationDto locationDto = dto.getLocation();
-            locationDto.setGroupId(entity.getId());
-            locationDto.setCategory(LocationCategory.USER);
+            LocationDto locationDto = dto.getLocation();
             IdDto route = locationProducer.create(requestId, locationDto);
             entity.setLocationId(route.getId());
 

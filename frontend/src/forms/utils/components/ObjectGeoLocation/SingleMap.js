@@ -11,6 +11,7 @@ import MapContainer from "./Common/MapContainer";
 import ListContainer from "./Common/ListContainer";
 import {getMarker, sort} from "./utils";
 import {usePosition} from "./hooks/usePosition";
+import {MapRoute} from "forms/utils/types";
 
 const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) => {
     const [center, setCenter] = useState(usePosition());
@@ -21,7 +22,7 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
     useEffect(() => {
         if (googleMap) {
             let newPolyline = polyline;
-            const newRoutes = route.map(route => ({lat: route.latitude, lng: route.longitude}));
+            const newRoutes = route.map(route => ({lat: route.location.latitude, lng: route.location.longitude}));
             if (newPolyline) {
                 newPolyline.setMap(null);
                 newPolyline.setPath(newRoutes);
@@ -40,11 +41,11 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
         }
     }, [googleMap, route]);
 
-    const getRoutes = () => getMarker(sort(route), editable || ((route) => centerPlace(route)()));
+    const getRoutes = () => getMarker(sort(route), editable || ((route) => centerPlace(route.location)()));
 
-    const centerPlace = (route) => () => {
-        setCenter({lat: route.latitude, lng: route.longitude})
-        setSelected(route.id);
+    const centerPlace = (location) => () => {
+        setCenter({lat: location.latitude, lng: location.longitude})
+        setSelected(location.id);
     };
 
     return <Container>
@@ -77,7 +78,7 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
 };
 
 SingleMap.propTypes = {
-    route: PropTypes.array,
+    route: PropTypes.arrayOf(MapRoute),
     editable: PropTypes.bool.isRequired,
     onChange: PropTypes.func,
     zoom: PropTypes.number,

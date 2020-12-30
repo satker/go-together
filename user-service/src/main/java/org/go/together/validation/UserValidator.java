@@ -1,8 +1,8 @@
 package org.go.together.validation;
 
 import lombok.RequiredArgsConstructor;
-import org.go.together.dto.GroupLocationDto;
 import org.go.together.dto.GroupPhotoDto;
+import org.go.together.dto.LocationDto;
 import org.go.together.dto.UserDto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.kafka.producers.ValidationProducer;
@@ -17,7 +17,7 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class UserValidator extends CommonValidator<UserDto> {
-    private final ValidationProducer<GroupLocationDto> locationValidator;
+    private final ValidationProducer<LocationDto> locationValidator;
     private final LanguageRepository languageRepository;
     private final InterestRepository interestRepository;
     private final ValidationProducer<GroupPhotoDto> photoValidator;

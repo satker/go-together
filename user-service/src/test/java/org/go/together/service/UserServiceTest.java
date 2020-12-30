@@ -32,10 +32,10 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = RepositoryContext.class)
 class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
     @Autowired
-    private CrudProducer<GroupLocationDto> locationProducer;
+    private CrudProducer<LocationDto> locationProducer;
 
     @Autowired
-    private ValidationProducer<GroupLocationDto> locationValidate;
+    private ValidationProducer<LocationDto> locationValidate;
 
     @Autowired
     private CrudProducer<GroupPhotoDto> groupPhotoCrud;

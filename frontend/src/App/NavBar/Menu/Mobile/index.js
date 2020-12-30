@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Menu from "@material-ui/core/Menu";
-import ToolbarButtons from "../../ToolbarButtons";
+import ToolbarButtons from "App/NavBar/ToolbarButtons";
 
 const MobileMenu = ({
                         mobileMenuId, mobileMoreAnchorEl, isMobileMenuOpen,

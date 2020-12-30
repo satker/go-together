@@ -4,6 +4,7 @@ import GoogleMapReact from 'google-map-react';
 
 import LeftContainer from "forms/utils/components/Container/LeftContainer";
 import {getAddress, getCity, getCountry, getState, GOOGLE_API_KEY, requestLatLng} from '../utils';
+import {EventMapRoute, MapRoute} from "forms/utils/types";
 
 const getMapOptions = {
     disableDefaultUI: true,
@@ -25,13 +26,13 @@ const MapContainer = ({
 
     useEffect(() => {
         if (editable && route) {
-            const getCurrentRoute = route.filter(route => route.routeNumber === currentKey)[0];
+            const currentRoute = route.filter(route => route.routeNumber === currentKey)[0];
             if (route.length !== 0 &&
                 currentKey &&
-                getCurrentRoute &&
-                getCurrentRoute.latitude && getCurrentRoute.longitude &&
-                (getCurrentRoute.latitude !== currentLat && currentLat !== 18.5204) &&
-                (getCurrentRoute.longitude !== currentLng && currentLng !== 73.8567)) {
+                currentRoute &&
+                currentRoute.location.latitude && currentRoute.location.longitude &&
+                (currentRoute.location.latitude !== currentLat && currentLat !== 18.5204) &&
+                (currentRoute.location.longitude !== currentLng && currentLng !== 73.8567)) {
                 onChange(currentKey, ['latitude', 'longitude'], [currentLat, currentLng]);
             }
         }
@@ -65,7 +66,7 @@ const MapContainer = ({
     };
 
     const extendBounds = (routes, bounds) => {
-        routes.map(route => ({lat: route.latitude, lng: route.longitude}))
+        routes.map(route => ({lat: route.location.latitude, lng: route.location.longitude}))
             .forEach(route => bounds.extend(route));
     }
 
@@ -110,8 +111,8 @@ const MapContainer = ({
 };
 
 MapContainer.propTypes = {
-    route: PropTypes.array,
-    routes: PropTypes.array,
+    route: PropTypes.arrayOf(MapRoute),
+    routes: PropTypes.arrayOf(EventMapRoute),
     editable: PropTypes.bool.isRequired,
     onChange: PropTypes.func,
     zoom: PropTypes.number,

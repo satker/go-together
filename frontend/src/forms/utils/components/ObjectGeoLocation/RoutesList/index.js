@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import List from "@material-ui/core/List";
 
 import RouteItem from "./RouteItem";
+import {MapRoute} from "forms/utils/types";
 
 const RoutesList = ({routes, editable, onDelete, selected, centerPlace}) => {
     return <List style={{overflow: 'auto'}}>
@@ -15,7 +16,7 @@ const RoutesList = ({routes, editable, onDelete, selected, centerPlace}) => {
 };
 
 RoutesList.propTypes = {
-    routes: PropTypes.array,
+    routes: PropTypes.arrayOf(MapRoute),
     editable: PropTypes.bool,
     onDelete: PropTypes.func,
     selected: PropTypes.string,

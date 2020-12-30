@@ -3,7 +3,7 @@ import moment from "moment";
 
 import CheckInOutDates from "forms/utils/components/CheckInOutDates";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
-import {Event, ResponseData} from "forms/utils/types";
+import {Event} from "forms/utils/types";
 
 import LabeledInput from "forms/utils/components/LabeledInput";
 import {connect} from "App/Context";
@@ -50,9 +50,7 @@ const CommonInfo = ({event, updateEvent}) => {
 
 CommonInfo.propTypes = {
     event: Event.isRequired,
-    updateEvent: PropTypes.func.isRequired,
-    housingTypes: ResponseData,
-    getHousingTypes: PropTypes.func.isRequired
+    updateEvent: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({

@@ -19,7 +19,6 @@ import java.util.function.Function;
 public class EventValidator extends CommonValidator<EventDto> {
     private final FindProducer<UserDto> findUserKafkaProducer;
     private final ValidationProducer<GroupPhotoDto> photoValidator;
-    private final ValidationProducer<GroupLocationDto> locationValidator;
     private final ValidationProducer<GroupRouteInfoDto> routeInfoValidator;
 
     @Override
@@ -29,11 +28,8 @@ public class EventValidator extends CommonValidator<EventDto> {
                 "event description", EventDto::getDescription,
                 "event people capacity", EventDto::getPeopleCount,
                 "event dates", eventDto -> new DateIntervalDto(eventDto.getStartDate(), eventDto.getEndDate()),
-                "routes", EventDto::getRoute,
                 "photos", eventDto -> eventDto.getGroupPhoto().getPhotos(),
-                "routes locations", eventDto -> eventDto.getRoute().getLocations(),
                 "event photos", eventDto -> photoValidator.validate(requestId, eventDto.getGroupPhoto()),
-                "event locations", eventDto -> locationValidator.validate(requestId, eventDto.getRoute()),
                 "routes info", eventDto -> routeInfoValidator.validate(requestId, eventDto.getRouteInfo())
         );
     }

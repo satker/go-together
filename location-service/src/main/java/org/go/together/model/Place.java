@@ -17,7 +17,7 @@ public class Place extends NamedIdentifiedEntity {
     @JoinColumn(name = "country_id")
     private Country country;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "place_id")
     private Set<Location> locations;
 }

@@ -11,6 +11,7 @@ import ListContainer from "./Common/ListContainer";
 import {getMarker, sort} from "./utils";
 import {usePosition} from "./hooks/usePosition";
 import PropTypes from "prop-types";
+import {EventMapRoute} from "forms/utils/types";
 
 const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}) => {
     const [center, setCenter] = useState(usePosition());
@@ -21,7 +22,10 @@ const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}
     useEffect(() => {
         if (googleMap) {
             const setMultiplePolyLine = (route) => {
-                const routePath = route.locations.map(route => ({lat: route.latitude, lng: route.longitude}));
+                const routePath = route.locations.map(route => ({
+                    lat: route.location.latitude,
+                    lng: route.location.longitude
+                }));
                 let newPolyline = new googleMap.maps.Polyline({
                     path: routePath,
                     geodesic: true,
@@ -42,7 +46,7 @@ const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}
 
     const centerLocations = (route) => () => {
         const bounds = new googleMap.maps.LatLngBounds();
-        route.locations.map(route => ({lat: route.latitude, lng: route.longitude}))
+        route.locations.map(route => ({lat: route.location.latitude, lng: route.location.longitude}))
             .forEach(route => bounds.extend(route));
         googleMap.map.fitBounds(bounds);
         setSelected(route.id);
@@ -77,8 +81,8 @@ const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}
 }
 
 MultipleMap.propTypes = {
-    routes: PropTypes.array,
-    editable: PropTypes.bool.isRequired,
+    routes: PropTypes.arrayOf(EventMapRoute),
+    editable: PropTypes.bool,
     onChange: PropTypes.func,
     zoom: PropTypes.number,
     onDelete: PropTypes.func,

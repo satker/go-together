@@ -12,8 +12,8 @@ import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import BetweenLocations from "./BetweenLocations";
 import {setFilter} from "../../actions";
 
-const LOCATION_FIELD = 'idEventRoutes?locations.[isStart&isEnd&latitude,longitude]';
 const LAT_LNG = "latitude,longitude";
+const LOCATION_FIELD = 'routes?infoRoutes.[isStart&isEnd&locationRoutes?latitude,longitude]';
 
 export const getChangedRoutes = (filters, routes, filterRoutes) => {
     const locationsKey = keys(filters?.filters)?.find(key => key.startsWith(LOCATION_FIELD));

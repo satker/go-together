@@ -1,10 +1,15 @@
 import moment from "moment";
 
-import {EVENT_SERVICE_URL} from "forms/utils/constants";
+import {EVENT_SERVICE_URL, ROUTE_INFO_SERVICE_URL} from "forms/utils/constants";
 import {POST, PUT} from "App/utils/api/constants";
 import {onChange} from "forms/utils/utils";
 
-import {EDIT_EVENT_EVENT, EDIT_EVENT_NEW_EVENT, EDIT_EVENT_UPDATED_EVENT} from "./constants";
+import {
+    EDIT_EVENT_EVENT,
+    EDIT_EVENT_NEW_EVENT,
+    EDIT_EVENT_TRANSPORT_TYPES,
+    EDIT_EVENT_UPDATED_EVENT
+} from "./constants";
 
 export const getEvent = (id) => (dispatch) => {
     dispatch({
@@ -47,3 +52,10 @@ export const updateEvent = (path, value) => (dispatch, state) => {
         value: updatedEvent
     })
 };
+
+export const getTransportTypes = () => (dispatch) => {
+    dispatch({
+        type: EDIT_EVENT_TRANSPORT_TYPES,
+        url: ROUTE_INFO_SERVICE_URL + '/transportTypes'
+    })
+}

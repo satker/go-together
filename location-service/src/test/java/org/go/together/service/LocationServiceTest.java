@@ -57,10 +57,7 @@ class LocationServiceTest extends CrudServiceCommonTest<Location, LocationDto> {
 
     @Override
     protected void checkDtos(LocationDto dto, LocationDto savedObject, CrudOperation operation) {
-        assertEquals(dto.getIsEnd(), savedObject.getIsEnd());
-        assertEquals(dto.getIsStart(), savedObject.getIsStart());
         assertEquals(dto.getAddress(), savedObject.getAddress());
-        assertEquals(dto.getRouteNumber(), savedObject.getRouteNumber());
         assertEquals(dto.getLatitude(), savedObject.getLatitude());
         assertEquals(dto.getLongitude(), savedObject.getLongitude());
         assertEquals(dto.getPlace().getLocations(), savedObject.getPlace().getLocations());

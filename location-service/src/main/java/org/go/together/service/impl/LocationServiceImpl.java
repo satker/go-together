@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.go.together.base.CommonCrudService;
 import org.go.together.base.Mapper;
 import org.go.together.compare.FieldMapper;
-import org.go.together.dto.IdDto;
 import org.go.together.dto.LocationDto;
 import org.go.together.dto.PlaceDto;
 import org.go.together.enums.CrudOperation;
@@ -18,39 +17,13 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.go.together.enums.LocationServiceInfo.LOCATION;
+
 @Service
 @RequiredArgsConstructor
 public class LocationServiceImpl extends CommonCrudService<LocationDto, Location> implements LocationService {
     private final PlaceService placeService;
     private final Mapper<PlaceDto, Place> placeMapper;
-
-    public Set<Location> saveOrUpdateEventRoutes(UUID requestId, Set<LocationDto> locationDtos, Set<Location> presentedLocations) {
-        Set<UUID> presentedEventLocations = presentedLocations.stream()
-                .map(Location::getId)
-                .collect(Collectors.toSet());
-        Set<IdDto> result = new HashSet<>();
-
-        presentedEventLocations.stream()
-                .filter(eventLocationId -> locationDtos.stream()
-                        .noneMatch(eventLocationDto -> eventLocationId.equals(eventLocationDto.getId())))
-                .forEach(eventLocationId -> super.delete(requestId, eventLocationId));
-
-        locationDtos
-                .forEach(eventLocationDtoEntry -> {
-                    if (presentedEventLocations.contains(eventLocationDtoEntry.getId())) {
-                        result.add(super.update(requestId, eventLocationDtoEntry));
-                    } else {
-                        result.add(super.create(requestId, eventLocationDtoEntry));
-                    }
-                });
-
-        return result.stream()
-                .map(IdDto::getId)
-                .map(repository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toSet());
-    }
 
     @Override
     protected Location enrichEntity(UUID requestId, Location entity, LocationDto dto, CrudOperation crudOperation) {
@@ -97,18 +70,12 @@ public class LocationServiceImpl extends CommonCrudService<LocationDto, Location
 
     @Override
     public String getServiceName() {
-        return "locations";
+        return LOCATION;
     }
 
     @Override
     public Map<String, FieldMapper> getMappingFields() {
-        return Map.of("isStart", FieldMapper.builder()
-                        .currentServiceField("isStart")
-                        .fieldClass(Boolean.class).build(),
-                "isEnd", FieldMapper.builder()
-                        .currentServiceField("isEnd")
-                        .fieldClass(Boolean.class).build(),
-                "latitude,longitude", FieldMapper.builder()
-                        .currentServiceField("latitude,longitude").build());
+        return Map.of("latitude,longitude", FieldMapper.builder()
+                .currentServiceField("latitude,longitude").build());
     }
 }

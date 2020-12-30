@@ -10,23 +10,19 @@ const AutocompleteLocationField = ({name, placeholder, setValue, error, value}) 
     const onChange = (latLng, loc) => {
         let location = {
             ...value,
-            locations: [{
-                ...value?.locations[0],
-                id: null,
-                place: loc,
-                address: loc.name,
-                latitude: latLng.lat,
-                longitude: latLng.lng
-            }]
+            address: loc.name,
+            latitude: latLng.lat,
+            longitude: latLng.lng,
+            place: loc
         };
         setValue(name, location);
     };
-
+    console.log(value)
     return <ItemContainer style={{height: 70}}>
         <AutocompleteLocation onChangeLocation={(place, {lat, lng}) => onChange({lat, lng}, place)}
                               placeholder={placeholder}
                               setValueCenter={setCurrentValue}
-                              value={currentValue || (value && value.locations[0].place)}
+                              value={currentValue || (value && value.place)}
                               name='place'
                               error={error}
         />

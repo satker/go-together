@@ -71,7 +71,6 @@ const Events = ({pageSize, postFindEvents, findEvents, getEventsLikes, filter, s
 
 Events.propTypes = {
     postFindEvents: PropTypes.func.isRequired,
-    postLikes: PropTypes.func.isRequired,
     filter: SearchObject.isRequired,
     findEvents: ResponseData,
     pageSize: PropTypes.number

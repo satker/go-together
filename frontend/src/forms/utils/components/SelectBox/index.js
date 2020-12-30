@@ -7,19 +7,17 @@ import FormControl from "@material-ui/core/FormControl";
 import {SimpleObject} from "forms/utils/types";
 
 import './style.css';
+import {MenuItem} from "@material-ui/core";
 
 const SelectBox = ({items, value, onChange, labelText}) => {
-    const componentId = labelText.toLowerCase().replace(' ', '_');
+    const componentId = labelText.toLowerCase().replace(' ', '');
     return <FormControl component={componentId} className='select-box-custom' fullWidth>
         <InputLabel id={"select-label-" + componentId}>{labelText}</InputLabel>
         <Select
-            native
             labelId={"select-label" + componentId}
             value={items.length !== 0 ? value || '' : ''}
-            onChange={evt => onChange(evt.target.value)}
-        >
-            <option value=""/>
-            {items.map(type => <option key={type.id} value={type.id}>{type.name}</option>)}
+            onChange={evt => onChange(evt.target.value)}>
+            {items.map(type => <MenuItem key={type.id} value={type.id}>{type.name}</MenuItem>)}
         </Select>
     </FormControl>
 };

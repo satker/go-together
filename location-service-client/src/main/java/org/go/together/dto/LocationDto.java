@@ -12,18 +12,12 @@ public class LocationDto extends ComparableDto {
     @ComparingField("place")
     private PlaceDto place;
 
-    @ComparingField("route number")
-    private Integer routeNumber;
-
     @ComparingField("address")
     private String address;
 
     private Double latitude;
 
     private Double longitude;
-
-    private Boolean isStart;
-    private Boolean isEnd;
 
     @Override
     public String getMainField() {

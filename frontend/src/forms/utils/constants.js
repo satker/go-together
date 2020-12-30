@@ -9,21 +9,21 @@ export const CONTENT_SERVICE_URL = GATEWAY_SERVICES_URL + '/content-service';
 export const MESSAGE_SERVICE_URL = GATEWAY_SERVICES_URL + '/message-service';
 export const NOTIFICATION_SERVICE_URL = GATEWAY_SERVICES_URL + '/notification-service';
 export const LOCATION_SERVICE_URL = GATEWAY_SERVICES_URL + '/location-service';
+export const ROUTE_INFO_SERVICE_URL = GATEWAY_SERVICES_URL + '/route-info-service';
 export const LOGIN_URL = AUTH_URL + "/auth/";
 
 export const EVENTS_URL = EVENT_SERVICE_URL + '/events';
 
 export const DEFAULT_MAIN_INFO = {
     id: null,
-    name: null,
-    description: null,
+    name: '',
+    description: '',
     startDate: null,
     endDate: null,
     peopleCount: 0,
     groupPhoto: {
         photos: []
     }
-
 };
 
 export const DEFAULT_COUNTRY = {
@@ -41,19 +41,26 @@ export const PLACE = {
 
 export const DEFAULT_ROUTE = {
     id: null,
-    routeNumber: 0,
     address: null,
     latitude: 18.5204,
     longitude: 73.8567,
     place: {...PLACE}
 };
 
+export const DEFAULT_ROUTE_INFO = (location, routeNumber) => ({
+    location,
+    transportType: '',
+    cost: 0,
+    movementDate: null,
+    movementDuration: 0,
+    routeNumber
+});
+
 export const DEFAULT_CREATE_EVENT = {
     ...DEFAULT_MAIN_INFO,
-    route: {
+    routeInfo: {
         groupId: null,
-        locations: [],
-        category: 'EVENT'
+        infoRoutes: []
     }
 };
 
