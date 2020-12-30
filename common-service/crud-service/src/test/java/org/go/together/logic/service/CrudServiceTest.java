@@ -387,6 +387,26 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
     }
 
     @Test
+    void findWithMultipleOuterGroupAndJoinTable() {
+        Map<String, Object> values = Map.of(
+                "name", Set.of("test name")
+        );
+        Map<String, Object> values1 = Map.of(
+                "name", Set.of(MAIN_FIELD_TEST)
+        );
+
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, IN, "joinTestEntitiesInner.complexInner.name", Set.of(values, values1));
+        ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
+
+        assertEquals(1, objectResponseDto.getResult().size());
+        assertEquals(1, objectResponseDto.getPage().getTotalSize());
+        Object result = objectResponseDto.getResult().iterator().next();
+
+        assertTrue(result instanceof TestDto);
+        assertEquals(testDto, result);
+    }
+
+    @Test
     void findWithMultipleGroupAndMaskField() {
         Map<String, Object> values = Map.of(
                 "names", "test name",

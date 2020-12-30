@@ -72,6 +72,10 @@ public class TestServiceImpl extends CommonCrudService<TestDto, TestEntity> impl
                         .remoteServiceName("join")
                         .remoteServiceFieldGetter("id")
                         .fieldClass(UUID.class).build(),
+                "joinTestEntitiesInner", FieldMapper.builder()
+                        .currentServiceField("joinTestEntities")
+                        .innerService(joinTestService)
+                        .fieldClass(UUID.class).build(),
                 "elementss", FieldMapper.builder()
                         .currentServiceField("elements")
                         .remoteServiceClient(anotherClient)

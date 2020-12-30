@@ -1,25 +1,20 @@
 package org.go.together.test.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import org.go.together.base.CommonCrudService;
 import org.go.together.compare.FieldMapper;
-import org.go.together.test.dto.JoinTestDto;
-import org.go.together.test.entities.JoinTestEntity;
+import org.go.together.test.dto.ComplexInnerDto;
+import org.go.together.test.entities.ComplexInnerEntity;
 import org.go.together.test.service.interfaces.ComplexInnerService;
-import org.go.together.test.service.interfaces.JoinTestService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
-public class JoinTestServiceImpl extends CommonCrudService<JoinTestDto, JoinTestEntity> implements JoinTestService {
-    private final ComplexInnerService complexInnerService;
-
+public class ComplexInnerServiceImpl extends CommonCrudService<ComplexInnerDto, ComplexInnerEntity> implements ComplexInnerService {
     @Override
     public String getServiceName() {
-        return "joinTest";
+        return "complexInnerEntity";
     }
 
     @Override
@@ -29,9 +24,6 @@ public class JoinTestServiceImpl extends CommonCrudService<JoinTestDto, JoinTest
                         .fieldClass(UUID.class).build(),
                 "name", FieldMapper.builder()
                         .currentServiceField("name")
-                        .fieldClass(String.class).build(),
-                "complexInner", FieldMapper.builder()
-                        .innerService(complexInnerService)
-                        .currentServiceField("complexInner").build());
+                        .fieldClass(String.class).build());
     }
 }

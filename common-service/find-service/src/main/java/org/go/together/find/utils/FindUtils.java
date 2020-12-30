@@ -5,10 +5,7 @@ import org.go.together.enums.FindOperator;
 import org.go.together.exceptions.IncorrectDtoException;
 import org.go.together.find.dto.FieldDto;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class FindUtils {
     public static final String DELIMITER = "\\?";
@@ -25,7 +22,12 @@ public class FindUtils {
     }
 
     public static String[] getParsedFields(String string) {
-        return string.split(DOT);
+        String[] splitWithoutGroup = string.split(DOT + GROUP_START);
+        List<String> result = new LinkedList<>(Arrays.asList(splitWithoutGroup[0].split(DOT)));
+        if (splitWithoutGroup.length == 2) {
+            result.add("[" + splitWithoutGroup[1]);
+        }
+        return result.toArray(new String[0]);
     }
 
     public static String[] getHavingCondition(String string) {
