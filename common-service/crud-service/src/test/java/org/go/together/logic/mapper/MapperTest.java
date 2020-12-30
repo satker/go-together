@@ -5,9 +5,11 @@ import org.go.together.base.Mapper;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.SimpleDto;
 import org.go.together.interfaces.Identified;
+import org.go.together.test.dto.ComplexInnerDto;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.dto.TestDto;
+import org.go.together.test.entities.ComplexInnerEntity;
 import org.go.together.test.entities.JoinTestEntity;
 import org.go.together.test.entities.ManyJoinEntity;
 import org.go.together.test.entities.TestEntity;
@@ -180,14 +182,27 @@ class MapperTest {
         Set<JoinTestDto> joinTestDtos = new HashSet<>();
         for (int i = 0; i < 10; i++) {
             UUID id = UUID.randomUUID();
+            UUID complexInnerId = UUID.randomUUID();
+
             String name = "join test " + i;
-            JoinTestEntity joinTestEntity = new JoinTestEntity();
+
+            ComplexInnerDto complexInnerDto = new ComplexInnerDto();
+            complexInnerDto.setId(complexInnerId);
+            complexInnerDto.setName(name);
+
             JoinTestDto joinTestDto = new JoinTestDto();
             joinTestDto.setId(id);
-            joinTestEntity.setId(id);
-
             joinTestDto.setName(name);
+            joinTestDto.setComplexInner(complexInnerDto);
+
+            ComplexInnerEntity complexInnerEntity = new ComplexInnerEntity();
+            complexInnerEntity.setId(complexInnerId);
+            complexInnerEntity.setName(name);
+            JoinTestEntity joinTestEntity = new JoinTestEntity();
+            joinTestEntity.setId(id);
             joinTestEntity.setName(name);
+            joinTestEntity.setComplexInner(complexInnerEntity);
+
 
             joinTestEntities.add(joinTestEntity);
             joinTestDtos.add(joinTestDto);
