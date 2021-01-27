@@ -17,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
@@ -31,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9094", "port=9094"})
+//@EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9094", "port=9094"})
 public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extends Dto> {
     protected PodamFactory factory = new PodamFactoryImpl();
     protected Random rand = new Random();
@@ -159,8 +158,7 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
             declaredField.setAccessible(true);
             Object value = declaredField.get(savedEntity);
             FilterDto filterDto = new FilterDto();
-            filterDto.setFilterType(FindOperator.EQUAL);
-            filterDto.setValues(Collections.singleton(Map.of(entry.getKey(), value)));
+            filterDto.setValues(Collections.singleton(Map.of(entry.getKey(), new FilterValueDto(FindOperator.EQUAL, value))));
             return Map.entry(entry.getKey(), filterDto);
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();

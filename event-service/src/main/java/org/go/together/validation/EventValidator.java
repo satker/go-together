@@ -49,8 +49,7 @@ public class EventValidator extends CommonValidator<EventDto> {
 
     private boolean isNotPresentUser(UUID requestId, UUID authorId) {
         FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(FindOperator.EQUAL);
-        filterDto.setValues(Collections.singleton(Collections.singletonMap("id", authorId)));
+        filterDto.setValues(Collections.singleton(Collections.singletonMap("id", new FilterValueDto(FindOperator.EQUAL, authorId))));
         FormDto formDto = new FormDto();
         formDto.setFilters(Collections.singletonMap("id", filterDto));
         formDto.setMainIdField("users.id");

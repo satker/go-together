@@ -6,32 +6,33 @@ import org.go.together.dto.FormDto;
 import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.find.dto.ClientLocalFieldObject;
 import org.go.together.find.dto.FieldDto;
+import org.go.together.find.dto.node.FilterNode;
 import org.go.together.find.utils.FindUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
 public class RequestConverterService implements RequestConverter {
-    public Map.Entry<ClientLocalFieldObject, FormDto> convert(
-            Map.Entry<FieldDto, FilterDto> entry,
-            FieldMapper fieldMapper) {
-        String anotherServiceSearchField = entry.getKey().getRemoteField();
-        FormDto remoteClientFormDto = getRemoteClientFormDto(anotherServiceSearchField, entry.getValue(), fieldMapper);
+    public Map.Entry<ClientLocalFieldObject, FormDto> convert(FilterNode filterNode, FieldMapper fieldMapper) {
+        String anotherServiceSearchField = filterNode.getField().getRemoteField();
+        FormDto remoteClientFormDto = getRemoteClientFormDto(anotherServiceSearchField, filterNode, fieldMapper);
         ClientLocalFieldObject clientLocalFieldObject = ClientLocalFieldObject.builder()
                 .client(fieldMapper.getRemoteServiceClient())
                 .mainIdFeild(remoteClientFormDto.getMainIdField())
-                .fieldDto(entry.getKey()).build();
+                .fieldDto(filterNode.getField()).build();
         return Map.entry(clientLocalFieldObject, remoteClientFormDto);
     }
 
     private FormDto getRemoteClientFormDto(String anotherServiceSearchField,
-                                           FilterDto value,
+                                           FilterNode filterNode,
                                            FieldMapper fieldMapper) {
         FieldDto remoteFieldDto = getRemoteMainAndGetField(anotherServiceSearchField, fieldMapper);
         Map<String, FilterDto> map = new HashMap<>();
-        map.put(remoteFieldDto.getLocalField(), value);
+        map.put(remoteFieldDto.getLocalField(), new FilterDto(Collections.singleton(Map.of(filterNode.getField().getRemoteField(),
+                filterNode.getValues()))));
         return new FormDto(null, map, remoteFieldDto.getRemoteField());
     }
 

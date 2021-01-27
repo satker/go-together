@@ -2,9 +2,13 @@ package org.go.together.find.dto;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.go.together.compare.FieldMapper;
 import org.go.together.exceptions.IncorrectFindObject;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,6 +48,29 @@ public class FieldDto {
             return new String[]{matcher.group(0)};
         } else {
             return getParsedFields(getParsedRemoteField(localField)[0]);
+        }
+    }
+
+    public List<String> getFieldsAndOperators() {
+        String[] splitField = localField.split("\\[");
+        if (StringUtils.isNotBlank(remoteField)) {
+            return Collections.singletonList(localField + "?" + remoteField);
+        }
+        if (splitField.length == 1) {
+            return Collections.singletonList(splitField[0]);
+        } else {
+            String prefix = splitField[0];
+            List<String> fields = new LinkedList<>();
+
+            String[] group = splitField[1].replaceAll("]", StringUtils.EMPTY)
+                    .split("\\|" + GROUP_OR + GROUP_AND);
+            for (int i = 0; i < group.length; i++) {
+                fields.add(prefix + group[i]);
+                if (i < group.length - 1) {
+                    fields.add(getDelimiter(localField, group[i]));
+                }
+            }
+            return fields;
         }
     }
 

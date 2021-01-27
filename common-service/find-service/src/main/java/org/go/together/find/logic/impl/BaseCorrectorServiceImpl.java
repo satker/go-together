@@ -1,45 +1,36 @@
 package org.go.together.find.logic.impl;
 
 import org.go.together.compare.FieldMapper;
-import org.go.together.dto.FilterDto;
 import org.go.together.dto.FormDto;
+import org.go.together.find.builder.FilterBuilder;
 import org.go.together.find.correction.CorrectorService;
-import org.go.together.find.dto.FieldDto;
-import org.go.together.find.finders.Finder;
+import org.go.together.find.dto.node.FilterNodeBuilder;
 import org.go.together.find.logic.interfaces.BaseCorrectorService;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
-import static org.go.together.find.utils.FindUtils.mergeFilters;
 
 @Component
 public class BaseCorrectorServiceImpl implements BaseCorrectorService {
-    private final Finder remoteFindService;
-    private final CorrectorService correctorRemoteFiltersService;
-    private final CorrectorService correctorLocalFiltersService;
+    private final CorrectorService correctorService;
+    private final FilterBuilder filterBuilder;
 
-    public BaseCorrectorServiceImpl(Finder remoteFindService,
-                                    @Qualifier("remoteFilters") CorrectorService correctorRemoteFiltersService,
-                                    @Qualifier("localFilters") CorrectorService correctorLocalFiltersService) {
-        this.remoteFindService = remoteFindService;
-        this.correctorRemoteFiltersService = correctorRemoteFiltersService;
-        this.correctorLocalFiltersService = correctorLocalFiltersService;
+    public BaseCorrectorServiceImpl(CorrectorService correctorService,
+                                    FilterBuilder filterBuilder) {
+        this.correctorService = correctorService;
+        this.filterBuilder = filterBuilder;
     }
 
 
     @Override
-    public Map<FieldDto, FilterDto> getCorrectedFilters(UUID requestId, FormDto formDto, Map<String, FieldMapper> mappingFields) {
-        Map<FieldDto, FilterDto> remoteFilters = correctorRemoteFiltersService.getCorrectedFilters(formDto.getFilters(), mappingFields);
-        Map<FieldDto, Collection<Object>> resultRemoteFilters = new HashMap<>();
-        if (!remoteFilters.isEmpty()) {
-            resultRemoteFilters = remoteFindService.getFilters(requestId, remoteFilters, mappingFields);
-        }
-        if (resultRemoteFilters == null) {
-            return Collections.emptyMap();
-        }
-        Map<FieldDto, FilterDto> localFilters = correctorLocalFiltersService.getCorrectedFilters(formDto.getFilters(), mappingFields);
-        return mergeFilters(resultRemoteFilters, localFilters);
+    public Collection<Collection<FilterNodeBuilder>> getCorrectedFilters(UUID requestId, FormDto formDto, Map<String, FieldMapper> mappingFields) {
+        return formDto.getFilters().entrySet().stream()
+                .map(filterBuilder::getBuilders)
+                .map(filterNodeBuilder -> correctorService.getCorrectedFilters(requestId, filterNodeBuilder, mappingFields))
+                .collect(Collectors.toSet());
     }
 }

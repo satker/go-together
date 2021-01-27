@@ -2,10 +2,7 @@ package org.go.together.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.go.together.dto.AuthUserDto;
-import org.go.together.dto.FilterDto;
-import org.go.together.dto.FormDto;
-import org.go.together.dto.ResponseDto;
+import org.go.together.dto.*;
 import org.go.together.enums.FindOperator;
 import org.go.together.exceptions.ApplicationException;
 import org.go.together.kafka.producers.FindProducer;
@@ -35,8 +32,7 @@ public class UserClientService {
         FormDto formDto = new FormDto();
         formDto.setMainIdField(USERS + "." + LOGIN);
         FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(FindOperator.EQUAL);
-        filterDto.setValues(Set.of(Map.of(LOGIN, userName)));
+        filterDto.setValues(Set.of(Map.of(LOGIN, new FilterValueDto(FindOperator.EQUAL, userName))));
         formDto.setFilters(Map.of(LOGIN, filterDto));
         return findAuthUser.find(requestId, formDto);
     }

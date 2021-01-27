@@ -1,13 +1,12 @@
 package org.go.together.find.repository.sql.interfaces;
 
 import org.go.together.base.CustomRepository;
-import org.go.together.dto.FilterDto;
-import org.go.together.find.dto.FieldDto;
+import org.go.together.find.dto.node.FilterNodeBuilder;
 import org.go.together.model.IdentifiedEntity;
 import org.go.together.repository.query.WhereBuilder;
 
-import java.util.Map;
+import java.util.Collection;
 
 public interface WhereBuilderCreator<E extends IdentifiedEntity> {
-    WhereBuilder<E> getWhereBuilder(Map<FieldDto, FilterDto> filters, CustomRepository<E> repository);
+    WhereBuilder<E> create(Collection<FilterNodeBuilder> builders, CustomRepository<E> repository);
 }

@@ -3,13 +3,12 @@ package org.go.together.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Collection;
-import java.util.Map;
+import org.go.together.enums.FindOperator;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FilterDto {
-    private Collection<Map<String, FilterValueDto>> values;
+public class FilterValueDto {
+    private FindOperator filterType;
+    private Object value;
 }

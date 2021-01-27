@@ -1,5 +1,6 @@
 package org.go.together.find.correction.path;
 
+import org.apache.commons.lang3.StringUtils;
 import org.go.together.compare.FieldMapper;
 import org.go.together.find.correction.path.dto.CorrectedPathDto;
 import org.go.together.find.dto.FieldDto;
@@ -16,7 +17,11 @@ public class PathCorrectorService implements PathCorrector {
         Map<String, FieldMapper> currentFieldMapper = fieldMappers;
         for (int i = 0; i < localPaths.length - 1; i++) {
             FieldMapper fieldMapper = currentFieldMapper.get(localPaths[i]);
-            path.append(fieldMapper.getCurrentServiceField());
+            String currentServiceField = fieldMapper.getCurrentServiceField();
+            if (StringUtils.isNotBlank(path) && StringUtils.isNotBlank(currentServiceField)) {
+                path.append(".");
+            }
+            path.append(currentServiceField);
             if (fieldMapper.getInnerService() != null) {
                 currentFieldMapper = fieldMapper.getInnerService().getMappingFields();
             }
