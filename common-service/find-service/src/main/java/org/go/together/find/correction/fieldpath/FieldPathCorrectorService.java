@@ -2,6 +2,7 @@ package org.go.together.find.correction.fieldpath;
 
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.compare.FieldMapper;
+import org.go.together.exceptions.IncorrectDtoException;
 import org.go.together.find.correction.field.FieldCorrector;
 import org.go.together.find.correction.field.dto.CorrectedFieldDto;
 import org.go.together.find.correction.path.PathCorrector;
@@ -35,7 +36,11 @@ public class FieldPathCorrectorService implements FieldPathCorrector {
         FieldDto correctedFieldDto = getCorrectedFieldDto(fieldDto,
                 correctedPath.getCorrectedPath(),
                 correctedField.getCorrectedField());
-        return correctedField.toBuilder().fieldDto(correctedFieldDto).build();
+        FieldMapper endFieldMapper = lastFieldMapper.entrySet().stream()
+                .filter(stringFieldMapperEntry -> fieldDto.getLocalField().endsWith(stringFieldMapperEntry.getKey()))
+                .map(Map.Entry::getValue)
+                .findFirst().orElseThrow(() -> new IncorrectDtoException("Cannot find last field mapper"));
+        return correctedField.toBuilder().fieldDto(correctedFieldDto).fieldMapper(endFieldMapper).build();
     }
 
     private FieldDto getCorrectedFieldDto(FieldDto fieldDto,

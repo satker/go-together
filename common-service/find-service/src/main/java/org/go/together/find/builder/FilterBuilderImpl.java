@@ -3,6 +3,7 @@ package org.go.together.find.builder;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.dto.FilterDto;
 import org.go.together.dto.FilterValueDto;
+import org.go.together.enums.FindOperator;
 import org.go.together.enums.SqlPredicate;
 import org.go.together.exceptions.IncorrectFindObject;
 import org.go.together.find.dto.FieldDto;
@@ -13,6 +14,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.go.together.find.utils.FindUtils.isRemoteField;
 
 @Component
 public class FilterBuilderImpl implements FilterBuilder {
@@ -39,6 +42,13 @@ public class FilterBuilderImpl implements FilterBuilder {
             SqlPredicate sqlPredicate = getPredicate(fieldOrOperator);
             filterNodeBuilder.condition(sqlPredicate);
         } else {
+            if (isRemoteField(fieldOrOperator)) {
+                FilterValueDto filterValueDto = new FilterValueDto();
+                filterValueDto.setFilterType(FindOperator.IN);
+                filterValueDto.setValue(filterValues);
+                filterNodeBuilder.filter(fieldOrOperator, filterValueDto);
+                return;
+            }
             Optional<FilterValueDto> valueDto = filterValues.entrySet().stream()
                     .filter(stringFilterValueDtoEntry -> StringUtils.containsIgnoreCase(fieldOrOperator, stringFilterValueDtoEntry.getKey()))
                     .map(Map.Entry::getValue)

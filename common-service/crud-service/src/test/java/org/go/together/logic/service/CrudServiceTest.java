@@ -277,7 +277,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
         }
         ((TestService) crudService).setAnotherClient(uuids);
 
-        FormDto formDto = getFormDto(MAIN_FIELD_TEST, "joinTestEntities.id?join.id",
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, "joinTestEntities?join.id",
                 Set.of(Map.of("id", new FilterValueDto(IN, Set.of("filter")))));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 
@@ -293,7 +293,7 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
     void findFromRemoteServiceEmptyResult() {
         ((TestService) crudService).setAnotherClient(Collections.emptyList());
 
-        FormDto formDto = getFormDto(MAIN_FIELD_TEST, "joinTestEntities.id?join.id",
+        FormDto formDto = getFormDto(MAIN_FIELD_TEST, "joinTestEntities?join.id",
                 Set.of(Map.of("id", new FilterValueDto(IN, "filter"))));
         ResponseDto<Object> objectResponseDto = findService.find(requestId, formDto);
 

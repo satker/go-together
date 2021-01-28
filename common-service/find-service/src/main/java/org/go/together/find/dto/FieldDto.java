@@ -10,8 +10,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,13 +40,7 @@ public class FieldDto {
     }
 
     public String[] getPaths() {
-        Pattern pattern = Pattern.compile(REGEX_GROUP);
-        Matcher matcher = pattern.matcher(localField);
-        if (matcher.find()) {
-            return new String[]{matcher.group(0)};
-        } else {
-            return getParsedFields(getParsedRemoteField(localField)[0]);
-        }
+        return getParsedFields(getParsedRemoteField(localField)[0]);
     }
 
     public List<String> getFieldsAndOperators() {

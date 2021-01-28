@@ -12,7 +12,7 @@ import org.go.together.kafka.producers.FindProducer;
 public class FieldMapper {
     private final String currentServiceField;
     private final FindService<?> innerService;
-    private final FindProducer remoteServiceClient;
+    private final FindProducer<?> remoteServiceClient;
     private final String remoteServiceName;
     private final String remoteServiceFieldGetter;
     private final Class<?> fieldClass;

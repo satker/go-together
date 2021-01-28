@@ -1,8 +1,8 @@
 package org.go.together.find.correction;
 
+import org.apache.commons.lang3.StringUtils;
 import org.go.together.compare.FieldMapper;
 import org.go.together.dto.FilterValueDto;
-import org.go.together.enums.FindOperator;
 import org.go.together.find.correction.field.dto.CorrectedFieldDto;
 import org.go.together.find.correction.fieldpath.FieldPathCorrector;
 import org.go.together.find.correction.values.ValuesCorrector;
@@ -48,7 +48,7 @@ public class CorrectorServiceImpl implements CorrectorService {
             Node node = iterator.next();
             if (node instanceof FilterNode) {
                 FilterNode filterNode = (FilterNode) node;
-                if (isRemoteNode(filterNode, availableFields)) {
+                if (isRemoteNode(filterNode)) {
                     enrichRemoteField(requestId, filterNode, availableFields);
                 } else {
                     enrichLocalField(filterNode, availableFields);
@@ -58,16 +58,15 @@ public class CorrectorServiceImpl implements CorrectorService {
         return nodeBuilder;
     }
 
-    private boolean isRemoteNode(FilterNode filterNode, Map<String, FieldMapper> availableFields) {
-        return filterNode.getField().getFieldMappersByFieldDto(availableFields).values().stream()
-                .noneMatch(fieldMapper -> fieldMapper.getRemoteServiceClient() == null);
+    private boolean isRemoteNode(FilterNode filterNode) {
+        return StringUtils.isNotBlank(filterNode.getField().getRemoteField());
     }
 
     private void enrichRemoteField(UUID requestId, FilterNode filterNode, Map<String, FieldMapper> fieldMappers) {
         CorrectedFieldDto localFieldForSearch = fieldPathCorrector.getCorrectedFieldDto(filterNode.getField(), fieldMappers);
         FieldDto fieldDto = localFieldForSearch.getFieldDto();
         filterNode.setField(fieldDto);
-        Collection<Object> remoteFilters = remoteFindService.getFilters(requestId, filterNode, fieldMappers);
+        Collection<Object> remoteFilters = remoteFindService.getFilters(requestId, filterNode, localFieldForSearch.getFieldMapper());
         enrichRemoteFilter(filterNode, remoteFilters);
     }
 
@@ -82,7 +81,7 @@ public class CorrectorServiceImpl implements CorrectorService {
     private void enrichRemoteFilter(FilterNode filterNode, Collection<Object> remoteResult) {
         FilterValueDto filterValueDto = new FilterValueDto();
         filterValueDto.setValue(remoteResult);
-        filterValueDto.setFilterType(FindOperator.IN);
+        filterValueDto.setFilterType(filterNode.getValues().getFilterType());
         filterNode.setValues(filterValueDto);
     }
 }

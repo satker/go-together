@@ -15,7 +15,16 @@ public class FindUtils {
     public static final String DOT = "\\.";
 
     public static String[] getParsedRemoteField(String string) {
-        return string.split(DELIMITER);
+        String[] split = string.split(DELIMITER, 2);
+        if (split.length == 2 && split[0].contains("[")) {
+            return new String[]{string};
+        }
+        return split;
+    }
+
+    public static boolean isRemoteField(String field) {
+        String[] split = field.split(DELIMITER, 2);
+        return split.length == 2 && !split[0].contains("[");
     }
 
     public static String[] getParsedFields(String string) {
