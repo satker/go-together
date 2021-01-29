@@ -30,7 +30,7 @@ public class BaseFindServiceImpl<E extends IdentifiedEntity> implements BaseFind
             return findRepository.getResult(formDto, null, serviceName, repository, mappingFields);
         }
         Collection<Collection<FilterNodeBuilder>> nodeBuilders = baseCorrectorService.getCorrectedFilters(requestId, formDto, mappingFields);
-        if (nodeBuilders.isEmpty()) {
+        if (nodeBuilders.stream().anyMatch(Collection::isEmpty)) {
             PageDto notFoundPageDto = null;
             if (formDto.getPage() != null) {
                 notFoundPageDto = new PageDto(0, formDto.getPage().getSize(), 0L, formDto.getPage().getSort());

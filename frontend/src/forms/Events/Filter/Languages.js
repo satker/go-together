@@ -22,10 +22,13 @@ const Languages = ({languages, getLanguages, setFilter, chooseLanguages}) => {
         let searchLanguages = null;
         if (languages.length !== 0) {
             searchLanguages = [{
-                "id": languages.map(language => language.id)
+                "id": {
+                    filterType: FilterOperator.IN.operator,
+                    value: languages.map(language => language.id)
+                }
             }];
         }
-        setFilter(FilterOperator.IN, searchLanguages, LANGUAGES_FIELD, languages.length);
+        setFilter(searchLanguages, LANGUAGES_FIELD, languages.length);
     }
 
     return <LoadableContent loadableData={languages}>
@@ -47,7 +50,7 @@ const mapStateToProps = state => {
     const filters = state.components.forms.events.filter.response.filters;
     const filtersName = keys(filters)
         .find(keyFilter => keyFilter.startsWith(LANGUAGES_FIELD));
-    const filterLanguages = filters[filtersName]?.values[0].id || [];
+    const filterLanguages = filters[filtersName]?.values[0].id.value || [];
     const chooseLanguages = filterLanguages
         .map(languageId => ({
             id: languageId,

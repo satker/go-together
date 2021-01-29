@@ -25,9 +25,11 @@ export const getUsers = (eventId) => (dispatch) => {
             mainIdField: "eventUsers",
             filters: {
                 eventId: {
-                    filterType: 'EQUAL',
                     values: [{
-                        eventId: eventId
+                        eventId: {
+                            filterType: 'EQUAL',
+                            value: eventId
+                        }
                     }]
                 }
             }

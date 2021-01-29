@@ -16,17 +16,20 @@ const Dates = ({filter, setFilter}) => {
     const onChangeDate = (searchField, filterOperation) => (date) => {
         if (date) {
             const values = [{
-                [searchField]: date
+                [searchField]: {
+                    filterType: filterOperation.operator,
+                    value: date
+                }
             }];
-            setFilter(filterOperation, values, searchField);
+            setFilter(values, searchField);
         }
     }
 
     const startDate = filter.filters[START_DATE];
     const endDate = filter.filters[END_DATE];
 
-    return <CheckInOutDates startDate={startDate && startDate.values[0]?.startDate}
-                            endDate={endDate && endDate.values[0]?.endDate}
+    return <CheckInOutDates startDate={startDate && startDate.values[0]?.startDate.value}
+                            endDate={endDate && endDate.values[0]?.endDate.value}
                             setStartDate={onChangeDate(START_DATE, FilterOperator.START_DATE)}
                             setEndDate={onChangeDate(END_DATE, FilterOperator.END_DATE)}/>;
 };

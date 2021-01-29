@@ -11,9 +11,11 @@ export const getUserNotifications = (userId, page = 0) => (dispatch) => {
             mainIdField: "notificationReceiverMessages",
             filters: {
                 "receiver.id": {
-                    filterType: 'EQUAL',
                     values: [{
-                        id: userId
+                        id: {
+                            filterType: 'EQUAL',
+                            value: userId
+                        }
                     }]
                 }
             },
@@ -31,15 +33,19 @@ export const getUnreadUserNotifications = (userId) => (dispatch) => {
             mainIdField: "notificationReceiverMessages",
             filters: {
                 "receiver.id": {
-                    filterType: 'EQUAL',
                     values: [{
-                        id: userId
+                        id: {
+                            filterType: 'EQUAL',
+                            value: userId
+                        }
                     }]
                 },
                 isRead: {
-                    filterType: 'EQUAL',
                     values: [{
-                        isRead: false
+                        isRead: {
+                            filterType: 'EQUAL',
+                            value: false
+                        }
                     }]
                 }
             }

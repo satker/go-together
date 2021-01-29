@@ -25,7 +25,6 @@ public class BaseCorrectorServiceImpl implements BaseCorrectorService {
         this.filterBuilder = filterBuilder;
     }
 
-
     @Override
     public Collection<Collection<FilterNodeBuilder>> getCorrectedFilters(UUID requestId, FormDto formDto, Map<String, FieldMapper> mappingFields) {
         return formDto.getFilters().entrySet().stream()

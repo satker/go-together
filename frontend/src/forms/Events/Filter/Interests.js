@@ -22,10 +22,13 @@ const Interests = ({interests, getInterests, setFilter, chooseInterests}) => {
         let searchInterests = null;
         if (interests.length !== 0) {
             searchInterests = [{
-                id: interests.map(interest => interest.id)
+                id: {
+                    filterType: FilterOperator.IN.operator,
+                    value: interests.map(interest => interest.id)
+                }
             }];
         }
-        setFilter(FilterOperator.IN, searchInterests, INTERESTS_FIELD, interests.length);
+        setFilter(searchInterests, INTERESTS_FIELD, interests.length);
     }
 
     return <LoadableContent loadableData={interests}>
@@ -47,7 +50,8 @@ const mapStateToProps = state => {
     const filters = state.components.forms.events.filter.response.filters;
     const filtersName = keys(filters)
         .find(keyFilter => keyFilter.startsWith(INTERESTS_FIELD));
-    const filterInterests = filters[filtersName]?.values[0].id || [];
+    console.log(filters)
+    const filterInterests = filters[filtersName]?.values[0].id.value || [];
     const chooseInterests = filterInterests
         .map(interestId => ({
             id: interestId,

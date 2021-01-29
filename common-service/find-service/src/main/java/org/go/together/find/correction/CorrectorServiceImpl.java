@@ -13,10 +13,7 @@ import org.go.together.find.dto.node.Node;
 import org.go.together.find.finders.Finder;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -39,6 +36,7 @@ public class CorrectorServiceImpl implements CorrectorService {
                                                         Map<String, FieldMapper> availableFields) {
         return nodeBuilder.stream()
                 .map(node -> getFilterNodeBuilder(requestId, node, availableFields))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 
@@ -49,7 +47,10 @@ public class CorrectorServiceImpl implements CorrectorService {
             if (node instanceof FilterNode) {
                 FilterNode filterNode = (FilterNode) node;
                 if (isRemoteNode(filterNode)) {
-                    enrichRemoteField(requestId, filterNode, availableFields);
+                    FilterNode remoteField = enrichRemoteField(requestId, filterNode, availableFields);
+                    if (((Collection) remoteField.getValues().getValue()).isEmpty()) {
+                        return null;
+                    }
                 } else {
                     enrichLocalField(filterNode, availableFields);
                 }
@@ -62,12 +63,12 @@ public class CorrectorServiceImpl implements CorrectorService {
         return StringUtils.isNotBlank(filterNode.getField().getRemoteField());
     }
 
-    private void enrichRemoteField(UUID requestId, FilterNode filterNode, Map<String, FieldMapper> fieldMappers) {
+    private FilterNode enrichRemoteField(UUID requestId, FilterNode filterNode, Map<String, FieldMapper> fieldMappers) {
         CorrectedFieldDto localFieldForSearch = fieldPathCorrector.getCorrectedFieldDto(filterNode.getField(), fieldMappers);
         FieldDto fieldDto = localFieldForSearch.getFieldDto();
         filterNode.setField(fieldDto);
         Collection<Object> remoteFilters = remoteFindService.getFilters(requestId, filterNode, localFieldForSearch.getFieldMapper());
-        enrichRemoteFilter(filterNode, remoteFilters);
+        return enrichRemoteFilter(filterNode, remoteFilters);
     }
 
     private void enrichLocalField(FilterNode filterNode, Map<String, FieldMapper> fieldMappers) {
@@ -78,10 +79,11 @@ public class CorrectorServiceImpl implements CorrectorService {
         filterNode.setField(localFieldForSearch.getFieldDto());
     }
 
-    private void enrichRemoteFilter(FilterNode filterNode, Collection<Object> remoteResult) {
+    private FilterNode enrichRemoteFilter(FilterNode filterNode, Collection<Object> remoteResult) {
         FilterValueDto filterValueDto = new FilterValueDto();
         filterValueDto.setValue(remoteResult);
         filterValueDto.setFilterType(filterNode.getValues().getFilterType());
         filterNode.setValues(filterValueDto);
+        return filterNode;
     }
 }

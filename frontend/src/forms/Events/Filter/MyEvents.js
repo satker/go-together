@@ -13,11 +13,14 @@ const MyEvents = ({filter, setFilter, userId}) => {
     const onChange = (value) => {
         if (value) {
             const values = [{
-                [AUTHOR_ID]: userId
+                [AUTHOR_ID]: {
+                    filterType: FilterOperator.EQUAL.operator,
+                    value: userId
+                }
             }];
-            setFilter(FilterOperator.EQUAL, values, AUTHOR_ID);
+            setFilter(values, AUTHOR_ID);
         } else {
-            setFilter(FilterOperator.EQUAL, [], AUTHOR_ID);
+            setFilter([], AUTHOR_ID);
         }
     }
 
