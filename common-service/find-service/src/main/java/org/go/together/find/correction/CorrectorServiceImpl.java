@@ -6,7 +6,6 @@ import org.go.together.dto.FilterValueDto;
 import org.go.together.find.correction.path.PathCorrector;
 import org.go.together.find.correction.path.dto.Path;
 import org.go.together.find.correction.values.ValuesCorrector;
-import org.go.together.find.dto.Field;
 import org.go.together.find.dto.node.FilterNode;
 import org.go.together.find.dto.node.FilterNodeBuilder;
 import org.go.together.find.dto.node.Node;
@@ -64,8 +63,7 @@ public class CorrectorServiceImpl implements CorrectorService {
 
     private FilterNode enrichRemoteField(UUID requestId, FilterNode filterNode, Map<String, FieldMapper> fieldMappers) {
         Path path = pathCorrector.correct(filterNode.getField(), fieldMappers);
-        Field field = new Field(path.getField().getLocalField(), filterNode.getField().getRemoteField());
-        filterNode.setField(field);
+        filterNode.setField(path.getField());
         Collection<Object> remoteFilters = remoteFindService.getFilters(requestId, filterNode, path.getLastFieldMapper());
         return enrichRemoteFilter(filterNode, remoteFilters);
     }

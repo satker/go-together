@@ -21,7 +21,7 @@ public class PathCorrectorService implements PathCorrector {
         String resultPath = getResultPath(allFieldMappers, paths);
 
         return Path.builder()
-                .field(new Field(resultPath))
+                .field(new Field(resultPath, field.getRemoteField()))
                 .lastFieldMapper(getFieldMapper(allFieldMappers.getLast(), paths)).build();
     }
 
