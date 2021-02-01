@@ -1,33 +1,47 @@
 package org.go.together.find.correction.path;
 
-import org.apache.commons.lang3.StringUtils;
 import org.go.together.compare.FieldMapper;
-import org.go.together.find.correction.path.dto.CorrectedPathDto;
-import org.go.together.find.dto.FieldDto;
+import org.go.together.find.correction.path.dto.Path;
+import org.go.together.find.dto.Field;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class PathCorrectorService implements PathCorrector {
-    public CorrectedPathDto correct(FieldDto fieldDto, Map<String, FieldMapper> fieldMappers) {
-        String[] localPaths = fieldDto.getPaths();
+    public Path correct(Field field, Map<String, FieldMapper> fieldMappers) {
+        LinkedList<Map<String, FieldMapper>> allFieldMappers = new LinkedList<>();
+        allFieldMappers.addLast(fieldMappers);
 
-        StringBuilder path = new StringBuilder();
-        Map<String, FieldMapper> currentFieldMapper = fieldMappers;
-        for (int i = 0; i < localPaths.length - 1; i++) {
-            FieldMapper fieldMapper = currentFieldMapper.get(localPaths[i]);
-            String currentServiceField = fieldMapper.getCurrentServiceField();
-            if (StringUtils.isNotBlank(path) && StringUtils.isNotBlank(currentServiceField)) {
-                path.append(".");
-            }
-            path.append(currentServiceField);
-            if (fieldMapper.getInnerService() != null) {
-                currentFieldMapper = fieldMapper.getInnerService().getMappingFields();
-            }
-        }
-        return CorrectedPathDto.builder()
-                .correctedPath(path)
-                .currentFieldMapper(currentFieldMapper).build();
+        String[] paths = field.getPaths();
+
+        String resultPath = getResultPath(allFieldMappers, paths);
+
+        return Path.builder()
+                .field(new Field(resultPath))
+                .lastFieldMapper(getFieldMapper(allFieldMappers.getLast(), paths)).build();
+    }
+
+    private String getResultPath(LinkedList<Map<String, FieldMapper>> allFieldMappers, String[] paths) {
+        return Stream.of(paths)
+                .map(path -> allFieldMappers.getLast().get(path))
+                .peek(fieldMapper -> {
+                    if (fieldMapper.getInnerService() != null) {
+                        allFieldMappers.addLast(fieldMapper.getInnerService().getMappingFields());
+                    }
+                })
+                .map(FieldMapper::getCurrentServiceField)
+                .collect(Collectors.joining("."));
+    }
+
+    private FieldMapper getFieldMapper(Map<String, FieldMapper> lastFieldMappers, String[] paths) {
+        return lastFieldMappers.get(getLastField(paths));
+    }
+
+    private String getLastField(String[] paths) {
+        return paths[paths.length - 1];
     }
 }

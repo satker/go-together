@@ -6,9 +6,9 @@ import org.go.together.base.CustomRepository;
 import org.go.together.compare.FieldMapper;
 import org.go.together.dto.FormDto;
 import org.go.together.dto.PageDto;
-import org.go.together.find.correction.field.dto.CorrectedFieldDto;
-import org.go.together.find.correction.fieldpath.FieldPathCorrector;
-import org.go.together.find.dto.FieldDto;
+import org.go.together.find.correction.path.PathCorrector;
+import org.go.together.find.correction.path.dto.Path;
+import org.go.together.find.dto.Field;
 import org.go.together.find.dto.node.FilterNodeBuilder;
 import org.go.together.find.repository.sql.impl.SqlBuilderCreatorImpl;
 import org.go.together.find.repository.sql.interfaces.WhereBuilderCreator;
@@ -26,7 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepository<E> {
     private final SqlBuilderCreatorImpl<E> sqlBuilderCreator;
-    private final FieldPathCorrector fieldPathCorrector;
+    private final PathCorrector pathCorrector;
     private final WhereBuilderCreator<E> whereBuilderCreator;
 
     @Override
@@ -70,9 +70,9 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
     }
 
     private String getSortField(String field, Map<String, FieldMapper> fieldMappers) {
-        FieldDto fieldDto = new FieldDto(field);
-        CorrectedFieldDto correctedFieldDto = fieldPathCorrector.getCorrectedFieldDto(fieldDto, fieldMappers);
-        return correctedFieldDto.getFieldDto().getLocalField();
+        Field fieldDto = new Field(field);
+        Path path = pathCorrector.correct(fieldDto, fieldMappers);
+        return path.getField().getLocalField();
     }
 
     private Collection<Object> getResult(PageDto page, Sql<E> sql) {

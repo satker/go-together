@@ -1,11 +1,11 @@
 package org.go.together.find.correction.path;
 
 import org.go.together.compare.FieldMapper;
-import org.go.together.find.correction.path.dto.CorrectedPathDto;
-import org.go.together.find.dto.FieldDto;
+import org.go.together.find.correction.path.dto.Path;
+import org.go.together.find.dto.Field;
 
 import java.util.Map;
 
 public interface PathCorrector {
-    CorrectedPathDto correct(FieldDto fieldDto, Map<String, FieldMapper> fieldMappers);
+    Path correct(Field field, Map<String, FieldMapper> fieldMappers);
 }

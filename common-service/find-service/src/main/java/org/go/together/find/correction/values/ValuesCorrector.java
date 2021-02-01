@@ -1,9 +1,9 @@
 package org.go.together.find.correction.values;
 
 import org.go.together.dto.FilterValueDto;
-import org.go.together.find.correction.field.dto.CorrectedFieldDto;
+import org.go.together.find.correction.path.dto.Path;
 
 public interface ValuesCorrector {
-    FilterValueDto correct(CorrectedFieldDto correctedFieldDto,
-                                        FilterValueDto values);
+    FilterValueDto correct(Path correctedFieldDto,
+                           FilterValueDto values);
 }

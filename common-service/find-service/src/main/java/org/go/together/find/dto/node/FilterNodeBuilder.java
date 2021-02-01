@@ -2,7 +2,7 @@ package org.go.together.find.dto.node;
 
 import org.go.together.dto.FilterValueDto;
 import org.go.together.enums.SqlPredicate;
-import org.go.together.find.dto.FieldDto;
+import org.go.together.find.dto.Field;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -22,7 +22,7 @@ public class FilterNodeBuilder {
 
     public boolean filter(String fieldStr, FilterValueDto values) {
         FilterNode node = new FilterNode();
-        node.setField(new FieldDto(fieldStr));
+        node.setField(new Field(fieldStr));
         node.setValues(values);
         return nodes.add(node);
     }

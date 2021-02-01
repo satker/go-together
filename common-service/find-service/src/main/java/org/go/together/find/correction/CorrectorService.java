@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface CorrectorService {
-    Collection<FilterNodeBuilder> getCorrectedFilters(UUID requestId,
+    Collection<FilterNodeBuilder> correct(UUID requestId,
                                           Collection<FilterNodeBuilder> nodeBuilder,
-                                                 Map<String, FieldMapper> availableFields);
+                                          Map<String, FieldMapper> availableFields);
 }

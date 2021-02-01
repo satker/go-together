@@ -1,24 +1,20 @@
 package org.go.together.find.builder;
 
-import org.apache.commons.lang3.StringUtils;
+import lombok.RequiredArgsConstructor;
 import org.go.together.dto.FilterDto;
 import org.go.together.dto.FilterValueDto;
-import org.go.together.enums.FindOperator;
-import org.go.together.enums.SqlPredicate;
-import org.go.together.exceptions.IncorrectFindObject;
-import org.go.together.find.dto.FieldDto;
+import org.go.together.find.dto.Field;
 import org.go.together.find.dto.node.FilterNodeBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.go.together.find.utils.FindUtils.isRemoteField;
-
 @Component
+@RequiredArgsConstructor
 public class FilterBuilderImpl implements FilterBuilder {
+    private final NodeEnricher nodeEnricher;
 
     @Override
     public Collection<FilterNodeBuilder> getBuilders(Map.Entry<String, FilterDto> filter) {
@@ -29,47 +25,11 @@ public class FilterBuilderImpl implements FilterBuilder {
 
     private FilterNodeBuilder getBuilder(String field, Map<String, FilterValueDto> filterValues) {
         FilterNodeBuilder filterNodeBuilder = new FilterNodeBuilder();
-        FieldDto fieldWrapper = new FieldDto(field);
+        Field fieldWrapper = new Field(field);
         fieldWrapper.getFieldsAndOperators()
-                .forEach(fieldOrOperator -> enrichFilterNodeBuilder(filterNodeBuilder, fieldOrOperator, filterValues));
+                .forEach(fieldOrOperator -> nodeEnricher.enrich(filterNodeBuilder, fieldOrOperator, filterValues));
         return filterNodeBuilder;
     }
 
-    private void enrichFilterNodeBuilder(FilterNodeBuilder filterNodeBuilder,
-                                         String fieldOrOperator,
-                                         Map<String, FilterValueDto> filterValues) {
-        if (isOperator(fieldOrOperator)) {
-            SqlPredicate sqlPredicate = getPredicate(fieldOrOperator);
-            filterNodeBuilder.condition(sqlPredicate);
-        } else {
-            if (isRemoteField(fieldOrOperator)) {
-                FilterValueDto filterValueDto = new FilterValueDto();
-                filterValueDto.setFilterType(FindOperator.IN);
-                filterValueDto.setValue(filterValues);
-                filterNodeBuilder.filter(fieldOrOperator, filterValueDto);
-                return;
-            }
-            Optional<FilterValueDto> valueDto = filterValues.entrySet().stream()
-                    .filter(stringFilterValueDtoEntry -> StringUtils.containsIgnoreCase(fieldOrOperator, stringFilterValueDtoEntry.getKey()))
-                    .map(Map.Entry::getValue)
-                    .findFirst();
-            if (valueDto.isEmpty()) {
-                return;
-            }
-            FilterValueDto filterValueDto = valueDto.get();
-            filterNodeBuilder.filter(fieldOrOperator, filterValueDto);
-        }
-    }
 
-    private SqlPredicate getPredicate(String predicate) {
-        return switch (predicate) {
-            case "|" -> SqlPredicate.OR;
-            case "&" -> SqlPredicate.AND;
-            default -> throw new IncorrectFindObject("Sql predicates should be | or &, but was : " + predicate);
-        };
-    }
-
-    private boolean isOperator(String field) {
-        return field.equals("|") || field.equals("&");
-    }
 }

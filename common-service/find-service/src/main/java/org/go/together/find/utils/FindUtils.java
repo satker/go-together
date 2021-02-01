@@ -40,19 +40,6 @@ public class FindUtils {
         return string.split(HAVING_COUNT);
     }
 
-    public static String[] getSingleGroupFields(String localEntityField) {
-        String[] result;
-        localEntityField = getHavingCondition(localEntityField)[0];
-        if (localEntityField.matches(REGEX_GROUP)) {
-            result = localEntityField.replaceFirst(GROUP_START, "")
-                    .replaceFirst(GROUP_END, "")
-                    .split("\\|" + GROUP_OR + GROUP_AND);
-        } else {
-            result = new String[]{localEntityField};
-        }
-        return result;
-    }
-
     public static String getDelimiter(String groupFields, String currentField) {
         int index = groupFields.lastIndexOf(currentField);
         String delimiter = String.valueOf(groupFields.charAt(index + currentField.length()));

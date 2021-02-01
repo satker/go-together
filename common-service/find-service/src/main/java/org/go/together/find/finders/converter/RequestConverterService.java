@@ -6,7 +6,7 @@ import org.go.together.dto.FilterDto;
 import org.go.together.dto.FilterValueDto;
 import org.go.together.dto.FormDto;
 import org.go.together.exceptions.IncorrectFindObject;
-import org.go.together.find.dto.FieldDto;
+import org.go.together.find.dto.Field;
 import org.go.together.find.dto.node.FilterNode;
 import org.go.together.find.utils.FindUtils;
 import org.go.together.kafka.producers.FindProducer;
@@ -26,10 +26,10 @@ public class RequestConverterService implements RequestConverter {
     private FormDto getRemoteClientFormDto(String anotherServiceSearchField,
                                            FilterNode filterNode,
                                            FieldMapper fieldMapper) {
-        FieldDto remoteFieldDto = getRemoteMainAndGetField(anotherServiceSearchField, fieldMapper);
+        Field remoteField = getRemoteMainAndGetField(anotherServiceSearchField, fieldMapper);
         FilterDto filterDto = new FilterDto(Collections.singleton(castValuesToMap(filterNode.getValues().getValue())));
-        Map<String, FilterDto> map = Map.of(remoteFieldDto.getLocalField(), filterDto);
-        return new FormDto(null, map, remoteFieldDto.getRemoteField());
+        Map<String, FilterDto> map = Map.of(remoteField.getLocalField(), filterDto);
+        return new FormDto(null, map, remoteField.getRemoteField());
     }
 
     private Map<String, FilterValueDto> castValuesToMap(Object value) {
@@ -39,7 +39,7 @@ public class RequestConverterService implements RequestConverter {
         throw new IncorrectFindObject("Incorrect remote search values");
     }
 
-    private FieldDto getRemoteMainAndGetField(String anotherServiceSearchField, FieldMapper fieldMapper) {
+    private Field getRemoteMainAndGetField(String anotherServiceSearchField, FieldMapper fieldMapper) {
         String remoteGetField = fieldMapper.getRemoteServiceName() + "." + fieldMapper.getRemoteServiceFieldGetter();
 
         String[] havingCondition = FindUtils.getHavingCondition(anotherServiceSearchField);
@@ -47,11 +47,11 @@ public class RequestConverterService implements RequestConverter {
             try {
                 int havingNumber = Integer.parseInt(havingCondition[1]);
                 remoteGetField = remoteGetField + ":" + havingNumber;
-                return new FieldDto(havingCondition[0], remoteGetField);
+                return new Field(havingCondition[0], remoteGetField);
             } catch (NumberFormatException e) {
                 throw new IncorrectFindObject("Incorrect having condition: " + havingCondition[1]);
             }
         }
-        return new FieldDto(anotherServiceSearchField, remoteGetField);
+        return new Field(anotherServiceSearchField, remoteGetField);
     }
 }

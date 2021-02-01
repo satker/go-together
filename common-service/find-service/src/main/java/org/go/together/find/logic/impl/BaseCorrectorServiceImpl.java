@@ -29,7 +29,7 @@ public class BaseCorrectorServiceImpl implements BaseCorrectorService {
     public Collection<Collection<FilterNodeBuilder>> getCorrectedFilters(UUID requestId, FormDto formDto, Map<String, FieldMapper> mappingFields) {
         return formDto.getFilters().entrySet().stream()
                 .map(filterBuilder::getBuilders)
-                .map(filterNodeBuilder -> correctorService.getCorrectedFilters(requestId, filterNodeBuilder, mappingFields))
+                .map(filterNodeBuilder -> correctorService.correct(requestId, filterNodeBuilder, mappingFields))
                 .collect(Collectors.toSet());
     }
 }
