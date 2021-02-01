@@ -17,7 +17,6 @@ const RouteContent = ({routeInfo, updateEvent, getTransportTypes}) => {
             if (route.routeNumber === routeNumber) {
                 onChange(route, newRoute => route = newRoute)(path, value);
             }
-            console.log(route, value)
             return route;
         });
         updateEvent(ROUTE_INFO, newArray);

@@ -43,6 +43,13 @@ class CollectionComparatorTest {
     private Comparator<Collection<?>> collectionComparator;
 
     @Test
+    void compareNotChangedElementsCollections() {
+        Map<String, Object> compareResult = collectionComparator.compare(FIELD, TEST_DTOS, TEST_DTOS, COMPARING_OBJECT);
+
+        assertEquals(0, ((Map<String, Object>) compareResult.get(FIELD)).size());
+    }
+
+    @Test
     void compareDtoAddedElementsCollections() {
         List<String> expectedAddedElements = TEST_DTOS.stream()
                 .map(ComparableDto::getMainField)
@@ -56,7 +63,7 @@ class CollectionComparatorTest {
         Map<String, Object> result = (Map<String, Object>) compareResult.get(FIELD);
 
         assertNotNull(result);
-        assertEquals(2, result.size());
+        assertEquals(1, result.size());
 
         compareMaps(result, expectedChangedCollections);
     }
@@ -75,7 +82,7 @@ class CollectionComparatorTest {
         Map<String, Object> result = (Map<String, Object>) compareResult.get(FIELD);
 
         assertNotNull(result);
-        assertEquals(2, result.size());
+        assertEquals(1, result.size());
 
         compareMaps(result, expectedChangedCollections);
     }
@@ -100,7 +107,7 @@ class CollectionComparatorTest {
         Map<String, Object> result = (Map<String, Object>) compareResult.get(FIELD);
 
         assertNotNull(result);
-        assertEquals(3, result.size());
+        assertEquals(2, result.size());
 
         compareMaps(result, expectedRemovedElementsCollections);
         compareMaps(result, expectedAddedElementsCollections);

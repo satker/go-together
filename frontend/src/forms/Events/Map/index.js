@@ -1,6 +1,6 @@
 import React from "react";
-import {connect} from "App/Context";
 import MultipleMap from "forms/utils/components/ObjectGeoLocation/MultipleMap";
+import EventsList from "./EventsList";
 
 const Map = ({events}) => {
     const eventLocations = events.map(event => ({
@@ -8,10 +8,9 @@ const Map = ({events}) => {
         name: event.name,
         locations: event.routeInfo.infoRoutes.map(route => ({routeNumber: route.routeNumber, location: route.location}))
     }));
-    return <MultipleMap routes={eventLocations}/>
+    return <MultipleMap routes={eventLocations}>
+        <EventsList/>
+    </MultipleMap>
 };
 
-const mapStateToProps = state => ({});
-
-
-export default connect(mapStateToProps)(Map);
+export default Map;

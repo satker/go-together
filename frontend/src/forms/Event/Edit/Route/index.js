@@ -11,6 +11,7 @@ import {connect} from "App/Context";
 
 import {updateEvent} from "../actions";
 import RouteContent from "forms/Event/Edit/Route/Content";
+import RoutesList from "forms/utils/components/RoutesList";
 
 export const ROUTE_INFO = 'routeInfo.infoRoutes';
 
@@ -66,11 +67,12 @@ const Route = ({routeInfo, updateEvent}) => {
         <SingleMap
             onAdd={addLocation}
             onDelete={onDelete}
-            editable={true}
+            editable
             route={routeInfo.infoRoutes.map(route => ({routeNumber: route.routeNumber, location: route.location}))}
             onChange={onChangeLocation}
-            height={400}
-        />
+            height={400}>
+            <RoutesList editable/>
+        </SingleMap>
         <RouteContent/>
     </Container>;
 };

@@ -20,7 +20,7 @@ RoutesList.propTypes = {
     editable: PropTypes.bool,
     onDelete: PropTypes.func,
     selected: PropTypes.string,
-    centerPlace: PropTypes.func.isRequired
+    centerPlace: PropTypes.func
 };
 
 export default RoutesList;

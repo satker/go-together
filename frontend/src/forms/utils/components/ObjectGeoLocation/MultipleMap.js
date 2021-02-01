@@ -6,14 +6,13 @@ import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
 import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 
 import MapContainer from "./Common/MapContainer";
-import EventsList from "./EventsList";
 import ListContainer from "./Common/ListContainer";
 import {getMarker, sort} from "./utils";
-import {usePosition} from "./hooks/usePosition";
+import {usePosition} from "./Position/usePosition";
 import PropTypes from "prop-types";
 import {EventMapRoute} from "forms/utils/types";
 
-const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}) => {
+const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height, children}) => {
     const [center, setCenter] = useState(usePosition());
     const [googleMap, setGoogleMap] = useState(null);
     const [polyline, setPolyline] = useState([]);
@@ -71,10 +70,14 @@ const MultipleMap = ({routes, editable, onChange, zoom, onDelete, onAdd, height}
                 {getRoutes()}
             </MapContainer>
             <ListContainer height={height}>
-                <EventsList routes={routes}
-                            selected={selected}
-                            centerLocations={centerLocations}
-                />
+                {React.Children.map(children, child =>
+                    React.cloneElement(child, {
+                        ...child.props,
+                        routes,
+                        selected,
+                        centerLocations
+                    })
+                )}
             </ListContainer>
         </ContainerColumn>
     </Container>;

@@ -39,7 +39,10 @@ public class DtoFinder<T extends ComparableDto> implements Finder<T> {
                             .orElse(Collections.emptyMap()))
                     .filter(map -> !map.isEmpty())
                     .forEach(changedValues::putAll);
-            resultMap.put(CHANGED, changedValues);
+            if (!changedValues.isEmpty()) {
+                resultMap.put(CHANGED, changedValues);
+            }
+
             return resultMap;
         }
     }

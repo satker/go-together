@@ -3,6 +3,7 @@ import List from "@material-ui/core/List";
 import PropTypes from "prop-types";
 
 import RouteItem from "./RouteItem";
+import {EventMapRoute} from "forms/utils/types";
 
 const RoutesList = ({routes, selected, centerLocations}) => {
     return <List style={{overflow: 'auto'}}>
@@ -15,9 +16,9 @@ const RoutesList = ({routes, selected, centerLocations}) => {
 };
 
 RoutesList.propTypes = {
-    routes: PropTypes.array,
+    routes: PropTypes.arrayOf(EventMapRoute),
     selected: PropTypes.string,
-    centerLocations: PropTypes.func.isRequired
+    centerLocations: PropTypes.func
 };
 
 export default RoutesList;

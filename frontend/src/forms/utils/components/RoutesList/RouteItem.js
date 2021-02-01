@@ -7,8 +7,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import {MapRoute} from 'forms/utils/types'
 import Delete from "forms/utils/components/Icon/Delete";
 import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
-import LeftContainer from "../../Container/LeftContainer";
-import RightContainer from "../../Container/RightContainer";
+import LeftContainer from "forms/utils/components/Container/LeftContainer";
+import RightContainer from "forms/utils/components/Container/RightContainer";
 
 const RouteItem = ({selected, centerPlace, route, onDelete}) => {
     return <ContainerColumn>

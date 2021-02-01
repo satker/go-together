@@ -6,14 +6,13 @@ import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import Container from "forms/utils/components/Container/ContainerRow";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 
-import RoutesList from './RoutesList';
 import MapContainer from "./Common/MapContainer";
 import ListContainer from "./Common/ListContainer";
 import {getMarker, sort} from "./utils";
-import {usePosition} from "./hooks/usePosition";
+import {usePosition} from "./Position/usePosition";
 import {MapRoute} from "forms/utils/types";
 
-const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) => {
+const SingleMap = ({children, route, editable, onChange, zoom, onDelete, onAdd, height}) => {
     const [center, setCenter] = useState(usePosition());
     const [googleMap, setGoogleMap] = useState(null);
     const [polyline, setPolyline] = useState(null);
@@ -67,11 +66,15 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
                 {getRoutes()}
             </MapContainer>
             <ListContainer height={height}>
-                <RoutesList selected={selected}
-                            centerPlace={centerPlace}
-                            onDelete={onDelete}
-                            routes={sort(route)}
-                            editable={editable}/>
+                {React.Children.map(children, child =>
+                    React.cloneElement(child, {
+                        ...child.props,
+                        selected,
+                        centerPlace,
+                        onDelete,
+                        routes: sort(route)
+                    })
+                )}
             </ListContainer>
         </ContainerColumn>
     </Container>;
@@ -84,8 +87,7 @@ SingleMap.propTypes = {
     zoom: PropTypes.number,
     onDelete: PropTypes.func,
     onAdd: PropTypes.func,
-    height: PropTypes.number,
-    multipleRoutes: PropTypes.bool
+    height: PropTypes.number
 };
 
 SingleMap.defaultProps = {

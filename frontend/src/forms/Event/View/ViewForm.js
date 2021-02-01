@@ -9,6 +9,7 @@ import Container from "forms/utils/components/Container/ContainerRow";
 import Users from "./Users";
 import MainInfo from "./MainInfo";
 import {getUsers} from "./actions";
+import RoutesList from "forms/utils/components/RoutesList";
 
 const ViewForm = ({event, getUsers}) => {
     useEffect(() => {
@@ -22,8 +23,9 @@ const ViewForm = ({event, getUsers}) => {
             route={event.routeInfo.infoRoutes.map(route => ({
                 routeNumber: route.routeNumber,
                 location: route.location
-            }))}
-        />
+            }))}>
+            <RoutesList editable/>
+        </SingleMap>
         <Users/>
     </Container>;
 };
