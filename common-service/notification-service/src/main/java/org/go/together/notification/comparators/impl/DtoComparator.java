@@ -16,8 +16,7 @@ import java.util.function.Function;
 @Component
 public class DtoComparator<T extends Dto> implements Comparator<T> {
     private CompareMapper transformer;
-    private final Map<Class<? extends Dto>, Map<String, ComparingObject>> classFieldProperties =
-            new HashMap<>();
+    private final Map<Class<? extends Dto>, Map<String, ComparingObject>> classFieldProperties = new HashMap<>();
 
     @Autowired
     public void setTransformer(CompareMapper transformer) {
@@ -51,7 +50,6 @@ public class DtoComparator<T extends Dto> implements Comparator<T> {
         Map<String, Object> result = new HashMap<>();
         getFieldsProperties(originalObject.getClass()).entrySet().stream()
                 .map(originalObjectEntry -> getFieldCompareResult(originalObject, changedObject, originalObjectEntry))
-                .filter(map -> !map.isEmpty())
                 .forEach(result::putAll);
         return result;
     }

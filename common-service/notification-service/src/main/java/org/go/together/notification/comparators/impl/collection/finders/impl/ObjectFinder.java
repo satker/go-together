@@ -5,7 +5,7 @@ import org.go.together.notification.comparators.impl.collection.finders.interfac
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -16,7 +16,7 @@ public class ObjectFinder implements Finder<Object> {
     public Map<String, Object> findChanged(Collection<Object> changedObject,
                                            Collection<Object> originalObject,
                                            ComparingObject fieldProperties) {
-        return Collections.emptyMap();
+        return new HashMap<>();
     }
 
     @Override

@@ -37,7 +37,6 @@ public class DtoFinder<T extends ComparableDto> implements Finder<T> {
                     .map(comparableDto -> Optional.ofNullable(uuidOriginalMap.get(comparableDto.getId()))
                             .map(dto -> comparableDtoComparator.compare(dto.getMainField(), dto, comparableDto))
                             .orElse(Collections.emptyMap()))
-                    .filter(map -> !map.isEmpty())
                     .forEach(changedValues::putAll);
             if (!changedValues.isEmpty()) {
                 resultMap.put(CHANGED, changedValues);

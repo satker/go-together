@@ -44,14 +44,15 @@ public class GroupRouteInfoServiceImpl extends CommonCrudService<GroupRouteInfoD
 
     private RouteInfo getRouteInfo(UUID requestId, RouteInfoDto routeInfoDto) {
         Optional<RouteInfo> routeInfo = routeInfoService.readRouteInfo(routeInfoDto.getId());
+        IdDto changedRouteInfoId;
         if (routeInfo.isEmpty()) {
-            IdDto createdRouteInfoId = routeInfoService.create(requestId, routeInfoDto);
-            Optional<RouteInfo> createdRouteInfo = routeInfoService.readRouteInfo(createdRouteInfoId.getId());
-            return createdRouteInfo.orElseThrow(() -> new ApplicationException("Cannot create route info by id: " +
-                    createdRouteInfoId.getId(), requestId));
+            changedRouteInfoId = routeInfoService.create(requestId, routeInfoDto);
         } else {
-            return routeInfo.get();
+            changedRouteInfoId = routeInfoService.update(requestId, routeInfoDto);
         }
+        Optional<RouteInfo> createdRouteInfo = routeInfoService.readRouteInfo(changedRouteInfoId.getId());
+        return createdRouteInfo.orElseThrow(() -> new ApplicationException("Cannot create route info by id: " +
+                changedRouteInfoId.getId(), requestId));
     }
 
     private void deleteUnneededRouteInfos(UUID requestId, Set<RouteInfo> oldRouteInfos, Set<RouteInfo> newRouteInfo) {

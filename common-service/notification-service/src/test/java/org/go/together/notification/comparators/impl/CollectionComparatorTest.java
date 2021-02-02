@@ -46,7 +46,7 @@ class CollectionComparatorTest {
     void compareNotChangedElementsCollections() {
         Map<String, Object> compareResult = collectionComparator.compare(FIELD, TEST_DTOS, TEST_DTOS, COMPARING_OBJECT);
 
-        assertEquals(0, ((Map<String, Object>) compareResult.get(FIELD)).size());
+        assertEquals(0, compareResult.size());
     }
 
     @Test

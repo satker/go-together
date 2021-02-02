@@ -35,6 +35,10 @@ public class CollectionComparator implements Comparator<Collection<?>> {
 
         Map<String, Object> resultMap = getComparingMap(removedElements, addedElements, changedElements);
 
+        if (resultMap.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
         return Map.of(fieldName, resultMap);
     }
 

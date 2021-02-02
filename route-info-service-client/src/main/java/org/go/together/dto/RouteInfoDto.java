@@ -22,6 +22,7 @@ public class RouteInfoDto extends ComparableDto {
     @ComparingField("movement date")
     private Date movementDate;
 
+    @ComparingField("movement duration")
     private Double movementDuration;
 
     @ComparingField("route number")
