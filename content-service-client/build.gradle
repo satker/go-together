@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        lombokVersion='1.18.16'
+        lombokVersion='1.18.18'
     }
 }
 plugins {
