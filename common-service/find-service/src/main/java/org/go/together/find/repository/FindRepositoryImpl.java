@@ -7,8 +7,8 @@ import org.go.together.compare.FieldMapper;
 import org.go.together.dto.FormDto;
 import org.go.together.dto.PageDto;
 import org.go.together.find.correction.path.PathCorrector;
-import org.go.together.find.correction.path.dto.Path;
 import org.go.together.find.dto.Field;
+import org.go.together.find.dto.Path;
 import org.go.together.find.dto.node.FilterNodeBuilder;
 import org.go.together.find.repository.sql.impl.SqlBuilderCreatorImpl;
 import org.go.together.find.repository.sql.interfaces.WhereBuilderCreator;
@@ -16,6 +16,8 @@ import org.go.together.model.IdentifiedEntity;
 import org.go.together.repository.builders.Sql;
 import org.go.together.repository.query.SqlBuilder;
 import org.go.together.repository.query.WhereBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -25,6 +27,8 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepository<E> {
+    private static final Logger log = LoggerFactory.getLogger(FindRepositoryImpl.class);
+
     private final SqlBuilderCreatorImpl<E> sqlBuilderCreator;
     private final PathCorrector pathCorrector;
     private final WhereBuilderCreator<E> whereBuilderCreator;
@@ -44,7 +48,9 @@ public class FindRepositoryImpl<E extends IdentifiedEntity> implements FindRepos
 
         Sql<E> sql = query.build();
         long countRows = sql.getCountRows();
-        System.out.println(sql.getQuery());
+
+        log.info("Find query: {}", sql.getQuery());
+
         PageDto pageDto = getPageDto(page, countRows);
         Collection<Object> result = getResult(page, sql);
         return Pair.of(pageDto, result);

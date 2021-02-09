@@ -1,9 +1,8 @@
-package org.go.together.find.correction.path.dto;
+package org.go.together.find.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 import org.go.together.compare.FieldMapper;
-import org.go.together.find.dto.Field;
 
 @Builder
 @Getter

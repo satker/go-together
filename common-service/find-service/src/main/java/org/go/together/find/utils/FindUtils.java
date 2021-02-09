@@ -10,8 +10,6 @@ public class FindUtils {
     public static final String GROUP_AND = "&";
     public static final String GROUP_OR = "|";
     private static final String GROUP_START = "\\[";
-    private static final String GROUP_END = "]";
-    public static final String REGEX_GROUP = "^\\[[a-zA-Z&|.,]*]$";
     public static final String DOT = "\\.";
 
     public static String[] getParsedRemoteField(String string) {
