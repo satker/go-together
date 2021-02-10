@@ -1,5 +1,6 @@
 package org.go.together.notification.mappers.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.go.together.compare.ComparableDto;
 import org.go.together.dto.Dto;
 import org.go.together.dto.NotificationDto;
@@ -13,6 +14,8 @@ import java.util.UUID;
 
 @Component
 public class NotificationMapperImpl implements NotificationMapper {
+    private static final String EMPTY_MESSAGE = "{}";
+
     @Override
     public <D extends Dto> NotificationMessageDto getNotificationDto(UUID id, D dto, String resultMessage) {
         return Optional.ofNullable(dto)
@@ -21,6 +24,9 @@ public class NotificationMapperImpl implements NotificationMapper {
     }
 
     private NotificationMessageDto getNotificationMessageDto(UUID id, String resultMessage, ComparableDto comparableDto) {
+        if (StringUtils.isBlank(resultMessage) || resultMessage.equals(EMPTY_MESSAGE)) {
+            return null;
+        }
         UUID producerId = Optional.ofNullable(comparableDto.getParentId()).orElse(id);
         NotificationMessageDto notificationMessageDto = getNotificationMessageDto(resultMessage);
         enrichByNotificationDto(producerId, notificationMessageDto);
