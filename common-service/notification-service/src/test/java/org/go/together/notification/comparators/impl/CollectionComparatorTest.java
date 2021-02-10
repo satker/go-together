@@ -2,7 +2,7 @@ package org.go.together.notification.comparators.impl;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.compare.ComparableDto;
-import org.go.together.compare.ComparingObject;
+import org.go.together.compare.FieldProperties;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.go.together.notification.context.TestConfiguration;
 import org.go.together.notification.dto.AnotherTestDto;
@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ContextConfiguration(classes = TestConfiguration.class)
 @TestPropertySource(locations = "/application.properties")
 class CollectionComparatorTest {
-    private static final ComparingObject COMPARING_OBJECT = NotificationUtils.getComparingMap(TestComparableDto.class)
+    private static final FieldProperties COMPARING_OBJECT = NotificationUtils.getComparingMap(TestComparableDto.class)
             .get("test dtos");
     private static final String ANOTHER_TEST_DTO_STRING = "another string";
     private static final Number ANOTHER_TEST_DTO_NUMBER = 2;
@@ -140,5 +140,30 @@ class CollectionComparatorTest {
         assertEquals(2, innerDtoComparingMap.size());
         compareMaps((Map<String, Object>) innerDtoComparingMap.get(FIRST_TEST_DTO.getString()), numberChanged);
         compareMaps((Map<String, Object>) innerDtoComparingMap.get(SECOND_TEST_DTO.getString()), stringChanged);
+    }
+
+    @Test
+    void compareDtoChangedElementsCollectionsIdCompare() {
+        final String TEST_ADDED_STRING = "added element";
+        AnotherTestDto changedElement = createAnotherTestDto(FIRST_TEST_DTO.getId(), 123,
+                FIRST_TEST_DTO.getString());
+        AnotherTestDto nextChangedElement = createAnotherTestDto(null, SECOND_TEST_DTO.getNumber(), TEST_ADDED_STRING);
+        Set<AnotherTestDto> changedTestDtos = Set.of(changedElement, nextChangedElement);
+
+        FieldProperties idCompareFieldProperties = COMPARING_OBJECT.toBuilder().idCompare(true).build();
+        Map<String, Object> compareResult = collectionComparator.compare(FIELD, TEST_DTOS, changedTestDtos, idCompareFieldProperties);
+
+        final Pair<String, Object> removedElement = Pair.of(REMOVED, List.of(SECOND_TEST_DTO.getString()));
+        final Pair<String, Object> addedElement = Pair.of(ADDED, List.of(TEST_ADDED_STRING));
+
+
+        assertEquals(1, compareResult.size());
+
+        Map<String, Object> result = (Map<String, Object>) compareResult.get(FIELD);
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(removedElement.getValue(), result.get(removedElement.getKey()));
+        assertEquals(addedElement.getValue(), result.get(addedElement.getKey()));
     }
 }

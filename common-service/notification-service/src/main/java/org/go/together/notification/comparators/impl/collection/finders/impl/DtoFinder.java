@@ -1,7 +1,7 @@
 package org.go.together.notification.comparators.impl.collection.finders.impl;
 
 import org.go.together.compare.ComparableDto;
-import org.go.together.compare.ComparingObject;
+import org.go.together.compare.FieldProperties;
 import org.go.together.notification.comparators.impl.collection.finders.interfaces.Finder;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +25,9 @@ public class DtoFinder<T extends ComparableDto> implements Finder<T> {
     @Override
     public Map<String, Object> findChanged(Collection<T> changedObject,
                                            Collection<T> originalObject,
-                                           ComparingObject fieldProperties) {
+                                           FieldProperties fieldProperties) {
         if (fieldProperties.getIdCompare()) {
-            return Collections.emptyMap();
+            return new HashMap<>();
         } else {
             Map<String, Object> resultMap = new HashMap<>();
             HashMap<String, Object> changedValues = new HashMap<>();

@@ -1,6 +1,6 @@
 package org.go.together.notification.comparators.transformers.impl;
 
-import org.go.together.compare.ComparingObject;
+import org.go.together.compare.FieldProperties;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.go.together.notification.comparators.transformers.interfaces.Transformer;
 import org.go.together.utils.ReflectionUtils;
@@ -32,7 +32,7 @@ public class CommonCompareTransformer implements Transformer<Comparator> {
     }
 
     @Override
-    public Comparator get(String fieldName, Object originalObject, Object changedObject, ComparingObject fieldProperties) {
+    public Comparator get(String fieldName, Object originalObject, Object changedObject, FieldProperties fieldProperties) {
         if (!fieldProperties.getIsDeepCompare() || fieldProperties.getIgnored()) {
             return get(Object.class);
         }

@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 @Builder(toBuilder = true)
 @Getter
-public class ComparingObject {
+public class FieldProperties {
     private final Function<? extends Dto, Object> fieldValueGetter;
     private final Boolean isDeepCompare;
     private final Boolean ignored;

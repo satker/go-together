@@ -2,7 +2,7 @@ package org.go.together.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.go.together.compare.ComparingField;
-import org.go.together.compare.ComparingObject;
+import org.go.together.compare.FieldProperties;
 import org.go.together.dto.Dto;
 
 import java.lang.reflect.Method;
@@ -12,8 +12,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class NotificationUtils {
-    public static <T extends Dto> Map<String, ComparingObject> getComparingMap(Class<T> clazz) {
-        HashMap<String, ComparingObject> result = new HashMap<>();
+    public static <T extends Dto> Map<String, FieldProperties> getComparingMap(Class<T> clazz) {
+        HashMap<String, FieldProperties> result = new HashMap<>();
         Stream.of(clazz.getDeclaredFields())
                 .forEach(field -> {
                     ComparingField annotation = field.getAnnotation(ComparingField.class);
@@ -30,13 +30,13 @@ public class NotificationUtils {
                                 }
                             };
                             boolean ignored = field.isAnnotationPresent(JsonIgnore.class);
-                            ComparingObject comparingObject = ComparingObject.builder()
+                            FieldProperties fieldProperties = FieldProperties.builder()
                                     .fieldValueGetter(fieldValueGetter)
                                     .isDeepCompare(annotation.deepCompare())
                                     .idCompare(annotation.idCompare())
                                     .clazzType(field.getGenericType())
                                     .ignored(ignored).build();
-                            result.put(annotation.value(), comparingObject);
+                            result.put(annotation.value(), fieldProperties);
                         } catch (Exception e) {
                             throw new IllegalArgumentException("Cannot find field '" + name + "' getter");
                         }

@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,6 +30,7 @@ public class CommonNotificationService<D extends Dto> implements NotificationSer
     private final Comparator<D> dtoComparator;
     private final CrudProducer<NotificationMessageDto> notificationMessageProducer;
     private final CrudProducer<NotificationReceiverDto> notificationReceiverProducer;
+    private final ObjectMapper objectMapper;
 
     public CommonNotificationService(NotificationMapper notificationMapper,
                                      ReceiverMapper receiverMapper,
@@ -40,6 +42,7 @@ public class CommonNotificationService<D extends Dto> implements NotificationSer
         this.notificationReceiverProducer = notificationReceiverProducer;
         this.receiverMapper = receiverMapper;
         this.dtoComparator = dtoComparator;
+        this.objectMapper = new ObjectMapper();
     }
 
     public String getMessage(D originalDto, D changedDto, String serviceName, NotificationStatus notificationStatus) {
@@ -80,8 +83,8 @@ public class CommonNotificationService<D extends Dto> implements NotificationSer
 
     @SneakyThrows
     private String compareFields(D originalDto, D changedDto, String serviceName) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(dtoComparator.compare(serviceName, originalDto, changedDto));
+        Map<String, Object> compareResult = dtoComparator.compare(serviceName, originalDto, changedDto);
+        return objectMapper.writeValueAsString(compareResult);
     }
 
 
