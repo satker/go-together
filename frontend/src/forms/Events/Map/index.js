@@ -1,6 +1,8 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import MultipleMap from "forms/utils/components/ObjectGeoLocation/MultipleMap";
 import EventsList from "./EventsList";
+import {Event} from 'forms/utils/types'
 
 const Map = ({events}) => {
     const eventLocations = events.map(event => ({
@@ -12,5 +14,9 @@ const Map = ({events}) => {
         <EventsList/>
     </MultipleMap>
 };
+
+Map.propTypes = {
+    events: PropTypes.arrayOf(Event)
+}
 
 export default Map;

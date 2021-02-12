@@ -33,7 +33,8 @@ const mapStateToProps = (state) => ({
 
 RouteContent.propTypes = {
     routeInfo: RouteInfo,
-    updateEvent: PropTypes.func.isRequired
+    updateEvent: PropTypes.func.isRequired,
+    getTransportTypes: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, {updateEvent, getTransportTypes})(RouteContent);

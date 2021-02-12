@@ -6,7 +6,7 @@ import LeftContainer from "forms/utils/components/Container/LeftContainer";
 import RightContainer from "forms/utils/components/Container/RightContainer";
 
 import Filter from "./Filter";
-import Events from "./Events";
+import Events from "./Content";
 
 const EventsPage = () => <Container>
     <ContainerColumn>

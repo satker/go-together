@@ -1,6 +1,6 @@
 import moment from "moment";
 
-import {EVENT_SERVICE_URL, ROUTE_INFO_SERVICE_URL} from "forms/utils/constants";
+import {DEFAULT_CREATE_EVENT, EVENT_SERVICE_URL, ROUTE_INFO_SERVICE_URL} from "forms/utils/constants";
 import {POST, PUT} from "App/utils/api/constants";
 import {onChange} from "forms/utils/utils";
 
@@ -18,6 +18,13 @@ export const getEvent = (id) => (dispatch) => {
     });
 };
 
+export const cleanEvent = () => (dispatch) => {
+    dispatch({
+        type: EDIT_EVENT_EVENT,
+        value: {...DEFAULT_CREATE_EVENT}
+    });
+};
+
 export const postUpdatedEvent = (saveObj) => (dispatch) => {
     dispatch({
         type: EDIT_EVENT_UPDATED_EVENT,
@@ -27,12 +34,26 @@ export const postUpdatedEvent = (saveObj) => (dispatch) => {
     });
 };
 
+export const cleanUpdatedEvent = () => (dispatch) => {
+    dispatch({
+        type: EDIT_EVENT_UPDATED_EVENT,
+        value: {}
+    });
+};
+
 export const putNewEvent = (saveObj) => (dispatch) => {
     dispatch({
         type: EDIT_EVENT_NEW_EVENT,
         url: EVENT_SERVICE_URL + '/events',
         method: PUT,
         data: saveObj
+    });
+};
+
+export const cleanNewEvent = () => (dispatch) => {
+    dispatch({
+        type: EDIT_EVENT_NEW_EVENT,
+        value: {}
     });
 };
 

@@ -1,8 +1,10 @@
 import React from 'react';
+import PropTypes from "prop-types";
 
 import MultipleSelectBox from "forms/utils/components/MultipleSelectBox";
 import LoadableContent from "forms/utils/components/LoadableContent";
-import ItemContainer from "../../Container/ItemContainer";
+import {ResponseData, SimpleObject} from "forms/utils/types";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
 
 const SelectBoxLoadableField = ({name, options, placeholder, value, setValue, error}) => {
     return <ItemContainer style={{height: 70}}>
@@ -14,6 +16,15 @@ const SelectBoxLoadableField = ({name, options, placeholder, value, setValue, er
                                onChange={(languages) => setValue(name, languages)}/>
         </LoadableContent>
     </ItemContainer>;
+};
+
+SelectBoxLoadableField.propTypes = {
+    name: PropTypes.string.isRequired,
+    options: ResponseData,
+    placeholder: PropTypes.string,
+    value: PropTypes.arrayOf(SimpleObject),
+    setValue: PropTypes.func,
+    error: PropTypes.string
 };
 
 export default SelectBoxLoadableField;

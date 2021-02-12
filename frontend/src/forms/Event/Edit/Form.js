@@ -10,12 +10,11 @@ import Container from "forms/utils/components/Container/ContainerRow";
 
 import MainInfo from "./MainInfo";
 import Route from "./Route";
-import {postUpdatedEvent, putNewEvent, updateEvent} from "./actions";
-import {showNotification} from "forms/utils/components/Notification/actions";
+import {updateEvent} from "./actions";
 
 const EditForm = ({
-                      event, userId, postUpdatedEvent, putNewEvent,
-                      updatedEvent, newEvent, showNotification, isUpdate
+                      event, userId, save,
+                      updatedEvent, newEvent, clean
                   }) => {
 
     const saveEvent = () => {
@@ -38,15 +37,14 @@ const EditForm = ({
             }
             return route;
         });
-        event.id ? postUpdatedEvent(saveObj) : putNewEvent(saveObj);
+        save(saveObj);
     };
 
     useEffect(() => {
         const id = updatedEvent.response.id || newEvent.response.id;
         if (id) {
             navigate('/events/' + id);
-            const notificationMessage = isUpdate ? 'Updated event successful' : 'Created event';
-            showNotification(notificationMessage);
+            clean();
         }
     }, [updatedEvent, newEvent]);
 
@@ -64,10 +62,10 @@ const EditForm = ({
 EditForm.propTypes = {
     event: Event.isRequired,
     userId: PropTypes.string,
-    postUpdatedEvent: PropTypes.func.isRequired,
-    putNewEvent: PropTypes.func.isRequired,
+    save: PropTypes.func.isRequired,
     updatedEvent: ResponseData.isRequired,
-    newEvent: ResponseData.isRequired
+    newEvent: ResponseData.isRequired,
+    clean: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -77,4 +75,4 @@ const mapStateToProps = (state) => ({
     event: state.components.forms.event.eventEdit.event.response
 });
 
-export default connect(mapStateToProps, {postUpdatedEvent, putNewEvent, updateEvent, showNotification})(EditForm);
+export default connect(mapStateToProps, {updateEvent})(EditForm);

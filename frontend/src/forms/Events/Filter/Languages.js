@@ -8,7 +8,7 @@ import LoadableContent from "forms/utils/components/LoadableContent";
 import {FilterOperator} from "forms/utils/utils";
 
 import {getLanguages, setFilter} from "../actions";
-import {ResponseData} from "forms/utils/types";
+import {ResponseData, SimpleObject} from "forms/utils/types";
 import {keys} from "lodash";
 
 const LANGUAGES_FIELD = "author?languages.id";
@@ -42,7 +42,8 @@ const Languages = ({languages, getLanguages, setFilter, chooseLanguages}) => {
 Languages.propTypes = {
     setFilter: PropTypes.func.isRequired,
     getLanguages: PropTypes.func.isRequired,
-    languages: ResponseData
+    languages: ResponseData,
+    chooseLanguages: PropTypes.arrayOf(SimpleObject)
 }
 
 const mapStateToProps = state => {

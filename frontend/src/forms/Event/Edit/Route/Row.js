@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import {makeStyles} from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
@@ -14,6 +15,7 @@ import Container from "forms/utils/components/Container/ContainerRow";
 import {connect} from "App/Context";
 import SelectBox from "forms/utils/components/SelectBox";
 import SingleDate from "forms/utils/components/SingleDatePicker";
+import {NamedType, RouteInfoItem} from "forms/utils/types";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -103,6 +105,12 @@ const RouteItem = ({route, onChange, transportTypes}) => {
             </Accordion>
         </div>
     );
+};
+
+RouteItem.propTypes = {
+    route: RouteInfoItem,
+    onChange: PropTypes.func.isRequired,
+    transportTypes: PropTypes.arrayOf(NamedType)
 };
 
 const mapStateToProps = (state) => ({

@@ -27,8 +27,7 @@ MobileMenu.propTypes = {
     mobileMoreAnchorEl: PropTypes.object,
     isMobileMenuOpen: PropTypes.bool.isRequired,
     handleMobileMenuClose: PropTypes.func.isRequired,
-    handleMenuClose: PropTypes.func.isRequired,
-    userId: PropTypes.string
+    handleMenuClose: PropTypes.func.isRequired
 };
 
 export default MobileMenu;

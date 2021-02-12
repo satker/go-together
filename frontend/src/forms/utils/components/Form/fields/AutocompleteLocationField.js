@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 
 import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
-import ItemContainer from "../../Container/ItemContainer";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import {Location} from "forms/utils/types";
 
 const AutocompleteLocationField = ({name, placeholder, setValue, error, value}) => {
     const [currentValue, setCurrentValue] = useState();
@@ -17,7 +18,7 @@ const AutocompleteLocationField = ({name, placeholder, setValue, error, value}) 
         };
         setValue(name, location);
     };
-    console.log(value)
+
     return <ItemContainer style={{height: 70}}>
         <AutocompleteLocation onChangeLocation={(place, {lat, lng}) => onChange({lat, lng}, place)}
                               placeholder={placeholder}
@@ -30,7 +31,11 @@ const AutocompleteLocationField = ({name, placeholder, setValue, error, value}) 
 };
 
 AutocompleteLocationField.propTypes = {
-    value: PropTypes.array
-}
+    name: PropTypes.string.isRequired,
+    placeholder: PropTypes.string,
+    value: Location,
+    setValue: PropTypes.func,
+    error: PropTypes.string
+};
 
 export default AutocompleteLocationField;

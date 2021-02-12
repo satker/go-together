@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {navigate} from 'hookrouter';
-
+import PropTypes from 'prop-types';
 import {connect} from "App/Context";
 
 import {getAllInterests, getAllLanguages, getCheckMail, getCheckUserName} from "./actions";
@@ -22,6 +22,7 @@ import AutocompleteLocationField from "forms/utils/components/Form/fields/Autoco
 import {USER_SERVICE_URL} from "forms/utils/constants";
 import {PUT} from "App/utils/api/constants";
 import {showNotification} from "forms/utils/components/Notification/actions";
+import {ResponseData} from "forms/utils/types";
 
 const FormRegister = ({
                           allLanguages, allInterests, getAllInterests, getAllLanguages,
@@ -45,7 +46,7 @@ const FormRegister = ({
     }, [registeredUser]);
 
     const moveToMainPage = () => navigate('/');
-
+    console.log(checkedMail)
     return <RegisterForm onClose={moveToMainPage}
                          onSubmitOk={() => {
                              showNotification("Registration successful")
@@ -82,6 +83,19 @@ const FormRegister = ({
                    placeholder='Confirm password'/>
     </RegisterForm>
 };
+
+FormRegister.propTypes = {
+    allLanguages: ResponseData.isRequired,
+    allInterests: ResponseData.isRequired,
+    getAllInterests: PropTypes.func.isRequired,
+    getAllLanguages: PropTypes.func.isRequired,
+    registeredUser: ResponseData.isRequired,
+    getCheckUserName: PropTypes.func.isRequired,
+    getCheckMail: PropTypes.func.isRequired,
+    checkedMail: ResponseData.isRequired,
+    checkedUserName: ResponseData.isRequired,
+    showNotification: PropTypes.func.isRequired
+}
 
 const mapStateToProps = state => ({
     allLanguages: state.components.forms.register.allLanguages,

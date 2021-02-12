@@ -16,7 +16,10 @@ import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import {showModal} from "forms/utils/components/Modal/actions";
 import {showNotification} from "forms/utils/components/Notification/actions";
 
-const Events = ({pageSize, postFindEvents, findEvents, getEventsLikes, filter, showModal, deleteEvent, deletedEvent, showNotification}) => {
+const EventsContent = ({
+                           pageSize, postFindEvents, findEvents, getEventsLikes, filter,
+                           showModal, deleteEvent, deletedEvent, showNotification
+                       }) => {
     const [page, setPage] = useState(1);
     const [isMap, setIsMap] = useState(false);
 
@@ -69,7 +72,12 @@ const Events = ({pageSize, postFindEvents, findEvents, getEventsLikes, filter, s
     </>;
 };
 
-Events.propTypes = {
+EventsContent.propTypes = {
+    getEventsLikes: PropTypes.func.isRequired,
+    showModal: PropTypes.func.isRequired,
+    deleteEvent: PropTypes.func.isRequired,
+    deletedEvent: PropTypes.func.isRequired,
+    showNotification: PropTypes.func.isRequired,
     postFindEvents: PropTypes.func.isRequired,
     filter: SearchObject.isRequired,
     findEvents: ResponseData,
@@ -85,4 +93,4 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps,
     {postFindEvents, getEventsLikes, showModal, deleteEvent, showNotification})
-(Events);
+(EventsContent);

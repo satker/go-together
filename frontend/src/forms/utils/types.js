@@ -1,5 +1,10 @@
 import PropTypes from "prop-types";
 
+export const NamedType = PropTypes.exact({
+    id: PropTypes.string,
+    name: PropTypes.string
+});
+
 export const Country = PropTypes.exact({
     id: PropTypes.string,
     countryCode: PropTypes.string,
@@ -19,18 +24,20 @@ export const SimpleObject = PropTypes.exact({
     code: PropTypes.string
 });
 
-export const NotificationMessage = PropTypes.exact({
+export const NotificationMessageType = PropTypes.exact({
     id: PropTypes.string,
     message: PropTypes.string,
     date: PropTypes.string,
-    isRead: PropTypes.bool,
-    notificationId: PropTypes.string
+    notification: PropTypes.exact({
+        id: PropTypes.string,
+        producerId: PropTypes.string
+    })
 })
 
-export const NotificationObject = PropTypes.exact({
+export const NotificationType = PropTypes.exact({
     id: PropTypes.string,
-    isRead: PropTypes.bool,
-    notificationMessage: NotificationMessage.isRequired
+    isRead: PropTypes.string,
+    notificationMessage: NotificationMessageType.isRequired
 });
 
 export const ResponseData = PropTypes.exact({
@@ -41,7 +48,7 @@ export const ResponseData = PropTypes.exact({
     error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool])
 });
 
-export const PhotoObject = PropTypes.exact({
+export const PhotoType = PropTypes.exact({
     id: PropTypes.string,
     photoUrl: PropTypes.string,
     content: PropTypes.exact({
@@ -65,7 +72,7 @@ export const GroupPhoto = PropTypes.exact({
     id: PropTypes.string,
     groupId: PropTypes.string,
     category: PropTypes.string,
-    photos: PropTypes.arrayOf(PhotoObject)
+    photos: PropTypes.arrayOf(PhotoType)
 });
 
 export const Location = PropTypes.exact({
@@ -96,7 +103,7 @@ export const SimpleUser = PropTypes.exact({
     login: PropTypes.string,
     firstName: PropTypes.string,
     lastName: PropTypes.string,
-    userPhoto: PhotoObject,
+    userPhoto: PhotoType,
 });
 
 export const EventUser = PropTypes.exact({
@@ -107,6 +114,7 @@ export const EventUser = PropTypes.exact({
 });
 
 export const RouteInfoItem = PropTypes.exact({
+    id: PropTypes.string,
     location: Location,
     transportType: PropTypes.string,
     cost: PropTypes.number,
@@ -118,6 +126,7 @@ export const RouteInfoItem = PropTypes.exact({
 });
 
 export const RouteInfo = PropTypes.exact({
+    id: PropTypes.string,
     groupId: PropTypes.string,
     infoRoutes: PropTypes.arrayOf(RouteInfoItem)
 });
@@ -165,3 +174,4 @@ export const EventMapRoute = PropTypes.exact({
     name: PropTypes.string,
     locations: PropTypes.arrayOf(MapRoute)
 })
+

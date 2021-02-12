@@ -1,7 +1,9 @@
 import React, {useEffect} from 'react';
+import PropTypes from 'prop-types';
 
 import LabeledInput from "forms/utils/components/LabeledInput";
-import ItemContainer from "../../Container/ItemContainer";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import {ResponseData} from "forms/utils/types";
 
 const TextField = ({name, value, setValue, error, type, checkValue, checked, setError, placeholder}) => {
     useEffect(() => {
@@ -26,6 +28,18 @@ const TextField = ({name, value, setValue, error, type, checkValue, checked, set
             }}/>
     </ItemContainer>;
 }
+
+TextField.propTypes = {
+    name: PropTypes.string.isRequired,
+    value: PropTypes.string,
+    setValue: PropTypes.func,
+    error: PropTypes.string,
+    type: PropTypes.string,
+    checkValue: PropTypes.func,
+    checked: ResponseData,
+    setError: PropTypes.func,
+    placeholder: PropTypes.string
+};
 
 export default TextField;
 

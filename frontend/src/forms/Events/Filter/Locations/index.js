@@ -15,9 +15,9 @@ import {setFilter} from "../../actions";
 const LAT_LNG = "latitude,longitude";
 const LOCATION_FIELD = 'routes?infoRoutes.[isStart&isEnd&locationRoutes?latitude,longitude]';
 
-export const getChangedRoutes = (filters, routes, filterRoutes) => {
-    const locationsKey = keys(filters?.filters)?.find(key => key.startsWith(LOCATION_FIELD));
-    const searchedBetweenLatLng = filters?.filters[locationsKey]?.values
+export const getChangedRoutes = (filter, routes, filterRoutes) => {
+    const locationsKey = keys(filter?.filters)?.find(key => key.startsWith(LOCATION_FIELD));
+    const searchedBetweenLatLng = filter?.filters[locationsKey]?.values
         .filter(filterRoutes)
         .map(value => value[LAT_LNG].value)
         .map(value => value.split(","))

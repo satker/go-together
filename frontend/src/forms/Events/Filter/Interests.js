@@ -8,7 +8,7 @@ import LoadableContent from "forms/utils/components/LoadableContent";
 import {FilterOperator} from "forms/utils/utils";
 
 import {getInterests, setFilter} from "../actions";
-import {ResponseData} from "forms/utils/types";
+import {ResponseData, SimpleObject} from "forms/utils/types";
 import {keys} from "lodash";
 
 const INTERESTS_FIELD = "author?interests.id";
@@ -42,7 +42,8 @@ const Interests = ({interests, getInterests, setFilter, chooseInterests}) => {
 Interests.propTypes = {
     setFilter: PropTypes.func.isRequired,
     getInterests: PropTypes.func.isRequired,
-    interests: ResponseData
+    interests: ResponseData,
+    chooseInterests: PropTypes.arrayOf(SimpleObject)
 }
 
 const mapStateToProps = state => {

@@ -11,6 +11,6 @@ export const register = {
     registeredUser: createEmptyResponse(CREATED_USER),
     allLanguages: createEmptyResponse(REGISTER_ALL_LANGUAGES, []),
     allInterests: createEmptyResponse(REGISTER_ALL_INTERESTS, []),
-    checkMail: createEmptyResponse(REGISTER_CHECK_MAIL),
-    checkUserName: createEmptyResponse(REGISTER_CHECK_USERNAME)
+    checkMail: createEmptyResponse(REGISTER_CHECK_MAIL, false),
+    checkUserName: createEmptyResponse(REGISTER_CHECK_USERNAME, false)
 };

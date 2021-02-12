@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from "prop-types";
 import CardMedia from "@material-ui/core/CardMedia";
 import FormHelperText from '@material-ui/core/FormHelperText';
 
@@ -6,6 +7,7 @@ import {getSrcForImg} from "forms/utils/utils";
 import ImageSelector from "forms/utils/components/ImageSelector";
 import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import {PhotoType} from "forms/utils/types";
 
 const PhotoField = ({name, value, setValue, error}) => {
     return <ItemContainer>
@@ -32,5 +34,12 @@ const PhotoField = ({name, value, setValue, error}) => {
         </ItemContainer>
     </ItemContainer>;
 }
+
+PhotoField.propTypes = {
+    name: PropTypes.string.isRequired,
+    value: PropTypes.arrayOf(PhotoType),
+    setValue: PropTypes.func,
+    error: PropTypes.string
+};
 
 export default PhotoField;
