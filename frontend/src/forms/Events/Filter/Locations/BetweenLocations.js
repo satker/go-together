@@ -60,7 +60,7 @@ const BetweenLocations = ({onChangeLocation, filter}) => {
 
 BetweenLocations.propTypes = {
     onChangeLocation: PropTypes.func.isRequired,
-    filter: SearchObject.isRequired
+    filter: SearchObject
 }
 
 const mapStateToProps = state => ({

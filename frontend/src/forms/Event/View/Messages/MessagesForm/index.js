@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import moment from "moment";
+import PropTypes from "prop-types";
 
 import {connect} from "App/Context";
 
@@ -7,6 +8,7 @@ import MessagesContainer from "./MesagesContainer";
 import {getMessagesByEvent} from "../actions";
 import InputMessage from "./InputMessage";
 import {clearTimer, setTimer} from "App/TemporaryTimer/actions";
+import {Event, ResponseData} from "forms/utils/types";
 
 const MessagesForm = ({event, userMessageId, userId, messagesByEvent, getMessagesByEvent, setTimer, clearTimer}) => {
     const [parsedReviewsByEvent, setParsedReviewsByEvent] = useState([]);
@@ -53,7 +55,15 @@ const MessagesForm = ({event, userMessageId, userId, messagesByEvent, getMessage
     </div>
 };
 
-MessagesForm.propTypes = {};
+MessagesForm.propTypes = {
+    event: Event.isRequired,
+    userMessageId: PropTypes.string,
+    userId: PropTypes.string,
+    messagesByEvent: ResponseData,
+    getMessagesByEvent: PropTypes.func.isRequired,
+    setTimer: PropTypes.func.isRequired,
+    clearTimer: PropTypes.func.isRequired
+};
 
 const mapStateToProps = state => ({
     userId: state.auth.response.userId,

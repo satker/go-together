@@ -175,3 +175,12 @@ export const EventMapRoute = PropTypes.exact({
     locations: PropTypes.arrayOf(MapRoute)
 })
 
+export const MessageType = PropTypes.exact({
+    message: PropTypes.string,
+    rating: PropTypes.number,
+    date: PropTypes.string,
+    authorId: PropTypes.string,
+    messageType: PropTypes.string,
+    recipientId: PropTypes.string
+})
+

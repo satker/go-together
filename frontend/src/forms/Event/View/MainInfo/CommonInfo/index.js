@@ -46,8 +46,9 @@ const CommonInfo = ({event, users, getUsers, userId, getEventsLikes}) => {
 CommonInfo.propTypes = {
     event: Event.isRequired,
     users: ResponseData.isRequired,
-    setRefresh: PropTypes.func.isRequired,
-    userId: PropTypes.string
+    getUsers: PropTypes.func.isRequired,
+    userId: PropTypes.string,
+    getEventsLikes: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

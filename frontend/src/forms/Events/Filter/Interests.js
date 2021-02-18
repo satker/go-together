@@ -51,7 +51,7 @@ const mapStateToProps = state => {
     const filters = state.components.forms.events.filter.response.filters;
     const filtersName = keys(filters)
         .find(keyFilter => keyFilter.startsWith(INTERESTS_FIELD));
-    console.log(filters)
+
     const filterInterests = filters[filtersName]?.values[0].id.value || [];
     const chooseInterests = filterInterests
         .map(interestId => ({

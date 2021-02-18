@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import {DEFAULT_EVENT_USER} from "forms/utils/constants";
 import {connect} from "App/Context";
-import {EventUser} from "forms/utils/types";
+import {EventUser, ResponseData} from "forms/utils/types";
 import CustomButton from "forms/utils/components/CustomButton";
 
 import {addMeToList, deleteMeFromList} from "./actions";
@@ -49,10 +49,12 @@ const ParticipationButton = ({
 ParticipationButton.propTypes = {
     eventId: PropTypes.string.isRequired,
     users: PropTypes.arrayOf(EventUser),
-    setRefresh: PropTypes.func.isRequired,
     userId: PropTypes.string,
     addMeToList: PropTypes.func.isRequired,
-    deleteMeFromList: PropTypes.func.isRequired
+    deleteMeFromList: PropTypes.func.isRequired,
+    getUsers: PropTypes.func.isRequired,
+    meToList: ResponseData,
+    meFromList: ResponseData
 };
 
 const mapStateToProps = state => ({

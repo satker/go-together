@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 
 import {Review} from "forms/utils/types";
 
@@ -16,7 +17,9 @@ const ItemComment = ({review, style, timestampStyle}) => {
 };
 
 ItemComment.propTypes = {
-    review: Review.isRequired
+    review: Review.isRequired,
+    style: PropTypes.string,
+    timestampStyle: PropTypes.string
 };
 
 export default ItemComment;

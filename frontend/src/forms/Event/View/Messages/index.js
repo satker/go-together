@@ -19,8 +19,7 @@ const Messages = ({userMessageId, eventAuthorId, setUserMessageId, userId}) => {
 
 Messages.propTypes = {
     userMessageId: PropTypes.string,
-    eventUserId: PropTypes.string,
-    eventId: PropTypes.string.isRequired,
+    eventAuthorId: PropTypes.string,
     userId: PropTypes.string,
     setUserMessageId: PropTypes.func.isRequired
 };

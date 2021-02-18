@@ -76,7 +76,7 @@ EventsContent.propTypes = {
     getEventsLikes: PropTypes.func.isRequired,
     showModal: PropTypes.func.isRequired,
     deleteEvent: PropTypes.func.isRequired,
-    deletedEvent: PropTypes.func.isRequired,
+    deletedEvent: ResponseData,
     showNotification: PropTypes.func.isRequired,
     postFindEvents: PropTypes.func.isRequired,
     filter: SearchObject.isRequired,

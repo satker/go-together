@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from "prop-types";
 
 import ElementTabs from "forms/utils/components/Tabs";
-import {ResponseData} from "forms/utils/types";
+import {Event, ResponseData} from "forms/utils/types";
 import LoadableContent from "forms/utils/components/LoadableContent";
 import {connect} from "App/Context";
 
@@ -56,10 +56,10 @@ const Users = ({event, users, statuses, userId, postUserStatus, userStatus, getU
 };
 
 Users.propTypes = {
+    event: Event,
+    userStatus: ResponseData,
     users: ResponseData.isRequired,
     statuses: ResponseData.isRequired,
-    eventId: PropTypes.string.isRequired,
-    eventUserId: PropTypes.string.isRequired,
     userId: PropTypes.string,
     postUserStatus: PropTypes.func.isRequired,
     getUsers: PropTypes.func.isRequired,

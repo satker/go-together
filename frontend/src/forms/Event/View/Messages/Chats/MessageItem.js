@@ -1,6 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import {getSrcForImg} from "forms/utils/utils";
+import {MessageType, SimpleUser} from "forms/utils/types";
 
 const MessageItem = ({message, user, userMessageId, setUserMessageId}) => {
     return <div className='message-item custom-border' onClick={() => setUserMessageId(user.id)}
@@ -15,6 +17,11 @@ const MessageItem = ({message, user, userMessageId, setUserMessageId}) => {
     </div>;
 };
 
-MessageItem.propTypes = {};
+MessageItem.propTypes = {
+    message: MessageType,
+    user: SimpleUser,
+    userMessageId: PropTypes.string,
+    setUserMessageId: PropTypes.func.isRequired
+};
 
 export default MessageItem;

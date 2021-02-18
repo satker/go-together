@@ -46,7 +46,7 @@ const FormRegister = ({
     }, [registeredUser]);
 
     const moveToMainPage = () => navigate('/');
-    console.log(checkedMail)
+
     return <RegisterForm onClose={moveToMainPage}
                          onSubmitOk={() => {
                              showNotification("Registration successful")

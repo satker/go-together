@@ -4,7 +4,7 @@ import moment from "moment";
 
 import {connect} from "App/Context";
 import LabeledInput from "forms/utils/components/LabeledInput";
-import {Review} from "forms/utils/types";
+import {Event, Review} from "forms/utils/types";
 
 import {putNewMessage} from "../actions";
 import SendButtonIcon from "forms/utils/components/Icon/Sent";
@@ -44,8 +44,8 @@ const InputMessage = ({
 
 InputMessage.propTypes = {
     messages: PropTypes.arrayOf(Review),
+    event: Event.isRequired,
     setMessages: PropTypes.func.isRequired,
-    eventId: PropTypes.string.isRequired,
     userId: PropTypes.string,
     userMessageId: PropTypes.string,
     putNewMessage: PropTypes.func.isRequired,
