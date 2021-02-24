@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 
 import {connect} from "App/Context";
 import Container from "forms/utils/components/Container/ContainerRow";
-import {NotificationObject} from "forms/utils/types";
+import {ResponseData} from "forms/utils/types";
 
-import Notification from "./Notification";
+import Row from "./Row";
 import {getUserNotifications, readNotifications} from "./actions";
 import LoadableContent from "../utils/components/LoadableContent";
 import CustomPagination from "../utils/components/Pagination";
@@ -31,7 +31,7 @@ const Notifications = ({userNotifications, readNotifications, userId, getUserNot
     return <Container>
         <LoadableContent loadableData={userNotifications}>
             {(userNotifications.response?.result || []).map(notification =>
-                <Notification notification={notification.notificationMessage} key={notification.id}/>
+                <Row notification={notification.notificationMessage} key={notification.id}/>
             )}
         </LoadableContent>
         {pageCount <= 1 || <CustomPagination pageCount={pageCount}
@@ -41,9 +41,10 @@ const Notifications = ({userNotifications, readNotifications, userId, getUserNot
 };
 
 Notifications.propTypes = {
-    userNotifications: PropTypes.arrayOf(NotificationObject).isRequired,
+    userNotifications: ResponseData.isRequired,
     readNotifications: PropTypes.func.isRequired,
-    userId: PropTypes.string
+    userId: PropTypes.string,
+    getUserNotifications: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

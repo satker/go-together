@@ -12,7 +12,7 @@ const ItemContainer = ({children, style}) => {
 
 ItemContainer.propTypes = {
     children: PropTypes.node,
-    style: PropTypes.string
+    style: PropTypes.object
 };
 
 export default ItemContainer;

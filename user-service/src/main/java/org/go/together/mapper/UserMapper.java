@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class UserMapper implements Mapper<UserDto, SystemUser> {
-    private final CrudProducer<GroupLocationDto> locationProducer;
+    private final CrudProducer<LocationDto> locationProducer;
     private final CrudProducer<GroupPhotoDto> groupPhotoProducer;
     private final Mapper<LanguageDto, Language> languageMapper;
     private final Mapper<InterestDto, Interest> interestMapper;
@@ -47,7 +47,6 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
         user.setId(dto.getId());
         user.setMail(dto.getMail());
         user.setLogin(dto.getLogin());
-        //user.setLocationId(locationClient.saveLocation(dto.getLocation()).getId());
         user.setLastName(dto.getLastName());
         user.setFirstName(dto.getFirstName());
         user.setDescription(dto.getDescription());

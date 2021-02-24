@@ -7,16 +7,17 @@ import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import {connect} from "App/Context";
 
 import {getChangedRoutes} from "./index";
+import {SearchObject} from "forms/utils/types";
 
-const BetweenLocations = ({onChangeLocation, filters}) => {
+const BetweenLocations = ({onChangeLocation, filter}) => {
     const [routes, setRoutes] = useState([]);
 
     useEffect(() => {
-        if (filters?.filters) {
-            const newRoutes = getChangedRoutes(filters, routes, (value) => !value.isEnd && !value.isStart);
+        if (filter?.filters) {
+            const newRoutes = getChangedRoutes(filter, routes, (value) => !value.isEnd && !value.isStart);
             setRoutes(newRoutes);
         }
-    }, [filters]);
+    }, [filter]);
 
     const updateLocation = (index) => ({value, lat, lng}) => {
         const updatedLocation = routes.map(route => {
@@ -58,7 +59,8 @@ const BetweenLocations = ({onChangeLocation, filters}) => {
 }
 
 BetweenLocations.propTypes = {
-    onChangeLocation: PropTypes.func.isRequired
+    onChangeLocation: PropTypes.func.isRequired,
+    filter: SearchObject
 }
 
 const mapStateToProps = state => ({

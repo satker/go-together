@@ -8,7 +8,7 @@ import LoadableContent from "forms/utils/components/LoadableContent";
 import {FilterOperator} from "forms/utils/utils";
 
 import {getLanguages, setFilter} from "../actions";
-import {ResponseData} from "forms/utils/types";
+import {ResponseData, SimpleObject} from "forms/utils/types";
 import {keys} from "lodash";
 
 const LANGUAGES_FIELD = "author?languages.id";
@@ -22,10 +22,13 @@ const Languages = ({languages, getLanguages, setFilter, chooseLanguages}) => {
         let searchLanguages = null;
         if (languages.length !== 0) {
             searchLanguages = [{
-                "id": languages.map(language => language.id)
+                "id": {
+                    filterType: FilterOperator.IN.operator,
+                    value: languages.map(language => language.id)
+                }
             }];
         }
-        setFilter(FilterOperator.IN, searchLanguages, LANGUAGES_FIELD, languages.length);
+        setFilter(searchLanguages, LANGUAGES_FIELD, languages.length);
     }
 
     return <LoadableContent loadableData={languages}>
@@ -39,7 +42,8 @@ const Languages = ({languages, getLanguages, setFilter, chooseLanguages}) => {
 Languages.propTypes = {
     setFilter: PropTypes.func.isRequired,
     getLanguages: PropTypes.func.isRequired,
-    languages: ResponseData
+    languages: ResponseData,
+    chooseLanguages: PropTypes.arrayOf(SimpleObject)
 }
 
 const mapStateToProps = state => {
@@ -47,7 +51,7 @@ const mapStateToProps = state => {
     const filters = state.components.forms.events.filter.response.filters;
     const filtersName = keys(filters)
         .find(keyFilter => keyFilter.startsWith(LANGUAGES_FIELD));
-    const filterLanguages = filters[filtersName]?.values[0].id || [];
+    const filterLanguages = filters[filtersName]?.values[0].id.value || [];
     const chooseLanguages = filterLanguages
         .map(languageId => ({
             id: languageId,

@@ -159,8 +159,7 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
             declaredField.setAccessible(true);
             Object value = declaredField.get(savedEntity);
             FilterDto filterDto = new FilterDto();
-            filterDto.setFilterType(FindOperator.EQUAL);
-            filterDto.setValues(Collections.singleton(Map.of(entry.getKey(), value)));
+            filterDto.setValues(Collections.singleton(Map.of(entry.getKey(), new FilterValueDto(FindOperator.EQUAL, value))));
             return Map.entry(entry.getKey(), filterDto);
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();

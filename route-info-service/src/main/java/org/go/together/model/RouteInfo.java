@@ -14,10 +14,12 @@ import java.util.UUID;
 @Entity
 @Table(name = "route_info", schema = "route_info_service")
 public class RouteInfo extends IdentifiedEntity {
-    private UUID startLocationId;
-    private UUID endLocationId;
+    private UUID locationId;
     private TransportType transportType;
     private Double cost;
     private Date movementDate;
     private Double movementDuration;
+    private Integer routeNumber;
+    private Boolean isStart;
+    private Boolean isEnd;
 }

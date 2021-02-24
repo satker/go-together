@@ -1,11 +1,9 @@
 package org.go.together.find.correction.values;
 
-import org.go.together.find.correction.field.dto.CorrectedFieldDto;
-
-import java.util.Collection;
-import java.util.Map;
+import org.go.together.dto.FilterValueDto;
+import org.go.together.find.dto.Path;
 
 public interface ValuesCorrector {
-    Collection<Map<String, Object>> correct(CorrectedFieldDto correctedFieldDto,
-                                            Collection<Map<String, Object>> filters);
+    FilterValueDto correct(Path correctedFieldDto,
+                           FilterValueDto values);
 }

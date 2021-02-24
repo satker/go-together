@@ -1,10 +1,7 @@
 package org.go.together.validation;
 
 import lombok.RequiredArgsConstructor;
-import org.go.together.dto.EventUserDto;
-import org.go.together.dto.FilterDto;
-import org.go.together.dto.FormDto;
-import org.go.together.dto.UserDto;
+import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
 import org.go.together.enums.FindOperator;
 import org.go.together.kafka.producers.FindProducer;
@@ -51,8 +48,7 @@ public class EventUserValidator extends CommonValidator<EventUserDto> {
     private boolean isNotPresentUser(UUID requestId, UUID authorId) {
         FormDto formDto = new FormDto();
         FilterDto filterDto = new FilterDto();
-        filterDto.setFilterType(FindOperator.EQUAL);
-        filterDto.setValues(Collections.singleton(Collections.singletonMap("id", authorId)));
+        filterDto.setValues(Collections.singleton(Collections.singletonMap("id", new FilterValueDto(FindOperator.EQUAL, authorId))));
         formDto.setFilters(Collections.singletonMap("id", filterDto));
         formDto.setMainIdField("users.id");
         return findUserKafkaProducer.find(requestId, formDto).getResult().isEmpty();

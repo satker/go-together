@@ -13,8 +13,5 @@ import javax.persistence.Table;
 public class Location extends IdentifiedEntity {
     private String address;
     private double latitude;
-    private int routeNumber;
     private double longitude;
-    private Boolean isStart;
-    private Boolean isEnd;
 }

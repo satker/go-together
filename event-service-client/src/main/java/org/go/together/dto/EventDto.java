@@ -26,9 +26,6 @@ public class EventDto extends ComparableDto {
     @ComparingField("event group photo")
     private GroupPhotoDto groupPhoto;
 
-    @ComparingField("routes")
-    private GroupLocationDto route;
-
     @ComparingField("group info routes")
     private GroupRouteInfoDto routeInfo;
 

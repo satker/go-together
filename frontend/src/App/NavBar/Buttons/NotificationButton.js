@@ -27,7 +27,7 @@ const NotificationButton = ({menuId, userNotificationsSize, getUnreadUserNotific
 NotificationButton.propTypes = {
     menuId: PropTypes.string.isRequired,
     userNotificationsSize: PropTypes.number.isRequired,
-    getUserNotifications: PropTypes.func.isRequired,
+    getUnreadUserNotifications: PropTypes.func.isRequired,
     userId: PropTypes.string
 };
 

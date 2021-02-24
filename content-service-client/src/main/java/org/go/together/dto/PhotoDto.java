@@ -4,12 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.go.together.compare.ComparableDto;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PhotoDto extends Dto {
+public class PhotoDto extends ComparableDto {
     private String photoUrl;
     private ContentDto content;
+
+    @Override
+    public String getMainField() {
+        return getId().toString();
+    }
 }

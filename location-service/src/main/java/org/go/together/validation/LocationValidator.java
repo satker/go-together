@@ -27,9 +27,7 @@ public class LocationValidator extends CommonValidator<LocationDto> {
         return Map.of(
                 "address", LocationDto::getAddress,
                 "city name", dto -> dto.getPlace().getName(),
-                "place", LocationDto::getPlace,
-                "end location", LocationDto::getIsEnd,
-                "start location", LocationDto::getIsStart);
+                "place", LocationDto::getPlace);
     }
 
     @Override

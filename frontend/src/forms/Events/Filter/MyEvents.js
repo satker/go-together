@@ -1,9 +1,11 @@
 import React from "react";
+import PropTypes from 'prop-types';
 
 import {connect} from "App/Context";
 import CheckBox from "forms/utils/components/CheckBox";
 import {setFilter} from "../actions";
 import {FilterOperator} from "../../utils/utils";
+import {SearchObject} from "forms/utils/types";
 
 const AUTHOR_ID = 'authorId';
 
@@ -13,11 +15,14 @@ const MyEvents = ({filter, setFilter, userId}) => {
     const onChange = (value) => {
         if (value) {
             const values = [{
-                [AUTHOR_ID]: userId
+                [AUTHOR_ID]: {
+                    filterType: FilterOperator.EQUAL.operator,
+                    value: userId
+                }
             }];
-            setFilter(FilterOperator.EQUAL, values, AUTHOR_ID);
+            setFilter(values, AUTHOR_ID);
         } else {
-            setFilter(FilterOperator.EQUAL, [], AUTHOR_ID);
+            setFilter([], AUTHOR_ID);
         }
     }
 
@@ -25,6 +30,12 @@ const MyEvents = ({filter, setFilter, userId}) => {
                                setValue={onChange}
                                label='My events'/>
 };
+
+MyEvents.propTypes = {
+    filter: SearchObject.isRequired,
+    setFilter: PropTypes.func.isRequired,
+    userId: PropTypes.string
+}
 
 const mapStateToProps = state => ({
     filter: state.components.forms.events.filter.response,

@@ -18,7 +18,7 @@ const Profile = ({author}) => {
                     {author.firstName + ' ' + author.lastName}
                 </Typography>
                 <Typography component="h6" variant="h6">
-                    {author.location.locations[0].place.name + ' ' + author.location.locations[0].place.country.name}
+                    {author.location.place.name + ' ' + author.location.place.country.name}
                 </Typography>
                 <Typography href={"#"}>{author.mail}</Typography>
                 <Typography>My interests: {author.interests.map(interest => interest.name).join(', ')}</Typography>

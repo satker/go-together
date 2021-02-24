@@ -1,6 +1,6 @@
 package org.go.together.notification.comparators.transformers.impl;
 
-import org.go.together.compare.ComparingObject;
+import org.go.together.compare.FieldProperties;
 import org.go.together.notification.comparators.interfaces.Comparator;
 import org.go.together.notification.comparators.transformers.interfaces.Transformer;
 import org.go.together.utils.ReflectionUtils;
@@ -21,8 +21,6 @@ public class CommonCompareTransformer implements Transformer<Comparator> {
     @Override
     @Autowired
     public void setImpl(List<Comparator> comparators) {
-        //ResolvableType resolvableType = ResolvableType.forClass(comparators.getClass());
-        //Class<?> resolve = resolvableType.getGeneric(0).resolve();
         this.classComparatorMap = comparators.stream()
                 .collect(Collectors.toMap(comparator -> ReflectionUtils.getParametrizedInterface(comparator.getClass(), 0),
                         Function.identity()));
@@ -34,8 +32,8 @@ public class CommonCompareTransformer implements Transformer<Comparator> {
     }
 
     @Override
-    public Comparator get(String fieldName, Object originalObject, Object changedObject, ComparingObject fieldProperties) {
-        if (!fieldProperties.getIsDeepCompare() || fieldProperties.getIgnored() || fieldProperties.getIdCompare()) {
+    public Comparator get(String fieldName, Object originalObject, Object changedObject, FieldProperties fieldProperties) {
+        if (!fieldProperties.getIsDeepCompare() || fieldProperties.getIgnored()) {
             return get(Object.class);
         }
         Class<?> clazz = getClazz(fieldProperties.getClazzType());

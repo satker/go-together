@@ -1,19 +1,17 @@
 package org.go.together.find.finders;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.go.together.compare.FieldMapper;
-import org.go.together.dto.FilterDto;
 import org.go.together.dto.FormDto;
-import org.go.together.find.dto.ClientLocalFieldObject;
-import org.go.together.find.dto.FieldDto;
+import org.go.together.find.dto.node.FilterNode;
 import org.go.together.find.finders.converter.RequestConverter;
 import org.go.together.find.finders.request.Sender;
+import org.go.together.kafka.producers.FindProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.go.together.find.utils.FindUtils.getSingleGroupFields;
+import java.util.Collection;
+import java.util.UUID;
 
 @Component
 public class RemoteFinder implements Finder {
@@ -30,32 +28,10 @@ public class RemoteFinder implements Finder {
         this.requestConverter = requestConverter;
     }
 
-    public Map<FieldDto, Collection<Object>> getFilters(UUID requestId,
-                                                        Map<FieldDto, FilterDto> filters,
-                                                        Map<String, FieldMapper> availableFields) {
-        Map<ClientLocalFieldObject, FormDto> filtersToAnotherServices = filters.entrySet().parallelStream()
-                .flatMap(entry -> getFieldMapperByRemoteField(availableFields, entry.getKey()).stream()
-                        .map(fieldMapper -> requestConverter.convert(entry, fieldMapper)))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, this::resolveRemoteFormDtos));
-        if (!filtersToAnotherServices.isEmpty()) {
-            return sender.send(requestId, filtersToAnotherServices);
-        }
-
-        return Collections.emptyMap();
-    }
-
-    private FormDto resolveRemoteFormDtos(FormDto formDto1, FormDto formDto2) {
-        formDto1.getFilters().putAll(formDto2.getFilters());
-        return formDto1;
-    }
-
-    private Set<FieldMapper> getFieldMapperByRemoteField(Map<String, FieldMapper> availableFields,
-                                                         FieldDto fieldDto) {
-        String localEntityField = fieldDto.getPaths()[0];
-        Set<String> singleGroupFields = Set.of(getSingleGroupFields(localEntityField));
-        return availableFields.values().stream()
-                .filter(fieldMapper -> fieldMapper.getRemoteServiceClient() != null)
-                .filter(fieldMapper -> singleGroupFields.contains(fieldMapper.getCurrentServiceField()))
-                .collect(Collectors.toSet());
+    public Collection<Object> getFilters(UUID requestId,
+                                         FilterNode filterNode,
+                                         FieldMapper fieldMapper) {
+        Pair<FindProducer<?>, FormDto> producerFormDtoPair = requestConverter.convert(filterNode, fieldMapper);
+        return sender.send(requestId, producerFormDtoPair.getKey(), producerFormDtoPair.getValue());
     }
 }

@@ -6,13 +6,13 @@ import ContainerColumn from "forms/utils/components/Container/ContainerColumn";
 import Container from "forms/utils/components/Container/ContainerRow";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 
-import RoutesList from './RoutesList';
 import MapContainer from "./Common/MapContainer";
 import ListContainer from "./Common/ListContainer";
 import {getMarker, sort} from "./utils";
-import {usePosition} from "./hooks/usePosition";
+import {usePosition} from "./Position/usePosition";
+import {MapRoute} from "forms/utils/types";
 
-const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) => {
+const SingleMap = ({children, route, editable, onChange, zoom, onDelete, onAdd, height}) => {
     const [center, setCenter] = useState(usePosition());
     const [googleMap, setGoogleMap] = useState(null);
     const [polyline, setPolyline] = useState(null);
@@ -21,7 +21,7 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
     useEffect(() => {
         if (googleMap) {
             let newPolyline = polyline;
-            const newRoutes = route.map(route => ({lat: route.latitude, lng: route.longitude}));
+            const newRoutes = route.map(route => ({lat: route.location.latitude, lng: route.location.longitude}));
             if (newPolyline) {
                 newPolyline.setMap(null);
                 newPolyline.setPath(newRoutes);
@@ -40,11 +40,11 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
         }
     }, [googleMap, route]);
 
-    const getRoutes = () => getMarker(sort(route), editable || ((route) => centerPlace(route)()));
+    const getRoutes = () => getMarker(sort(route), editable || ((route) => centerPlace(route.location)()));
 
-    const centerPlace = (route) => () => {
-        setCenter({lat: route.latitude, lng: route.longitude})
-        setSelected(route.id);
+    const centerPlace = (location) => () => {
+        setCenter({lat: location.latitude, lng: location.longitude})
+        setSelected(location.id);
     };
 
     return <Container>
@@ -66,25 +66,28 @@ const SingleMap = ({route, editable, onChange, zoom, onDelete, onAdd, height}) =
                 {getRoutes()}
             </MapContainer>
             <ListContainer height={height}>
-                <RoutesList selected={selected}
-                            centerPlace={centerPlace}
-                            onDelete={onDelete}
-                            routes={sort(route)}
-                            editable={editable}/>
+                {React.Children.map(children, child =>
+                    React.cloneElement(child, {
+                        ...child.props,
+                        selected,
+                        centerPlace,
+                        onDelete,
+                        routes: sort(route)
+                    })
+                )}
             </ListContainer>
         </ContainerColumn>
     </Container>;
 };
 
 SingleMap.propTypes = {
-    route: PropTypes.array,
+    route: PropTypes.arrayOf(MapRoute),
     editable: PropTypes.bool.isRequired,
     onChange: PropTypes.func,
     zoom: PropTypes.number,
     onDelete: PropTypes.func,
     onAdd: PropTypes.func,
-    height: PropTypes.number,
-    multipleRoutes: PropTypes.bool
+    height: PropTypes.number
 };
 
 SingleMap.defaultProps = {

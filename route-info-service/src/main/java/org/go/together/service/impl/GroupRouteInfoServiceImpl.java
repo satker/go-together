@@ -2,6 +2,7 @@ package org.go.together.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.go.together.base.CommonCrudService;
+import org.go.together.compare.FieldMapper;
 import org.go.together.dto.GroupRouteInfoDto;
 import org.go.together.dto.IdDto;
 import org.go.together.dto.RouteInfoDto;
@@ -13,10 +14,7 @@ import org.go.together.service.interfaces.GroupRouteInfoService;
 import org.go.together.service.interfaces.RouteInfoService;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.go.together.enums.RouteInfoServiceInfo.GROUP_ROUTE_INFO;
@@ -46,14 +44,15 @@ public class GroupRouteInfoServiceImpl extends CommonCrudService<GroupRouteInfoD
 
     private RouteInfo getRouteInfo(UUID requestId, RouteInfoDto routeInfoDto) {
         Optional<RouteInfo> routeInfo = routeInfoService.readRouteInfo(routeInfoDto.getId());
+        IdDto changedRouteInfoId;
         if (routeInfo.isEmpty()) {
-            IdDto createdRouteInfoId = routeInfoService.create(requestId, routeInfoDto);
-            Optional<RouteInfo> createdRouteInfo = routeInfoService.readRouteInfo(createdRouteInfoId.getId());
-            return createdRouteInfo.orElseThrow(() -> new ApplicationException("Cannot create route info by id: " +
-                    createdRouteInfoId.getId(), requestId));
+            changedRouteInfoId = routeInfoService.create(requestId, routeInfoDto);
         } else {
-            return routeInfo.get();
+            changedRouteInfoId = routeInfoService.update(requestId, routeInfoDto);
         }
+        Optional<RouteInfo> createdRouteInfo = routeInfoService.readRouteInfo(changedRouteInfoId.getId());
+        return createdRouteInfo.orElseThrow(() -> new ApplicationException("Cannot create route info by id: " +
+                changedRouteInfoId.getId(), requestId));
     }
 
     private void deleteUnneededRouteInfos(UUID requestId, Set<RouteInfo> oldRouteInfos, Set<RouteInfo> newRouteInfo) {
@@ -67,5 +66,12 @@ public class GroupRouteInfoServiceImpl extends CommonCrudService<GroupRouteInfoD
     @Override
     public String getServiceName() {
         return GROUP_ROUTE_INFO;
+    }
+
+    @Override
+    public Map<String, FieldMapper> getMappingFields() {
+        return Map.of("infoRoutes", FieldMapper.builder()
+                .innerService(routeInfoService)
+                .currentServiceField("infoRoutes").build());
     }
 }

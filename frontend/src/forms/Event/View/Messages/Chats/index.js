@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import {keys} from 'lodash';
 
 import {connect} from "App/Context";
-import {ResponseData} from "forms/utils/types";
+import {Event, ResponseData} from "forms/utils/types";
 
 import MessageItem from "./MessageItem";
 import {getChats, postUsersInfo} from "./actions";
@@ -67,12 +67,16 @@ const UserChats = ({
 };
 
 UserChats.propTypes = {
-    eventUserId: PropTypes.string.isRequired,
+    event: Event.isRequired,
+    userMessageId: PropTypes.string,
+    setUserMessageId: PropTypes.func.isRequired,
     userId: PropTypes.string,
     getChats: PropTypes.func.isRequired,
     postUsersInfo: PropTypes.func.isRequired,
     messages: ResponseData.isRequired,
-    usersInfo: ResponseData.isRequired
+    usersInfo: ResponseData.isRequired,
+    timer: PropTypes.arrayOf(PropTypes.number),
+    setTimer: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

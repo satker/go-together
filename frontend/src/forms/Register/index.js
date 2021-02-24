@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {navigate} from 'hookrouter';
-
+import PropTypes from 'prop-types';
 import {connect} from "App/Context";
 
 import {getAllInterests, getAllLanguages, getCheckMail, getCheckUserName} from "./actions";
@@ -22,6 +22,7 @@ import AutocompleteLocationField from "forms/utils/components/Form/fields/Autoco
 import {USER_SERVICE_URL} from "forms/utils/constants";
 import {PUT} from "App/utils/api/constants";
 import {showNotification} from "forms/utils/components/Notification/actions";
+import {ResponseData} from "forms/utils/types";
 
 const FormRegister = ({
                           allLanguages, allInterests, getAllInterests, getAllLanguages,
@@ -83,6 +84,19 @@ const FormRegister = ({
     </RegisterForm>
 };
 
+FormRegister.propTypes = {
+    allLanguages: ResponseData.isRequired,
+    allInterests: ResponseData.isRequired,
+    getAllInterests: PropTypes.func.isRequired,
+    getAllLanguages: PropTypes.func.isRequired,
+    registeredUser: ResponseData.isRequired,
+    getCheckUserName: PropTypes.func.isRequired,
+    getCheckMail: PropTypes.func.isRequired,
+    checkedMail: ResponseData.isRequired,
+    checkedUserName: ResponseData.isRequired,
+    showNotification: PropTypes.func.isRequired
+}
+
 const mapStateToProps = state => ({
     allLanguages: state.components.forms.register.allLanguages,
     allInterests: state.components.forms.register.allInterests,
@@ -105,26 +119,11 @@ const validation = (fields) => {
     }
 }
 
-const onDataConverter = (data) => {
-    const location = {
-        ...data.location,
-        category: 'USER',
-        locations: [{
-            ...data.location.locations[0],
-            routeNumber: 1,
-            isStart: true,
-            isEnd: false
-        }]
-    }
-    return {...data, location}
-};
-
 const RegisterForm = createReduxForm({
     FORM_ID,
     validation,
     url: USER_SERVICE_URL + "/users",
-    method: PUT,
-    dataConverter: onDataConverter
+    method: PUT
 });
 
 export default connect(mapStateToProps,

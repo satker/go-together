@@ -1,14 +1,8 @@
 package org.go.together.find.utils;
 
-import org.go.together.dto.FilterDto;
-import org.go.together.enums.FindOperator;
-import org.go.together.exceptions.IncorrectDtoException;
-import org.go.together.find.dto.FieldDto;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class FindUtils {
     public static final String DELIMITER = "\\?";
@@ -16,33 +10,32 @@ public class FindUtils {
     public static final String GROUP_AND = "&";
     public static final String GROUP_OR = "|";
     private static final String GROUP_START = "\\[";
-    private static final String GROUP_END = "]";
-    public static final String REGEX_GROUP = "^\\[[a-zA-Z&|.,]*]$";
     public static final String DOT = "\\.";
 
     public static String[] getParsedRemoteField(String string) {
-        return string.split(DELIMITER);
+        String[] split = string.split(DELIMITER, 2);
+        if (split.length == 2 && split[0].contains("[")) {
+            return new String[]{string};
+        }
+        return split;
+    }
+
+    public static boolean isRemoteField(String field) {
+        String[] split = field.split(DELIMITER, 2);
+        return split.length == 2 && !split[0].contains("[");
     }
 
     public static String[] getParsedFields(String string) {
-        return string.split(DOT);
+        String[] splitWithoutGroup = string.split(DOT + GROUP_START);
+        List<String> result = new LinkedList<>(Arrays.asList(splitWithoutGroup[0].split(DOT)));
+        if (splitWithoutGroup.length == 2) {
+            result.add("[" + splitWithoutGroup[1]);
+        }
+        return result.toArray(new String[0]);
     }
 
     public static String[] getHavingCondition(String string) {
         return string.split(HAVING_COUNT);
-    }
-
-    public static String[] getSingleGroupFields(String localEntityField) {
-        String[] result;
-        localEntityField = getHavingCondition(localEntityField)[0];
-        if (localEntityField.matches(REGEX_GROUP)) {
-            result = localEntityField.replaceFirst(GROUP_START, "")
-                    .replaceFirst(GROUP_END, "")
-                    .split("\\|" + GROUP_OR + GROUP_AND);
-        } else {
-            result = new String[]{localEntityField};
-        }
-        return result;
     }
 
     public static String getDelimiter(String groupFields, String currentField) {
@@ -52,28 +45,5 @@ public class FindUtils {
             return delimiter;
         }
         return null;
-    }
-
-    public static Map<FieldDto, FilterDto> mergeFilters(Map<FieldDto, Collection<Object>> remoteFilters,
-                                                        Map<FieldDto, FilterDto> localFilters) {
-        boolean isNotFound = remoteFilters.values().stream().anyMatch(Collection::isEmpty);
-        if (isNotFound) {
-            return Collections.emptyMap();
-        }
-        remoteFilters.forEach((key, values) -> {
-            FilterDto filterDto = new FilterDto(FindOperator.IN,
-                    Collections.singleton(Collections.singletonMap(getCorrectFilterValuesKey(key), values)));
-            localFilters.remove(key);
-            localFilters.put(key, filterDto);
-        });
-
-        return localFilters;
-    }
-
-    private static String getCorrectFilterValuesKey(FieldDto fieldDto) {
-        return Optional.ofNullable(fieldDto.getLocalField())
-                .map(FindUtils::getParsedFields)
-                .map(splitByDotString -> splitByDotString[splitByDotString.length - 1])
-                .orElseThrow(() -> new IncorrectDtoException("Incorrect search field"));
     }
 }

@@ -9,7 +9,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import {onChange} from "forms/utils/utils";
 import {DEFAULT_COUNTRY, DEFAULT_ROUTE, PLACE} from "forms/utils/constants";
 import {getCity, getCountry, getState, requestPlaceId} from "forms/utils/components/ObjectGeoLocation/utils";
-import {SimpleObject} from "forms/utils/types";
+import {Place} from "forms/utils/types";
 
 const google = window.google;
 
@@ -119,14 +119,14 @@ const AutocompleteLocation = ({setCenter, onChangeLocation, placeholder, value, 
 AutocompleteLocation.propTypes = {
     setCenter: PropTypes.func,
     onChangeLocation: PropTypes.func,
-    setValue: PropTypes.func,
+    setValueCenter: PropTypes.func,
     placeholder: PropTypes.string,
-    value: SimpleObject
+    value: Place,
+    error: PropTypes.string
 };
 
 AutocompleteLocation.defaultProps = {
     defaultValue: null,
-    setChooseValue: () => null
 }
 
 export default AutocompleteLocation;

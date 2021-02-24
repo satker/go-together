@@ -1,12 +1,14 @@
 package org.go.together.find.correction;
 
 import org.go.together.compare.FieldMapper;
-import org.go.together.dto.FilterDto;
-import org.go.together.find.dto.FieldDto;
+import org.go.together.find.dto.node.FilterNodeBuilder;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
 public interface CorrectorService {
-    Map<FieldDto, FilterDto> getCorrectedFilters(Map<String, FilterDto> filters,
-                                                 Map<String, FieldMapper> availableFields);
+    Collection<FilterNodeBuilder> correct(UUID requestId,
+                                          Collection<FilterNodeBuilder> nodeBuilder,
+                                          Map<String, FieldMapper> availableFields);
 }

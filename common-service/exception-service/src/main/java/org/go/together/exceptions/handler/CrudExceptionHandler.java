@@ -1,6 +1,9 @@
 package org.go.together.exceptions.handler;
 
-import org.go.together.exceptions.*;
+import org.go.together.exceptions.ApplicationException;
+import org.go.together.exceptions.IncorrectDtoException;
+import org.go.together.exceptions.IncorrectFindObject;
+import org.go.together.exceptions.ValidationException;
 import org.go.together.exceptions.dto.ExceptionDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,12 +23,12 @@ public class CrudExceptionHandler {
     }
 
     @ExceptionHandler({
-            ApplicationException.class,
-            CannotFindEntityException.class,
-            RemoteClientFindException.class
+            ApplicationException.class
     })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ExceptionDto processApplicationError(RuntimeException exception) {
-        return ExceptionDto.builder().exceptionMessage("Server error: contact to system administrator.").build();
+    public ExceptionDto processApplicationError(ApplicationException exception) {
+        return ExceptionDto.builder()
+                .exceptionMessage("Server error: contact to system administrator. Error id: " + exception.getRequestId())
+                .build();
     }
 }

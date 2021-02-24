@@ -65,10 +65,10 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
     private Mapper<EventLikeDto, EventLike> eventLikeMapper;
 
     @Autowired
-    private CrudProducer<GroupLocationDto> locationProducer;
+    private CrudProducer<LocationDto> locationProducer;
 
     @Autowired
-    private ValidationProducer<GroupLocationDto> locationValidate;
+    private ValidationProducer<LocationDto> locationValidate;
 
     @Autowired
     private UserRepository userRepository;

@@ -30,9 +30,11 @@ export const getEventsLikes = (eventIds) => (dispatch) => {
             mainIdField: "eventLikes",
             filters: {
                 eventId: {
-                    filterType: 'IN',
                     values: [{
-                        eventId: eventIds
+                        eventId: {
+                            filterType: 'IN',
+                            value: eventIds
+                        }
                     }]
                 }
             }

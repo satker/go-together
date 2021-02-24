@@ -20,14 +20,15 @@ const ItemEvent = ({event, onDelete, userId, eventIds}) => <Card>
             <Typography>{event.name}</Typography>
             <Typography>{event.description}</Typography>
             <Typography>I {event.author.firstName}, {event.author.lastName}</Typography>
-            <Typography>From {event.author.location.locations[0].place.name},
-                {event.author.location.locations[0].place.country.name}</Typography>
+            <Typography>From {event.author.location.place.name},
+                {event.author.location.place.country.name}</Typography>
             <Typography>Languages: {event.author.languages.map(lang => lang.name).join(', ')}</Typography>
             <Typography>My
                 interests: {event.author.interests.map(interest => interest.name).join(', ')}</Typography>
             <Typography>Dates: {getCorrectDateFromString(event.startDate)} -> {getCorrectDateFromString(event.endDate)}</Typography>
-            <Typography>Going to travel through {event.route.locations.map(location => location.place.name + ", " +
-                location.place.country.name).join(" -> ")}</Typography>
+            <Typography>Going to travel
+                through {event.routeInfo.infoRoutes.map(route => route.location.place.name + ", " +
+                    route.location.place.country.name).join(" -> ")}</Typography>
             <Typography>With {event.peopleCount} friends</Typography>
         </CardContent>
     </CardActionArea>

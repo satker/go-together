@@ -58,10 +58,10 @@ export const cleanFilter = () => (dispatch) => {
     });
 };
 
-export const setFilter = (filterOperation, values, searchField, havingCount) => (dispatch, state) => {
+export const setFilter = (values, searchField, havingCount) => (dispatch, state) => {
     const currentFilter = state.components.forms.events.filter.response;
 
-    const updatedFilterObject = updateFormDto(currentFilter, filterOperation, values, searchField, havingCount);
+    const updatedFilterObject = updateFormDto(currentFilter, values, searchField, havingCount);
 
     dispatch({
         type: FILTER,

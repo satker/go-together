@@ -1,4 +1,5 @@
 import React, {useEffect} from "react";
+import PropTypes from 'prop-types';
 
 import Container from "forms/utils/components/Container/ContainerRow";
 import LoadableContent from "forms/utils/components/LoadableContent";
@@ -21,6 +22,7 @@ import {PATTERN_TO_CHECK_NAME} from "forms/Register/constants";
 import {createReduxForm} from "forms/utils/components/Form";
 import {FORM_ID} from "./constants";
 import {showNotification} from "forms/utils/components/Notification/actions";
+import {ResponseData} from "forms/utils/types";
 
 const PersonalArea = ({
                           userInfo, getUserInfo, getAllLanguages, getAllInterests,
@@ -69,6 +71,16 @@ const PersonalArea = ({
         </Container>
     );
 };
+
+PersonalArea.propTypes = {
+    userInfo: PropTypes.object,
+    getUserInfo: PropTypes.func.isRequired,
+    getAllLanguages: PropTypes.func.isRequired,
+    getAllInterests: PropTypes.func.isRequired,
+    allLanguages: ResponseData.isRequired,
+    allInterests: ResponseData.isRequired,
+    showNotification: PropTypes.func.isRequired
+}
 
 const mapStateToProps = state => ({
     userInfo: state.components.forms.personalArea.userInfo,

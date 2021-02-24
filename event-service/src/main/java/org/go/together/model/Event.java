@@ -29,9 +29,6 @@ public class Event extends NamedIdentifiedEntity {
     private UUID groupPhotoId;
 
     @Column(columnDefinition = "uuid")
-    private UUID routeId;
-
-    @Column(columnDefinition = "uuid")
     private UUID routeInfoId;
 
 }

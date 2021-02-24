@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        lombokVersion='1.18.16'
+        lombokVersion='1.18.18'
     }
 }
 plugins {
@@ -22,7 +22,6 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     compile project(":common-service:kafka-producer")
-    compile project(":location-service-client")
     compile project(":user-service-client")
     compile project(":content-service-client")
     compile project(":route-info-service-client")

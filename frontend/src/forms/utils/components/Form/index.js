@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {get, isEmpty, keys} from 'lodash';
+import PropTypes from 'prop-types';
 
 import {connect} from "App/Context";
 import {createContextValue, createEmptyResponse} from "App/utils/utils";
@@ -63,6 +64,24 @@ const ContextForm = ({
                           text='Close'/>
         </ContainerColumn>
     </Container>;
+};
+
+ContextForm.propTypes = {
+    children: PropTypes.node,
+    value: PropTypes.object,
+    updateValue: PropTypes.func.isRequired,
+    updateValidation: PropTypes.func.isRequired,
+    errors: PropTypes.object,
+    onSubmit: PropTypes.func.isRequired,
+    onClose: PropTypes.func,
+    updateValidationMessage: PropTypes.func.isRequired,
+    defaultValue: PropTypes.object,
+    submitData: PropTypes.object,
+    onSubmitOk: PropTypes.func.isRequired
+}
+
+ContextForm.defaultProps = {
+    onClose: () => null
 };
 
 const mapStateToProps = (FORM_ID) => (state) => ({

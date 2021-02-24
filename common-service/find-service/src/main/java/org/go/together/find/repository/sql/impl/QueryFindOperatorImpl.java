@@ -20,13 +20,7 @@ public class QueryFindOperatorImpl implements QueryFindOperator {
             case EQUAL -> queryBuilder.condition(fieldName, SqlOperator.EQUAL, searchObject);
             case END_DATE -> queryBuilder.condition(fieldName, SqlOperator.LESS_OR_EQUAL, searchObject);
             case START_DATE -> queryBuilder.condition(fieldName, SqlOperator.GREATER_OR_EQUAL, searchObject);
-            case NEAR_LOCATION -> {
-                if (fieldName.contains("longitude")) {
-                    queryBuilder.condition(fieldName, SqlOperator.NEAR_LOCATION, searchObject);
-                } else {
-                    queryBuilder.condition(fieldName, SqlOperator.EQUAL, searchObject);
-                }
-            }
+            case NEAR_LOCATION -> queryBuilder.condition(fieldName, SqlOperator.NEAR_LOCATION, searchObject);
         }
     }
 }

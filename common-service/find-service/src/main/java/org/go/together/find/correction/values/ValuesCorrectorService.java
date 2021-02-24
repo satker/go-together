@@ -1,28 +1,21 @@
 package org.go.together.find.correction.values;
 
-import org.go.together.find.correction.field.dto.CorrectedFieldDto;
+import org.go.together.dto.FilterValueDto;
+import org.go.together.find.dto.Path;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
 public class ValuesCorrectorService implements ValuesCorrector {
-    public Collection<Map<String, Object>> correct(CorrectedFieldDto correctedFieldDto,
-                                                   Collection<Map<String, Object>> filters) {
-        Collection<Map<String, Object>> result = new HashSet<>();
-        Map<String, Class<?>> oldValueClass = correctedFieldDto.getOldValueClass();
-        for (Map<String, Object> next : filters) {
-            Map<String, Object> map = new HashMap<>();
-            correctedFieldDto.getOldNewFilterField().forEach((oldKey, newKey) -> {
-                Object value = next.get(oldKey);
-                Class<?> parsedClass = oldValueClass.getOrDefault(oldKey, Object.class);
-                Object parsedValue = parseFilterObjectToClass(value, parsedClass);
-                map.put(newKey, parsedValue);
-            });
-            result.add(map);
-        }
-        return result;
+    public FilterValueDto correct(Path correctedFieldDto,
+                                  FilterValueDto values) {
+        Class<?> parsedClass = correctedFieldDto.getLastFieldMapper().getFieldClass();
+        Object parsedValue = parseFilterObjectToClass(values.getValue(), parsedClass);
+        return new FilterValueDto(values.getFilterType(), parsedValue);
     }
 
     private Object parseFilterObjectToClass(Object value, Class<?> clazz) {

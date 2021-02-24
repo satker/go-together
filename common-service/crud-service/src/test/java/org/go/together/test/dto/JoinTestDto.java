@@ -8,9 +8,10 @@ import org.go.together.compare.ComparableDto;
 @Data
 public class JoinTestDto extends ComparableDto {
     private String name;
+    private ComplexInnerDto complexInner;
 
     @Override
     public String getMainField() {
-        return null;
+        return name;
     }
 }

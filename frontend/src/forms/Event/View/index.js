@@ -6,7 +6,7 @@ import {connect} from "App/Context";
 import {ResponseData} from "forms/utils/types";
 
 import {getEvent} from "./actions";
-import ViewForm from "./ViewForm";
+import ViewForm from "./Form";
 
 const ViewEvent = ({id, getEvent, event}) => {
     useEffect(() => {

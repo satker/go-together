@@ -6,13 +6,12 @@ import org.go.together.compare.ComparableDto;
 import org.go.together.compare.ComparingField;
 
 import java.util.Date;
-import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class RouteInfoDto extends ComparableDto {
-    private UUID startLocationId;
-    private UUID endLocationId;
+    @ComparingField("route")
+    private LocationDto location;
 
     @ComparingField("transport type")
     private TransportType transportType;
@@ -23,7 +22,15 @@ public class RouteInfoDto extends ComparableDto {
     @ComparingField("movement date")
     private Date movementDate;
 
+    @ComparingField("movement duration")
     private Double movementDuration;
+
+    @ComparingField("route number")
+    private Integer routeNumber;
+
+    private Boolean isStart;
+
+    private Boolean isEnd;
 
     @Override
     public String getMainField() {

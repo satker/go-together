@@ -1,12 +1,13 @@
 package org.go.together.notification.comparators.impl.collection.finders.impl;
 
-import org.go.together.compare.ComparingObject;
+import org.go.together.compare.FieldProperties;
 import org.go.together.notification.comparators.impl.collection.finders.interfaces.Finder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -15,16 +16,17 @@ public class ObjectFinder implements Finder<Object> {
     @Override
     public Map<String, Object> findChanged(Collection<Object> changedObject,
                                            Collection<Object> originalObject,
-                                           ComparingObject fieldProperties) {
-        return Collections.emptyMap();
+                                           FieldProperties fieldProperties) {
+        return new HashMap<>();
     }
 
     @Override
     public Collection<String> findAdded(Collection<Object> changedObject,
                                         Collection<Object> originalObject) {
         return changedObject.stream()
-                .filter(obj -> !originalObject.contains(obj))
-                .map(Object::toString)
+                .map(Optional::ofNullable)
+                .filter(obj -> obj.isEmpty() || !originalObject.contains(obj))
+                .map(obj -> obj.map(Object::toString).orElse(null))
                 .collect(Collectors.toSet());
     }
 

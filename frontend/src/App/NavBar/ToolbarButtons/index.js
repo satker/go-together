@@ -31,7 +31,8 @@ const ToolbarButtons = ({userId, menuId, handleMenuClose, token}) => {
 ToolbarButtons.propTypes = {
     userId: PropTypes.string,
     menuId: PropTypes.string.isRequired,
-    handleMenuClose: PropTypes.func.isRequired
+    handleMenuClose: PropTypes.func.isRequired,
+    token: PropTypes.string
 };
 
 const mapStateToProps = (state) => ({

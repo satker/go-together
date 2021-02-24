@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 
 import AutocompleteLocation from "forms/utils/components/AutocompleteLocation";
-import ItemContainer from "../../Container/ItemContainer";
+import ItemContainer from "forms/utils/components/Container/ItemContainer";
+import {Location} from "forms/utils/types";
 
 const AutocompleteLocationField = ({name, placeholder, setValue, error, value}) => {
     const [currentValue, setCurrentValue] = useState();
@@ -10,14 +11,10 @@ const AutocompleteLocationField = ({name, placeholder, setValue, error, value}) 
     const onChange = (latLng, loc) => {
         let location = {
             ...value,
-            locations: [{
-                ...value?.locations[0],
-                id: null,
-                place: loc,
-                address: loc.name,
-                latitude: latLng.lat,
-                longitude: latLng.lng
-            }]
+            address: loc.name,
+            latitude: latLng.lat,
+            longitude: latLng.lng,
+            place: loc
         };
         setValue(name, location);
     };
@@ -26,7 +23,7 @@ const AutocompleteLocationField = ({name, placeholder, setValue, error, value}) 
         <AutocompleteLocation onChangeLocation={(place, {lat, lng}) => onChange({lat, lng}, place)}
                               placeholder={placeholder}
                               setValueCenter={setCurrentValue}
-                              value={currentValue || (value && value.locations[0].place)}
+                              value={currentValue || (value && value.place)}
                               name='place'
                               error={error}
         />
@@ -34,7 +31,11 @@ const AutocompleteLocationField = ({name, placeholder, setValue, error, value}) 
 };
 
 AutocompleteLocationField.propTypes = {
-    value: PropTypes.array
-}
+    name: PropTypes.string.isRequired,
+    placeholder: PropTypes.string,
+    value: Location,
+    setValue: PropTypes.func,
+    error: PropTypes.string
+};
 
 export default AutocompleteLocationField;

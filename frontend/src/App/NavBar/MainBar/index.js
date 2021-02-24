@@ -103,7 +103,6 @@ const MainBar = ({menuId, handleMenuClose, mobileMenuId, handleMobileMenuOpen}) 
 };
 
 MainBar.propTypes = {
-    userId: PropTypes.string,
     menuId: PropTypes.string.isRequired,
     handleMenuClose: PropTypes.func.isRequired,
     mobileMenuId: PropTypes.string.isRequired,

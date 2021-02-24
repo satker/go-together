@@ -1,6 +1,7 @@
 package org.go.together.repository.builder;
 
 import org.go.together.enums.SqlOperator;
+import org.go.together.enums.SqlPredicate;
 import org.go.together.model.IdentifiedEntity;
 import org.go.together.repository.builders.Where;
 import org.go.together.repository.query.WhereBuilder;
@@ -34,9 +35,6 @@ public class WhereImpl<E extends IdentifiedEntity> implements Where<E> {
 
     public static class WhereBuilderImpl<B extends IdentifiedEntity>
             implements WhereBuilder<B> {
-        private static final String AND = " and ";
-        private static final String OR = " or ";
-
         private final Map<String, String> joinMap = new HashMap<>();
         private final StringBuilder whereQuery = new StringBuilder();
         private Join<B> joinBuilder;
@@ -63,31 +61,33 @@ public class WhereImpl<E extends IdentifiedEntity> implements Where<E> {
         }
 
         public WhereBuilderImpl<B> group(WhereBuilder<B> where) {
+            Where<B> build = where.build();
+            joinMap.putAll(build.getJoin());
             whereQuery.append("(")
-                    .append(where.build().getWhereQuery())
+                    .append(build.getWhereQuery())
                     .append(")");
             return this;
         }
 
         public WhereBuilderImpl<B> and() {
-            whereQuery.append(AND);
+            whereQuery.append(SqlPredicate.AND.getDescription());
             return this;
         }
 
         public WhereBuilderImpl<B> or() {
-            whereQuery.append(OR);
+            whereQuery.append(SqlPredicate.OR.getDescription());
             return this;
         }
 
         public void cutLastAnd() {
-            if (whereQuery.toString().endsWith(AND)) {
-                whereQuery.setLength(whereQuery.length() - AND.length());
+            if (whereQuery.toString().endsWith(SqlPredicate.AND.getDescription())) {
+                whereQuery.setLength(whereQuery.length() - SqlPredicate.AND.getDescription().length());
             }
         }
 
         public void cutLastOr() {
-            if (whereQuery.toString().endsWith(OR)) {
-                whereQuery.setLength(whereQuery.length() - OR.length());
+            if (whereQuery.toString().endsWith(SqlPredicate.OR.getDescription())) {
+                whereQuery.setLength(whereQuery.length() - SqlPredicate.OR.getDescription().length());
             }
         }
 

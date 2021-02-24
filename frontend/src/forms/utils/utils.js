@@ -84,14 +84,13 @@ export const FilterOperator = {
     }
 }
 
-export const getFilterDto = (filterType, values) => {
+const getFilterDto = (values) => {
     return {
-        filterType: filterType.operator,
         values: values
     }
 }
 
-export const updateFormDto = (currentFilter, filterType, values, searchField,
+export const updateFormDto = (currentFilter, values, searchField,
                               havingCount) => {
     let resultFilterObject = {...currentFilter};
     if (havingCount >= 0) {
@@ -103,7 +102,7 @@ export const updateFormDto = (currentFilter, filterType, values, searchField,
         searchField = searchField + ':' + havingCount;
     }
     if (values && values.length) {
-        resultFilterObject.filters[searchField] = getFilterDto(filterType, values);
+        resultFilterObject.filters[searchField] = getFilterDto(values);
     } else {
         delete resultFilterObject.filters[searchField];
     }

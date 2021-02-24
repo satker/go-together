@@ -12,21 +12,34 @@ export const getMessagesByEvent = (eventId, authorId) => (dispatch) => {
             mainIdField: "messages",
             filters: {
                 "messageType": {
-                    filterType: 'EQUAL',
                     values: [{
-                        messageType: 'TO_EVENT'
+                        messageType: {
+                            filterType: 'EQUAL',
+                            value: 'TO_EVENT'
+                        }
                     }]
                 },
                 "[recipientId&authorId]": {
-                    filterType: 'EQUAL',
                     values: [{
-                        recipientId: eventId,
-                        authorId
+                        recipientId: {
+                            filterType: 'EQUAL',
+                            value: eventId
+                        },
+                        authorId: {
+                            filterType: 'EQUAL',
+                            value: authorId
+                        }
                     },
                         {
-                        recipientId: authorId,
-                        authorId: eventId
-                    }]
+                            recipientId: {
+                                filterType: 'EQUAL',
+                                value: authorId
+                            },
+                            authorId: {
+                                filterType: 'EQUAL',
+                                value: eventId
+                            }
+                        }]
                 },
             }
         }

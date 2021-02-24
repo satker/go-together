@@ -23,7 +23,9 @@ const LogoutButton = ({menuId, cleanAuth, clearTimers}) => {
 };
 
 LogoutButton.propTypes = {
-    menuId: PropTypes.string.isRequired
+    menuId: PropTypes.string.isRequired,
+    cleanAuth: PropTypes.func.isRequired,
+    clearTimers: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({

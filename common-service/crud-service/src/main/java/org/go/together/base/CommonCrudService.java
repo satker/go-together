@@ -8,6 +8,7 @@ import org.go.together.exceptions.ApplicationException;
 import org.go.together.exceptions.ValidationException;
 import org.go.together.model.IdentifiedEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -22,6 +23,7 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
     }
 
     @Override
+    @Transactional
     public IdDto create(UUID requestId, D dto) {
         CrudOperation crudOperation = CrudOperation.CREATE;
         log.info(requestId + ". Validation for creation " + getServiceName() + " started.");
@@ -32,16 +34,26 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
             UUID id = repository.create().getId();
             E newEntity = mapper.dtoToEntity(dto);
             newEntity.setId(id);
-            return dtoAction(requestId, dto, crudOperation, CrudOperation.DELETE, newEntity, dto, newEntity);
+            try {
+                E enrichedEntity = enrichEntity(requestId, newEntity, dto, crudOperation);
+                E createdEntity = repository.save(enrichedEntity);
+                log.info(requestId + ". Created " + getServiceName() + " successful.");
+                sendNotification(requestId, id, dto, dto, crudOperation);
+                return new IdDto(createdEntity.getId());
+            } catch (Exception exception) {
+                rollbackAction(requestId, dto, newEntity, exception, CrudOperation.DELETE);
+                throw new ApplicationException(exception, requestId);
+            }
         } else {
             throw new ValidationException(requestId, validationException, getServiceName());
         }
     }
 
     @Override
+    @Transactional
     public IdDto update(UUID requestId, D updatedDto) {
         CrudOperation crudOperation = CrudOperation.UPDATE;
-        log.info(requestId + ". Validation for update " + getServiceName() + " with id = '" + updatedDto.getId() + "' started.");
+        log.info(requestId + ". Validation for update " + getServiceName() + " started.");
         String validationException = validator.validate(requestId, updatedDto, crudOperation);
         if (StringUtils.isBlank(validationException)) {
             log.info(requestId + ". Validation for update " + getServiceName() + " with id = '" + updatedDto.getId() + "' successful.");
@@ -49,13 +61,23 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
             E originalEntity = repository.findByIdOrThrow(updatedDto.getId());
             D originalDto = mapper.entityToDto(requestId, originalEntity);
             E updatedEntity = mapper.dtoToEntity(updatedDto);
-            return dtoAction(requestId, updatedDto, crudOperation, crudOperation, originalEntity, originalDto, updatedEntity);
+            try {
+                E enrichedEntity = enrichEntity(requestId, updatedEntity, updatedDto, crudOperation);
+                E createdEntity = repository.save(enrichedEntity);
+                log.info(requestId + ". Updated " + getServiceName() + " successful.");
+                sendNotification(requestId, updatedDto.getId(), originalDto, updatedDto, crudOperation);
+                return new IdDto(createdEntity.getId());
+            } catch (Exception exception) {
+                rollbackAction(requestId, originalDto, originalEntity, exception, crudOperation);
+                throw new ApplicationException(exception, requestId);
+            }
         } else {
             throw new ValidationException(requestId, validationException, getServiceName());
         }
     }
 
     @Override
+    @Transactional
     public D read(UUID requestId, UUID uuid) {
         E entityById = repository.findByIdOrThrow(uuid);
         log.info(requestId + ". Read " + getServiceName() + " row with id: " + uuid.toString());
@@ -63,8 +85,13 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
     }
 
     @Override
+    @Transactional
     public void delete(UUID requestId, UUID uuid) {
         CrudOperation crudOperation = CrudOperation.DELETE;
+        if (uuid == null) {
+            log.warn(requestId + ". Cannot delete " + getServiceName() + " with null id.");
+            return;
+        }
         log.info(requestId + ". Deletion " + getServiceName() + " with id = '" + uuid.toString() + "' started.");
         Optional<E> entityById = repository.findById(uuid);
         if (entityById.isPresent()) {
@@ -82,26 +109,6 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
     @Override
     public boolean checkIfPresent(UUID requestId, UUID uuid) {
         return repository.findById(uuid).isPresent();
-    }
-
-    private IdDto dtoAction(UUID requestId,
-                            D newDto,
-                            CrudOperation crudOperation,
-                            CrudOperation revertCrudOperation,
-                            E originalEntity,
-                            D originalDto,
-                            E updatedEntity) {
-        E createdEntity;
-        try {
-            E enrichedEntity = enrichEntity(requestId, updatedEntity, newDto, crudOperation);
-            createdEntity = repository.save(enrichedEntity);
-            log.info(requestId + ". " + crudOperation.getDescription() + "d " + getServiceName() + " successful.");
-            sendNotification(requestId, newDto.getId(), originalDto, newDto, crudOperation);
-        } catch (Exception exception) {
-            rollbackAction(requestId, originalDto, originalEntity, exception, revertCrudOperation);
-            throw new ApplicationException(exception, requestId);
-        }
-        return new IdDto(createdEntity.getId());
     }
 
     private void rollbackAction(UUID requestId, D dto, E entity, Exception e, CrudOperation crudOperation) {

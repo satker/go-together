@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Switch} from "@material-ui/core";
 
 import {createFileReaderToParsePhoto, createPhotoObj} from "forms/utils/utils";
-import {PhotoObject} from "forms/utils/types";
+import {PhotoType} from "forms/utils/types";
 import LabeledInput from "forms/utils/components/LabeledInput";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
 import ContainerRow from "forms/utils/components/Container/ContainerRow";
@@ -63,7 +63,7 @@ const ImageSelector = ({photos, setPhotos, multiple}) => {
 };
 
 ImageSelector.propTypes = {
-    photos: PropTypes.arrayOf(PhotoObject),
+    photos: PropTypes.arrayOf(PhotoType),
     setPhotos: PropTypes.func.isRequired,
     multiple: PropTypes.bool.isRequired
 };

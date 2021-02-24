@@ -1,6 +1,7 @@
 package org.go.together.test;
 
 import org.go.together.dto.SimpleDto;
+import org.go.together.test.dto.ComplexInnerDto;
 import org.go.together.test.dto.JoinTestDto;
 import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.dto.TestDto;
@@ -56,6 +57,11 @@ public class TestUtils {
             JoinTestDto joinTestDto = new JoinTestDto();
             joinTestDto.setId(id);
             joinTestDto.setName(name);
+
+            ComplexInnerDto complexInnerDto = new ComplexInnerDto();
+            complexInnerDto.setId(UUID.randomUUID());
+            complexInnerDto.setName(name);
+            joinTestDto.setComplexInner(complexInnerDto);
             joinTestDtos.add(joinTestDto);
         }
         return joinTestDtos;

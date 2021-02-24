@@ -1,6 +1,6 @@
 package org.go.together.notification.comparators.impl.collection;
 
-import org.go.together.compare.ComparingObject;
+import org.go.together.compare.FieldProperties;
 import org.go.together.interfaces.ImplFinder;
 import org.go.together.notification.comparators.impl.collection.finders.interfaces.Finder;
 import org.go.together.notification.comparators.interfaces.Comparator;
@@ -23,7 +23,7 @@ public class CollectionComparator implements Comparator<Collection<?>> {
 
     @Override
     public Map<String, Object> compare(String fieldName, Collection<?> originalObject,
-                                       Collection<?> changedObject, ComparingObject fieldProperties) {
+                                       Collection<?> changedObject, FieldProperties fieldProperties) {
         originalObject = Optional.ofNullable(originalObject).orElse(Collections.emptySet());
         changedObject = Optional.ofNullable(changedObject).orElse(Collections.emptySet());
 
@@ -34,6 +34,10 @@ public class CollectionComparator implements Comparator<Collection<?>> {
         Collection<String> removedElements = finder.findRemoved(changedObject, originalObject);
 
         Map<String, Object> resultMap = getComparingMap(removedElements, addedElements, changedElements);
+
+        if (resultMap.isEmpty()) {
+            return Collections.emptyMap();
+        }
 
         return Map.of(fieldName, resultMap);
     }

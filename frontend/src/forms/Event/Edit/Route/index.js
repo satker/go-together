@@ -5,27 +5,36 @@ import SingleMap from "forms/utils/components/ObjectGeoLocation/SingleMap";
 import {onChange} from "forms/utils/utils";
 import Container from "forms/utils/components/Container/ContainerRow";
 import ItemContainer from "forms/utils/components/Container/ItemContainer";
-import {DEFAULT_COUNTRY, DEFAULT_ROUTE, PLACE} from "forms/utils/constants";
+import {DEFAULT_COUNTRY, DEFAULT_ROUTE, DEFAULT_ROUTE_INFO, PLACE} from "forms/utils/constants";
+import {RouteInfo} from "forms/utils/types";
 import {connect} from "App/Context";
 
 import {updateEvent} from "../actions";
+import RouteContent from "forms/Event/Edit/Route/Content";
+import RoutesList from "forms/utils/components/RoutesList";
 
-const Route = ({eventRoute, updateEvent}) => {
-    const [routeNumber, setRouteNumber] = useState(eventRoute.length || 1);
+export const ROUTE_INFO = 'routeInfo.infoRoutes';
+
+const Route = ({routeInfo, updateEvent}) => {
+    const [routeNumber, setRouteNumber] = useState(routeInfo.length || 1);
 
     const onChangeLocation = (updatedRouteNumber, path, value) => {
-        const newArray = [...eventRoute.locations].map(route => {
-            if (route.routeNumber === updatedRouteNumber) {
-                onChange(route, newRoute => route = newRoute)(path, value);
+        const newArray = [...routeInfo.infoRoutes]
+            .map(route => {
+                if (route.routeNumber === updatedRouteNumber) {
+                    let location = route.location;
+                    onChange(location, newRoute => location = newRoute)
+                    (path, value);
+                    route.location = location;
+                    return route;
+                }
                 return route;
-            }
-            return route;
-        });
-        updateEvent('route.locations', newArray);
+            });
+        updateEvent(ROUTE_INFO, newArray);
     };
 
     const onDelete = (deletedRouteNumber) => {
-        const newArray = [...eventRoute.locations]
+        const newArray = [...routeInfo.infoRoutes]
             .filter(route => route.routeNumber !== deletedRouteNumber)
             .map(route => {
                 if (route.routeNumber > deletedRouteNumber) {
@@ -33,37 +42,24 @@ const Route = ({eventRoute, updateEvent}) => {
                 }
                 return route;
             });
-        updateEvent('route.locations', newArray.map(route => {
-            if (route.routeNumber === 1) {
-                route.isStart = true;
-            } else if (route.routeNumber === newArray.length + 1) {
-                route.isEnd = true;
-            }
-            return route;
-        }));
+        updateEvent(ROUTE_INFO, newArray);
         setRouteNumber(routeNumber - 1);
     };
 
     const addLocation = (paths, values) => {
-        const nextRouteNumber = eventRoute.locations.length + 1;
+        const nextRouteNumber = routeInfo.infoRoutes.length + 1;
         let newElement = {...DEFAULT_ROUTE};
         newElement.place = {...PLACE};
         newElement.place.country = {...DEFAULT_COUNTRY};
-        newElement.routeNumber = nextRouteNumber;
-        if (nextRouteNumber === 1) {
-            newElement.isStart = true;
-        } else {
-            newElement.isEnd = true;
-        }
+
         onChange(newElement, result => newElement = result)(paths, values);
+
+        const newRoute = DEFAULT_ROUTE_INFO(newElement, nextRouteNumber);
         setRouteNumber(nextRouteNumber);
-        updateEvent('route.locations', [...eventRoute.locations.map(route => {
-            if (route.isEnd) {
-                route.isEnd = false;
-            }
-            return route;
-        }), newElement])
+
+        updateEvent(ROUTE_INFO, [...routeInfo.infoRoutes, newRoute])
     };
+
     return <Container>
         <ItemContainer>
             Add {routeNumber} route point (left click to add location):
@@ -71,21 +67,23 @@ const Route = ({eventRoute, updateEvent}) => {
         <SingleMap
             onAdd={addLocation}
             onDelete={onDelete}
-            editable={true}
-            route={eventRoute.locations}
+            editable
+            route={routeInfo.infoRoutes.map(route => ({routeNumber: route.routeNumber, location: route.location}))}
             onChange={onChangeLocation}
-            height={400}
-        />
+            height={400}>
+            <RoutesList editable/>
+        </SingleMap>
+        <RouteContent/>
     </Container>;
 };
 
 Route.propTypes = {
-    eventRoute: PropTypes.array,
+    routeInfo: RouteInfo,
     updateEvent: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({
-    eventRoute: state.components.forms.event.eventEdit.event.response.route
+    routeInfo: state.components.forms.event.eventEdit.event.response.routeInfo
 });
 
 export default connect(mapStateToProps, {updateEvent})(Route);

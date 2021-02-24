@@ -2,7 +2,7 @@ import {GET} from "App/utils/api/constants";
 import Marker from "./Marker";
 import React from "react";
 
-export const GOOGLE_API_KEY = "AIzaSyDDOYr_mg4-0iLXHExVIHte0QaDZ50QHcs";
+export const GOOGLE_API_KEY = "AIzaSyC_R8z4qSQqgDzRdG0rkHGmyOkQkuIZX3c";
 
 const resolveStatus = (response) => {
     if (response.status >= 200 && response.status < 300) {
@@ -80,17 +80,17 @@ export const getMarker = (routes, onClick) => {
         .map(route => <Marker
             onClick={() => onClick(route)}
             key={route.routeNumber}
-            lat={route.latitude}
-            lng={route.longitude}
-            name={route.address}
-            color={getColorByRouteNumber(route, routes)}
+            lat={route.location.latitude}
+            lng={route.location.longitude}
+            name={route.location.address}
+            color={getColorByRouteNumber(route.routeNumber, routes)}
         />);
 }
 
-const getColorByRouteNumber = (route, routes) => {
-    if (route.routeNumber === 1) {
+const getColorByRouteNumber = (routeNumber, routes) => {
+    if (routeNumber === 1) {
         return 'green';
-    } else if (route.routeNumber === routes.length) {
+    } else if (routeNumber === routes.length) {
         return 'red'
     } else {
         return 'orange';
