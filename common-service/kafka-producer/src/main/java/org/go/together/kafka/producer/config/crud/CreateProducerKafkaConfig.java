@@ -1,5 +1,6 @@
 package org.go.together.kafka.producer.config.crud;
 
+import brave.Tracer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
@@ -76,9 +77,10 @@ public class CreateProducerKafkaConfig implements KafkaProducerConfigurator {
     }
 
     public <D extends Dto> void configure(String kafkaServer,
-                             String kafkaGroupId,
-                             ConfigurableListableBeanFactory beanFactory,
-                          ProducerRights<D> producerConfig) {
+                                          String kafkaGroupId,
+                                          ConfigurableListableBeanFactory beanFactory,
+                                          ProducerRights<D> producerConfig,
+                                          Tracer tracer) {
         if (!producerConfig.isCreate()) {
             return;
         }
@@ -87,7 +89,7 @@ public class CreateProducerKafkaConfig implements KafkaProducerConfigurator {
         KafkaMessageListenerContainer<UUID, IdDto> createRepliesContainer = createRepliesContainer(replyConsumerFactory, kafkaGroupId, producerId);
         ReplyingKafkaTemplate<UUID, D, IdDto> createReplyingKafkaTemplate = createReplyingKafkaTemplate(createRepliesContainer, kafkaServer);
         beanFactory.registerSingleton(producerId + "CreateReplyingKafkaTemplate", createReplyingKafkaTemplate);
-        CreateKafkaProducer<D> commonCreateKafkaProducer = CommonCreateKafkaProducer.create(createReplyingKafkaTemplate, kafkaGroupId, producerId);
+        CreateKafkaProducer<D> commonCreateKafkaProducer = CommonCreateKafkaProducer.create(createReplyingKafkaTemplate, kafkaGroupId, producerId, tracer);
         beanFactory.registerSingleton(producerId + ProducerPostfix.CREATE.getDescription(), commonCreateKafkaProducer);
         producerConfig.getProducer().setCreateKafkaProducer(commonCreateKafkaProducer);
         log.info("Create producer for " + producerId + " successfully configured!");

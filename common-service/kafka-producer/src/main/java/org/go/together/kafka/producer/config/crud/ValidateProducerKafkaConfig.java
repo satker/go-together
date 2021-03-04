@@ -1,5 +1,6 @@
 package org.go.together.kafka.producer.config.crud;
 
+import brave.Tracer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
@@ -75,9 +76,10 @@ public class ValidateProducerKafkaConfig implements KafkaProducerConfigurator {
     }
 
     public <D extends Dto> void configure(String kafkaServer,
-                          String kafkaGroupId,
-                          ConfigurableListableBeanFactory beanFactory,
-                          ProducerRights<D> producerConfig) {
+                                          String kafkaGroupId,
+                                          ConfigurableListableBeanFactory beanFactory,
+                                          ProducerRights<D> producerConfig,
+                                          Tracer tracer) {
         if (!producerConfig.isValidate()) {
             return;
         }
@@ -90,7 +92,7 @@ public class ValidateProducerKafkaConfig implements KafkaProducerConfigurator {
                 validateReplyingKafkaTemplate(updateRepliesContainer, kafkaServer);
         beanFactory.registerSingleton(producerId + "ValidateReplyingKafkaTemplate", updateReplyingKafkaTemplate);
         ValidateKafkaProducer<D> commonValidateKafkaProducer =
-                CommonValidateKafkaProducer.create(updateReplyingKafkaTemplate, kafkaGroupId, producerId);
+                CommonValidateKafkaProducer.create(updateReplyingKafkaTemplate, kafkaGroupId, producerId, tracer);
         beanFactory.registerSingleton(producerId + ProducerPostfix.VALIDATE.getDescription(), commonValidateKafkaProducer);
         producerConfig.getProducer().setValidateKafkaProducers(commonValidateKafkaProducer);
         log.info("Validation producer for " + producerId + " successfully configured!");

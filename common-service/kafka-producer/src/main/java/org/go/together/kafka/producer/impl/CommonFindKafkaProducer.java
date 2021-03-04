@@ -1,5 +1,6 @@
 package org.go.together.kafka.producer.impl;
 
+import brave.Tracer;
 import org.go.together.dto.Dto;
 import org.go.together.dto.FormDto;
 import org.go.together.dto.ResponseDto;
@@ -14,11 +15,17 @@ public abstract class CommonFindKafkaProducer<D extends Dto> implements FindKafk
 
     public static <D extends Dto> FindKafkaProducer<D> create(ReplyingKafkaTemplate<UUID, FormDto, ResponseDto<Object>> kafkaTemplate,
                                                               String consumerId,
-                                                              String groupId) {
+                                                              String groupId,
+                                                              Tracer tracer) {
         return new CommonFindKafkaProducer<>(kafkaTemplate, groupId) {
             @Override
             public String getTopicId() {
                 return consumerId;
+            }
+
+            @Override
+            public Tracer getTracer() {
+                return tracer;
             }
         };
     }

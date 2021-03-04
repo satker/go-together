@@ -1,5 +1,6 @@
 package org.go.together.kafka.producer.config.crud;
 
+import brave.Tracer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
@@ -71,9 +72,10 @@ public class ReadProducerKafkaConfig implements KafkaProducerConfigurator  {
     }
 
     public <D extends Dto> void configure(String kafkaServer,
-                          String kafkaGroupId,
-                          ConfigurableListableBeanFactory beanFactory,
-                          ProducerRights<D> producerConfig) {
+                                          String kafkaGroupId,
+                                          ConfigurableListableBeanFactory beanFactory,
+                                          ProducerRights<D> producerConfig,
+                                          Tracer tracer) {
         if (!producerConfig.isRead()) {
             return;
         }
@@ -83,7 +85,7 @@ public class ReadProducerKafkaConfig implements KafkaProducerConfigurator  {
         beanFactory.registerSingleton(producerId + "ReadRepliesContainer", kafkaMessageListenerContainer);
         ReplyingKafkaTemplate<UUID, UUID, D> replyingKafkaTemplate = readReplyingKafkaTemplate(kafkaServer, kafkaMessageListenerContainer);
         beanFactory.registerSingleton(producerId + "ReadReplyingKafkaTemplate", replyingKafkaTemplate);
-        ReadKafkaProducer<D> commonReadKafkaProducer = CommonReadKafkaProducer.create(replyingKafkaTemplate, kafkaGroupId, producerId);
+        ReadKafkaProducer<D> commonReadKafkaProducer = CommonReadKafkaProducer.create(replyingKafkaTemplate, kafkaGroupId, producerId, tracer);
         beanFactory.registerSingleton(producerId + ProducerPostfix.READ.getDescription(), commonReadKafkaProducer);
         producerConfig.getProducer().setReadKafkaProducer(commonReadKafkaProducer);
         log.info("Read producer for " + producerId + " successfully configured!");

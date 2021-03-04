@@ -22,7 +22,6 @@ apply plugin: 'org.springframework.boot'
 
 repositories {
     mavenCentral()
-    maven { url 'https://repo.spring.io/milestone' }
 }
 
 sourceCompatibility = 15

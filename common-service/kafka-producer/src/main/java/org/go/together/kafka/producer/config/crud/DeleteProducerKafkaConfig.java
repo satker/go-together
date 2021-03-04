@@ -1,5 +1,6 @@
 package org.go.together.kafka.producer.config.crud;
 
+import brave.Tracer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
@@ -41,9 +42,10 @@ public class DeleteProducerKafkaConfig implements KafkaProducerConfigurator {
     }
 
     public <D extends Dto> void configure(String kafkaServer,
-                             String kafkaGroupId,
-                             ConfigurableListableBeanFactory beanFactory,
-                                          ProducerRights<D> producerConfig) {
+                                          String kafkaGroupId,
+                                          ConfigurableListableBeanFactory beanFactory,
+                                          ProducerRights<D> producerConfig,
+                                          Tracer tracer) {
         if (!producerConfig.isDelete()) {
             return;
         }

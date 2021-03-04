@@ -1,5 +1,6 @@
 package org.go.together.kafka.producer.config.crud;
 
+import brave.Tracer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
@@ -75,9 +76,10 @@ public class UpdateProducerKafkaConfig implements KafkaProducerConfigurator {
     }
 
     public <D extends Dto> void configure(String kafkaServer,
-                          String kafkaGroupId,
-                          ConfigurableListableBeanFactory beanFactory,
-                          ProducerRights<D> producerConfig) {
+                                          String kafkaGroupId,
+                                          ConfigurableListableBeanFactory beanFactory,
+                                          ProducerRights<D> producerConfig,
+                                          Tracer tracer) {
         if (!producerConfig.isUpdate()) {
             return;
         }
@@ -89,7 +91,7 @@ public class UpdateProducerKafkaConfig implements KafkaProducerConfigurator {
         ReplyingKafkaTemplate<UUID, D, IdDto> updateReplyingKafkaTemplate = updateReplyingKafkaTemplate(updateRepliesContainer, kafkaServer);
         beanFactory.registerSingleton(producerId + "UpdateReplyingKafkaTemplate", updateReplyingKafkaTemplate);
         UpdateKafkaProducer<D> commonUpdateKafkaProducer =
-                CommonUpdateKafkaProducer.create(updateReplyingKafkaTemplate, kafkaGroupId, producerId);
+                CommonUpdateKafkaProducer.create(updateReplyingKafkaTemplate, kafkaGroupId, producerId, tracer);
         beanFactory.registerSingleton(producerId + ProducerPostfix.UPDATE.getDescription(), commonUpdateKafkaProducer);
         producerConfig.getProducer().setUpdateKafkaProducer(commonUpdateKafkaProducer);
         log.info("Update producer for " + producerId + " successfully configured!");

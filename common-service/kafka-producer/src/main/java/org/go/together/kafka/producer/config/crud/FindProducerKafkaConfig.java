@@ -1,5 +1,6 @@
 package org.go.together.kafka.producer.config.crud;
 
+import brave.Tracer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
@@ -75,9 +76,10 @@ public class FindProducerKafkaConfig implements KafkaProducerConfigurator {
     }
 
     public <D extends Dto> void configure(String kafkaServer,
-                          String kafkaGroupId,
-                          ConfigurableListableBeanFactory beanFactory,
-                          ProducerRights<D> producerConfig) {
+                                          String kafkaGroupId,
+                                          ConfigurableListableBeanFactory beanFactory,
+                                          ProducerRights<D> producerConfig,
+                                          Tracer tracer) {
         if (!producerConfig.isFind()) {
             return;
         }
@@ -88,7 +90,7 @@ public class FindProducerKafkaConfig implements KafkaProducerConfigurator {
         beanFactory.registerSingleton(producerId + "FindRepliesContainer", kafkaMessageListenerContainer);
         ReplyingKafkaTemplate<UUID, FormDto, ResponseDto<Object>> replyingKafkaTemplate = findReplyingKafkaTemplate(kafkaServer, kafkaMessageListenerContainer);
         beanFactory.registerSingleton(producerId + "FindReplyingKafkaTemplate", replyingKafkaTemplate);
-        FindKafkaProducer<D> commonFindKafkaProducer = CommonFindKafkaProducer.create(replyingKafkaTemplate, producerId, kafkaGroupId);
+        FindKafkaProducer<D> commonFindKafkaProducer = CommonFindKafkaProducer.create(replyingKafkaTemplate, producerId, kafkaGroupId, tracer);
         beanFactory.registerSingleton(producerId + ProducerPostfix.FIND.getDescription(), commonFindKafkaProducer);
         producerConfig.getProducer().setFindKafkaProducer(commonFindKafkaProducer);
         log.info("Find producer for " + producerId + " successfully configured!");

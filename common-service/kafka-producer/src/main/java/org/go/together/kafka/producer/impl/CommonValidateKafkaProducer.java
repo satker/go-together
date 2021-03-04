@@ -1,5 +1,6 @@
 package org.go.together.kafka.producer.impl;
 
+import brave.Tracer;
 import org.go.together.dto.Dto;
 import org.go.together.dto.ValidationMessageDto;
 import org.go.together.kafka.producers.crud.ValidateKafkaProducer;
@@ -18,12 +19,18 @@ public abstract class CommonValidateKafkaProducer<D extends Dto> implements Vali
 
     public static <D extends Dto> ValidateKafkaProducer<D> create(ReplyingKafkaTemplate<UUID, D, ValidationMessageDto> kafkaTemplate,
                                                                   String groupId,
-                                                                  String consumerId) {
+                                                                  String consumerId,
+                                                                  Tracer tracer) {
         return new CommonValidateKafkaProducer<>(kafkaTemplate, groupId) {
 
             @Override
             public String getTopicId() {
                 return consumerId;
+            }
+
+            @Override
+            public Tracer getTracer() {
+                return tracer;
             }
         };
     }

@@ -1,5 +1,6 @@
 package org.go.together.kafka.producer.beanpostprocessor;
 
+import brave.Tracer;
 import org.go.together.annotations.EnableAutoConfigurationKafkaProducer;
 import org.go.together.dto.Dto;
 import org.go.together.kafka.producer.base.CrudClient;
@@ -18,14 +19,15 @@ public class ProducerConfigBeanFactoryPostProcessor {
     @Bean
     public static BeanFactoryPostProcessor producerBeanFactoryPostProcessor(@Value("${kafka.server}") String kafkaServer,
                                                                             @Value("${kafka.groupId}") String kafkaGroupId,
-                                                                            @Autowired List<KafkaProducerConfigurator> configurators) {
+                                                                            @Autowired List<KafkaProducerConfigurator> configurators,
+                                                                            @Autowired Tracer tracer) {
         return beanFactory -> Stream.of(beanFactory.getBeanNamesForType(CrudClient.class))
                 .map(beanFactory::getBean)
                 .filter(client -> client.getClass().isAnnotationPresent(EnableAutoConfigurationKafkaProducer.class))
                 .map(client -> (CrudClient<? extends Dto>) client)
                 .map(ProducerConfigBeanFactoryPostProcessor::getProducerRights)
                 .forEach(producerRights -> configurators.forEach(configurator ->
-                        configurator.configure(kafkaServer, kafkaGroupId, beanFactory, producerRights)));
+                        configurator.configure(kafkaServer, kafkaGroupId, beanFactory, producerRights, tracer)));
     }
 
     private static <D extends Dto> ProducerRights<D> getProducerRights(CrudClient<D> producer) {
