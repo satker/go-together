@@ -5,8 +5,6 @@ import org.go.together.dto.ValidationMessageDto;
 import org.go.together.kafka.producers.ValidationProducer;
 import org.go.together.kafka.producers.crud.ValidateKafkaProducer;
 
-import java.util.UUID;
-
 public abstract class ValidateClient<D extends Dto> extends FindClient<D> implements ValidationProducer<D> {
     private ValidateKafkaProducer<D> validateKafkaProducer;
 
@@ -15,7 +13,7 @@ public abstract class ValidateClient<D extends Dto> extends FindClient<D> implem
     }
 
     @Override
-    public ValidationMessageDto validate(UUID requestId, D dto) {
-        return validateKafkaProducer.validate(requestId, dto);
+    public ValidationMessageDto validate(D dto) {
+        return validateKafkaProducer.validate(dto);
     }
 }

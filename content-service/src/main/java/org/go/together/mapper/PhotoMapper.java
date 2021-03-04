@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Component
 public class PhotoMapper implements Mapper<PhotoDto, Photo> {
-    public PhotoDto entityToDto(UUID requestId, Photo photo) {
+    public PhotoDto entityToDto(Photo photo) {
         PhotoDto photoDto = new PhotoDto();
         if (StringUtils.isNotBlank(photo.getPathName())) {
             try {

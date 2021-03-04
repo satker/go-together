@@ -16,7 +16,6 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -61,7 +60,7 @@ class PlaceServiceTest extends CrudServiceCommonTest<Place, PlaceDto> {
         country.setCountryCode(placeDto.getCountry().getCountryCode().toUpperCase());
         country.setName(placeDto.getCountry().getName().toUpperCase());
         Country savedCountry = countryRepository.save(country);
-        CountryDto countryDto = countryMapper.entityToDto(UUID.randomUUID(), savedCountry);
+        CountryDto countryDto = countryMapper.entityToDto(savedCountry);
         placeDto.setCountry(countryDto);
 
         placeDto.setLocations(Collections.emptySet());

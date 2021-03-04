@@ -29,7 +29,7 @@ public class NotificationMessageConsumer extends CommonCrudKafkaConsumer<Notific
             containerFactory = NOTIFICATION_MESSAGE + CHANGE + LISTENER_FACTORY)
     @SendTo
     public IdDto handleCreate(ConsumerRecord<UUID, NotificationMessageDto> message) {
-        return service.create(message.key(), message.value());
+        return service.create(message.value());
     }
 
     @Override
@@ -37,14 +37,14 @@ public class NotificationMessageConsumer extends CommonCrudKafkaConsumer<Notific
             containerFactory = NOTIFICATION_MESSAGE + CHANGE + LISTENER_FACTORY)
     @SendTo
     public IdDto handleUpdate(ConsumerRecord<UUID, NotificationMessageDto> message) {
-        return service.update(message.key(), message.value());
+        return service.update(message.value());
     }
 
     @Override
     @KafkaListener(topics = NOTIFICATION_MESSAGE + DELETE,
             containerFactory = NOTIFICATION_MESSAGE + DELETE + LISTENER_FACTORY)
     public void handleDelete(ConsumerRecord<UUID, UUID> message) {
-        service.delete(message.key(), message.value());
+        service.delete(message.value());
     }
 
     @Override
@@ -52,7 +52,7 @@ public class NotificationMessageConsumer extends CommonCrudKafkaConsumer<Notific
             containerFactory = NOTIFICATION_MESSAGE + READ + LISTENER_FACTORY)
     @SendTo
     public NotificationMessageDto handleRead(ConsumerRecord<UUID, UUID> message) {
-        return service.read(message.key(), message.value());
+        return service.read(message.value());
     }
 
     @Override
@@ -68,6 +68,6 @@ public class NotificationMessageConsumer extends CommonCrudKafkaConsumer<Notific
             containerFactory = NOTIFICATION_MESSAGE + FIND + LISTENER_FACTORY)
     @SendTo
     public ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message) {
-        return findService.find(message.key(), message.value());
+        return findService.find(message.value());
     }
 }

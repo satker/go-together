@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -118,7 +117,7 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
         assertTrue(eventLikeOptional.isPresent());
         assertEquals(1, eventLikeOptional.get().getUsers().size());
 
-        ((EventLikeService) crudService).deleteByUserId(UUID.randomUUID(), eventLike.getUsers().iterator().next().getId());
+        ((EventLikeService) crudService).deleteByUserId(eventLike.getUsers().iterator().next().getId());
 
         eventLikeOptional = eventLikeRepository.findById(eventLike.getId());
         assertTrue(eventLikeOptional.isPresent());
@@ -138,35 +137,34 @@ class EventLikeServiceTest extends CrudServiceCommonTest<EventLike, EventLikeDto
     protected EventLikeDto createDto() {
         UserDto userDto = factory.manufacturePojo(UserDto.class);
         userDto.setRole(Role.ROLE_USER);
-        UUID requestId = UUID.randomUUID();
         Set<InterestDto> interests = userDto.getInterests().stream()
                 .map(interestMapper::dtoToEntity)
                 .peek(interestRepository::save)
-                .map(interest -> interestMapper.entityToDto(requestId, interest))
+                .map(interest -> interestMapper.entityToDto(interest))
                 .collect(Collectors.toSet());
         userDto.setInterests(interests);
         Set<LanguageDto> languages = userDto.getLanguages().stream()
                 .map(languageMapper::dtoToEntity)
                 .peek(languageRepository::save)
-                .map(language -> languageMapper.entityToDto(requestId, language))
+                .map(language -> languageMapper.entityToDto(language))
                 .collect(Collectors.toSet());
         userDto.setLanguages(languages);
         prepareDto(userDto);
         IdDto idDto = userService.create(userDto);
         Optional<EventLike> eventLike = eventLikeRepository.findByEventId(idDto.getId());
         assertTrue(eventLike.isPresent());
-        return eventLikeMapper.entityToDto(requestId, eventLike.get());
+        return eventLikeMapper.entityToDto(eventLike.get());
     }
 
     private void prepareDto(UserDto userDto) {
-        when(locationValidate.validate(any(UUID.class), eq(userDto.getLocation()))).thenReturn(new ValidationMessageDto(EMPTY));
-        when(groupPhotoValidate.validate(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new ValidationMessageDto(EMPTY));
-        when(groupPhotoCrudClient.update(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
-        when(groupPhotoCrudClient.create(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
-        when(locationProducer.read(any(UUID.class), eq(userDto.getLocation().getId()))).thenReturn(userDto.getLocation());
-        when(locationProducer.create(any(UUID.class), eq(userDto.getLocation()))).thenReturn(new IdDto(userDto.getLocation().getId()));
-        when(locationProducer.update(any(UUID.class), eq(userDto.getLocation()))).thenReturn(new IdDto(userDto.getLocation().getId()));
-        when(groupPhotoCrudClient.read(any(UUID.class), eq(userDto.getGroupPhoto().getId()))).thenReturn(userDto.getGroupPhoto());
+        when(locationValidate.validate(eq(userDto.getLocation()))).thenReturn(new ValidationMessageDto(EMPTY));
+        when(groupPhotoValidate.validate(eq(userDto.getGroupPhoto()))).thenReturn(new ValidationMessageDto(EMPTY));
+        when(groupPhotoCrudClient.update(eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
+        when(groupPhotoCrudClient.create(eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
+        when(locationProducer.read(eq(userDto.getLocation().getId()))).thenReturn(userDto.getLocation());
+        when(locationProducer.create(eq(userDto.getLocation()))).thenReturn(new IdDto(userDto.getLocation().getId()));
+        when(locationProducer.update(eq(userDto.getLocation()))).thenReturn(new IdDto(userDto.getLocation().getId()));
+        when(groupPhotoCrudClient.read(eq(userDto.getGroupPhoto().getId()))).thenReturn(userDto.getGroupPhoto());
 
     }
 }

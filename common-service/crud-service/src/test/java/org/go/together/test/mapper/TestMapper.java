@@ -10,7 +10,6 @@ import org.go.together.test.entities.ManyJoinEntity;
 import org.go.together.test.entities.TestEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -25,7 +24,7 @@ public class TestMapper implements Mapper<TestDto, TestEntity> {
     }
 
     @Override
-    public TestDto entityToDto(UUID requestId, TestEntity entity) {
+    public TestDto entityToDto(TestEntity entity) {
         TestDto testDto = new TestDto();
         testDto.setId(entity.getId());
         testDto.setEndDate(entity.getEndDate());
@@ -40,10 +39,10 @@ public class TestMapper implements Mapper<TestDto, TestEntity> {
         testDto.setNumber(entity.getNumber());
         testDto.setElements(entity.getElements());
         testDto.setJoinTestEntities(entity.getJoinTestEntities().stream()
-                .map(joinTest -> joinTestMapper.entityToDto(UUID.randomUUID(), joinTest))
+                .map(joinTest -> joinTestMapper.entityToDto(joinTest))
                 .collect(Collectors.toSet()));
         testDto.setManyJoinEntities(entity.getManyJoinEntities().stream()
-                .map(manyJoin -> manyJoinMapper.entityToDto(requestId, manyJoin))
+                .map(manyJoin -> manyJoinMapper.entityToDto(manyJoin))
                 .collect(Collectors.toSet()));
         return testDto;
     }

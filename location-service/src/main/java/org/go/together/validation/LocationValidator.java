@@ -13,7 +13,6 @@ import org.go.together.model.Country;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -23,7 +22,7 @@ public class LocationValidator extends CommonValidator<LocationDto> {
     private final Validator<PlaceDto> placeValidator;
 
     @Override
-    public Map<String, Function<LocationDto, ?>> getMapsForCheck(UUID requestId) {
+    public Map<String, Function<LocationDto, ?>> getMapsForCheck() {
         return Map.of(
                 "address", LocationDto::getAddress,
                 "city name", dto -> dto.getPlace().getName(),
@@ -31,7 +30,7 @@ public class LocationValidator extends CommonValidator<LocationDto> {
     }
 
     @Override
-    protected String commonValidation(UUID requestId, LocationDto locationDto, CrudOperation crudOperation) {
+    protected String commonValidation(LocationDto locationDto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
         Country country;
         if (Strings.isNullOrEmpty(locationDto.getPlace().getCountry().getName())) {

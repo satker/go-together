@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.UUID;
 
 public abstract class CommonFindService<D extends Dto, E extends IdentifiedEntity> implements FindService<D> {
     protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -50,27 +49,26 @@ public abstract class CommonFindService<D extends Dto, E extends IdentifiedEntit
     }
 
     @SneakyThrows
-    public ResponseDto<Object> find(UUID requestId, FormDto formDto) {
+    public ResponseDto<Object> find(FormDto formDto) {
         final ObjectMapper objectMapper = new ObjectMapper();
 
-        log.info(requestId + ". Started find in '" + getServiceName() + "' with filter: " +
+        log.info("Started find in '" + getServiceName() + "' with filter: " +
                 objectMapper.writeValueAsString(formDto));
         try {
             Pair<PageDto, Collection<Object>> pageDtoResult = baseFindService.find(
-                    requestId,
                     repository,
                     formDto,
                     getServiceName(),
                     getMappingFields());
 
-            Collection<Object> values = resultMapper.getParsedResult(requestId, pageDtoResult, mapper);
-            log.info(requestId + ". Find in '" + getServiceName() + "' " + Optional.ofNullable(values)
+            Collection<Object> values = resultMapper.getParsedResult(pageDtoResult, mapper);
+            log.info("Find in '" + getServiceName() + "' " + Optional.ofNullable(values)
                     .map(Collection::size)
                     .orElse(0) + " rows with filter: " +
                     objectMapper.writeValueAsString(formDto));
             return new ResponseDto<>(pageDtoResult.getKey(), values);
         } catch (Exception exception) {
-            throw new ApplicationException(exception, requestId);
+            throw new ApplicationException(exception);
         }
     }
 }

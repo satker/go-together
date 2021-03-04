@@ -5,12 +5,10 @@ import org.go.together.test.dto.ComplexInnerDto;
 import org.go.together.test.entities.ComplexInnerEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 public class ComplexInnerMapper implements Mapper<ComplexInnerDto, ComplexInnerEntity> {
     @Override
-    public ComplexInnerDto entityToDto(UUID requestId, ComplexInnerEntity entity) {
+    public ComplexInnerDto entityToDto(ComplexInnerEntity entity) {
         ComplexInnerDto complexInnerDto = new ComplexInnerDto();
         complexInnerDto.setId(entity.getId());
         complexInnerDto.setName(entity.getName());

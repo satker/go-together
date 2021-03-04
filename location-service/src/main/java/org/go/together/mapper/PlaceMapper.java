@@ -11,7 +11,6 @@ import org.go.together.repository.interfaces.LocationRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -20,9 +19,9 @@ public class PlaceMapper implements Mapper<PlaceDto, Place> {
     private final Mapper<CountryDto, Country> countryMapper;
     private final LocationRepository locationRepository;
 
-    public PlaceDto entityToDto(UUID requestId, Place place) {
+    public PlaceDto entityToDto(Place place) {
         PlaceDto placeDto = new PlaceDto();
-        placeDto.setCountry(countryMapper.entityToDto(requestId, place.getCountry()));
+        placeDto.setCountry(countryMapper.entityToDto(place.getCountry()));
         placeDto.setId(place.getId());
         placeDto.setState(place.getState());
         placeDto.setName(place.getName());

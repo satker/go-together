@@ -80,7 +80,7 @@ class PhotoServiceTest extends CrudServiceCommonTest<Photo, PhotoDto> {
 
         Set<Photo> repositoryAll = Set.copyOf(repository.findAll());
 
-        repositoryAll.stream().map(Photo::getId).forEach(photoId -> crudService.delete(null, photoId));
+        repositoryAll.stream().map(Photo::getId).forEach(photoId -> crudService.delete(photoId));
 
         List<String> deletedPhotos = Arrays.stream(Objects.requireNonNull(new File(storePath).list()))
                 .map(fileName -> fileName.split("\\.")[0])

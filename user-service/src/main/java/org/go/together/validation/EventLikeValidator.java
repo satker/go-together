@@ -8,15 +8,13 @@ import org.go.together.model.EventLike;
 import org.go.together.repository.interfaces.EventLikeRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 @RequiredArgsConstructor
 public class EventLikeValidator extends CommonValidator<EventLikeDto> {
     private final EventLikeRepository eventLikeRepository;
 
     @Override
-    protected String commonValidation(UUID requestId, EventLikeDto dto, CrudOperation crudOperation) {
+    protected String commonValidation(EventLikeDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
         if (crudOperation == CrudOperation.UPDATE) {

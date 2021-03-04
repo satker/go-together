@@ -77,7 +77,7 @@ class CrudServiceRevertTest {
         MockitoAnnotations.initMocks(this);
         testServiceOverride = new CommonCrudService<>() {
             @Override
-            protected TestEntity enrichEntity(UUID requestId, TestEntity entity, TestDto dto, CrudOperation crudOperation) {
+            protected TestEntity enrichEntity(TestEntity entity, TestDto dto, CrudOperation crudOperation) {
                 if (crudOperation == CrudOperation.CREATE) {
                     assertEquals(TEST_NAME, entity.getName());
                     entity.setName(CREATED_TEST_NAME);

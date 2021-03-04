@@ -33,22 +33,22 @@ public abstract class CrudClient<D extends Dto> extends ValidateClient<D> implem
     }
 
     @Override
-    public IdDto create(UUID requestId, D dto) {
-        return createKafkaProducer.create(requestId, dto);
+    public IdDto create(D dto) {
+        return createKafkaProducer.create(dto);
     }
 
     @Override
-    public IdDto update(UUID requestId, D dto) {
-        return updateKafkaProducer.update(requestId, dto);
+    public IdDto update(D dto) {
+        return updateKafkaProducer.update(dto);
     }
 
     @Override
-    public D read(UUID requestId, UUID uuid) {
-        return readKafkaProducer.read(requestId, uuid);
+    public D read(UUID uuid) {
+        return readKafkaProducer.read(uuid);
     }
 
     @Override
-    public void delete(UUID requestId, UUID uuid) {
-        deleteKafkaProducer.delete(requestId, uuid);
+    public void delete(UUID uuid) {
+        deleteKafkaProducer.delete(uuid);
     }
 }

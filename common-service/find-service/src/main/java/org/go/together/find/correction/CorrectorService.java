@@ -5,10 +5,8 @@ import org.go.together.find.dto.node.FilterNodeBuilder;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.UUID;
 
 public interface CorrectorService {
-    Collection<FilterNodeBuilder> correct(UUID requestId,
-                                          Collection<FilterNodeBuilder> nodeBuilder,
+    Collection<FilterNodeBuilder> correct(Collection<FilterNodeBuilder> nodeBuilder,
                                           Map<String, FieldMapper> availableFields);
 }

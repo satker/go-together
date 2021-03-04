@@ -29,23 +29,24 @@ public interface ReplyKafkaProducer<T, R> {
 
     Tracer getTracer();
 
-    default R sendWithReply(String targetTopic, UUID requestId, T object) {
-        ProducerRecord<UUID, T> record = getRecordToSend(targetTopic, requestId, object);
+    default R sendWithReply(String targetTopic, T object) {
+        ProducerRecord<UUID, T> record = getRecordToSend(targetTopic, object);
         RequestReplyFuture<UUID, T, R> result = getReplyingKafkaTemplate().sendAndReceive(record);
         try {
             return result.get(1500, TimeUnit.MILLISECONDS).value();
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new ApplicationException("Kafka exception. Cannot send request to " + targetTopic, requestId);
+            throw new ApplicationException("Kafka exception. Cannot send request to " + targetTopic);
         }
     }
 
-    private ProducerRecord<UUID, T> getRecordToSend(String targetTopic, UUID requestId, T object) {
-        ProducerRecord<UUID, T> record = new ProducerRecord<>(targetTopic, null, requestId, object);
+    private ProducerRecord<UUID, T> getRecordToSend(String targetTopic, T object) {
+        TraceContext traceContext = getTracer().currentSpan().context();
+        // TODO: fix to trace id
+        ProducerRecord<UUID, T> record = new ProducerRecord<>(targetTopic, null, UUID.randomUUID(), object);
         String replyTopicId = targetTopic + KAFKA_REPLY_ID + getGroupId();
         record.headers().add(KafkaHeaders.REPLY_TOPIC, replyTopicId.getBytes());
         String correlationId = getGroupId() + CORRELATION_PREFIX;
         record.headers().add(KafkaHeaders.CORRELATION_ID, correlationId.getBytes());
-        TraceContext traceContext = getTracer().currentSpan().context();
         record.headers().add(TRACE_ID.getDescription(), String.valueOf(traceContext.traceId()).getBytes());
         record.headers().add(SPAN_ID.getDescription(), String.valueOf(traceContext.spanId()).getBytes());
         return record;

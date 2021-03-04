@@ -56,7 +56,7 @@ public class AuthUserConsumer extends CommonCrudKafkaConsumer<AuthUserDto> {
         ResponseDto<Object> objectResponseDto = service.find(message.value());
         Collection<Object> result = objectResponseDto.getResult();
         if (result.isEmpty()) {
-            throw new ApplicationException("Cannot get user by login", message.key());
+            throw new ApplicationException("Cannot get user by login");
         }
         String login = (String) result.iterator().next();
         AuthUserDto authUserByLogin = service.findAuthUserByLogin(login);

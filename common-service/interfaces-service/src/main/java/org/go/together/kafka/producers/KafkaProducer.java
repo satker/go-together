@@ -9,7 +9,8 @@ public interface KafkaProducer<T> {
 
     String getTopicId();
 
-    default void send(String notificationTopic, UUID id, T object) {
-        getKafkaTemplate().send(notificationTopic, id, object);
+    default void send(String notificationTopic, T object) {
+        // TODO: fix to trace id
+        getKafkaTemplate().send(notificationTopic, UUID.randomUUID(), object);
     }
 }

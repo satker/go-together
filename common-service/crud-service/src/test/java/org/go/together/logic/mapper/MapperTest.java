@@ -70,7 +70,7 @@ class MapperTest {
 
     @Test
     void entityToDto() {
-        TestDto actualTestDto = testMapper.entityToDto(UUID.randomUUID(), testEntity);
+        TestDto actualTestDto = testMapper.entityToDto(testEntity);
 
         assertEquals(testDto.getDate(), actualTestDto.getDate());
         assertEquals(testDto.getEndDate(), actualTestDto.getEndDate());
@@ -129,7 +129,7 @@ class MapperTest {
         Collection<TestDto> testDtos = Set.of(testDto, testDtoAndEntity.getRight());
         Collection<TestEntity> testEntities = Set.of(testEntity, testDtoAndEntity.getLeft());
 
-        Collection<TestDto> actualTestDtos = testMapper.entitiesToDtos(UUID.randomUUID(), testEntities);
+        Collection<TestDto> actualTestDtos = testMapper.entitiesToDtos(testEntities);
 
         assertEquals(2, actualTestDtos.size());
         compareCollections(testDtos, actualTestDtos);

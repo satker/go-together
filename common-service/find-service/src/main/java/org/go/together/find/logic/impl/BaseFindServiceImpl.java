@@ -13,7 +13,10 @@ import org.go.together.find.repository.FindRepository;
 import org.go.together.model.IdentifiedEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -21,15 +24,14 @@ public class BaseFindServiceImpl<E extends IdentifiedEntity> implements BaseFind
     private final BaseCorrectorService baseCorrectorService;
     private final FindRepository<E> findRepository;
 
-    public Pair<PageDto, Collection<Object>> find(UUID requestId,
-                                                  CustomRepository<E> repository,
+    public Pair<PageDto, Collection<Object>> find(CustomRepository<E> repository,
                                                   FormDto formDto,
                                                   String serviceName,
                                                   Map<String, FieldMapper> mappingFields) {
         if (Optional.ofNullable(formDto.getFilters()).map(Map::isEmpty).orElse(true)) {
             return findRepository.getResult(formDto, null, serviceName, repository, mappingFields);
         }
-        Collection<Collection<FilterNodeBuilder>> nodeBuilders = baseCorrectorService.getCorrectedFilters(requestId, formDto, mappingFields);
+        Collection<Collection<FilterNodeBuilder>> nodeBuilders = baseCorrectorService.getCorrectedFilters(formDto, mappingFields);
         if (nodeBuilders.stream().anyMatch(Collection::isEmpty)) {
             PageDto notFoundPageDto = null;
             if (formDto.getPage() != null) {

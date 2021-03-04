@@ -6,8 +6,6 @@ import org.go.together.kafka.producers.FindProducer;
 import org.go.together.test.dto.FakeDto;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 public class AnotherClient implements FindProducer<FakeDto> {
     private ResponseDto<Object> responseDto;
@@ -17,7 +15,7 @@ public class AnotherClient implements FindProducer<FakeDto> {
     }
 
     @Override
-    public ResponseDto<Object> find(UUID requestId, FormDto dto) {
+    public ResponseDto<Object> find(FormDto dto) {
         return responseDto;
     }
 }

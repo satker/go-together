@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collections;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,16 +42,16 @@ public class EventUserServiceTest extends CrudServiceCommonTest<EventUser, Event
         ResponseDto<Object> objectResponseDto = new ResponseDto<>();
         objectResponseDto.setPage(null);
         objectResponseDto.setResult(Collections.singleton(dto.getUser().getId()));
-        when(findUserKafkaProducer.find(any(UUID.class), any())).thenReturn(objectResponseDto);
+        when(findUserKafkaProducer.find(any())).thenReturn(objectResponseDto);
 
         ResponseDto<Object> updatedObjectResponseDto = new ResponseDto<>();
         updatedObjectResponseDto.setPage(null);
         updatedObjectResponseDto.setResult(Collections.singleton(updatedDto.getUser().getId()));
-        when(findUserKafkaProducer.find(any(UUID.class), any())).thenReturn(updatedObjectResponseDto);
+        when(findUserKafkaProducer.find(any())).thenReturn(updatedObjectResponseDto);
 
-        when(usersCrudProducer.read(any(UUID.class), eq(dto.getUser().getId())))
+        when(usersCrudProducer.read(eq(dto.getUser().getId())))
                 .thenReturn(simpleUserDtoToUserDto(dto.getUser()));
-        when(usersCrudProducer.read(any(UUID.class), eq(updatedDto.getUser().getId())))
+        when(usersCrudProducer.read(eq(updatedDto.getUser().getId())))
                 .thenReturn(simpleUserDtoToUserDto(updatedDto.getUser()));
         Event entity = new Event();
         entity.setId(dto.getEventId());

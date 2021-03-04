@@ -6,8 +6,6 @@ import org.go.together.dto.ResponseDto;
 import org.go.together.kafka.producers.FindProducer;
 import org.go.together.kafka.producers.crud.FindKafkaProducer;
 
-import java.util.UUID;
-
 public abstract class FindClient<D extends Dto> implements FindProducer<D> {
     private FindKafkaProducer<D> findKafkaProducer;
 
@@ -16,7 +14,7 @@ public abstract class FindClient<D extends Dto> implements FindProducer<D> {
     }
 
     @Override
-    public ResponseDto<Object> find(UUID requestId, FormDto formDto) {
-        return findKafkaProducer.find(requestId, formDto);
+    public ResponseDto<Object> find(FormDto formDto) {
+        return findKafkaProducer.find(formDto);
     }
 }

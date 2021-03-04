@@ -7,8 +7,7 @@ import org.go.together.dto.PageDto;
 import org.go.together.model.IdentifiedEntity;
 
 import java.util.Collection;
-import java.util.UUID;
 
 public interface BaseResultMapper<D extends Dto, E extends IdentifiedEntity> {
-    Collection<Object> getParsedResult(UUID requestId, Pair<PageDto, Collection<Object>> pageDtoResult, Mapper<D, E> mapper);
+    Collection<Object> getParsedResult(Pair<PageDto, Collection<Object>> pageDtoResult, Mapper<D, E> mapper);
 }

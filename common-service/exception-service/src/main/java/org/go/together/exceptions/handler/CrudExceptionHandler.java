@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.UUID;
+
 @RestControllerAdvice
 public class CrudExceptionHandler {
     @ExceptionHandler({
@@ -27,8 +29,9 @@ public class CrudExceptionHandler {
     })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionDto processApplicationError(ApplicationException exception) {
+        // TODO: added traceID
         return ExceptionDto.builder()
-                .exceptionMessage("Server error: contact to system administrator. Error id: " + exception.getRequestId())
+                .exceptionMessage("Server error: contact to system administrator. Trace error id: " + UUID.randomUUID())
                 .build();
     }
 }

@@ -12,7 +12,10 @@ import org.go.together.find.dto.node.Node;
 import org.go.together.find.finders.Finder;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -29,23 +32,22 @@ public class CorrectorServiceImpl implements CorrectorService {
     }
 
     @Override
-    public Collection<FilterNodeBuilder> correct(UUID requestId,
-                                                 Collection<FilterNodeBuilder> nodeBuilder,
+    public Collection<FilterNodeBuilder> correct(Collection<FilterNodeBuilder> nodeBuilder,
                                                  Map<String, FieldMapper> availableFields) {
         return nodeBuilder.stream()
-                .map(node -> getFilterNodeBuilder(requestId, node, availableFields))
+                .map(node -> getFilterNodeBuilder(node, availableFields))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 
-    private FilterNodeBuilder getFilterNodeBuilder(UUID requestId, FilterNodeBuilder nodeBuilder, Map<String, FieldMapper> availableFields) {
+    private FilterNodeBuilder getFilterNodeBuilder(FilterNodeBuilder nodeBuilder, Map<String, FieldMapper> availableFields) {
         Iterator<Node> iterator = nodeBuilder.iterator();
         while (iterator.hasNext()) {
             Node node = iterator.next();
             if (node instanceof FilterNode) {
                 FilterNode filterNode = (FilterNode) node;
                 if (isRemoteNode(filterNode)) {
-                    FilterNode remoteField = enrichRemoteField(requestId, filterNode, availableFields);
+                    FilterNode remoteField = enrichRemoteField(filterNode, availableFields);
                     if (((Collection) remoteField.getValues().getValue()).isEmpty()) {
                         return null;
                     }
@@ -61,10 +63,10 @@ public class CorrectorServiceImpl implements CorrectorService {
         return StringUtils.isNotBlank(filterNode.getField().getRemoteField());
     }
 
-    private FilterNode enrichRemoteField(UUID requestId, FilterNode filterNode, Map<String, FieldMapper> fieldMappers) {
+    private FilterNode enrichRemoteField(FilterNode filterNode, Map<String, FieldMapper> fieldMappers) {
         Path path = pathCorrector.correct(filterNode.getField(), fieldMappers);
         filterNode.setField(path.getField());
-        Collection<Object> remoteFilters = remoteFindService.getFilters(requestId, filterNode, path.getLastFieldMapper());
+        Collection<Object> remoteFilters = remoteFindService.getFilters(filterNode, path.getLastFieldMapper());
         return enrichRemoteFilter(filterNode, remoteFilters);
     }
 

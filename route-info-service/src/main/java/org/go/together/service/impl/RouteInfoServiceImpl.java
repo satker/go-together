@@ -25,20 +25,19 @@ public class RouteInfoServiceImpl extends CommonCrudService<RouteInfoDto, RouteI
     private final CrudProducer<LocationDto> locationProducer;
 
     @Override
-    protected RouteInfo enrichEntity(UUID requestId,
-                                     RouteInfo entity,
+    protected RouteInfo enrichEntity(RouteInfo entity,
                                      RouteInfoDto dto,
                                      CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE) {
-            IdDto locationIdDto = locationProducer.create(requestId, dto.getLocation());
+            IdDto locationIdDto = locationProducer.create(dto.getLocation());
             entity.setLocationId(locationIdDto.getId());
         }
         if (crudOperation == CrudOperation.UPDATE) {
-            IdDto locationIdDto = locationProducer.update(requestId, dto.getLocation());
+            IdDto locationIdDto = locationProducer.update(dto.getLocation());
             entity.setLocationId(locationIdDto.getId());
         }
         if (crudOperation == CrudOperation.DELETE) {
-            locationProducer.delete(requestId, entity.getLocationId());
+            locationProducer.delete(entity.getLocationId());
         }
         return entity;
     }

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public abstract class FindController implements FindClient {
@@ -29,11 +28,10 @@ public abstract class FindController implements FindClient {
     }
 
     public ResponseDto<Object> find(FormDto formDto) {
-        UUID requestId = UUID.randomUUID();
         if (formDto == null) {
-            throw new ApplicationException("Filter cannot be null!", requestId);
+            throw new ApplicationException("Filter cannot be null!");
         }
         String[] serviceNameField = FindUtils.getParsedFields(formDto.getMainIdField());
-        return services.get(serviceNameField[0]).find(requestId, formDto);
+        return services.get(serviceNameField[0]).find(formDto);
     }
 }

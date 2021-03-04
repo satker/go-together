@@ -29,7 +29,7 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
             containerFactory = GROUP_PHOTO_NAME + CHANGE + LISTENER_FACTORY)
     @SendTo
     public IdDto handleCreate(ConsumerRecord<UUID, GroupPhotoDto> message) {
-        return service.create(message.key(), message.value());
+        return service.create(message.value());
     }
 
     @Override
@@ -37,14 +37,14 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
             containerFactory = GROUP_PHOTO_NAME + CHANGE + LISTENER_FACTORY)
     @SendTo
     public IdDto handleUpdate(ConsumerRecord<UUID, GroupPhotoDto> message) {
-        return service.update(message.key(), message.value());
+        return service.update(message.value());
     }
 
     @Override
     @KafkaListener(topics = GROUP_PHOTO_NAME + DELETE,
             containerFactory = GROUP_PHOTO_NAME + DELETE + LISTENER_FACTORY)
     public void handleDelete(ConsumerRecord<UUID, UUID> message) {
-        service.delete(message.key(), message.value());
+        service.delete(message.value());
     }
 
     @Override
@@ -52,7 +52,7 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
             containerFactory = GROUP_PHOTO_NAME + READ + LISTENER_FACTORY)
     @SendTo
     public GroupPhotoDto handleRead(ConsumerRecord<UUID, UUID> message) {
-        return service.read(message.key(), message.value());
+        return service.read(message.value());
     }
 
     @Override
@@ -69,6 +69,6 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
             containerFactory = GROUP_PHOTO_NAME + FIND + LISTENER_FACTORY)
     @SendTo
     public ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message) {
-        return findService.find(message.key(), message.value());
+        return findService.find(message.value());
     }
 }

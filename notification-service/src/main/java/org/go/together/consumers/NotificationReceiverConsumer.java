@@ -32,7 +32,7 @@ public class NotificationReceiverConsumer extends CommonCrudKafkaConsumer<Notifi
             containerFactory = NOTIFICATION_RECEIVER + CHANGE + LISTENER_FACTORY)
     @SendTo
     public IdDto handleCreate(ConsumerRecord<UUID, NotificationReceiverDto> message) {
-        return service.create(message.key(), message.value());
+        return service.create(message.value());
     }
 
     @Override
@@ -40,7 +40,7 @@ public class NotificationReceiverConsumer extends CommonCrudKafkaConsumer<Notifi
             containerFactory = NOTIFICATION_RECEIVER + CHANGE + LISTENER_FACTORY)
     @SendTo
     public IdDto handleUpdate(ConsumerRecord<UUID, NotificationReceiverDto> message) {
-        return service.update(message.key(), message.value());
+        return service.update(message.value());
     }
 
     @Override
@@ -50,7 +50,7 @@ public class NotificationReceiverConsumer extends CommonCrudKafkaConsumer<Notifi
         UUID producerId = message.value();
         notificationReceiverRepository.findByProducerId(producerId).stream()
                 .map(NotificationReceiver::getId)
-                .forEach(notificationReceiverId -> service.delete(message.key(), notificationReceiverId));
+                .forEach(notificationReceiverId -> service.delete(notificationReceiverId));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class NotificationReceiverConsumer extends CommonCrudKafkaConsumer<Notifi
             containerFactory = NOTIFICATION_RECEIVER + READ + LISTENER_FACTORY)
     @SendTo
     public NotificationReceiverDto handleRead(ConsumerRecord<UUID, UUID> message) {
-        return service.read(message.key(), message.value());
+        return service.read(message.value());
     }
 
     @Override
@@ -74,6 +74,6 @@ public class NotificationReceiverConsumer extends CommonCrudKafkaConsumer<Notifi
             containerFactory = NOTIFICATION_RECEIVER + FIND + LISTENER_FACTORY)
     @SendTo
     public ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message) {
-        return findService.find(message.key(), message.value());
+        return findService.find(message.value());
     }
 }

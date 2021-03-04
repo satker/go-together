@@ -10,7 +10,6 @@ import org.go.together.repository.interfaces.EventLikeRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -20,12 +19,12 @@ public class EventLikeMapper implements Mapper<EventLikeDto, EventLike> {
     private final Mapper<SimpleUserDto, SystemUser> simpleUserMapper;
 
     @Override
-    public EventLikeDto entityToDto(UUID requestId, EventLike entity) {
+    public EventLikeDto entityToDto(EventLike entity) {
         EventLikeDto eventLikeDto = new EventLikeDto();
         eventLikeDto.setId(entity.getId());
         eventLikeDto.setEventId(entity.getEventId());
         eventLikeDto.setUsers(entity.getUsers().stream()
-                .map(simpleUser -> simpleUserMapper.entityToDto(requestId, simpleUser))
+                .map(simpleUserMapper::entityToDto)
                 .collect(Collectors.toSet()));
         return eventLikeDto;
     }

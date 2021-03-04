@@ -5,12 +5,10 @@ import org.go.together.test.dto.ManyJoinDto;
 import org.go.together.test.entities.ManyJoinEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 public class ManyJoinMapper implements Mapper<ManyJoinDto, ManyJoinEntity> {
     @Override
-    public ManyJoinDto entityToDto(UUID requestId, ManyJoinEntity entity) {
+    public ManyJoinDto entityToDto(ManyJoinEntity entity) {
         ManyJoinDto manyJoinDto = new ManyJoinDto();
         manyJoinDto.setId(entity.getId());
         manyJoinDto.setName(entity.getName());

@@ -58,26 +58,26 @@ public class CommonNotificationService<D extends Dto> implements NotificationSer
     }
 
     @Override
-    public void createNotification(UUID requestId, UUID id, D dto, String resultMessage) {
+    public void createNotification(UUID id, D dto, String resultMessage) {
         Optional.ofNullable(notificationMapper.getNotificationDto(id, dto, resultMessage))
                 .ifPresent(notificationDto -> {
                     UUID ownerId = ((ComparableDto) dto).getOwnerId();
                     NotificationReceiverDto receiverDto =
                             receiverMapper.getReceiverDto(notificationDto.getNotification().getProducerId(),
                                     ownerId);
-                    notificationReceiverProducer.create(requestId, receiverDto);
-                    log.info(requestId + ". Creation receiver owner by id = '" + ownerId + "' successful.");
-                    notificationMessageProducer.create(requestId, notificationDto);
-                    log.info(requestId + ". Added message = '" + resultMessage + "' successful.");
+                    notificationReceiverProducer.create(receiverDto);
+                    log.info("Creation receiver owner by id = '" + ownerId + "' successful.");
+                    notificationMessageProducer.create(notificationDto);
+                    log.info("Added message = '" + resultMessage + "' successful.");
                 });
     }
 
     @Override
-    public void updateNotification(UUID requestId, UUID id, D dto, String resultMessage) {
+    public void updateNotification(UUID id, D dto, String resultMessage) {
         Optional.ofNullable(notificationMapper.getNotificationDto(id, dto, resultMessage))
                 .ifPresent(notificationMessageDto -> {
-                    notificationMessageProducer.create(requestId, notificationMessageDto);
-                    log.info(requestId + ". Added message = '" + resultMessage + "' successful.");
+                    notificationMessageProducer.create(notificationMessageDto);
+                    log.info("Added message = '" + resultMessage + "' successful.");
                 });
     }
 
@@ -89,13 +89,13 @@ public class CommonNotificationService<D extends Dto> implements NotificationSer
 
 
     @Override
-    public void removeReceiver(UUID requestId, D dto) {
+    public void removeReceiver(D dto) {
         Optional.ofNullable(dto)
                 .map(d -> (ComparableDto) d)
                 .ifPresent(comparableDto -> {
                     UUID ownerId = comparableDto.getOwnerId();
-                    notificationReceiverProducer.delete(requestId, ownerId);
-                    log.info(requestId + ". Delete receiver = '" + ownerId + "' successful.");
+                    notificationReceiverProducer.delete(ownerId);
+                    log.info("Delete receiver = '" + ownerId + "' successful.");
                 });
     }
 }

@@ -32,7 +32,7 @@ public class NotificationMessageServiceTest extends CrudServiceCommonTest<Notifi
     @Test
     public void notificate() {
         NotificationMessageDto createdNotificationMessageDto = getCreatedEntityId(dto);
-        Notification presentedNotificationByDto = notificationService.getPresentedNotificationByDto(UUID.randomUUID(),
+        Notification presentedNotificationByDto = notificationService.getPresentedNotificationByDto(
                 createdNotificationMessageDto.getNotification());
 
         Collection<NotificationMessage> notificationMessages =
@@ -53,7 +53,7 @@ public class NotificationMessageServiceTest extends CrudServiceCommonTest<Notifi
         notificationMessageDto.setMessage(updated);
         NotificationMessageDto createdNotificationMessageDto = getCreatedEntityId(notificationMessageDto);
 
-        Notification presentedNotificationByDto = notificationService.getPresentedNotificationByDto(UUID.randomUUID(),
+        Notification presentedNotificationByDto = notificationService.getPresentedNotificationByDto(
                 createdNotificationMessageDto.getNotification());
 
         Collection<NotificationMessage> notificationMessages =

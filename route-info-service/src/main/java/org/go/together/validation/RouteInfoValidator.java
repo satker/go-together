@@ -7,7 +7,6 @@ import org.go.together.kafka.producers.ValidationProducer;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -16,9 +15,9 @@ public class RouteInfoValidator extends CommonValidator<RouteInfoDto> {
     private final ValidationProducer<LocationDto> locationValidator;
 
     @Override
-    public Map<String, Function<RouteInfoDto, ?>> getMapsForCheck(UUID requestId) {
+    public Map<String, Function<RouteInfoDto, ?>> getMapsForCheck() {
         return Map.of(
-                "location", routeInfoDto -> locationValidator.validate(requestId, routeInfoDto.getLocation()),
+                "location", routeInfoDto -> locationValidator.validate(routeInfoDto.getLocation()),
                 "movement date", RouteInfoDto::getMovementDate,
                 "cost", RouteInfoDto::getCost,
                 "movement duration", RouteInfoDto::getMovementDuration,

@@ -14,7 +14,10 @@ import org.go.together.service.interfaces.LocationService;
 import org.go.together.service.interfaces.PlaceService;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.go.together.enums.LocationServiceInfo.LOCATION;
@@ -26,7 +29,7 @@ public class LocationServiceImpl extends CommonCrudService<LocationDto, Location
     private final Mapper<PlaceDto, Place> placeMapper;
 
     @Override
-    protected Location enrichEntity(UUID requestId, Location entity, LocationDto dto, CrudOperation crudOperation) {
+    protected Location enrichEntity(Location entity, LocationDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE) {
             PlaceDto placeDto = dto.getPlace();
             Optional<Place> placeEquals = placeService.getPlaceEquals(placeDto);
@@ -34,37 +37,37 @@ public class LocationServiceImpl extends CommonCrudService<LocationDto, Location
             Optional<Place> placeByLocationId = placeService.getPlaceByLocationId(entity.getId());
             if (placeByLocationId.isPresent() && (placeEquals.isEmpty()
                     || placeByLocationId.get().getId().equals(placeEquals.get().getId()))) {
-                removePlaceByLocationId(requestId, entity);
+                removePlaceByLocationId(entity);
             }
 
             if (placeEquals.isEmpty()) {
                 placeDto.setLocations(Collections.singleton(entity.getId()));
-                placeService.create(requestId, placeDto);
+                placeService.create(placeDto);
             } else {
                 Place place = placeEquals.get();
                 Set<Location> locations = place.getLocations();
                 locations.add(entity);
-                PlaceDto placeUpdated = placeMapper.entityToDto(requestId, place);
-                placeService.update(requestId, placeUpdated);
+                PlaceDto placeUpdated = placeMapper.entityToDto(place);
+                placeService.update(placeUpdated);
             }
         } else if (crudOperation == CrudOperation.DELETE) {
-            removePlaceByLocationId(requestId, entity);
+            removePlaceByLocationId(entity);
         }
         return entity;
     }
 
-    private void removePlaceByLocationId(UUID requestId, Location entity) {
+    private void removePlaceByLocationId(Location entity) {
         Place place = placeService.getPlaceByLocationId(entity.getId())
                 .orElseThrow(() -> new CannotFindEntityException("Cannot find place by id: " + entity.getId()));
         if (place.getLocations().stream()
                 .allMatch(location -> location.getId().equals(entity.getId()))) {
-            placeService.delete(requestId, place.getId());
+            placeService.delete(place.getId());
         } else {
             place.setLocations(place.getLocations().stream()
                     .filter(location -> !location.getId().equals(entity.getId()))
                     .collect(Collectors.toSet()));
-            PlaceDto placeUpdated = placeMapper.entityToDto(requestId, place);
-            placeService.update(requestId, placeUpdated);
+            PlaceDto placeUpdated = placeMapper.entityToDto(place);
+            placeService.update(placeUpdated);
         }
     }
 

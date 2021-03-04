@@ -8,14 +8,12 @@ import org.go.together.model.Country;
 import org.go.together.repository.interfaces.CountryRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 @RequiredArgsConstructor
 public class CountryMapper implements Mapper<CountryDto, Country> {
     private final CountryRepository countryRepository;
 
-    public CountryDto entityToDto(UUID requestId, Country country) {
+    public CountryDto entityToDto(Country country) {
         CountryDto countryDto = new CountryDto();
         countryDto.setCountryCode(country.getCountryCode());
         countryDto.setId(country.getId());

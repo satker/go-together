@@ -9,7 +9,6 @@ import org.go.together.model.Language;
 import org.go.together.model.SystemUser;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -21,23 +20,23 @@ public class UserMapper implements Mapper<UserDto, SystemUser> {
     private final Mapper<InterestDto, Interest> interestMapper;
 
     @Override
-    public UserDto entityToDto(UUID requestId, SystemUser entity) {
+    public UserDto entityToDto(SystemUser entity) {
         UserDto userDTO = new UserDto();
         userDTO.setDescription(entity.getDescription());
         userDTO.setFirstName(entity.getFirstName());
         userDTO.setId(entity.getId());
         userDTO.setLanguages(entity.getLanguages().stream()
-                .map(language -> languageMapper.entityToDto(requestId, language))
+                .map(languageMapper::entityToDto)
                 .collect(Collectors.toSet()));
         userDTO.setLastName(entity.getLastName());
-        userDTO.setLocation(locationProducer.read(requestId, entity.getLocationId()));
+        userDTO.setLocation(locationProducer.read(entity.getLocationId()));
         userDTO.setLogin(entity.getLogin());
         userDTO.setMail(entity.getMail());
         userDTO.setRole(entity.getRole());
         userDTO.setInterests(entity.getInterests().stream()
-                .map(interest -> interestMapper.entityToDto(requestId, interest))
+                .map(interestMapper::entityToDto)
                 .collect(Collectors.toSet()));
-        userDTO.setGroupPhoto(groupPhotoProducer.read(requestId, entity.getGroupPhoto()));
+        userDTO.setGroupPhoto(groupPhotoProducer.read(entity.getGroupPhoto()));
         return userDTO;
     }
 
