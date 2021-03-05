@@ -28,7 +28,7 @@ public class NotificationMessageConsumer extends CommonCrudKafkaConsumer<Notific
     @KafkaListener(topics = NOTIFICATION_MESSAGE + CREATE,
             containerFactory = NOTIFICATION_MESSAGE + CHANGE + LISTENER_FACTORY)
     @SendTo
-    public IdDto handleCreate(ConsumerRecord<UUID, NotificationMessageDto> message) {
+    public IdDto handleCreate(ConsumerRecord<Long, NotificationMessageDto> message) {
         return service.create(message.value());
     }
 
@@ -36,14 +36,14 @@ public class NotificationMessageConsumer extends CommonCrudKafkaConsumer<Notific
     @KafkaListener(topics = NOTIFICATION_MESSAGE + UPDATE,
             containerFactory = NOTIFICATION_MESSAGE + CHANGE + LISTENER_FACTORY)
     @SendTo
-    public IdDto handleUpdate(ConsumerRecord<UUID, NotificationMessageDto> message) {
+    public IdDto handleUpdate(ConsumerRecord<Long, NotificationMessageDto> message) {
         return service.update(message.value());
     }
 
     @Override
     @KafkaListener(topics = NOTIFICATION_MESSAGE + DELETE,
             containerFactory = NOTIFICATION_MESSAGE + DELETE + LISTENER_FACTORY)
-    public void handleDelete(ConsumerRecord<UUID, UUID> message) {
+    public void handleDelete(ConsumerRecord<Long, UUID> message) {
         service.delete(message.value());
     }
 
@@ -51,7 +51,7 @@ public class NotificationMessageConsumer extends CommonCrudKafkaConsumer<Notific
     @KafkaListener(topics = NOTIFICATION_MESSAGE + READ,
             containerFactory = NOTIFICATION_MESSAGE + READ + LISTENER_FACTORY)
     @SendTo
-    public NotificationMessageDto handleRead(ConsumerRecord<UUID, UUID> message) {
+    public NotificationMessageDto handleRead(ConsumerRecord<Long, UUID> message) {
         return service.read(message.value());
     }
 
@@ -59,7 +59,7 @@ public class NotificationMessageConsumer extends CommonCrudKafkaConsumer<Notific
     @KafkaListener(topics = NOTIFICATION_MESSAGE + VALIDATE,
             containerFactory = NOTIFICATION_MESSAGE + VALIDATE + LISTENER_FACTORY)
     @SendTo
-    public ValidationMessageDto handleValidate(ConsumerRecord<UUID, NotificationMessageDto> message) {
+    public ValidationMessageDto handleValidate(ConsumerRecord<Long, NotificationMessageDto> message) {
         return new ValidationMessageDto(validator.validate(message.value(), null));
     }
 
@@ -67,7 +67,7 @@ public class NotificationMessageConsumer extends CommonCrudKafkaConsumer<Notific
     @KafkaListener(topics = NOTIFICATION_MESSAGE + FIND,
             containerFactory = NOTIFICATION_MESSAGE + FIND + LISTENER_FACTORY)
     @SendTo
-    public ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message) {
+    public ResponseDto<Object> handleFind(ConsumerRecord<Long, FormDto> message) {
         return findService.find(message.value());
     }
 }

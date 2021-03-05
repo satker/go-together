@@ -2,8 +2,9 @@ package org.go.together.kafka.consumer.config.crud;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.LongDeserializer;
+import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.UUIDDeserializer;
-import org.apache.kafka.common.serialization.UUIDSerializer;
 import org.go.together.dto.Dto;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -22,7 +23,7 @@ public abstract class ReadConsumerKafkaConfig<D extends Dto> extends ChangeConsu
     private Map<String, Object> getProducerConfigs(String kafkaServer) {
         return Map.of(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
-                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class,
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class,
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class,
                 ProducerConfig.MAX_REQUEST_SIZE_CONFIG, "15728640",
                 ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy"
@@ -33,19 +34,19 @@ public abstract class ReadConsumerKafkaConfig<D extends Dto> extends ChangeConsu
         return Map.of(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
                 ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId,
-                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class,
+                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class
         );
     }
 
-    public ConsumerFactory<UUID, UUID> readConsumerFactory(String kafkaServer,
+    public ConsumerFactory<Long, UUID> readConsumerFactory(String kafkaServer,
                                                            String kafkaGroupId) {
         return new DefaultKafkaConsumerFactory<>(getReadConsumerConfigs(kafkaServer, kafkaGroupId));
     }
 
-    private ConcurrentKafkaListenerContainerFactory<UUID, UUID> readListenerContainerFactory(ConsumerFactory<UUID, UUID> readConsumerFactory,
-                                                                                             KafkaTemplate<UUID, D> kafkaTemplate) {
-        ConcurrentKafkaListenerContainerFactory<UUID, UUID> factory =
+    private ConcurrentKafkaListenerContainerFactory<Long, UUID> readListenerContainerFactory(ConsumerFactory<Long, UUID> readConsumerFactory,
+                                                                                             KafkaTemplate<Long, D> kafkaTemplate) {
+        ConcurrentKafkaListenerContainerFactory<Long, UUID> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(readConsumerFactory);
         factory.setReplyTemplate(kafkaTemplate);
@@ -54,19 +55,19 @@ public abstract class ReadConsumerKafkaConfig<D extends Dto> extends ChangeConsu
     }
 
     public void readConsumerBeanFactoryPostProcessor(String kafkaServer, String kafkaGroupId, ConfigurableListableBeanFactory beanFactory) {
-        ProducerFactory<UUID, D> producerFactory = readReplyProducerFactory(kafkaServer);
+        ProducerFactory<Long, D> producerFactory = readReplyProducerFactory(kafkaServer);
         beanFactory.registerSingleton(getConsumerId() + "ReadReplyProducerFactory", producerFactory);
-        KafkaTemplate<UUID, D> kafkaTemplate = readKafkaTemplate(producerFactory);
+        KafkaTemplate<Long, D> kafkaTemplate = readKafkaTemplate(producerFactory);
         beanFactory.registerSingleton(getConsumerId() + "ReadKafkaTemplate", kafkaTemplate);
         beanFactory.registerSingleton(getConsumerId() + READ + LISTENER_FACTORY,
                 readListenerContainerFactory(readConsumerFactory(kafkaServer, kafkaGroupId), kafkaTemplate));
     }
 
-    private ProducerFactory<UUID, D> readReplyProducerFactory(String kafkaServer) {
+    private ProducerFactory<Long, D> readReplyProducerFactory(String kafkaServer) {
         return new DefaultKafkaProducerFactory<>(getProducerConfigs(kafkaServer));
     }
 
-    private KafkaTemplate<UUID, D> readKafkaTemplate(ProducerFactory<UUID, D> readReplyProducerFactory) {
+    private KafkaTemplate<Long, D> readKafkaTemplate(ProducerFactory<Long, D> readReplyProducerFactory) {
         return new KafkaTemplate<>(readReplyProducerFactory);
     }
 }

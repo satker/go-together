@@ -28,7 +28,7 @@ public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
     @KafkaListener(topics = EVENT_LIKES + CREATE,
             containerFactory = EVENT_LIKES + CHANGE + LISTENER_FACTORY)
     @SendTo
-    public IdDto handleCreate(ConsumerRecord<UUID, EventLikeDto> message) {
+    public IdDto handleCreate(ConsumerRecord<Long, EventLikeDto> message) {
         return service.create(message.value());
     }
 
@@ -36,14 +36,14 @@ public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
     @KafkaListener(topics = EVENT_LIKES + UPDATE,
             containerFactory = EVENT_LIKES + CHANGE + LISTENER_FACTORY)
     @SendTo
-    public IdDto handleUpdate(ConsumerRecord<UUID, EventLikeDto> message) {
+    public IdDto handleUpdate(ConsumerRecord<Long, EventLikeDto> message) {
         return service.update(message.value());
     }
 
     @Override
     @KafkaListener(topics = EVENT_LIKES + DELETE,
             containerFactory = EVENT_LIKES + DELETE + LISTENER_FACTORY)
-    public void handleDelete(ConsumerRecord<UUID, UUID> message) {
+    public void handleDelete(ConsumerRecord<Long, UUID> message) {
         service.delete(message.value());
     }
 
@@ -51,7 +51,7 @@ public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
     @KafkaListener(topics = EVENT_LIKES + READ,
             containerFactory = EVENT_LIKES + READ + LISTENER_FACTORY)
     @SendTo
-    public EventLikeDto handleRead(ConsumerRecord<UUID, UUID> message) {
+    public EventLikeDto handleRead(ConsumerRecord<Long, UUID> message) {
         return service.read(message.value());
     }
 
@@ -59,7 +59,7 @@ public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
     @KafkaListener(topics = EVENT_LIKES + VALIDATE,
             containerFactory = EVENT_LIKES + VALIDATE + LISTENER_FACTORY)
     @SendTo
-    public ValidationMessageDto handleValidate(ConsumerRecord<UUID, EventLikeDto> message) {
+    public ValidationMessageDto handleValidate(ConsumerRecord<Long, EventLikeDto> message) {
         EventLikeDto dto = message.value();
         return new ValidationMessageDto(validator.validate(dto, null));
     }
@@ -68,7 +68,7 @@ public class EventLikesConsumer extends CommonCrudKafkaConsumer<EventLikeDto> {
     @KafkaListener(topics = EVENT_LIKES + FIND,
             containerFactory = EVENT_LIKES + FIND + LISTENER_FACTORY)
     @SendTo
-    public ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message) {
+    public ResponseDto<Object> handleFind(ConsumerRecord<Long, FormDto> message) {
         return findService.find(message.value());
     }
 }

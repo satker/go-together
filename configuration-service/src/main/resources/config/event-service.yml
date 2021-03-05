@@ -16,3 +16,7 @@ kafka:
 
 connectTimeout: 160000000
 readTimeout: 160000000
+
+spring:
+  zipkin:
+    base-url: http://localhost:9411/

@@ -28,7 +28,7 @@ public class UsersConsumer extends CommonCrudKafkaConsumer<UserDto> {
     @KafkaListener(topics = USERS + CREATE,
             containerFactory = USERS + CHANGE + LISTENER_FACTORY)
     @SendTo
-    public IdDto handleCreate(ConsumerRecord<UUID, UserDto> message) {
+    public IdDto handleCreate(ConsumerRecord<Long, UserDto> message) {
         return service.create(message.value());
     }
 
@@ -36,14 +36,14 @@ public class UsersConsumer extends CommonCrudKafkaConsumer<UserDto> {
     @KafkaListener(topics = USERS + UPDATE,
             containerFactory = USERS + CHANGE + LISTENER_FACTORY)
     @SendTo
-    public IdDto handleUpdate(ConsumerRecord<UUID, UserDto> message) {
+    public IdDto handleUpdate(ConsumerRecord<Long, UserDto> message) {
         return service.update(message.value());
     }
 
     @Override
     @KafkaListener(topics = USERS + DELETE,
             containerFactory = USERS + DELETE + LISTENER_FACTORY)
-    public void handleDelete(ConsumerRecord<UUID, UUID> message) {
+    public void handleDelete(ConsumerRecord<Long, UUID> message) {
         service.delete(message.value());
     }
 
@@ -51,7 +51,7 @@ public class UsersConsumer extends CommonCrudKafkaConsumer<UserDto> {
     @KafkaListener(topics = USERS + READ,
             containerFactory = USERS + READ + LISTENER_FACTORY)
     @SendTo
-    public UserDto handleRead(ConsumerRecord<UUID, UUID> message) {
+    public UserDto handleRead(ConsumerRecord<Long, UUID> message) {
         return service.read(message.value());
     }
 
@@ -59,7 +59,7 @@ public class UsersConsumer extends CommonCrudKafkaConsumer<UserDto> {
     @KafkaListener(topics = USERS + VALIDATE,
             containerFactory = USERS + VALIDATE + LISTENER_FACTORY)
     @SendTo
-    public ValidationMessageDto handleValidate(ConsumerRecord<UUID, UserDto> message) {
+    public ValidationMessageDto handleValidate(ConsumerRecord<Long, UserDto> message) {
         UserDto dto = message.value();
         return new ValidationMessageDto(validator.validate(dto, null));
     }
@@ -68,7 +68,7 @@ public class UsersConsumer extends CommonCrudKafkaConsumer<UserDto> {
     @KafkaListener(topics = USERS + FIND,
             containerFactory = USERS + FIND + LISTENER_FACTORY)
     @SendTo
-    public ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message) {
+    public ResponseDto<Object> handleFind(ConsumerRecord<Long, FormDto> message) {
         return findService.find(message.value());
     }
 }

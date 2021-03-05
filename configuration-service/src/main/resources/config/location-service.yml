@@ -19,3 +19,7 @@ feign:
 kafka:
   groupId: location-service
   server: localhost:9092
+
+spring:
+  zipkin:
+    base-url: http://localhost:9411/

@@ -6,13 +6,17 @@ import org.go.together.dto.IdDto;
 import org.go.together.kafka.producers.crud.CreateKafkaProducer;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 
-import java.util.UUID;
-
 public abstract class CommonCreateKafkaProducer<D extends Dto> implements CreateKafkaProducer<D> {
-    private final ReplyingKafkaTemplate<UUID, D, IdDto> kafkaTemplate;
+    private final ReplyingKafkaTemplate<Long, D, IdDto> kafkaTemplate;
     private final String groupId;
 
-    public static <D extends Dto> CreateKafkaProducer<D> create(ReplyingKafkaTemplate<UUID, D, IdDto> kafkaTemplate,
+    public CommonCreateKafkaProducer(ReplyingKafkaTemplate<Long, D, IdDto> kafkaTemplate,
+                                     String groupId) {
+        this.kafkaTemplate = kafkaTemplate;
+        this.groupId = groupId;
+    }
+
+    public static <D extends Dto> CreateKafkaProducer<D> create(ReplyingKafkaTemplate<Long, D, IdDto> kafkaTemplate,
                                                                 String groupId,
                                                                 String consumerId,
                                                                 Tracer tracer) {
@@ -29,19 +33,13 @@ public abstract class CommonCreateKafkaProducer<D extends Dto> implements Create
         };
     }
 
-    public CommonCreateKafkaProducer(ReplyingKafkaTemplate<UUID, D, IdDto> kafkaTemplate,
-                                     String groupId) {
-        this.kafkaTemplate = kafkaTemplate;
-        this.groupId = groupId;
-    }
-
     @Override
     public String getGroupId() {
         return groupId;
     }
 
     @Override
-    public ReplyingKafkaTemplate<UUID, D, IdDto> getReplyingKafkaTemplate() {
+    public ReplyingKafkaTemplate<Long, D, IdDto> getReplyingKafkaTemplate() {
         return this.kafkaTemplate;
     }
 }

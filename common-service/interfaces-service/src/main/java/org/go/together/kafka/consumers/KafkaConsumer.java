@@ -6,15 +6,15 @@ import org.go.together.dto.*;
 import java.util.UUID;
 
 public interface KafkaConsumer<D extends Dto> {
-    IdDto handleCreate(ConsumerRecord<UUID, D> message);
+    IdDto handleCreate(ConsumerRecord<Long, D> message);
 
-    IdDto handleUpdate(ConsumerRecord<UUID, D> message);
+    IdDto handleUpdate(ConsumerRecord<Long, D> message);
 
-    void handleDelete(ConsumerRecord<UUID, UUID> message);
+    void handleDelete(ConsumerRecord<Long, UUID> message);
 
-    D handleRead(ConsumerRecord<UUID, UUID> message);
+    D handleRead(ConsumerRecord<Long, UUID> message);
 
-    ValidationMessageDto handleValidate(ConsumerRecord<UUID, D> message);
+    ValidationMessageDto handleValidate(ConsumerRecord<Long, D> message);
 
-    ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message);
+    ResponseDto<Object> handleFind(ConsumerRecord<Long, FormDto> message);
 }

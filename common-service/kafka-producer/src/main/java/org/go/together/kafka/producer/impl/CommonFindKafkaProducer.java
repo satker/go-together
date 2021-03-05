@@ -7,13 +7,17 @@ import org.go.together.dto.ResponseDto;
 import org.go.together.kafka.producers.crud.FindKafkaProducer;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 
-import java.util.UUID;
-
 public abstract class CommonFindKafkaProducer<D extends Dto> implements FindKafkaProducer<D> {
-    private final ReplyingKafkaTemplate<UUID, FormDto, ResponseDto<Object>> kafkaTemplate;
+    private final ReplyingKafkaTemplate<Long, FormDto, ResponseDto<Object>> kafkaTemplate;
     private final String groupId;
 
-    public static <D extends Dto> FindKafkaProducer<D> create(ReplyingKafkaTemplate<UUID, FormDto, ResponseDto<Object>> kafkaTemplate,
+    protected CommonFindKafkaProducer(ReplyingKafkaTemplate<Long, FormDto, ResponseDto<Object>> kafkaTemplate,
+                                      String groupId) {
+        this.kafkaTemplate = kafkaTemplate;
+        this.groupId = groupId;
+    }
+
+    public static <D extends Dto> FindKafkaProducer<D> create(ReplyingKafkaTemplate<Long, FormDto, ResponseDto<Object>> kafkaTemplate,
                                                               String consumerId,
                                                               String groupId,
                                                               Tracer tracer) {
@@ -30,19 +34,13 @@ public abstract class CommonFindKafkaProducer<D extends Dto> implements FindKafk
         };
     }
 
-    protected CommonFindKafkaProducer(ReplyingKafkaTemplate<UUID, FormDto, ResponseDto<Object>> kafkaTemplate,
-                                      String groupId) {
-        this.kafkaTemplate = kafkaTemplate;
-        this.groupId = groupId;
-    }
-
     @Override
     public String getGroupId() {
         return groupId;
     }
 
     @Override
-    public ReplyingKafkaTemplate<UUID, FormDto, ResponseDto<Object>> getReplyingKafkaTemplate() {
+    public ReplyingKafkaTemplate<Long, FormDto, ResponseDto<Object>> getReplyingKafkaTemplate() {
         return this.kafkaTemplate;
     }
 }

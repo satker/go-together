@@ -3,8 +3,8 @@ package org.go.together.kafka.producer.config.crud;
 import brave.Tracer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.UUIDDeserializer;
-import org.apache.kafka.common.serialization.UUIDSerializer;
+import org.apache.kafka.common.serialization.LongDeserializer;
+import org.apache.kafka.common.serialization.LongSerializer;
 import org.go.together.dto.Dto;
 import org.go.together.dto.ValidationMessageDto;
 import org.go.together.enums.TopicKafkaPostfix;
@@ -29,16 +29,15 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.UUID;
 
 @Component
 public class ValidateProducerKafkaConfig implements KafkaProducerConfigurator {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private <D extends Dto> ProducerFactory<UUID, D> validateProducerFactory(String kafkaServer) {
+    private <D extends Dto> ProducerFactory<Long, D> validateProducerFactory(String kafkaServer) {
         Map<String, Object> configProps = Map.of(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
-                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class,
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class,
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class
         );
         return new DefaultKafkaProducerFactory<>(configProps);
@@ -47,18 +46,18 @@ public class ValidateProducerKafkaConfig implements KafkaProducerConfigurator {
     private Map<String, Object> validateConsumerConfigs(String kafkaServer, String kafkaGroupId) {
         return Map.of(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
-                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class,
+                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
                 ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId
         );
     }
 
-    private <D extends Dto> ReplyingKafkaTemplate<UUID, D, ValidationMessageDto> validateReplyingKafkaTemplate(KafkaMessageListenerContainer<UUID, ValidationMessageDto> validateRepliesContainer,
-                                                                                               String kafkaServer) {
+    private <D extends Dto> ReplyingKafkaTemplate<Long, D, ValidationMessageDto> validateReplyingKafkaTemplate(KafkaMessageListenerContainer<Long, ValidationMessageDto> validateRepliesContainer,
+                                                                                                               String kafkaServer) {
         return new ReplyingKafkaTemplate<>(validateProducerFactory(kafkaServer), validateRepliesContainer);
     }
 
-    private KafkaMessageListenerContainer<UUID, ValidationMessageDto> validateRepliesContainer(ConsumerFactory<UUID, ValidationMessageDto> validateReplyConsumerFactory,
+    private KafkaMessageListenerContainer<Long, ValidationMessageDto> validateRepliesContainer(ConsumerFactory<Long, ValidationMessageDto> validateReplyConsumerFactory,
                                                                                                String kafkaGroupId,
                                                                                                String consumerId) {
         String validateReplyTopicId = getValidateReplyTopicId(consumerId, kafkaGroupId);
@@ -66,12 +65,12 @@ public class ValidateProducerKafkaConfig implements KafkaProducerConfigurator {
         return new KafkaMessageListenerContainer<>(validateReplyConsumerFactory, containerProperties);
     }
 
-    private ConsumerFactory<UUID, ValidationMessageDto> validateReplyConsumerFactory(String kafkaServer,
+    private ConsumerFactory<Long, ValidationMessageDto> validateReplyConsumerFactory(String kafkaServer,
                                                                                      String kafkaGroupId) {
         JsonDeserializer<ValidationMessageDto> validationMessageDtoJsonDeserializer = new JsonDeserializer<>();
         validationMessageDtoJsonDeserializer.addTrustedPackages("org.go.together.dto");
         return new DefaultKafkaConsumerFactory<>(validateConsumerConfigs(kafkaServer, kafkaGroupId),
-                new UUIDDeserializer(),
+                new LongDeserializer(),
                 validationMessageDtoJsonDeserializer);
     }
 
@@ -83,12 +82,12 @@ public class ValidateProducerKafkaConfig implements KafkaProducerConfigurator {
         if (!producerConfig.isValidate()) {
             return;
         }
-        ConsumerFactory<UUID, ValidationMessageDto> replyConsumerFactory = validateReplyConsumerFactory(kafkaServer, kafkaGroupId);
+        ConsumerFactory<Long, ValidationMessageDto> replyConsumerFactory = validateReplyConsumerFactory(kafkaServer, kafkaGroupId);
         String producerId = producerConfig.getProducerId();
-        KafkaMessageListenerContainer<UUID, ValidationMessageDto> updateRepliesContainer =
+        KafkaMessageListenerContainer<Long, ValidationMessageDto> updateRepliesContainer =
                 validateRepliesContainer(replyConsumerFactory, kafkaGroupId, producerId);
         beanFactory.registerSingleton(producerId + "ValidateRepliesContainer", updateRepliesContainer);
-        ReplyingKafkaTemplate<UUID, D, ValidationMessageDto> updateReplyingKafkaTemplate =
+        ReplyingKafkaTemplate<Long, D, ValidationMessageDto> updateReplyingKafkaTemplate =
                 validateReplyingKafkaTemplate(updateRepliesContainer, kafkaServer);
         beanFactory.registerSingleton(producerId + "ValidateReplyingKafkaTemplate", updateReplyingKafkaTemplate);
         ValidateKafkaProducer<D> commonValidateKafkaProducer =

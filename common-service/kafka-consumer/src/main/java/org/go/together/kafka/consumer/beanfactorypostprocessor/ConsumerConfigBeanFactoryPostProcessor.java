@@ -16,11 +16,4 @@ public class ConsumerConfigBeanFactoryPostProcessor {
                                                                             List<CustomConsumerConfig> consumerConfigs) {
         return beanFactory -> consumerConfigs.forEach(consumerConfig -> consumerConfig.configureConsumer(kafkaServer, kafkaGroupId, beanFactory));
     }
-
-    /*@Bean
-    public SeekToCurrentErrorHandler errorHandler(ConsumerRecordRecoverer recoverer) {
-        SeekToCurrentErrorHandler handler = new SeekToCurrentErrorHandler(recoverer);
-        handler.addNotRetryableExceptions(ApplicationException.class);
-        return handler;
-    }*/
 }

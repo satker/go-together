@@ -21,7 +21,7 @@ public class GroupRouteInfoMapper implements Mapper<GroupRouteInfoDto, GroupRout
         groupRouteInfoDto.setGroupId(entity.getGroupId());
         groupRouteInfoDto.setId(entity.getId());
         groupRouteInfoDto.setInfoRoutes(entity.getInfoRoutes().stream()
-                .map(routeInfo -> routeInfoMapper.entityToDto(routeInfo))
+                .map(routeInfoMapper::entityToDto)
                 .collect(Collectors.toSet()));
         return groupRouteInfoDto;
     }
