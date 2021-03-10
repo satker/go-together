@@ -12,10 +12,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.go.together.utils.ByteUtils.longToBytes;
+
 public interface ReplyKafkaProducer<T, R> {
     String KAFKA_REPLY_ID = "_reply_";
 
     String CORRELATION_PREFIX = "_correlationId";
+
+    String PARENT_SPAN_ID = "parentSpanId";
 
     String getGroupId();
 
@@ -42,6 +46,7 @@ public interface ReplyKafkaProducer<T, R> {
         String correlationId = getGroupId() + CORRELATION_PREFIX;
         record.headers().add(KafkaHeaders.REPLY_TOPIC, replyTopicId.getBytes());
         record.headers().add(KafkaHeaders.CORRELATION_ID, correlationId.getBytes());
+        record.headers().add(PARENT_SPAN_ID, longToBytes(traceContext.spanId()));
         return record;
     }
 }

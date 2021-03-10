@@ -2,9 +2,8 @@ package org.go.together.kafka.consumer.tracing;
 
 import brave.Span;
 import brave.Tracer;
+import brave.propagation.TraceContext;
 import brave.propagation.TraceContextOrSamplingFlags;
-import brave.propagation.TraceIdContext;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.header.Header;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -21,11 +20,16 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Random;
+
+import static org.go.together.kafka.producers.ReplyKafkaProducer.PARENT_SPAN_ID;
+import static org.go.together.utils.ByteUtils.bytesToLong;
 
 @Aspect
 @Component
 public class ListenerTracingAspect {
     private Tracer tracer;
+    private static final Random random = new Random();
 
     @Autowired
     public void setTracer(Tracer tracer) {
@@ -63,25 +67,28 @@ public class ListenerTracingAspect {
     private Span getSpan(ProceedingJoinPoint pjp) {
         ConsumerRecord<Long, ?> message = getMessage(pjp);
         KafkaListener kafkaListenerAnnotation = getKafkaListenerAnnotation(pjp);
-        return tracer.nextSpan(TraceContextOrSamplingFlags.newBuilder(TraceIdContext.newBuilder()
-                .traceId(message.key())
-                .build()).build())
+        long parentId = bytesToLong(getHeaderValue(message, PARENT_SPAN_ID));
+        TraceContext context = TraceContext.newBuilder().parentId(parentId).traceId(message.key()).spanId(random.nextLong()).build();
+        return tracer.nextSpan(TraceContextOrSamplingFlags.newBuilder(context).build())
                 .kind(Span.Kind.CONSUMER)
                 .tag("listener.class", pjp.getTarget().getClass().getSimpleName())
                 .tag("listener.method", pjp.getSignature().getName())
-                .tag("listener." + KafkaHeaders.REPLY_TOPIC, getHeaderValue(message, KafkaHeaders.REPLY_TOPIC))
-                .tag("listener." + KafkaHeaders.CORRELATION_ID, getHeaderValue(message, KafkaHeaders.CORRELATION_ID))
+                .tag("listener." + KafkaHeaders.REPLY_TOPIC, wrapBytesToString(getHeaderValue(message, KafkaHeaders.REPLY_TOPIC)))
+                .tag("listener." + KafkaHeaders.CORRELATION_ID, wrapBytesToString(getHeaderValue(message, KafkaHeaders.CORRELATION_ID)))
                 .tag("topics", Arrays.toString(kafkaListenerAnnotation.topics()))
                 .name(kafkaListenerAnnotation.topics()[0])
                 .start();
     }
 
-    private String getHeaderValue(ConsumerRecord<Long, ?> message, String header) {
+    private byte[] getHeaderValue(ConsumerRecord<Long, ?> message, String header) {
         Iterator<Header> headerIterator = message.headers().headers(header).iterator();
         if (!headerIterator.hasNext()) {
-            return StringUtils.EMPTY;
+            return new byte[]{};
         }
-        Header next = headerIterator.next();
-        return new String(next.value(), StandardCharsets.UTF_8);
+        return headerIterator.next().value();
+    }
+
+    private String wrapBytesToString(byte[] bytes) {
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 }
