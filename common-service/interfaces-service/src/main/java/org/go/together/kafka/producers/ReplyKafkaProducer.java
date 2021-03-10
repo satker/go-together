@@ -41,9 +41,10 @@ public interface ReplyKafkaProducer<T, R> {
 
     private ProducerRecord<Long, T> getRecordToSend(String targetTopic, T object) {
         TraceContext traceContext = getTracer().currentSpan().context();
-        ProducerRecord<Long, T> record = new ProducerRecord<>(targetTopic, null, traceContext.traceId(), object);
+        long traceId = traceContext.traceId();
+        ProducerRecord<Long, T> record = new ProducerRecord<>(targetTopic, null, traceId, object);
         String replyTopicId = targetTopic + KAFKA_REPLY_ID + getGroupId();
-        String correlationId = getGroupId() + CORRELATION_PREFIX;
+        String correlationId = getGroupId() + "_" + traceId + CORRELATION_PREFIX;
         record.headers().add(KafkaHeaders.REPLY_TOPIC, replyTopicId.getBytes());
         record.headers().add(KafkaHeaders.CORRELATION_ID, correlationId.getBytes());
         record.headers().add(PARENT_SPAN_ID, longToBytes(traceContext.spanId()));

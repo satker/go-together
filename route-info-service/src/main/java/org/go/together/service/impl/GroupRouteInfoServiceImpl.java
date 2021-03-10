@@ -32,7 +32,7 @@ public class GroupRouteInfoServiceImpl extends CommonCrudService<GroupRouteInfoD
     protected GroupRouteInfo enrichEntity(GroupRouteInfo entity, GroupRouteInfoDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE || crudOperation == CrudOperation.UPDATE) {
             Set<RouteInfo> routeInfos = dto.getInfoRoutes().stream()
-                    .map(routeInfoDto -> getRouteInfo(routeInfoDto))
+                    .map(this::getRouteInfo)
                     .collect(Collectors.toSet());
             GroupRouteInfo groupRouteInfo = repository.findByIdOrThrow(entity.getId());
             deleteUnneededRouteInfos(groupRouteInfo.getInfoRoutes(), routeInfos);
@@ -40,7 +40,7 @@ public class GroupRouteInfoServiceImpl extends CommonCrudService<GroupRouteInfoD
         } else if (crudOperation == CrudOperation.DELETE) {
             entity.getInfoRoutes().stream()
                     .map(RouteInfo::getId)
-                    .forEach(routeInfoId -> routeInfoService.delete(routeInfoId));
+                    .forEach(routeInfoService::delete);
         }
         return entity;
     }
