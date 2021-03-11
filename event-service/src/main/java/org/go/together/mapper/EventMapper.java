@@ -10,8 +10,6 @@ import org.go.together.kafka.producers.CrudProducer;
 import org.go.together.model.Event;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 @RequiredArgsConstructor
 public class EventMapper implements Mapper<EventDto, Event> {
@@ -20,14 +18,14 @@ public class EventMapper implements Mapper<EventDto, Event> {
     private final CrudProducer<GroupRouteInfoDto> routeInfoProducer;
 
     @Override
-    public EventDto entityToDto(UUID requestId, Event entity) {
+    public EventDto entityToDto(Event entity) {
         EventDto eventDto = new EventDto();
         eventDto.setId(entity.getId());
-        eventDto.setAuthor(usersCrudProducer.read(requestId, entity.getAuthorId()));
+        eventDto.setAuthor(usersCrudProducer.read(entity.getAuthorId()));
         eventDto.setDescription(entity.getDescription());
         eventDto.setPeopleCount(entity.getPeopleCount());
-        eventDto.setGroupPhoto(groupPhotoProducer.read(requestId, entity.getGroupPhotoId()));
-        eventDto.setRouteInfo(routeInfoProducer.read(requestId, entity.getRouteInfoId()));
+        eventDto.setGroupPhoto(groupPhotoProducer.read(entity.getGroupPhotoId()));
+        eventDto.setRouteInfo(routeInfoProducer.read(entity.getRouteInfoId()));
         eventDto.setName(entity.getName());
         eventDto.setStartDate(entity.getStartDate());
         eventDto.setEndDate(entity.getEndDate());

@@ -2,6 +2,7 @@ buildscript {
     ext {
         springBootVersion = '2.4.2'
         lombokVersion='1.18.18'
+        sleuthVersion='3.0.1'
     }
     repositories {
         mavenCentral()
@@ -25,7 +26,8 @@ repositories {
 dependencies {
     compile (
             "org.projectlombok:lombok:${lombokVersion}",
-            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+            "org.springframework.cloud:spring-cloud-starter-sleuth:${sleuthVersion}"
     )
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }

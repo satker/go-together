@@ -31,41 +31,41 @@ public class NotificationReceiverConsumer extends CommonCrudKafkaConsumer<Notifi
     @KafkaListener(topics = NOTIFICATION_RECEIVER + CREATE,
             containerFactory = NOTIFICATION_RECEIVER + CHANGE + LISTENER_FACTORY)
     @SendTo
-    public IdDto handleCreate(ConsumerRecord<UUID, NotificationReceiverDto> message) {
-        return service.create(message.key(), message.value());
+    public IdDto handleCreate(ConsumerRecord<Long, NotificationReceiverDto> message) {
+        return service.create(message.value());
     }
 
     @Override
     @KafkaListener(topics = NOTIFICATION_RECEIVER + UPDATE,
             containerFactory = NOTIFICATION_RECEIVER + CHANGE + LISTENER_FACTORY)
     @SendTo
-    public IdDto handleUpdate(ConsumerRecord<UUID, NotificationReceiverDto> message) {
-        return service.update(message.key(), message.value());
+    public IdDto handleUpdate(ConsumerRecord<Long, NotificationReceiverDto> message) {
+        return service.update(message.value());
     }
 
     @Override
     @KafkaListener(topics = NOTIFICATION_RECEIVER + DELETE,
             containerFactory = NOTIFICATION_RECEIVER + DELETE + LISTENER_FACTORY)
-    public void handleDelete(ConsumerRecord<UUID, UUID> message) {
+    public void handleDelete(ConsumerRecord<Long, UUID> message) {
         UUID producerId = message.value();
         notificationReceiverRepository.findByProducerId(producerId).stream()
                 .map(NotificationReceiver::getId)
-                .forEach(notificationReceiverId -> service.delete(message.key(), notificationReceiverId));
+                .forEach(notificationReceiverId -> service.delete(notificationReceiverId));
     }
 
     @Override
     @KafkaListener(topics = NOTIFICATION_RECEIVER + READ,
             containerFactory = NOTIFICATION_RECEIVER + READ + LISTENER_FACTORY)
     @SendTo
-    public NotificationReceiverDto handleRead(ConsumerRecord<UUID, UUID> message) {
-        return service.read(message.key(), message.value());
+    public NotificationReceiverDto handleRead(ConsumerRecord<Long, UUID> message) {
+        return service.read(message.value());
     }
 
     @Override
     @KafkaListener(topics = NOTIFICATION_RECEIVER + VALIDATE,
             containerFactory = NOTIFICATION_RECEIVER + VALIDATE + LISTENER_FACTORY)
     @SendTo
-    public ValidationMessageDto handleValidate(ConsumerRecord<UUID, NotificationReceiverDto> message) {
+    public ValidationMessageDto handleValidate(ConsumerRecord<Long, NotificationReceiverDto> message) {
         return new ValidationMessageDto(validator.validate(message.value(), null));
     }
 
@@ -73,7 +73,7 @@ public class NotificationReceiverConsumer extends CommonCrudKafkaConsumer<Notifi
     @KafkaListener(topics = NOTIFICATION_RECEIVER + FIND,
             containerFactory = NOTIFICATION_RECEIVER + FIND + LISTENER_FACTORY)
     @SendTo
-    public ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message) {
-        return findService.find(message.key(), message.value());
+    public ResponseDto<Object> handleFind(ConsumerRecord<Long, FormDto> message) {
+        return findService.find(message.value());
     }
 }

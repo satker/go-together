@@ -13,10 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.UUID;
-
 import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -42,9 +39,9 @@ public class RouteInfoServiceTest extends CrudServiceCommonTest<RouteInfo, Route
     }
 
     private void prepareDto(RouteInfoDto routeInfoDto) {
-        when(locationValidate.validate(any(UUID.class), eq(routeInfoDto.getLocation()))).thenReturn(new ValidationMessageDto(EMPTY));
-        when(locationProducer.create(any(UUID.class), eq(routeInfoDto.getLocation()))).thenReturn(new IdDto(routeInfoDto.getLocation().getId()));
-        when(locationProducer.update(any(UUID.class), eq(routeInfoDto.getLocation()))).thenReturn(new IdDto(routeInfoDto.getLocation().getId()));
-        when(locationProducer.read(any(UUID.class), eq(routeInfoDto.getLocation().getId()))).thenReturn(routeInfoDto.getLocation());
+        when(locationValidate.validate(eq(routeInfoDto.getLocation()))).thenReturn(new ValidationMessageDto(EMPTY));
+        when(locationProducer.create(eq(routeInfoDto.getLocation()))).thenReturn(new IdDto(routeInfoDto.getLocation().getId()));
+        when(locationProducer.update(eq(routeInfoDto.getLocation()))).thenReturn(new IdDto(routeInfoDto.getLocation().getId()));
+        when(locationProducer.read(eq(routeInfoDto.getLocation().getId()))).thenReturn(routeInfoDto.getLocation());
     }
 }

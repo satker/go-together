@@ -1,5 +1,7 @@
 package org.go.together.exceptions.handler;
 
+import brave.Tracer;
+import lombok.RequiredArgsConstructor;
 import org.go.together.exceptions.ApplicationException;
 import org.go.together.exceptions.IncorrectDtoException;
 import org.go.together.exceptions.IncorrectFindObject;
@@ -11,7 +13,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class CrudExceptionHandler {
+    private final Tracer tracer;
+
     @ExceptionHandler({
             ValidationException.class,
             IncorrectDtoException.class,
@@ -26,9 +31,10 @@ public class CrudExceptionHandler {
             ApplicationException.class
     })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ExceptionDto processApplicationError(ApplicationException exception) {
+    public ExceptionDto processApplicationError() {
         return ExceptionDto.builder()
-                .exceptionMessage("Server error: contact to system administrator. Error id: " + exception.getRequestId())
+                .exceptionMessage("Server error: contact to system administrator. Trace error id: " +
+                        tracer.currentSpan().context().traceIdString())
                 .build();
     }
 }

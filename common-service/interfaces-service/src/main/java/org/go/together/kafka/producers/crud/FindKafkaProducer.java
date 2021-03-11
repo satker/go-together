@@ -6,11 +6,9 @@ import org.go.together.dto.ResponseDto;
 import org.go.together.enums.TopicKafkaPostfix;
 import org.go.together.kafka.producers.ReplyKafkaProducer;
 
-import java.util.UUID;
-
 public interface FindKafkaProducer<D extends Dto> extends ReplyKafkaProducer<FormDto, ResponseDto<Object>> {
-    default ResponseDto<Object> find(UUID requestId, FormDto dto) {
+    default ResponseDto<Object> find(FormDto dto) {
         String messageTopic = getTopicId() + TopicKafkaPostfix.FIND;
-        return sendWithReply(messageTopic, requestId, dto);
+        return sendWithReply(messageTopic, dto);
     }
 }

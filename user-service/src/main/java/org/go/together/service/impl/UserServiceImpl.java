@@ -90,20 +90,20 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
     }
 
     @Override
-    protected SystemUser enrichEntity(UUID requestId, SystemUser entity, UserDto dto, CrudOperation crudOperation) {
+    protected SystemUser enrichEntity(SystemUser entity, UserDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE) {
             Optional<SystemUser> user = updatePassword(entity);
 
             Role role = user.map(SystemUser::getRole).orElse(Role.ROLE_USER);
 
             LocationDto locationDto = dto.getLocation();
-            IdDto route = locationProducer.update(requestId, locationDto);
+            IdDto route = locationProducer.update(locationDto);
             entity.setLocationId(route.getId());
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.USER);
-            IdDto groupPhotoId = groupPhotoProducer.update(requestId, groupPhotoDto);
+            IdDto groupPhotoId = groupPhotoProducer.update(groupPhotoDto);
             entity.setGroupPhoto(groupPhotoId.getId());
 
             entity.setRole(role);
@@ -111,23 +111,23 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             updatePassword(entity);
 
             LocationDto locationDto = dto.getLocation();
-            IdDto route = locationProducer.create(requestId, locationDto);
+            IdDto route = locationProducer.create(locationDto);
             entity.setLocationId(route.getId());
 
             GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
             groupPhotoDto.setGroupId(entity.getId());
             groupPhotoDto.setCategory(PhotoCategory.USER);
-            IdDto groupPhotoId = groupPhotoProducer.create(requestId, groupPhotoDto);
+            IdDto groupPhotoId = groupPhotoProducer.create(groupPhotoDto);
             entity.setGroupPhoto(groupPhotoId.getId());
             entity.setRole(Role.ROLE_USER);
             EventLikeDto eventLikeDto = new EventLikeDto();
             eventLikeDto.setEventId(entity.getId());
             eventLikeDto.setUsers(Collections.emptySet());
-            eventLikeService.create(requestId, eventLikeDto);
+            eventLikeService.create(eventLikeDto);
         } else if (crudOperation == CrudOperation.DELETE) {
-            locationProducer.delete(requestId, entity.getLocationId());
-            groupPhotoProducer.delete(requestId, entity.getGroupPhoto());
-            eventLikeService.deleteByUserId(requestId, entity.getId());
+            locationProducer.delete(entity.getLocationId());
+            groupPhotoProducer.delete(entity.getGroupPhoto());
+            eventLikeService.deleteByUserId(entity.getId());
         }
         return entity;
     }

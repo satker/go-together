@@ -20,17 +20,17 @@ public class EventUserValidator extends CommonValidator<EventUserDto> {
     private final EventRepository eventRepository;
 
     @Override
-    public Map<String, Function<EventUserDto, ?>> getMapsForCheck(UUID requestId) {
+    public Map<String, Function<EventUserDto, ?>> getMapsForCheck() {
         return Map.of(
                 "user id", testDto -> testDto.getUser().getId(),
                 "user status", EventUserDto::getUserStatus);
     }
 
     @Override
-    protected String commonValidation(UUID requestId, EventUserDto dto, CrudOperation crudOperation) {
+    protected String commonValidation(EventUserDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
-        if (isNotPresentUser(requestId, dto.getUser().getId())) {
+        if (isNotPresentUser(dto.getUser().getId())) {
             errors.append("Author has incorrect uuid: ")
                     .append(dto.getUser().getId())
                     .append(". ");
@@ -45,12 +45,12 @@ public class EventUserValidator extends CommonValidator<EventUserDto> {
         return errors.toString();
     }
 
-    private boolean isNotPresentUser(UUID requestId, UUID authorId) {
+    private boolean isNotPresentUser(UUID authorId) {
         FormDto formDto = new FormDto();
         FilterDto filterDto = new FilterDto();
         filterDto.setValues(Collections.singleton(Collections.singletonMap("id", new FilterValueDto(FindOperator.EQUAL, authorId))));
         formDto.setFilters(Collections.singletonMap("id", filterDto));
         formDto.setMainIdField("users.id");
-        return findUserKafkaProducer.find(requestId, formDto).getResult().isEmpty();
+        return findUserKafkaProducer.find(formDto).getResult().isEmpty();
     }
 }

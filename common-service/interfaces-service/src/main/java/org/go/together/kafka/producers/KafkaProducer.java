@@ -1,15 +1,16 @@
 package org.go.together.kafka.producers;
 
+import brave.Tracer;
 import org.springframework.kafka.core.KafkaTemplate;
 
-import java.util.UUID;
-
 public interface KafkaProducer<T> {
-    KafkaTemplate<UUID, T> getKafkaTemplate();
+    KafkaTemplate<Long, T> getKafkaTemplate();
 
     String getTopicId();
 
-    default void send(String notificationTopic, UUID id, T object) {
-        getKafkaTemplate().send(notificationTopic, id, object);
+    Tracer getTracer();
+
+    default void send(String notificationTopic, T object) {
+        getKafkaTemplate().send(notificationTopic, getTracer().currentSpan().context().traceId(), object);
     }
 }

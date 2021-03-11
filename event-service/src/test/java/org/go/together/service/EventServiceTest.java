@@ -15,7 +15,6 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.UUID;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -69,16 +68,16 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
         ResponseDto<Object> objectResponseDto = new ResponseDto<>();
         objectResponseDto.setPage(null);
         objectResponseDto.setResult(Collections.singleton(eventDto.getAuthor().getId()));
-        when(findUserKafkaProducer.find(any(UUID.class), any())).thenReturn(objectResponseDto);
-        when(userCrudClient.read(any(UUID.class), eq(eventDto.getAuthor().getId()))).thenReturn(eventDto.getAuthor());
-        when(groupPhotoProducer.read(any(UUID.class), eq(eventDto.getGroupPhoto().getId()))).thenReturn(eventDto.getGroupPhoto());
-        when(groupPhotoProducer.update(any(UUID.class), eq(eventDto.getGroupPhoto()))).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
-        when(groupPhotoProducer.create(any(UUID.class), eq(eventDto.getGroupPhoto()))).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
-        when(groupPhotoValidate.validate(any(UUID.class), eq(eventDto.getGroupPhoto()))).thenReturn(new ValidationMessageDto(EMPTY));
-        when(routeInfoValidator.validate(any(UUID.class), eq(eventDto.getRouteInfo()))).thenReturn(new ValidationMessageDto(EMPTY));
-        when(routeInfoProducer.create(any(UUID.class), eq(eventDto.getRouteInfo()))).thenReturn(new IdDto(eventDto.getRouteInfo().getId()));
-        when(routeInfoProducer.read(any(UUID.class), eq(eventDto.getRouteInfo().getId()))).thenReturn(eventDto.getRouteInfo());
-        when(routeInfoProducer.update(any(UUID.class), eq(eventDto.getRouteInfo()))).thenReturn(new IdDto(eventDto.getRouteInfo().getId()));
+        when(findUserKafkaProducer.find(any())).thenReturn(objectResponseDto);
+        when(userCrudClient.read(eq(eventDto.getAuthor().getId()))).thenReturn(eventDto.getAuthor());
+        when(groupPhotoProducer.read(eq(eventDto.getGroupPhoto().getId()))).thenReturn(eventDto.getGroupPhoto());
+        when(groupPhotoProducer.update(eq(eventDto.getGroupPhoto()))).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
+        when(groupPhotoProducer.create(eq(eventDto.getGroupPhoto()))).thenReturn(new IdDto(eventDto.getGroupPhoto().getId()));
+        when(groupPhotoValidate.validate(eq(eventDto.getGroupPhoto()))).thenReturn(new ValidationMessageDto(EMPTY));
+        when(routeInfoValidator.validate(eq(eventDto.getRouteInfo()))).thenReturn(new ValidationMessageDto(EMPTY));
+        when(routeInfoProducer.create(eq(eventDto.getRouteInfo()))).thenReturn(new IdDto(eventDto.getRouteInfo().getId()));
+        when(routeInfoProducer.read(eq(eventDto.getRouteInfo().getId()))).thenReturn(eventDto.getRouteInfo());
+        when(routeInfoProducer.update(eq(eventDto.getRouteInfo()))).thenReturn(new IdDto(eventDto.getRouteInfo().getId()));
     }
 
     @Override

@@ -24,27 +24,27 @@ public class AuthUserConsumer extends CommonCrudKafkaConsumer<AuthUserDto> {
     private final UserService service;
 
     @Override
-    public IdDto handleCreate(ConsumerRecord<UUID, AuthUserDto> message) {
+    public IdDto handleCreate(ConsumerRecord<Long, AuthUserDto> message) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public IdDto handleUpdate(ConsumerRecord<UUID, AuthUserDto> message) {
+    public IdDto handleUpdate(ConsumerRecord<Long, AuthUserDto> message) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void handleDelete(ConsumerRecord<UUID, UUID> message) {
+    public void handleDelete(ConsumerRecord<Long, UUID> message) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public AuthUserDto handleRead(ConsumerRecord<UUID, UUID> message) {
+    public AuthUserDto handleRead(ConsumerRecord<Long, UUID> message) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ValidationMessageDto handleValidate(ConsumerRecord<UUID, AuthUserDto> message) {
+    public ValidationMessageDto handleValidate(ConsumerRecord<Long, AuthUserDto> message) {
         throw new UnsupportedOperationException();
     }
 
@@ -52,11 +52,11 @@ public class AuthUserConsumer extends CommonCrudKafkaConsumer<AuthUserDto> {
     @KafkaListener(topics = AUTH_USER + FIND,
             containerFactory = AUTH_USER + FIND + LISTENER_FACTORY)
     @SendTo
-    public ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message) {
+    public ResponseDto<Object> handleFind(ConsumerRecord<Long, FormDto> message) {
         ResponseDto<Object> objectResponseDto = service.find(message.value());
         Collection<Object> result = objectResponseDto.getResult();
         if (result.isEmpty()) {
-            throw new ApplicationException("Cannot get user by login", message.key());
+            throw new ApplicationException("Cannot get user by login");
         }
         String login = (String) result.iterator().next();
         AuthUserDto authUserByLogin = service.findAuthUserByLogin(login);

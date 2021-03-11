@@ -59,7 +59,7 @@ public class NotificationReceiverServiceTest extends CrudServiceCommonTest<Notif
     public void removeReceiver() {
         getCreatedEntityId(dto);
         createNotificationMessage(dto);
-        crudService.delete(UUID.randomUUID(), dto.getId());
+        crudService.delete(dto.getId());
 
         Collection<NotificationReceiverMessage> notificationReceiverMessages = notificationReceiverMessageRepository.findAll();
 

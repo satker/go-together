@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.UUID;
 
 import static org.go.together.enums.NotificationServiceInfo.NOTIFICATION_MESSAGE;
 
@@ -35,18 +34,17 @@ public class NotificationMessageServiceImpl extends CommonCrudService<Notificati
     }
 
     @Override
-    protected NotificationMessage enrichEntity(UUID requestId,
-                                               NotificationMessage entity,
+    protected NotificationMessage enrichEntity(NotificationMessage entity,
                                                NotificationMessageDto dto,
                                                CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE) {
-            Notification notificationDto = notificationService.getPresentedNotificationByDto(requestId, dto.getNotification());
+            Notification notificationDto = notificationService.getPresentedNotificationByDto(dto.getNotification());
             entity.setNotification(notificationDto);
-            notificationReceiverService.notificateMessageReceivers(requestId, entity);
+            notificationReceiverService.notificateMessageReceivers(entity);
         } else if (crudOperation == CrudOperation.UPDATE) {
-            Notification notificationDto = notificationService.getPresentedNotificationByDto(requestId, dto.getNotification());
+            Notification notificationDto = notificationService.getPresentedNotificationByDto(dto.getNotification());
             entity.setNotification(notificationDto);
-            notificationReceiverService.notificateMessageReceivers(requestId, entity);
+            notificationReceiverService.notificateMessageReceivers(entity);
         }
         return entity;
     }

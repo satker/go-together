@@ -6,8 +6,7 @@ import org.go.together.find.dto.node.FilterNodeBuilder;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.UUID;
 
 public interface BaseCorrectorService {
-    Collection<Collection<FilterNodeBuilder>> getCorrectedFilters(UUID requestId, FormDto formDto, Map<String, FieldMapper> mappingFields);
+    Collection<Collection<FilterNodeBuilder>> getCorrectedFilters(FormDto formDto, Map<String, FieldMapper> mappingFields);
 }

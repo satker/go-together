@@ -6,11 +6,11 @@ import org.go.together.dto.IdDto;
 import java.util.UUID;
 
 public interface CrudProducer<D extends Dto> extends ValidationProducer<D>, FindProducer<D> {
-    IdDto create(UUID requestId, D dto);
+    IdDto create(D dto);
 
-    IdDto update(UUID requestId, D dto);
+    IdDto update(D dto);
 
-    D read(UUID requestId, UUID uuid);
+    D read(UUID uuid);
 
-    void delete(UUID requestId, UUID uuid);
+    void delete(UUID uuid);
 }

@@ -8,19 +8,17 @@ import org.go.together.kafka.producers.CrudProducer;
 import org.go.together.model.RouteInfo;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 @RequiredArgsConstructor
 public class RouteInfoMapper implements Mapper<RouteInfoDto, RouteInfo> {
     private final CrudProducer<LocationDto> locationProducer;
 
     @Override
-    public RouteInfoDto entityToDto(UUID requestId, RouteInfo entity) {
+    public RouteInfoDto entityToDto(RouteInfo entity) {
         RouteInfoDto routeInfoDto = new RouteInfoDto();
         routeInfoDto.setId(entity.getId());
         routeInfoDto.setCost(entity.getCost());
-        routeInfoDto.setLocation(locationProducer.read(requestId, entity.getLocationId()));
+        routeInfoDto.setLocation(locationProducer.read(entity.getLocationId()));
         routeInfoDto.setMovementDate(entity.getMovementDate());
         routeInfoDto.setMovementDuration(entity.getMovementDuration());
         routeInfoDto.setTransportType(entity.getTransportType());

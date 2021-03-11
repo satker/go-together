@@ -24,103 +24,98 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
 
     @Override
     @Transactional
-    public IdDto create(UUID requestId, D dto) {
+    public IdDto create(D dto) {
         CrudOperation crudOperation = CrudOperation.CREATE;
-        log.info(requestId + ". Validation for creation " + getServiceName() + " started.");
-        String validationException = validator.validate(requestId, dto, crudOperation);
+        log.info("Validation for creation " + getServiceName() + " started.");
+        String validationException = validator.validate(dto, crudOperation);
         if (StringUtils.isBlank(validationException)) {
-            log.info(requestId + ". Validation for creation " + getServiceName() + " successful.");
-            log.info(requestId + ". Creation " + getServiceName() + " started.");
+            log.info("Validation for creation " + getServiceName() + " successful.");
+            log.info("Creation " + getServiceName() + " started.");
             UUID id = repository.create().getId();
             E newEntity = mapper.dtoToEntity(dto);
             newEntity.setId(id);
             try {
-                E enrichedEntity = enrichEntity(requestId, newEntity, dto, crudOperation);
+                E enrichedEntity = enrichEntity(newEntity, dto, crudOperation);
                 E createdEntity = repository.save(enrichedEntity);
-                log.info(requestId + ". Created " + getServiceName() + " successful.");
-                sendNotification(requestId, id, dto, dto, crudOperation);
+                log.info("Created " + getServiceName() + " successful.");
+                sendNotification(id, dto, dto, crudOperation);
                 return new IdDto(createdEntity.getId());
             } catch (Exception exception) {
-                rollbackAction(requestId, dto, newEntity, exception, CrudOperation.DELETE);
-                throw new ApplicationException(exception, requestId);
+                rollbackAction(dto, newEntity, exception, CrudOperation.DELETE);
+                throw new ApplicationException(exception);
             }
         } else {
-            throw new ValidationException(requestId, validationException, getServiceName());
+            throw new ValidationException(validationException, getServiceName());
         }
     }
 
     @Override
     @Transactional
-    public IdDto update(UUID requestId, D updatedDto) {
+    public IdDto update(D updatedDto) {
         CrudOperation crudOperation = CrudOperation.UPDATE;
-        log.info(requestId + ". Validation for update " + getServiceName() + " started.");
-        String validationException = validator.validate(requestId, updatedDto, crudOperation);
+        log.info("Validation for update " + getServiceName() + " started.");
+        String validationException = validator.validate(updatedDto, crudOperation);
         if (StringUtils.isBlank(validationException)) {
-            log.info(requestId + ". Validation for update " + getServiceName() + " with id = '" + updatedDto.getId() + "' successful.");
-            log.info(requestId + ". Update " + getServiceName() + " with id = '" + updatedDto.getId() + "' started.");
+            log.info("Validation for update " + getServiceName() + " with id = '" + updatedDto.getId() + "' successful.");
+            log.info("Update " + getServiceName() + " with id = '" + updatedDto.getId() + "' started.");
             E originalEntity = repository.findByIdOrThrow(updatedDto.getId());
-            D originalDto = mapper.entityToDto(requestId, originalEntity);
+            D originalDto = mapper.entityToDto(originalEntity);
             E updatedEntity = mapper.dtoToEntity(updatedDto);
             try {
-                E enrichedEntity = enrichEntity(requestId, updatedEntity, updatedDto, crudOperation);
+                E enrichedEntity = enrichEntity(updatedEntity, updatedDto, crudOperation);
                 E createdEntity = repository.save(enrichedEntity);
-                log.info(requestId + ". Updated " + getServiceName() + " successful.");
-                sendNotification(requestId, updatedDto.getId(), originalDto, updatedDto, crudOperation);
+                log.info("Updated " + getServiceName() + " successful.");
+                sendNotification(updatedDto.getId(), originalDto, updatedDto, crudOperation);
                 return new IdDto(createdEntity.getId());
             } catch (Exception exception) {
-                rollbackAction(requestId, originalDto, originalEntity, exception, crudOperation);
-                throw new ApplicationException(exception, requestId);
+                rollbackAction(originalDto, originalEntity, exception, crudOperation);
+                throw new ApplicationException(exception);
             }
         } else {
-            throw new ValidationException(requestId, validationException, getServiceName());
+            throw new ValidationException(validationException, getServiceName());
         }
     }
 
     @Override
     @Transactional
-    public D read(UUID requestId, UUID uuid) {
+    public D read(UUID uuid) {
         E entityById = repository.findByIdOrThrow(uuid);
-        log.info(requestId + ". Read " + getServiceName() + " row with id: " + uuid.toString());
-        return mapper.entityToDto(requestId, entityById);
+        log.info("Read " + getServiceName() + " row with id: " + uuid.toString());
+        return mapper.entityToDto(entityById);
     }
 
     @Override
     @Transactional
-    public void delete(UUID requestId, UUID uuid) {
+    public void delete(UUID uuid) {
         CrudOperation crudOperation = CrudOperation.DELETE;
         if (uuid == null) {
-            log.warn(requestId + ". Cannot delete " + getServiceName() + " with null id.");
+            log.warn("Cannot delete " + getServiceName() + " with null id.");
             return;
         }
-        log.info(requestId + ". Deletion " + getServiceName() + " with id = '" + uuid.toString() + "' started.");
+        log.info("Deletion " + getServiceName() + " with id = '" + uuid.toString() + "' started.");
         Optional<E> entityById = repository.findById(uuid);
         if (entityById.isPresent()) {
             E entity = entityById.get();
-            D originalDto = mapper.entityToDto(requestId, entity);
-            E enrichedEntity = enrichEntity(requestId, entity, null, crudOperation);
+            D originalDto = mapper.entityToDto(entity);
+            E enrichedEntity = enrichEntity(entity, null, crudOperation);
             repository.delete(enrichedEntity);
-            log.info(requestId + ". Deletion " + getServiceName() + " with id = '" + uuid.toString() + "' successful.");
-            sendNotification(requestId, uuid, originalDto, originalDto, crudOperation);
+            log.info("Deletion " + getServiceName() + " with id = '" + uuid.toString() + "' successful.");
+            sendNotification(uuid, originalDto, originalDto, crudOperation);
         } else {
-            log.warn(requestId + ". Cannot find entity " + getServiceName() + "  by id " + uuid);
+            log.warn("Cannot find entity " + getServiceName() + "  by id " + uuid);
         }
     }
 
-    @Override
-    public boolean checkIfPresent(UUID requestId, UUID uuid) {
-        return repository.findById(uuid).isPresent();
-    }
-
-    private void rollbackAction(UUID requestId, D dto, E entity, Exception e, CrudOperation crudOperation) {
+    private void rollbackAction(D dto, E entity, Exception e, CrudOperation crudOperation) {
         final String serviceName = getServiceName();
         final String operation = crudOperation.getDescription();
-        log.error(requestId + ". Cannot " + operation + StringUtils.SPACE + serviceName + ": " + e.getMessage() +
+        log.error("Cannot " + operation + StringUtils.SPACE + serviceName + ": " + e.getMessage() +
                 ". Try rollback " + serviceName + " with id = " + entity.getId());
-        enrichEntity(requestId, entity, dto, crudOperation);
-        log.error(requestId + ". Rollback " + operation + " successful for " + serviceName + " with id = " + entity.getId());
+        enrichEntity(entity, dto, crudOperation);
+        log.error("Rollback " + operation + " successful for " + serviceName + " with id = " + entity.getId());
     }
 
-    protected E enrichEntity(UUID requestId, E entity, D dto, CrudOperation crudOperation) {
+    protected E enrichEntity(E entity, D dto, CrudOperation crudOperation) {
         return entity;
     }
 }

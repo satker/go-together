@@ -8,16 +8,16 @@ import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import java.util.UUID;
 
 public abstract class CommonReadKafkaProducer<D extends Dto> implements ReadKafkaProducer<D> {
-    private final ReplyingKafkaTemplate<UUID, UUID, D> kafkaTemplate;
+    private final ReplyingKafkaTemplate<Long, UUID, D> kafkaTemplate;
     private final String groupId;
 
-    private CommonReadKafkaProducer(ReplyingKafkaTemplate<UUID, UUID, D> kafkaTemplate,
+    private CommonReadKafkaProducer(ReplyingKafkaTemplate<Long, UUID, D> kafkaTemplate,
                                     String groupId) {
         this.kafkaTemplate = kafkaTemplate;
         this.groupId = groupId;
     }
 
-    public static <D extends Dto> ReadKafkaProducer<D> create(ReplyingKafkaTemplate<UUID, UUID, D> kafkaTemplate,
+    public static <D extends Dto> ReadKafkaProducer<D> create(ReplyingKafkaTemplate<Long, UUID, D> kafkaTemplate,
                                                               String groupId,
                                                               String consumerId,
                                                               Tracer tracer) {
@@ -41,7 +41,7 @@ public abstract class CommonReadKafkaProducer<D extends Dto> implements ReadKafk
     }
 
     @Override
-    public ReplyingKafkaTemplate<UUID, UUID, D> getReplyingKafkaTemplate() {
+    public ReplyingKafkaTemplate<Long, UUID, D> getReplyingKafkaTemplate() {
         return this.kafkaTemplate;
     }
 }

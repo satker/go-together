@@ -22,23 +22,23 @@ public class EventValidator extends CommonValidator<EventDto> {
     private final ValidationProducer<GroupRouteInfoDto> routeInfoValidator;
 
     @Override
-    public Map<String, Function<EventDto, ?>> getMapsForCheck(UUID requestId) {
+    public Map<String, Function<EventDto, ?>> getMapsForCheck() {
         return Map.of(
                 "event name", EventDto::getName,
                 "event description", EventDto::getDescription,
                 "event people capacity", EventDto::getPeopleCount,
                 "event dates", eventDto -> new DateIntervalDto(eventDto.getStartDate(), eventDto.getEndDate()),
                 "photos", eventDto -> eventDto.getGroupPhoto().getPhotos(),
-                "event photos", eventDto -> photoValidator.validate(requestId, eventDto.getGroupPhoto()),
-                "routes info", eventDto -> routeInfoValidator.validate(requestId, eventDto.getRouteInfo())
+                "event photos", eventDto -> photoValidator.validate(eventDto.getGroupPhoto()),
+                "routes info", eventDto -> routeInfoValidator.validate(eventDto.getRouteInfo())
         );
     }
 
     @Override
-    protected String commonValidation(UUID requestId, EventDto dto, CrudOperation crudOperation) {
+    protected String commonValidation(EventDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
-        if (isNotPresentUser(requestId, dto.getAuthor().getId())) {
+        if (isNotPresentUser(dto.getAuthor().getId())) {
             errors.append("Author has incorrect uuid: ")
                     .append(dto.getAuthor().getId())
                     .append(". ");
@@ -47,12 +47,12 @@ public class EventValidator extends CommonValidator<EventDto> {
         return errors.toString();
     }
 
-    private boolean isNotPresentUser(UUID requestId, UUID authorId) {
+    private boolean isNotPresentUser(UUID authorId) {
         FilterDto filterDto = new FilterDto();
         filterDto.setValues(Collections.singleton(Collections.singletonMap("id", new FilterValueDto(FindOperator.EQUAL, authorId))));
         FormDto formDto = new FormDto();
         formDto.setFilters(Collections.singletonMap("id", filterDto));
         formDto.setMainIdField("users.id");
-        return findUserKafkaProducer.find(requestId, formDto).getResult().isEmpty();
+        return findUserKafkaProducer.find(formDto).getResult().isEmpty();
     }
 }

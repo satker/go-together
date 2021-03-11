@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -20,8 +19,7 @@ public class GroupRouteInfoValidator extends CommonValidator<GroupRouteInfoDto> 
     private final Validator<RouteInfoDto> routeInfoValidator;
 
     @Override
-    protected String commonValidation(UUID requestId,
-                                      GroupRouteInfoDto dto,
+    protected String commonValidation(GroupRouteInfoDto dto,
                                       CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
         checkRoutes(dto.getInfoRoutes(), errors, crudOperation);

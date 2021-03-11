@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.go.together.enums.ContentServiceInfo.GROUP_PHOTO_NAME;
@@ -27,39 +26,39 @@ public class GroupPhotoServiceImpl extends CommonCrudService<GroupPhotoDto, Grou
     private final PhotoService photoService;
 
     @Override
-    protected GroupPhoto enrichEntity(UUID requestId, GroupPhoto entity, GroupPhotoDto dto, CrudOperation crudOperation) {
+    protected GroupPhoto enrichEntity(GroupPhoto entity, GroupPhotoDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE || crudOperation == CrudOperation.UPDATE) {
             Set<Photo> photos = dto.getPhotos().stream()
-                    .map(photoDto -> getPhotos(requestId, photoDto))
+                    .map(this::getPhotos)
                     .collect(Collectors.toSet());
             GroupPhoto groupPhoto = repository.findByIdOrThrow(entity.getId());
-            deleteUnneededPhotos(requestId, groupPhoto.getPhotos(), photos);
+            deleteUnneededPhotos(groupPhoto.getPhotos(), photos);
             entity.setPhotos(photos);
         } else if (crudOperation == CrudOperation.DELETE) {
             entity.getPhotos().stream()
                     .map(Photo::getId)
-                    .forEach(photoId -> photoService.delete(requestId, photoId));
+                    .forEach(photoService::delete);
         }
         return entity;
     }
 
-    private Photo getPhotos(UUID requestId, PhotoDto photoDto) {
+    private Photo getPhotos(PhotoDto photoDto) {
         Optional<Photo> photo = photoService.readPhoto(photoDto.getId());
         if (photo.isEmpty()) {
-            IdDto createdPhotoId = photoService.create(requestId, photoDto);
+            IdDto createdPhotoId = photoService.create(photoDto);
             Optional<Photo> createdPhoto = photoService.readPhoto(createdPhotoId.getId());
-            return createdPhoto.orElseThrow(() -> new ApplicationException("Cannot create photo by id: " + createdPhotoId.getId(), requestId));
+            return createdPhoto.orElseThrow(() -> new ApplicationException("Cannot create photo by id: " + createdPhotoId.getId()));
         } else {
             return photo.get();
         }
     }
 
-    private void deleteUnneededPhotos(UUID requestId, Set<Photo> oldPhotos, Set<Photo> newPhotos) {
+    private void deleteUnneededPhotos(Set<Photo> oldPhotos, Set<Photo> newPhotos) {
         Optional.ofNullable(oldPhotos)
                 .orElse(Collections.emptySet()).stream()
                 .map(Photo::getId)
                 .filter(photoId -> newPhotos.stream().noneMatch(photo -> photo.getId().equals(photoId)))
-                .forEach(photoId -> photoService.delete(requestId, photoId));
+                .forEach(photoId -> photoService.delete(photoId));
     }
 
     @Override

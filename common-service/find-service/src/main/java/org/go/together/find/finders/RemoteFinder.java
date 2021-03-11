@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.UUID;
 
 @Component
 public class RemoteFinder implements Finder {
@@ -28,10 +27,9 @@ public class RemoteFinder implements Finder {
         this.requestConverter = requestConverter;
     }
 
-    public Collection<Object> getFilters(UUID requestId,
-                                         FilterNode filterNode,
+    public Collection<Object> getFilters(FilterNode filterNode,
                                          FieldMapper fieldMapper) {
         Pair<FindProducer<?>, FormDto> producerFormDtoPair = requestConverter.convert(filterNode, fieldMapper);
-        return sender.send(requestId, producerFormDtoPair.getKey(), producerFormDtoPair.getValue());
+        return sender.send(producerFormDtoPair.getKey(), producerFormDtoPair.getValue());
     }
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.go.together.compare.ComparableDto;
 
 @EqualsAndHashCode(callSuper = true)
@@ -16,6 +17,6 @@ public class PhotoDto extends ComparableDto {
 
     @Override
     public String getMainField() {
-        return getId().toString();
+        return StringUtils.isNotBlank(photoUrl) ? photoUrl : content.getType();
     }
 }

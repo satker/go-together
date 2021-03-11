@@ -28,38 +28,38 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
     @KafkaListener(topics = GROUP_PHOTO_NAME + CREATE,
             containerFactory = GROUP_PHOTO_NAME + CHANGE + LISTENER_FACTORY)
     @SendTo
-    public IdDto handleCreate(ConsumerRecord<UUID, GroupPhotoDto> message) {
-        return service.create(message.key(), message.value());
+    public IdDto handleCreate(ConsumerRecord<Long, GroupPhotoDto> message) {
+        return service.create(message.value());
     }
 
     @Override
     @KafkaListener(topics = GROUP_PHOTO_NAME + UPDATE,
             containerFactory = GROUP_PHOTO_NAME + CHANGE + LISTENER_FACTORY)
     @SendTo
-    public IdDto handleUpdate(ConsumerRecord<UUID, GroupPhotoDto> message) {
-        return service.update(message.key(), message.value());
+    public IdDto handleUpdate(ConsumerRecord<Long, GroupPhotoDto> message) {
+        return service.update(message.value());
     }
 
     @Override
     @KafkaListener(topics = GROUP_PHOTO_NAME + DELETE,
             containerFactory = GROUP_PHOTO_NAME + DELETE + LISTENER_FACTORY)
-    public void handleDelete(ConsumerRecord<UUID, UUID> message) {
-        service.delete(message.key(), message.value());
+    public void handleDelete(ConsumerRecord<Long, UUID> message) {
+        service.delete(message.value());
     }
 
     @Override
     @KafkaListener(topics = GROUP_PHOTO_NAME + READ,
             containerFactory = GROUP_PHOTO_NAME + READ + LISTENER_FACTORY)
     @SendTo
-    public GroupPhotoDto handleRead(ConsumerRecord<UUID, UUID> message) {
-        return service.read(message.key(), message.value());
+    public GroupPhotoDto handleRead(ConsumerRecord<Long, UUID> message) {
+        return service.read(message.value());
     }
 
     @Override
     @KafkaListener(topics = GROUP_PHOTO_NAME + VALIDATE,
             containerFactory = GROUP_PHOTO_NAME + VALIDATE + LISTENER_FACTORY)
     @SendTo
-    public ValidationMessageDto handleValidate(ConsumerRecord<UUID, GroupPhotoDto> message) {
+    public ValidationMessageDto handleValidate(ConsumerRecord<Long, GroupPhotoDto> message) {
         GroupPhotoDto dto = message.value();
         return new ValidationMessageDto(validator.validate(dto, null));
     }
@@ -68,7 +68,7 @@ public class GroupPhotoConsumer extends CommonCrudKafkaConsumer<GroupPhotoDto> {
     @KafkaListener(topics = GROUP_PHOTO_NAME + FIND,
             containerFactory = GROUP_PHOTO_NAME + FIND + LISTENER_FACTORY)
     @SendTo
-    public ResponseDto<Object> handleFind(ConsumerRecord<UUID, FormDto> message) {
-        return findService.find(message.key(), message.value());
+    public ResponseDto<Object> handleFind(ConsumerRecord<Long, FormDto> message) {
+        return findService.find(message.value());
     }
 }

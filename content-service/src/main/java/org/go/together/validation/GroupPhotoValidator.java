@@ -8,15 +8,13 @@ import org.go.together.dto.PhotoDto;
 import org.go.together.enums.CrudOperation;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 @RequiredArgsConstructor
 public class GroupPhotoValidator extends CommonValidator<GroupPhotoDto> {
     private final Validator<PhotoDto> photoValidator;
 
     @Override
-    protected String commonValidation(UUID requestId, GroupPhotoDto dto, CrudOperation crudOperation) {
+    protected String commonValidation(GroupPhotoDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
         dto.getPhotos().stream()

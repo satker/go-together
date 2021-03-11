@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.go.together.enums.UserServiceInfo.USERS;
 
@@ -23,27 +22,26 @@ public class UserClientService {
     private final FindProducer<AuthUserDto> findAuthUser;
 
     public AuthUserDto findAuthUserByLogin(String userName) {
-        UUID requestId = UUID.randomUUID();
-        ResponseDto<Object> result = findResult(requestId, userName);
-        return getAuthUserFromResponse(requestId, result);
+        ResponseDto<Object> result = findResult(userName);
+        return getAuthUserFromResponse(result);
     }
 
-    private ResponseDto<Object> findResult(UUID requestId, String userName) {
+    private ResponseDto<Object> findResult(String userName) {
         FormDto formDto = new FormDto();
         formDto.setMainIdField(USERS + "." + LOGIN);
         FilterDto filterDto = new FilterDto();
         filterDto.setValues(Set.of(Map.of(LOGIN, new FilterValueDto(FindOperator.EQUAL, userName))));
         formDto.setFilters(Map.of(LOGIN, filterDto));
-        return findAuthUser.find(requestId, formDto);
+        return findAuthUser.find(formDto);
     }
 
-    private AuthUserDto getAuthUserFromResponse(UUID requestId, ResponseDto<Object> result) {
+    private AuthUserDto getAuthUserFromResponse(ResponseDto<Object> result) {
         try {
             Object notParsedAuthUser = result.getResult().iterator().next();
             String jsonAuthUser = OBJECT_MAPPER.writeValueAsString(notParsedAuthUser);
             return OBJECT_MAPPER.readValue(jsonAuthUser, AuthUserDto.class);
         } catch (Exception e) {
-            throw new ApplicationException("Cannot parse auth user: " + e.getMessage(), requestId);
+            throw new ApplicationException("Cannot parse auth user: " + e.getMessage());
         }
     }
 }

@@ -3,8 +3,8 @@ package org.go.together.kafka.producer.config.crud;
 import brave.Tracer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.UUIDDeserializer;
-import org.apache.kafka.common.serialization.UUIDSerializer;
+import org.apache.kafka.common.serialization.LongDeserializer;
+import org.apache.kafka.common.serialization.LongSerializer;
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
 import org.go.together.enums.TopicKafkaPostfix;
@@ -29,17 +29,16 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.UUID;
 
 
 @Component
 public class CreateProducerKafkaConfig implements KafkaProducerConfigurator {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private <D extends Dto> ProducerFactory<UUID, D> createProducerFactory(String kafkaServer) {
+    private <D extends Dto> ProducerFactory<Long, D> createProducerFactory(String kafkaServer) {
         Map<String, Object> configProps = Map.of(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
-                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class,
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class,
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class
         );
         return new DefaultKafkaProducerFactory<>(configProps);
@@ -48,18 +47,18 @@ public class CreateProducerKafkaConfig implements KafkaProducerConfigurator {
     private Map<String, Object> createConsumerConfigs(String kafkaServer, String kafkaGroupId) {
         return Map.of(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
-                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class,
+                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
                 ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId
         );
     }
 
-    private <D extends Dto> ReplyingKafkaTemplate<UUID, D, IdDto> createReplyingKafkaTemplate(KafkaMessageListenerContainer<UUID, IdDto> createRepliesContainer,
+    private <D extends Dto> ReplyingKafkaTemplate<Long, D, IdDto> createReplyingKafkaTemplate(KafkaMessageListenerContainer<Long, IdDto> createRepliesContainer,
                                                                                               String kafkaServer) {
         return new ReplyingKafkaTemplate<>(createProducerFactory(kafkaServer), createRepliesContainer);
     }
 
-    private KafkaMessageListenerContainer<UUID, IdDto> createRepliesContainer(ConsumerFactory<UUID, IdDto> createReplyConsumerFactory,
+    private KafkaMessageListenerContainer<Long, IdDto> createRepliesContainer(ConsumerFactory<Long, IdDto> createReplyConsumerFactory,
                                                                               String kafkaGroupId,
                                                                               String consumerId) {
         String createReplyTopicId = getCreateReplyTopicId(consumerId, kafkaGroupId);
@@ -67,12 +66,12 @@ public class CreateProducerKafkaConfig implements KafkaProducerConfigurator {
         return new KafkaMessageListenerContainer<>(createReplyConsumerFactory, containerProperties);
     }
 
-    private ConsumerFactory<UUID, IdDto> createReplyConsumerFactory(String kafkaServer,
+    private ConsumerFactory<Long, IdDto> createReplyConsumerFactory(String kafkaServer,
                                                                     String kafkaGroupId) {
         JsonDeserializer<IdDto> groupPhotoDtoJsonDeserializer = new JsonDeserializer<>();
         groupPhotoDtoJsonDeserializer.addTrustedPackages("org.go.together.dto");
         return new DefaultKafkaConsumerFactory<>(createConsumerConfigs(kafkaServer, kafkaGroupId),
-                new UUIDDeserializer(),
+                new LongDeserializer(),
                 groupPhotoDtoJsonDeserializer);
     }
 
@@ -84,10 +83,10 @@ public class CreateProducerKafkaConfig implements KafkaProducerConfigurator {
         if (!producerConfig.isCreate()) {
             return;
         }
-        ConsumerFactory<UUID, IdDto> replyConsumerFactory = createReplyConsumerFactory(kafkaServer, kafkaGroupId);
+        ConsumerFactory<Long, IdDto> replyConsumerFactory = createReplyConsumerFactory(kafkaServer, kafkaGroupId);
         String producerId = producerConfig.getProducerId();
-        KafkaMessageListenerContainer<UUID, IdDto> createRepliesContainer = createRepliesContainer(replyConsumerFactory, kafkaGroupId, producerId);
-        ReplyingKafkaTemplate<UUID, D, IdDto> createReplyingKafkaTemplate = createReplyingKafkaTemplate(createRepliesContainer, kafkaServer);
+        KafkaMessageListenerContainer<Long, IdDto> createRepliesContainer = createRepliesContainer(replyConsumerFactory, kafkaGroupId, producerId);
+        ReplyingKafkaTemplate<Long, D, IdDto> createReplyingKafkaTemplate = createReplyingKafkaTemplate(createRepliesContainer, kafkaServer);
         beanFactory.registerSingleton(producerId + "CreateReplyingKafkaTemplate", createReplyingKafkaTemplate);
         CreateKafkaProducer<D> commonCreateKafkaProducer = CommonCreateKafkaProducer.create(createReplyingKafkaTemplate, kafkaGroupId, producerId, tracer);
         beanFactory.registerSingleton(producerId + ProducerPostfix.CREATE.getDescription(), commonCreateKafkaProducer);

@@ -11,7 +11,6 @@ import org.go.together.repository.interfaces.LanguageRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -23,7 +22,7 @@ public class UserValidator extends CommonValidator<UserDto> {
     private final ValidationProducer<GroupPhotoDto> photoValidator;
 
     @Override
-    public String commonValidation(UUID requestId, UserDto dto, CrudOperation crudOperation) {
+    public String commonValidation(UserDto dto, CrudOperation crudOperation) {
         StringBuilder errors = new StringBuilder();
 
         if (crudOperation == CrudOperation.CREATE) {
@@ -44,15 +43,15 @@ public class UserValidator extends CommonValidator<UserDto> {
     }
 
     @Override
-    public Map<String, Function<UserDto, ?>> getMapsForCheck(UUID requestId) {
+    public Map<String, Function<UserDto, ?>> getMapsForCheck() {
         return Map.of(
                 "first name", UserDto::getFirstName,
                 "last name", UserDto::getLastName,
                 "description", UserDto::getDescription,
                 "login", UserDto::getLogin,
                 "mail", UserDto::getMail,
-                "user locations", userDto -> locationValidator.validate(requestId, userDto.getLocation()),
-                "user photos", userDto -> photoValidator.validate(requestId, userDto.getGroupPhoto())
+                "user locations", userDto -> locationValidator.validate(userDto.getLocation()),
+                "user photos", userDto -> photoValidator.validate(userDto.getGroupPhoto())
         );
     }
 }

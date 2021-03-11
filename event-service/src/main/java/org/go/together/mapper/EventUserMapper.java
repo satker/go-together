@@ -17,17 +17,17 @@ public class EventUserMapper implements Mapper<EventUserDto, EventUser> {
     private final CrudProducer<UserDto> usersCrudProducer;
 
     @Override
-    public EventUserDto entityToDto(UUID requestId, EventUser entity) {
+    public EventUserDto entityToDto(EventUser entity) {
         EventUserDto eventUserDto = new EventUserDto();
         eventUserDto.setId(entity.getId());
-        eventUserDto.setUser(userIdToSimpleUserDto(requestId, entity.getUserId()));
+        eventUserDto.setUser(userIdToSimpleUserDto(entity.getUserId()));
         eventUserDto.setUserStatus(entity.getUserStatus());
         eventUserDto.setEventId(entity.getEventId());
         return eventUserDto;
     }
 
-    private SimpleUserDto userIdToSimpleUserDto(UUID requestId, UUID userId) {
-        UserDto userDto = usersCrudProducer.read(requestId, userId);
+    private SimpleUserDto userIdToSimpleUserDto(UUID userId) {
+        UserDto userDto = usersCrudProducer.read(userId);
         SimpleUserDto simpleUserDto = new SimpleUserDto();
         simpleUserDto.setId(userDto.getId());
         simpleUserDto.setFirstName(userDto.getFirstName());

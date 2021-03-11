@@ -18,7 +18,7 @@ public class MessageServiceImpl extends CommonCrudService<MessageDto, Message> i
     @Override
     public Set<MessageDto> getReceiverMessages(UUID recipientId, MessageType messageType) {
         return ((MessageRepository) repository).findReviewsByRecipientId(recipientId, messageType).stream()
-                .map(message -> mapper.entityToDto(UUID.randomUUID(), message))
+                .map(mapper::entityToDto)
                 .collect(Collectors.toSet());
     }
 
@@ -44,12 +44,12 @@ public class MessageServiceImpl extends CommonCrudService<MessageDto, Message> i
 
         return groupAuthorEventId.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
-                        element -> mapper.entityToDto(UUID.randomUUID(), element.getValue().stream()
+                        element -> mapper.entityToDto(element.getValue().stream()
                                 .max(Comparator.comparing(Message::getDate)).orElse(new Message()))));
     }
 
     @Override
-    protected Message enrichEntity(UUID requestId, Message entity, MessageDto dto, CrudOperation crudOperation) {
+    protected Message enrichEntity(Message entity, MessageDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE) {
             entity.setDate(new Date());
         }

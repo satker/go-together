@@ -8,7 +8,10 @@ import org.go.together.interfaces.ImplFinder;
 import org.go.together.validation.validators.interfaces.ObjectValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -23,19 +26,16 @@ public abstract class CommonValidator<D extends Dto> implements Validator<D> {
     }
 
     @Override
-    public String validate(UUID requestId, D dto, CrudOperation crudOperation) {
-        if (requestId == null) {
-            return "Request id is null";
-        }
+    public String validate(D dto, CrudOperation crudOperation) {
         if (dto == null) {
             return "Dto is null";
         }
-        Set<String> errors = getMapsForCheck(requestId).entrySet().stream()
+        Set<String> errors = getMapsForCheck().entrySet().stream()
                 .map(entry -> getValidatorResult(entry, dto))
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.toSet());
         if (errors.isEmpty()) {
-            return commonValidation(requestId, dto, crudOperation);
+            return commonValidation(dto, crudOperation);
         }
         return String.join(StringUtils.EMPTY, errors);
     }
@@ -47,13 +47,13 @@ public abstract class CommonValidator<D extends Dto> implements Validator<D> {
     }
 
     @Override
-    public String validateDtos(UUID requestId, Collection<D> dtos, CrudOperation crudOperation) {
+    public String validateDtos(Collection<D> dtos, CrudOperation crudOperation) {
         return dtos.stream()
-                .map(dto -> validate(requestId, dto, crudOperation))
+                .map(dto -> validate(dto, crudOperation))
                 .collect(Collectors.joining());
     }
 
-    protected String commonValidation(UUID requestId, D dto, CrudOperation crudOperation) {
+    protected String commonValidation(D dto, CrudOperation crudOperation) {
         return StringUtils.EMPTY;
     }
 

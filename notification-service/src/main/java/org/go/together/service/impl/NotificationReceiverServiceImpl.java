@@ -48,41 +48,40 @@ public class NotificationReceiverServiceImpl extends CommonCrudService<Notificat
         this.notificationReceiverMessageService = notificationReceiverMessageService;
     }
 
-    private void enrichByMessages(UUID requestId, NotificationMessage notificationMessage, NotificationReceiver entity) {
+    private void enrichByMessages(NotificationMessage notificationMessage, NotificationReceiver entity) {
         NotificationReceiverMessageDto notificationReceiverMessageDto = new NotificationReceiverMessageDto();
         notificationReceiverMessageDto.setIsRead(false);
-        NotificationMessageDto notificationMessageDto = notificationMessageService.read(requestId, notificationMessage.getId());
+        NotificationMessageDto notificationMessageDto = notificationMessageService.read(notificationMessage.getId());
         notificationReceiverMessageDto.setNotificationMessage(notificationMessageDto);
-        NotificationReceiverDto notificationReceiverDto = mapper.entityToDto(requestId, entity);
+        NotificationReceiverDto notificationReceiverDto = mapper.entityToDto(entity);
         notificationReceiverMessageDto.setNotificationReceiver(notificationReceiverDto);
-        notificationReceiverMessageService.create(requestId, notificationReceiverMessageDto);
+        notificationReceiverMessageService.create(notificationReceiverMessageDto);
     }
 
     @Override
-    public void notificateMessageReceivers(UUID requestId, NotificationMessage entity) {
+    public void notificateMessageReceivers(NotificationMessage entity) {
         ((NotificationReceiverRepository) repository).findByNotificationId(entity.getNotification().getId())
-                .forEach(notificationReceiver -> enrichByMessages(requestId, entity, notificationReceiver));
+                .forEach(notificationReceiver -> enrichByMessages(entity, notificationReceiver));
     }
 
     @Override
-    protected NotificationReceiver enrichEntity(UUID requestId,
-                                                NotificationReceiver entity,
+    protected NotificationReceiver enrichEntity(NotificationReceiver entity,
                                                 NotificationReceiverDto dto,
                                                 CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE) {
-            Notification presentedNotificationByDto = notificationService.getPresentedNotificationByDto(requestId, dto.getNotification());
+            Notification presentedNotificationByDto = notificationService.getPresentedNotificationByDto(dto.getNotification());
             entity.setNotification(presentedNotificationByDto);
             notificationMessageRepository.findByNotificationId(presentedNotificationByDto.getId())
-                    .forEach(notificationMessage -> enrichByMessages(requestId, notificationMessage, entity));
+                    .forEach(notificationMessage -> enrichByMessages(notificationMessage, entity));
         }
         if (crudOperation == CrudOperation.UPDATE) {
-            Notification presentedNotificationByDto = notificationService.getPresentedNotificationByDto(requestId, dto.getNotification());
+            Notification presentedNotificationByDto = notificationService.getPresentedNotificationByDto(dto.getNotification());
             entity.setNotification(presentedNotificationByDto);
         }
         if (crudOperation == CrudOperation.DELETE) {
             notificationReceiverMessageService.getNotificationReceiverMessageIdsByReceiverId(entity.getUserId()).stream()
                     .map(NotificationReceiverMessage::getId)
-                    .forEach(notificationReceiverMessageId -> notificationReceiverMessageService.delete(requestId, notificationReceiverMessageId));
+                    .forEach(notificationReceiverMessageId -> notificationReceiverMessageService.delete(notificationReceiverMessageId));
         }
         return entity;
     }

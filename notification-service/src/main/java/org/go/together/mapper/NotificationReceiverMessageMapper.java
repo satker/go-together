@@ -10,8 +10,6 @@ import org.go.together.model.NotificationReceiver;
 import org.go.together.model.NotificationReceiverMessage;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 @RequiredArgsConstructor
 public class NotificationReceiverMessageMapper implements Mapper<NotificationReceiverMessageDto, NotificationReceiverMessage> {
@@ -19,12 +17,12 @@ public class NotificationReceiverMessageMapper implements Mapper<NotificationRec
     private final Mapper<NotificationReceiverDto, NotificationReceiver> notificationReceiverMapper;
 
     @Override
-    public NotificationReceiverMessageDto entityToDto(UUID requestId, NotificationReceiverMessage entity) {
+    public NotificationReceiverMessageDto entityToDto(NotificationReceiverMessage entity) {
         NotificationReceiverMessageDto notificationReceiverMessageDto = new NotificationReceiverMessageDto();
         notificationReceiverMessageDto.setId(entity.getId());
         notificationReceiverMessageDto.setIsRead(entity.getIsRead());
-        notificationReceiverMessageDto.setNotificationReceiver(notificationReceiverMapper.entityToDto(requestId, entity.getNotificationReceiver()));
-        notificationReceiverMessageDto.setNotificationMessage(notificationMessageMapper.entityToDto(requestId, entity.getNotificationMessage()));
+        notificationReceiverMessageDto.setNotificationReceiver(notificationReceiverMapper.entityToDto(entity.getNotificationReceiver()));
+        notificationReceiverMessageDto.setNotificationMessage(notificationMessageMapper.entityToDto(entity.getNotificationMessage()));
         return notificationReceiverMessageDto;
     }
 

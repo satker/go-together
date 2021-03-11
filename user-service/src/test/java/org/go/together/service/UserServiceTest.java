@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -160,26 +159,26 @@ class UserServiceTest extends CrudServiceCommonTest<SystemUser, UserDto> {
         Set<InterestDto> interests = userDto.getInterests().stream()
                 .map(interestMapper::dtoToEntity)
                 .peek(interestRepository::save)
-                .map(interest -> interestMapper.entityToDto(UUID.randomUUID(), interest))
+                .map(interest -> interestMapper.entityToDto(interest))
                 .collect(Collectors.toSet());
         userDto.setInterests(interests);
         Set<LanguageDto> languages = userDto.getLanguages().stream()
                 .map(languageMapper::dtoToEntity)
                 .peek(languageRepository::save)
-                .map(language -> languageMapper.entityToDto(UUID.randomUUID(), language))
+                .map(language -> languageMapper.entityToDto(language))
                 .collect(Collectors.toSet());
         userDto.setLanguages(languages);
         return userDto;
     }
 
     private void prepareDto(UserDto userDto) {
-        when(locationValidate.validate(any(UUID.class), eq(userDto.getLocation()))).thenReturn(new ValidationMessageDto(EMPTY));
-        when(groupPhotoValidate.validate(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new ValidationMessageDto(EMPTY));
-        when(groupPhotoCrud.update(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
-        when(groupPhotoCrud.create(any(UUID.class), eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
-        when(locationProducer.create(any(UUID.class), eq(userDto.getLocation()))).thenReturn(new IdDto(userDto.getLocation().getId()));
-        when(locationProducer.update(any(UUID.class), eq(userDto.getLocation()))).thenReturn(new IdDto(userDto.getLocation().getId()));
-        when(locationProducer.read(any(UUID.class), eq(userDto.getLocation().getId()))).thenReturn(userDto.getLocation());
-        when(groupPhotoCrud.read(any(UUID.class), eq(userDto.getGroupPhoto().getId()))).thenReturn(userDto.getGroupPhoto());
+        when(locationValidate.validate(eq(userDto.getLocation()))).thenReturn(new ValidationMessageDto(EMPTY));
+        when(groupPhotoValidate.validate(eq(userDto.getGroupPhoto()))).thenReturn(new ValidationMessageDto(EMPTY));
+        when(groupPhotoCrud.update(eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
+        when(groupPhotoCrud.create(eq(userDto.getGroupPhoto()))).thenReturn(new IdDto(userDto.getGroupPhoto().getId()));
+        when(locationProducer.create(eq(userDto.getLocation()))).thenReturn(new IdDto(userDto.getLocation().getId()));
+        when(locationProducer.update(eq(userDto.getLocation()))).thenReturn(new IdDto(userDto.getLocation().getId()));
+        when(locationProducer.read(eq(userDto.getLocation().getId()))).thenReturn(userDto.getLocation());
+        when(groupPhotoCrud.read(eq(userDto.getGroupPhoto().getId()))).thenReturn(userDto.getGroupPhoto());
     }
 }

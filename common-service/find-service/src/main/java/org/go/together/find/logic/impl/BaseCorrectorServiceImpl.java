@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -26,10 +25,10 @@ public class BaseCorrectorServiceImpl implements BaseCorrectorService {
     }
 
     @Override
-    public Collection<Collection<FilterNodeBuilder>> getCorrectedFilters(UUID requestId, FormDto formDto, Map<String, FieldMapper> mappingFields) {
+    public Collection<Collection<FilterNodeBuilder>> getCorrectedFilters(FormDto formDto, Map<String, FieldMapper> mappingFields) {
         return formDto.getFilters().entrySet().stream()
                 .map(filterBuilder::getBuilders)
-                .map(filterNodeBuilder -> correctorService.correct(requestId, filterNodeBuilder, mappingFields))
+                .map(filterNodeBuilder -> correctorService.correct(filterNodeBuilder, mappingFields))
                 .collect(Collectors.toSet());
     }
 }

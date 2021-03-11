@@ -52,7 +52,7 @@ public class NotificationReceiverMessageServiceTest
         notificationMessage.setMessage(CREATED);
         NotificationMessage savedNotificationMessage = notificationMessageRepository.save(notificationMessage);
 
-        NotificationMessageDto notificationMessageDto = notificationMessageMapper.entityToDto(UUID.randomUUID(), savedNotificationMessage);
+        NotificationMessageDto notificationMessageDto = notificationMessageMapper.entityToDto(savedNotificationMessage);
         notificationReceiverMessageDto.setNotificationMessage(notificationMessageDto);
 
         notificationReceiverMessageDto.setNotificationReceiver(createNotificationReceiver(notification));
@@ -64,6 +64,6 @@ public class NotificationReceiverMessageServiceTest
         NotificationReceiver notificationReceiver = notificationReceiverRepository.create();
         notificationReceiver.setNotification(notification);
         notificationReceiver.setUserId(UUID.randomUUID());
-        return notificationReceiverMapper.entityToDto(UUID.randomUUID(), notificationReceiver);
+        return notificationReceiverMapper.entityToDto(notificationReceiver);
     }
 }

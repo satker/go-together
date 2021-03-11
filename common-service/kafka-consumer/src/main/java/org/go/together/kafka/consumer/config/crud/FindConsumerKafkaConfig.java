@@ -2,8 +2,8 @@ package org.go.together.kafka.consumer.config.crud;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.UUIDDeserializer;
-import org.apache.kafka.common.serialization.UUIDSerializer;
+import org.apache.kafka.common.serialization.LongDeserializer;
+import org.apache.kafka.common.serialization.LongSerializer;
 import org.go.together.dto.FormDto;
 import org.go.together.dto.ResponseDto;
 import org.go.together.kafka.consumer.config.interfaces.CustomConsumerConfig;
@@ -17,7 +17,6 @@ import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static org.go.together.enums.TopicKafkaPostfix.FIND;
 import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
@@ -26,7 +25,7 @@ public abstract class FindConsumerKafkaConfig implements CustomConsumerConfig {
     private Map<String, Object> getFindProducerConfigs(String kafkaServer) {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return props;
     }
@@ -34,30 +33,30 @@ public abstract class FindConsumerKafkaConfig implements CustomConsumerConfig {
     private Map<String, Object> getConsumerConfigs(String kafkaServer, String kafkaGroupId) {
         return Map.of(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer,
-                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class,
+                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
                 ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId
         );
     }
 
-    private ProducerFactory<UUID, ResponseDto<Object>> findReplyProducerFactory(String kafkaServer) {
+    private ProducerFactory<Long, ResponseDto<Object>> findReplyProducerFactory(String kafkaServer) {
         return new DefaultKafkaProducerFactory<>(getFindProducerConfigs(kafkaServer));
     }
 
-    private KafkaTemplate<UUID, ResponseDto<Object>> findKafkaTemplate(ProducerFactory<UUID, ResponseDto<Object>> findReplyProducerFactory) {
+    private KafkaTemplate<Long, ResponseDto<Object>> findKafkaTemplate(ProducerFactory<Long, ResponseDto<Object>> findReplyProducerFactory) {
         return new KafkaTemplate<>(findReplyProducerFactory);
     }
 
-    private ConsumerFactory<UUID, FormDto> findConsumerFactory(String kafkaServer, String kafkaGroupId) {
+    private ConsumerFactory<Long, FormDto> findConsumerFactory(String kafkaServer, String kafkaGroupId) {
         JsonDeserializer<FormDto> formDtoJsonDeserializer = new JsonDeserializer<>();
         formDtoJsonDeserializer.addTrustedPackages("org.go.together.dto");
-        return new DefaultKafkaConsumerFactory<>(getConsumerConfigs(kafkaServer, kafkaGroupId), new UUIDDeserializer(),
+        return new DefaultKafkaConsumerFactory<>(getConsumerConfigs(kafkaServer, kafkaGroupId), new LongDeserializer(),
                 formDtoJsonDeserializer);
     }
 
-    private ConcurrentKafkaListenerContainerFactory<UUID, FormDto> findListenerContainerFactory(ConsumerFactory<UUID, FormDto> findConsumerFactory,
-                                                                                                KafkaTemplate<UUID, ResponseDto<Object>> findKafkaTemplate) {
-        ConcurrentKafkaListenerContainerFactory<UUID, FormDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    private ConcurrentKafkaListenerContainerFactory<Long, FormDto> findListenerContainerFactory(ConsumerFactory<Long, FormDto> findConsumerFactory,
+                                                                                                KafkaTemplate<Long, ResponseDto<Object>> findKafkaTemplate) {
+        ConcurrentKafkaListenerContainerFactory<Long, FormDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(findConsumerFactory);
         factory.setReplyTemplate(findKafkaTemplate);
         factory.setErrorHandler(new SeekToCurrentErrorHandler(new FixedBackOff(500L, 2L)));
@@ -65,12 +64,12 @@ public abstract class FindConsumerKafkaConfig implements CustomConsumerConfig {
     }
 
     public void findConsumerBeanFactoryPostProcessor(String kafkaServer, String kafkaGroupId, ConfigurableListableBeanFactory beanFactory) {
-        ProducerFactory<UUID, ResponseDto<Object>> replyProducerFactory = findReplyProducerFactory(kafkaServer);
+        ProducerFactory<Long, ResponseDto<Object>> replyProducerFactory = findReplyProducerFactory(kafkaServer);
         beanFactory.registerSingleton(getConsumerId() + "FindReplyProducerFactory", replyProducerFactory);
-        KafkaTemplate<UUID, ResponseDto<Object>> kafkaTemplate = findKafkaTemplate(replyProducerFactory);
+        KafkaTemplate<Long, ResponseDto<Object>> kafkaTemplate = findKafkaTemplate(replyProducerFactory);
         beanFactory.registerSingleton(getConsumerId() + "FindKafkaTemplate", kafkaTemplate);
-        ConsumerFactory<UUID, FormDto> consumerFactory = findConsumerFactory(kafkaServer, kafkaGroupId);
-        ConcurrentKafkaListenerContainerFactory<UUID, FormDto> listenerContainerFactory =
+        ConsumerFactory<Long, FormDto> consumerFactory = findConsumerFactory(kafkaServer, kafkaGroupId);
+        ConcurrentKafkaListenerContainerFactory<Long, FormDto> listenerContainerFactory =
                 findListenerContainerFactory(consumerFactory, kafkaTemplate);
         beanFactory.registerSingleton(getConsumerId() + FIND + LISTENER_FACTORY, listenerContainerFactory);
     }
