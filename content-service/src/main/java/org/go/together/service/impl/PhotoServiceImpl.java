@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.CommonCrudService;
 import org.go.together.dto.PhotoDto;
 import org.go.together.enums.CrudOperation;
+import org.go.together.exceptions.ApplicationException;
 import org.go.together.model.Photo;
 import org.go.together.service.interfaces.PhotoService;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +40,7 @@ public class PhotoServiceImpl extends CommonCrudService<PhotoDto, Photo> impleme
                             dto.getContent().getPhotoContent());
                     entity.setPathName(filePath);
                 } catch (IOException e) {
-                    throw new RuntimeException("Cannot create image");
+                    throw new ApplicationException("Cannot create image");
                 }
             } else {
                 entity.setPhotoUrl(dto.getPhotoUrl());
@@ -49,7 +50,7 @@ public class PhotoServiceImpl extends CommonCrudService<PhotoDto, Photo> impleme
                 String filePath = entity.getPathName();
                 boolean delete = new File(filePath).delete();
                 if (!delete) {
-                    throw new RuntimeException("Cannot delete photo");
+                    throw new ApplicationException("Cannot delete photo");
                 }
             }
         }

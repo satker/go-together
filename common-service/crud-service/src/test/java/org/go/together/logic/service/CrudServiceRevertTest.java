@@ -74,7 +74,7 @@ class CrudServiceRevertTest {
 
     @BeforeEach
     public void init() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         testServiceOverride = new CommonCrudService<>() {
             @Override
             protected TestEntity enrichEntity(TestEntity entity, TestDto dto, CrudOperation crudOperation) {

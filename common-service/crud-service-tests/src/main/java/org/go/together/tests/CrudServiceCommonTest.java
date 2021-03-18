@@ -1,12 +1,14 @@
 package org.go.together.tests;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.go.together.base.*;
 import org.go.together.compare.FieldMapper;
 import org.go.together.dto.*;
 import org.go.together.enums.CrudOperation;
 import org.go.together.enums.FindOperator;
 import org.go.together.exceptions.CannotFindEntityException;
+import org.go.together.exceptions.IncorrectDtoException;
 import org.go.together.interfaces.Identified;
 import org.go.together.model.IdentifiedEntity;
 import org.junit.jupiter.api.AfterEach;
@@ -155,16 +157,18 @@ public abstract class CrudServiceCommonTest<E extends IdentifiedEntity, D extend
     private Map.Entry<String, FilterDto> fillFilter(E savedEntity, Map.Entry<String, FieldMapper> entry) {
         String currentServiceField = entry.getValue().getCurrentServiceField();
         try {
-            Field declaredField = savedEntity.getClass().getDeclaredField(currentServiceField);
+            Field declaredField = FieldUtils.getAllFieldsList(savedEntity.getClass()).stream()
+                    .filter(field -> field.getName().equals(currentServiceField))
+                    .findFirst().orElseThrow(() -> new IncorrectDtoException("Cannot find field '" +
+                            currentServiceField + "' in class " + savedEntity.getClass().getSimpleName()));
             declaredField.setAccessible(true);
             Object value = declaredField.get(savedEntity);
             FilterDto filterDto = new FilterDto();
             filterDto.setValues(Collections.singleton(Map.of(entry.getKey(), new FilterValueDto(FindOperator.EQUAL, value))));
             return Map.entry(entry.getKey(), filterDto);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            return null;
         }
-        return null;
     }
 
     protected void checkDtos(D dto, D savedObject, CrudOperation operation) {

@@ -30,58 +30,55 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
     @Override
     protected Event enrichEntity(Event entity, EventDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.UPDATE) {
-            IdDto updateContent = updateContent(entity, dto);
-            entity.setGroupPhotoId(updateContent.getId());
-
-            IdDto groupRouteInfo = updateRouteInfo(entity, dto);
-            entity.setRouteInfoId(groupRouteInfo.getId());
+            updateContent(entity, dto);
+            updateRouteInfo(entity, dto);
         } else if (crudOperation == CrudOperation.CREATE) {
-            IdDto photoId = createContent(entity, dto);
-            entity.setGroupPhotoId(photoId.getId());
-
+            createContent(entity, dto);
             createEventLikes(entity);
-
-            IdDto groupRouteInfo = createRouteInfo(entity, dto);
-            entity.setRouteInfoId(groupRouteInfo.getId());
+            createRouteInfo(entity, dto);
         } else if (crudOperation == CrudOperation.DELETE) {
-            groupPhotoCrudProducer.delete(entity.getGroupPhotoId());
-            eventLikesCrudProducer.delete(entity.getId());
-            routeInfoCrudProducer.delete(entity.getRouteInfoId());
+            asyncEnricher.add(() -> groupPhotoCrudProducer.delete(entity.getGroupPhotoId()));
+            asyncEnricher.add(() -> eventLikesCrudProducer.delete(entity.getId()));
+            asyncEnricher.add(() -> routeInfoCrudProducer.delete(entity.getRouteInfoId()));
         }
         return entity;
     }
 
-    private IdDto createRouteInfo(Event entity, EventDto dto) {
+    private void createRouteInfo(Event entity, EventDto dto) {
         GroupRouteInfoDto routeInfo = dto.getRouteInfo();
         routeInfo.setGroupId(entity.getId());
-        return routeInfoCrudProducer.create(routeInfo);
+        asyncEnricher.add(() ->
+                entity.setRouteInfoId(routeInfoCrudProducer.create(routeInfo).getId()));
     }
 
-    private IdDto updateRouteInfo(Event entity, EventDto dto) {
+    private void updateRouteInfo(Event entity, EventDto dto) {
         GroupRouteInfoDto routeInfo = dto.getRouteInfo();
         routeInfo.setGroupId(entity.getId());
-        return routeInfoCrudProducer.update(routeInfo);
+        asyncEnricher.add(() ->
+                entity.setRouteInfoId(routeInfoCrudProducer.update(routeInfo).getId()));
     }
 
     private void createEventLikes(Event entity) {
         EventLikeDto eventLikeDto = new EventLikeDto();
         eventLikeDto.setEventId(entity.getId());
         eventLikeDto.setUsers(Collections.emptySet());
-        eventLikesCrudProducer.create(eventLikeDto);
+        asyncEnricher.add(() -> eventLikesCrudProducer.create(eventLikeDto));
     }
 
-    private IdDto createContent(Event entity, EventDto dto) {
+    private void createContent(Event entity, EventDto dto) {
         GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
         groupPhotoDto.setGroupId(entity.getId());
         groupPhotoDto.setCategory(PhotoCategory.EVENT);
-        return groupPhotoCrudProducer.create(groupPhotoDto);
+        asyncEnricher.add(() ->
+                entity.setGroupPhotoId(groupPhotoCrudProducer.create(groupPhotoDto).getId()));
     }
 
-    private IdDto updateContent(Event entity, EventDto dto) {
+    private void updateContent(Event entity, EventDto dto) {
         GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
         groupPhotoDto.setGroupId(entity.getId());
         groupPhotoDto.setCategory(PhotoCategory.EVENT);
-        return groupPhotoCrudProducer.update(groupPhotoDto);
+        asyncEnricher.add(() ->
+                entity.setGroupPhotoId(groupPhotoCrudProducer.update(groupPhotoDto).getId()));
     }
 
     @Override

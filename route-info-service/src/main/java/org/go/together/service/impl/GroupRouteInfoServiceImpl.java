@@ -40,7 +40,8 @@ public class GroupRouteInfoServiceImpl extends CommonCrudService<GroupRouteInfoD
         } else if (crudOperation == CrudOperation.DELETE) {
             entity.getInfoRoutes().stream()
                     .map(RouteInfo::getId)
-                    .forEach(routeInfoService::delete);
+                    .map(routeId -> (Runnable) () -> routeInfoService.delete(routeId))
+                    .forEach(asyncEnricher::add);
         }
         return entity;
     }

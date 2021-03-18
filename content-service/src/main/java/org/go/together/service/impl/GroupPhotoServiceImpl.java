@@ -28,16 +28,18 @@ public class GroupPhotoServiceImpl extends CommonCrudService<GroupPhotoDto, Grou
     @Override
     protected GroupPhoto enrichEntity(GroupPhoto entity, GroupPhotoDto dto, CrudOperation crudOperation) {
         if (crudOperation == CrudOperation.CREATE || crudOperation == CrudOperation.UPDATE) {
+            GroupPhoto groupPhoto = repository.findByIdOrThrow(entity.getId());
+
             Set<Photo> photos = dto.getPhotos().stream()
                     .map(this::getPhotos)
                     .collect(Collectors.toSet());
-            GroupPhoto groupPhoto = repository.findByIdOrThrow(entity.getId());
             deleteUnneededPhotos(groupPhoto.getPhotos(), photos);
             entity.setPhotos(photos);
         } else if (crudOperation == CrudOperation.DELETE) {
             entity.getPhotos().stream()
                     .map(Photo::getId)
-                    .forEach(photoService::delete);
+                    .map(photoId -> (Runnable) () -> photoService.delete(photoId))
+                    .forEach(asyncEnricher::add);
         }
         return entity;
     }
@@ -58,7 +60,7 @@ public class GroupPhotoServiceImpl extends CommonCrudService<GroupPhotoDto, Grou
                 .orElse(Collections.emptySet()).stream()
                 .map(Photo::getId)
                 .filter(photoId -> newPhotos.stream().noneMatch(photo -> photo.getId().equals(photoId)))
-                .forEach(photoId -> photoService.delete(photoId));
+                .forEach(photoService::delete);
     }
 
     @Override

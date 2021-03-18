@@ -1,6 +1,7 @@
 package org.go.together.base;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.async.enricher.AsyncEnricher;
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
 import org.go.together.enums.CrudOperation;
@@ -16,6 +17,12 @@ import java.util.UUID;
 public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntity>
         extends CommonNotificationService<D, E> implements CrudService<D> {
     protected Validator<D> validator;
+    protected AsyncEnricher asyncEnricher;
+
+    @Autowired
+    public void setAsyncEnricher(AsyncEnricher asyncEnricher) {
+        this.asyncEnricher = asyncEnricher;
+    }
 
     @Autowired
     public void setValidator(Validator<D> validator) {
@@ -36,6 +43,7 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
             newEntity.setId(id);
             try {
                 E enrichedEntity = enrichEntity(newEntity, dto, crudOperation);
+                asyncEnricher.startAndAwait();
                 E createdEntity = repository.save(enrichedEntity);
                 log.info("Created " + getServiceName() + " successful.");
                 sendNotification(id, dto, dto, crudOperation);
@@ -63,6 +71,7 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
             E updatedEntity = mapper.dtoToEntity(updatedDto);
             try {
                 E enrichedEntity = enrichEntity(updatedEntity, updatedDto, crudOperation);
+                asyncEnricher.startAndAwait();
                 E createdEntity = repository.save(enrichedEntity);
                 log.info("Updated " + getServiceName() + " successful.");
                 sendNotification(updatedDto.getId(), originalDto, updatedDto, crudOperation);
@@ -98,6 +107,7 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
             E entity = entityById.get();
             D originalDto = mapper.entityToDto(entity);
             E enrichedEntity = enrichEntity(entity, null, crudOperation);
+            asyncEnricher.startAndAwait();
             repository.delete(enrichedEntity);
             log.info("Deletion " + getServiceName() + " with id = '" + uuid.toString() + "' successful.");
             sendNotification(uuid, originalDto, originalDto, crudOperation);
