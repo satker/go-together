@@ -1,5 +1,7 @@
 package org.go.together.validation;
 
+import brave.Span;
+import brave.Tracer;
 import org.apache.commons.lang3.StringUtils;
 import org.go.together.base.Validator;
 import org.go.together.base.async.AsyncValidator;
@@ -22,6 +24,7 @@ import static org.go.together.utils.ReflectionUtils.getClazz;
 public abstract class CommonValidator<D extends Dto> implements Validator<D> {
     private ImplFinder<ObjectValidator> implFinder;
     private AsyncValidator asyncValidator;
+    private Tracer tracer;
 
     @Autowired
     public void setAsyncValidator(AsyncValidator asyncValidator) {
@@ -31,6 +34,11 @@ public abstract class CommonValidator<D extends Dto> implements Validator<D> {
     @Autowired
     public void setImplFinder(ImplFinder<ObjectValidator> implFinder) {
         this.implFinder = implFinder;
+    }
+
+    @Autowired
+    public void setTracer(Tracer tracer) {
+        this.tracer = tracer;
     }
 
     @Override
@@ -50,7 +58,14 @@ public abstract class CommonValidator<D extends Dto> implements Validator<D> {
     }
 
     private Callable<String> wrapAsync(Map.Entry<String, Function<D, ?>> entry, D dto) {
-        return () -> getValidatorResult(entry, dto);
+        return () -> {
+            Span span = tracer.newChild(tracer.currentSpan().context()).name(entry.getKey() + "_validate").start();
+            try {
+                return getValidatorResult(entry, dto);
+            } finally {
+                span.finish();
+            }
+        };
     }
 
     private String getValidatorResult(Map.Entry<String, Function<D, ?>> entry, D dto) {

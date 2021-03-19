@@ -5,8 +5,6 @@ import brave.Tracer;
 import org.go.together.async.config.AsyncTraceableExecutorsConfig;
 import org.go.together.base.async.CommonAsyncExecutor;
 import org.go.together.exceptions.ApplicationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cloud.sleuth.instrument.async.TraceableExecutorService;
 
 import java.util.ArrayList;
@@ -19,14 +17,13 @@ import java.util.stream.Collectors;
 public abstract class CommonAsyncExecutorImpl implements CommonAsyncExecutor {
     private final Map<String, List<Supplier<Object>>> map;
     private final Map<String, List<CompletableFuture<Object>>> resultMap;
-    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     protected CommonAsyncExecutorImpl() {
         this.map = new ConcurrentHashMap<>();
         this.resultMap = new ConcurrentHashMap<>();
     }
 
-    public void add(Supplier<Object> enricher) {
+    private void add(Supplier<Object> enricher) {
         String id = getId();
         List<Supplier<Object>> runnables = map.get(id);
         if (runnables == null) {
