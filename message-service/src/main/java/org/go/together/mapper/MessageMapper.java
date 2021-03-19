@@ -1,6 +1,6 @@
 package org.go.together.mapper;
 
-import org.go.together.base.Mapper;
+import org.go.together.base.CommonMapper;
 import org.go.together.dto.MessageDto;
 import org.go.together.model.Message;
 import org.springframework.stereotype.Component;
@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class MessageMapper implements Mapper<MessageDto, Message> {
+public class MessageMapper extends CommonMapper<MessageDto, Message> {
     @Override
-    public MessageDto entityToDto(Message entity) {
+    public MessageDto toDto(Message entity) {
         MessageDto messageDto = new MessageDto();
         messageDto.setId(entity.getId());
         messageDto.setDate(entity.getDate());
@@ -23,7 +23,7 @@ public class MessageMapper implements Mapper<MessageDto, Message> {
     }
 
     @Override
-    public Message dtoToEntity(MessageDto dto) {
+    public Message toEntity(MessageDto dto) {
         Message message = new Message();
         message.setId(dto.getId());
         message.setAuthorId(dto.getAuthorId());

@@ -8,7 +8,7 @@ import org.apache.kafka.common.serialization.LongSerializer;
 import org.go.together.dto.Dto;
 import org.go.together.dto.FormDto;
 import org.go.together.dto.ResponseDto;
-import org.go.together.enums.TopicKafkaPostfix;
+import org.go.together.interfaces.TopicKafkaPostfix;
 import org.go.together.kafka.producer.beanpostprocessor.ProducerRights;
 import org.go.together.kafka.producer.config.interfaces.KafkaProducerConfigurator;
 import org.go.together.kafka.producer.enums.ProducerPostfix;

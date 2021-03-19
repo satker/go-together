@@ -41,9 +41,28 @@ public class ListenerTracingAspect {
         // NOSONAR
     }
 
+    @Pointcut("execution(public * org.go.together.base.CrudService.*(..)) || " +
+            "execution(public * org.go.together.base.FindService.*(..))")
+    private void anyCrudMethod() {
+        // NOSONAR
+    }
+
+    @Around("anyCrudMethod()")
+    public Object wrapCrudMethod(ProceedingJoinPoint pjp) throws Throwable {
+        Span span = tracer.newChild(tracer.nextSpan().context()).name(pjp.getSignature().getName()).start();
+        try (Tracer.SpanInScope ws = tracer.withSpanInScope(span)) {
+            return pjp.proceed();
+        } catch (RuntimeException | Error e) {
+            span.error(e);
+            throw e;
+        } finally { // note the scope is independent of the span
+            span.finish();
+        }
+    }
+
     @Around("anyKafkaConsumerMethod()")
     public Object wrapProducerFactory(ProceedingJoinPoint pjp) throws Throwable {
-        Span span = getSpan(pjp);
+        Span span = getKafkaSpan(pjp);
         try (Tracer.SpanInScope ws = tracer.withSpanInScope(span)) {
             return pjp.proceed();
         } catch (RuntimeException | Error e) {
@@ -64,7 +83,7 @@ public class ListenerTracingAspect {
         return method.getAnnotation(KafkaListener.class);
     }
 
-    private Span getSpan(ProceedingJoinPoint pjp) {
+    private Span getKafkaSpan(ProceedingJoinPoint pjp) {
         ConsumerRecord<Long, ?> message = getMessage(pjp);
         KafkaListener kafkaListenerAnnotation = getKafkaListenerAnnotation(pjp);
         long parentId = bytesToLong(getHeaderValue(message, PARENT_SPAN_ID));

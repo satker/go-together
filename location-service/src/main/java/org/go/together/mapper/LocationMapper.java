@@ -1,6 +1,7 @@
 package org.go.together.mapper;
 
 import lombok.RequiredArgsConstructor;
+import org.go.together.base.CommonMapper;
 import org.go.together.base.Mapper;
 import org.go.together.dto.LocationDto;
 import org.go.together.dto.PlaceDto;
@@ -12,11 +13,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class LocationMapper implements Mapper<LocationDto, Location> {
+public class LocationMapper extends CommonMapper<LocationDto, Location> {
     private final PlaceService placeService;
     private final Mapper<PlaceDto, Place> placeMapper;
 
-    public LocationDto entityToDto(Location location) {
+    public LocationDto toDto(Location location) {
         Place place = placeService.getPlaceByLocationId(location.getId())
                 .orElseThrow(() -> new CannotFindEntityException("Cannot find place by location id " + location.getId()));
         LocationDto locationDto = new LocationDto();
@@ -28,7 +29,7 @@ public class LocationMapper implements Mapper<LocationDto, Location> {
         return locationDto;
     }
 
-    public Location dtoToEntity(LocationDto locationDto) {
+    public Location toEntity(LocationDto locationDto) {
         Location location = new Location();
         location.setId(locationDto.getId());
         location.setAddress(locationDto.getAddress());

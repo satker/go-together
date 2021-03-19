@@ -41,7 +41,7 @@ public class GroupRouteInfoServiceImpl extends CommonCrudService<GroupRouteInfoD
             entity.getInfoRoutes().stream()
                     .map(RouteInfo::getId)
                     .map(routeId -> (Runnable) () -> routeInfoService.delete(routeId))
-                    .forEach(asyncEnricher::add);
+                    .forEach(runnable -> asyncEnricher.add("routeInfoDelete", runnable));
         }
         return entity;
     }

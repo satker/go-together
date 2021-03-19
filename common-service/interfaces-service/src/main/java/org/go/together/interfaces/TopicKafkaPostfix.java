@@ -1,4 +1,4 @@
-package org.go.together.enums;
+package org.go.together.interfaces;
 
 public interface TopicKafkaPostfix {
     String CREATE = "Create";

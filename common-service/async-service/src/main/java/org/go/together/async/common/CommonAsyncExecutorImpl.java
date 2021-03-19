@@ -1,9 +1,13 @@
-package org.go.together.async.enricher;
+package org.go.together.async.common;
 
+import brave.Span;
 import brave.Tracer;
+import org.go.together.async.config.AsyncTraceableExecutorsConfig;
+import org.go.together.base.async.CommonAsyncExecutor;
 import org.go.together.exceptions.ApplicationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.sleuth.instrument.async.TraceableExecutorService;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,19 +16,12 @@ import java.util.concurrent.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static org.go.together.async.config.AsyncTraceableExecutorsConfig.ASYNC_TIMEOUT;
-
-@Component
-public class AsyncEnricherImpl implements AsyncEnricher {
-    private final TraceableExecutorService traceableExecutorService;
-    private final Tracer tracer;
+public abstract class CommonAsyncExecutorImpl implements CommonAsyncExecutor {
     private final Map<String, List<Supplier<Object>>> map;
     private final Map<String, List<CompletableFuture<Object>>> resultMap;
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    public AsyncEnricherImpl(TraceableExecutorService traceableExecutorService,
-                             Tracer tracer) {
-        this.traceableExecutorService = traceableExecutorService;
-        this.tracer = tracer;
+    protected CommonAsyncExecutorImpl() {
         this.map = new ConcurrentHashMap<>();
         this.resultMap = new ConcurrentHashMap<>();
     }
@@ -42,9 +39,14 @@ public class AsyncEnricherImpl implements AsyncEnricher {
     }
 
     @Override
-    public void add(Runnable enricher) {
+    public void add(String name, Runnable enricher) {
         add(() -> {
-            enricher.run();
+            Span span = getTracer().newChild(getTracer().currentSpan().context()).name(name).start();
+            try {
+                enricher.run();
+            } finally {
+                span.finish();
+            }
             return null;
         });
     }
@@ -62,7 +64,7 @@ public class AsyncEnricherImpl implements AsyncEnricher {
     }
 
     private CompletableFuture<Object> wrapFuture(Supplier<Object> supplier) {
-        return CompletableFuture.supplyAsync(supplier, traceableExecutorService);
+        return CompletableFuture.supplyAsync(supplier, getTraceableExecutorService());
     }
 
     public void clean() {
@@ -79,7 +81,7 @@ public class AsyncEnricherImpl implements AsyncEnricher {
         }
         try {
             CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]))
-                    .get(ASYNC_TIMEOUT, TimeUnit.MILLISECONDS);
+                    .get(AsyncTraceableExecutorsConfig.ASYNC_TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             throw new ApplicationException("Async exception. Cannot execute async enrich: " + e.getMessage());
         }
@@ -87,12 +89,19 @@ public class AsyncEnricherImpl implements AsyncEnricher {
 
     @Override
     public void startAndAwait() {
+        if (map.get(getId()) == null) {
+            return;
+        }
         start();
         await();
         clean();
     }
 
     private String getId() {
-        return tracer.currentSpan().context().traceIdString();
+        return getTracer().currentSpan().context().traceIdString();
     }
+
+    protected abstract Tracer getTracer();
+
+    protected abstract TraceableExecutorService getTraceableExecutorService();
 }

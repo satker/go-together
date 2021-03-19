@@ -1,7 +1,7 @@
 package org.go.together.base;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.async.enricher.AsyncEnricher;
+import org.go.together.base.async.AsyncEnricher;
 import org.go.together.dto.Dto;
 import org.go.together.dto.IdDto;
 import org.go.together.enums.CrudOperation;
@@ -42,8 +42,7 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
             E newEntity = mapper.dtoToEntity(dto);
             newEntity.setId(id);
             try {
-                E enrichedEntity = enrichEntity(newEntity, dto, crudOperation);
-                asyncEnricher.startAndAwait();
+                E enrichedEntity = enrich(newEntity, dto, crudOperation);
                 E createdEntity = repository.save(enrichedEntity);
                 log.info("Created " + getServiceName() + " successful.");
                 sendNotification(id, dto, dto, crudOperation);
@@ -70,8 +69,7 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
             D originalDto = mapper.entityToDto(originalEntity);
             E updatedEntity = mapper.dtoToEntity(updatedDto);
             try {
-                E enrichedEntity = enrichEntity(updatedEntity, updatedDto, crudOperation);
-                asyncEnricher.startAndAwait();
+                E enrichedEntity = enrich(updatedEntity, updatedDto, crudOperation);
                 E createdEntity = repository.save(enrichedEntity);
                 log.info("Updated " + getServiceName() + " successful.");
                 sendNotification(updatedDto.getId(), originalDto, updatedDto, crudOperation);
@@ -106,8 +104,7 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
         if (entityById.isPresent()) {
             E entity = entityById.get();
             D originalDto = mapper.entityToDto(entity);
-            E enrichedEntity = enrichEntity(entity, null, crudOperation);
-            asyncEnricher.startAndAwait();
+            E enrichedEntity = enrich(entity, null, crudOperation);
             repository.delete(enrichedEntity);
             log.info("Deletion " + getServiceName() + " with id = '" + uuid.toString() + "' successful.");
             sendNotification(uuid, originalDto, originalDto, crudOperation);
@@ -121,8 +118,14 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
         final String operation = crudOperation.getDescription();
         log.error("Cannot " + operation + StringUtils.SPACE + serviceName + ": " + e.getMessage() +
                 ". Try rollback " + serviceName + " with id = " + entity.getId());
-        enrichEntity(entity, dto, crudOperation);
+        enrich(entity, dto, crudOperation);
         log.error("Rollback " + operation + " successful for " + serviceName + " with id = " + entity.getId());
+    }
+
+    private E enrich(E entity, D dto, CrudOperation crudOperation) {
+        E enrichedEntity = enrichEntity(entity, dto, crudOperation);
+        asyncEnricher.startAndAwait();
+        return enrichedEntity;
     }
 
     protected E enrichEntity(E entity, D dto, CrudOperation crudOperation) {

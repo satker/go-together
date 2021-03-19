@@ -1,6 +1,7 @@
 package org.go.together.mapper;
 
 import lombok.RequiredArgsConstructor;
+import org.go.together.base.CommonMapper;
 import org.go.together.base.Mapper;
 import org.go.together.dto.EventLikeDto;
 import org.go.together.dto.SimpleUserDto;
@@ -14,23 +15,21 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class EventLikeMapper implements Mapper<EventLikeDto, EventLike> {
+public class EventLikeMapper extends CommonMapper<EventLikeDto, EventLike> {
     private final EventLikeRepository eventLikeRepository;
     private final Mapper<SimpleUserDto, SystemUser> simpleUserMapper;
 
     @Override
-    public EventLikeDto entityToDto(EventLike entity) {
+    public EventLikeDto toDto(EventLike entity) {
         EventLikeDto eventLikeDto = new EventLikeDto();
         eventLikeDto.setId(entity.getId());
         eventLikeDto.setEventId(entity.getEventId());
-        eventLikeDto.setUsers(entity.getUsers().stream()
-                .map(simpleUserMapper::entityToDto)
-                .collect(Collectors.toSet()));
+        eventLikeDto.setUsers(simpleUserMapper.entitiesToDtos(entity.getUsers()));
         return eventLikeDto;
     }
 
     @Override
-    public EventLike dtoToEntity(EventLikeDto dto) {
+    public EventLike toEntity(EventLikeDto dto) {
         EventLike eventLike = new EventLike();
         Optional<EventLike> eventLikeOptional = eventLikeRepository.findByEventId(dto.getEventId());
         if (eventLikeOptional.isPresent()) {

@@ -41,4 +41,6 @@ include 'common-service:kafka-consumer'
 findProject(':common-service:kafka-consumer')?.name = 'kafka-consumer'
 include 'common-service:crud-service-tests'
 findProject(':common-service:crud-service-tests')?.name = 'crud-service-tests'
+include 'common-service:async-service'
+findProject(':common-service:async-service')?.name = 'async-service'
 

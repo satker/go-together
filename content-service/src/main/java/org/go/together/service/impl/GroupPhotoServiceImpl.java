@@ -39,7 +39,7 @@ public class GroupPhotoServiceImpl extends CommonCrudService<GroupPhotoDto, Grou
             entity.getPhotos().stream()
                     .map(Photo::getId)
                     .map(photoId -> (Runnable) () -> photoService.delete(photoId))
-                    .forEach(asyncEnricher::add);
+                    .forEach(runnable -> asyncEnricher.add("photoDeletion", runnable));
         }
         return entity;
     }

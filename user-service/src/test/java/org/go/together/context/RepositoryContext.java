@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Random;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @EnableAutoConfiguration
@@ -70,11 +71,15 @@ public class RepositoryContext {
     public Tracer tracer() {
         Tracer mock = Mockito.mock(Tracer.class);
         Span span = Mockito.mock(Span.class);
+        Span childSpan = Mockito.mock(Span.class);
         Random random = new Random();
         TraceContext traceContext = TraceContext.newBuilder().traceId(random.nextLong())
                 .spanId(random.nextLong()).build();
         when(mock.currentSpan()).thenReturn(span);
         when(span.context()).thenReturn(traceContext);
+        when(mock.newChild(traceContext)).thenReturn(childSpan);
+        when(childSpan.name(anyString())).thenReturn(childSpan);
+        when(childSpan.start()).thenReturn(childSpan);
         return mock;
     }
 }

@@ -1,6 +1,7 @@
 package org.go.together.async.validation;
 
 import org.apache.commons.lang3.StringUtils;
+import org.go.together.base.async.AsyncValidator;
 import org.go.together.dto.Dto;
 import org.springframework.cloud.sleuth.instrument.async.TraceableExecutorService;
 import org.springframework.stereotype.Component;

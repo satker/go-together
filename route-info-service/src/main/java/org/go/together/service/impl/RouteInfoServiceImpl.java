@@ -33,8 +33,7 @@ public class RouteInfoServiceImpl extends CommonCrudService<RouteInfoDto, RouteI
             entity.setLocationId(locationIdDto.getId());
         }
         if (crudOperation == CrudOperation.UPDATE) {
-            asyncEnricher.add(() ->
-                    entity.setLocationId(locationProducer.update(dto.getLocation()).getId()));
+            entity.setLocationId(locationProducer.update(dto.getLocation()).getId());
         }
         if (crudOperation == CrudOperation.DELETE) {
             locationProducer.delete(entity.getLocationId());

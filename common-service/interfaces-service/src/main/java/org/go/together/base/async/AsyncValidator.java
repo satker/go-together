@@ -1,4 +1,4 @@
-package org.go.together.async.validation;
+package org.go.together.base.async;
 
 import org.go.together.dto.Dto;
 

@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.go.together.compare.ComparableDto;
 import org.go.together.compare.ComparingField;
 
-import java.util.Set;
+import java.util.Collection;
 import java.util.UUID;
 
 @Data
@@ -39,10 +39,10 @@ public class UserDto extends ComparableDto {
     private GroupPhotoDto groupPhoto;
 
     @ComparingField("languages")
-    private Set<LanguageDto> languages;
+    private Collection<LanguageDto> languages;
 
     @ComparingField("interests")
-    private Set<InterestDto> interests;
+    private Collection<InterestDto> interests;
 
     @Override
     public UUID getOwnerId() {

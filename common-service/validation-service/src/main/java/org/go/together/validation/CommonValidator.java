@@ -1,8 +1,8 @@
 package org.go.together.validation;
 
 import org.apache.commons.lang3.StringUtils;
-import org.go.together.async.validation.AsyncValidator;
 import org.go.together.base.Validator;
+import org.go.together.base.async.AsyncValidator;
 import org.go.together.dto.Dto;
 import org.go.together.enums.CrudOperation;
 import org.go.together.interfaces.ImplFinder;

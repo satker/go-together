@@ -1,7 +1,7 @@
 package org.go.together.mapper;
 
 import lombok.RequiredArgsConstructor;
-import org.go.together.base.Mapper;
+import org.go.together.base.CommonMapper;
 import org.go.together.dto.EventUserDto;
 import org.go.together.dto.SimpleUserDto;
 import org.go.together.dto.UserDto;
@@ -13,11 +13,11 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class EventUserMapper implements Mapper<EventUserDto, EventUser> {
+public class EventUserMapper extends CommonMapper<EventUserDto, EventUser> {
     private final CrudProducer<UserDto> usersCrudProducer;
 
     @Override
-    public EventUserDto entityToDto(EventUser entity) {
+    public EventUserDto toDto(EventUser entity) {
         EventUserDto eventUserDto = new EventUserDto();
         eventUserDto.setId(entity.getId());
         eventUserDto.setUser(userIdToSimpleUserDto(entity.getUserId()));
@@ -27,8 +27,8 @@ public class EventUserMapper implements Mapper<EventUserDto, EventUser> {
     }
 
     private SimpleUserDto userIdToSimpleUserDto(UUID userId) {
-        UserDto userDto = usersCrudProducer.read(userId);
         SimpleUserDto simpleUserDto = new SimpleUserDto();
+        UserDto userDto = usersCrudProducer.read(userId);
         simpleUserDto.setId(userDto.getId());
         simpleUserDto.setFirstName(userDto.getFirstName());
         simpleUserDto.setLastName(userDto.getLastName());
@@ -38,7 +38,7 @@ public class EventUserMapper implements Mapper<EventUserDto, EventUser> {
     }
 
     @Override
-    public EventUser dtoToEntity(EventUserDto dto) {
+    public EventUser toEntity(EventUserDto dto) {
         EventUser eventUser = new EventUser();
         eventUser.setId(dto.getId());
         eventUser.setUserId(dto.getUser().getId());

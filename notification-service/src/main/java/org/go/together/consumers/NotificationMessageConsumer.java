@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 import static org.go.together.enums.NotificationServiceInfo.NOTIFICATION_MESSAGE;
-import static org.go.together.enums.TopicKafkaPostfix.*;
+import static org.go.together.interfaces.TopicKafkaPostfix.*;
 import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
 
 @Component

@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.go.together.compare.ComparingField;
 
-import java.util.Set;
+import java.util.Collection;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
@@ -17,5 +17,5 @@ public class GroupPhotoDto extends Dto {
     private UUID groupId;
     private PhotoCategory category;
     @ComparingField(value = "photos", idCompare = true)
-    private Set<PhotoDto> photos;
+    private Collection<PhotoDto> photos;
 }

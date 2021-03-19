@@ -97,18 +97,18 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             Role role = user.map(SystemUser::getRole).orElse(Role.ROLE_USER);
             entity.setRole(role);
 
-            asyncEnricher.add(() -> updateGroupPhoto(entity, dto));
-            asyncEnricher.add(() -> entity.setLocationId(locationProducer.update(dto.getLocation()).getId()));
+            asyncEnricher.add("groupPhotoUpdate", () -> updateGroupPhoto(entity, dto));
+            asyncEnricher.add("locationUpdate", () -> entity.setLocationId(locationProducer.update(dto.getLocation()).getId()));
         } else if (crudOperation == CrudOperation.CREATE) {
             updatePassword(entity);
             entity.setRole(Role.ROLE_USER);
             createEventLike(entity);
-            asyncEnricher.add(() -> entity.setLocationId(locationProducer.create(dto.getLocation()).getId()));
-            asyncEnricher.add(() -> createGroupPhoto(entity, dto));
+            asyncEnricher.add("locationCreate", () -> entity.setLocationId(locationProducer.create(dto.getLocation()).getId()));
+            asyncEnricher.add("groupPhotoCreate", () -> createGroupPhoto(entity, dto));
         } else if (crudOperation == CrudOperation.DELETE) {
-            asyncEnricher.add(() -> locationProducer.delete(entity.getLocationId()));
-            asyncEnricher.add(() -> groupPhotoProducer.delete(entity.getGroupPhoto()));
-            asyncEnricher.add(() -> eventLikeService.deleteByUserId(entity.getId()));
+            asyncEnricher.add("locationDelete", () -> locationProducer.delete(entity.getLocationId()));
+            asyncEnricher.add("groupPhotoDelete", () -> groupPhotoProducer.delete(entity.getGroupPhoto()));
+            asyncEnricher.add("eventLikeDelete", () -> eventLikeService.deleteByUserId(entity.getId()));
         }
         return entity;
     }

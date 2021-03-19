@@ -3,6 +3,7 @@ package org.go.together.logic.service;
 import org.go.together.base.CommonCrudService;
 import org.go.together.base.Mapper;
 import org.go.together.base.Validator;
+import org.go.together.base.async.AsyncEnricher;
 import org.go.together.context.RepositoryContext;
 import org.go.together.dto.SimpleDto;
 import org.go.together.enums.CrudOperation;
@@ -63,6 +64,9 @@ class CrudServiceRevertTest {
 
     @Mock
     private TestRepository testRepository;
+
+    @Mock
+    private AsyncEnricher asyncEnricher;
 
     @Autowired
     private Validator<TestDto> testValidator;
@@ -132,6 +136,7 @@ class CrudServiceRevertTest {
             testServiceOverride.setMapper(testMapper);
             testServiceOverride.setValidator(testValidator);
             testServiceOverride.setRepository(testRepository);
+            testServiceOverride.setAsyncEnricher(asyncEnricher);
 
             testServiceOverride.create(getTestDto());
         });
@@ -149,6 +154,7 @@ class CrudServiceRevertTest {
             testServiceOverride.setMapper(testMapper);
             testServiceOverride.setValidator(testValidator);
             testServiceOverride.setRepository(testRepository);
+            testServiceOverride.setAsyncEnricher(asyncEnricher);
 
             testServiceOverride.update(testDto);
         });

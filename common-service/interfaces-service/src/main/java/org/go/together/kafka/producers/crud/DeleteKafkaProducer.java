@@ -1,7 +1,7 @@
 package org.go.together.kafka.producers.crud;
 
 import org.go.together.dto.Dto;
-import org.go.together.enums.TopicKafkaPostfix;
+import org.go.together.interfaces.TopicKafkaPostfix;
 import org.go.together.kafka.producers.KafkaProducer;
 
 import java.util.UUID;

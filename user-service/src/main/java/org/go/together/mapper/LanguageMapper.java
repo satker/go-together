@@ -1,14 +1,14 @@
 package org.go.together.mapper;
 
-import org.go.together.base.Mapper;
+import org.go.together.base.CommonMapper;
 import org.go.together.dto.LanguageDto;
 import org.go.together.model.Language;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LanguageMapper implements Mapper<LanguageDto, Language> {
+public class LanguageMapper extends CommonMapper<LanguageDto, Language> {
     @Override
-    public LanguageDto entityToDto(Language entity) {
+    public LanguageDto toDto(Language entity) {
         LanguageDto languageDto = new LanguageDto();
 
         languageDto.setId(entity.getId());
@@ -18,7 +18,7 @@ public class LanguageMapper implements Mapper<LanguageDto, Language> {
     }
 
     @Override
-    public Language dtoToEntity(LanguageDto dto) {
+    public Language toEntity(LanguageDto dto) {
         Language language = new Language();
         language.setId(dto.getId());
         language.setName(dto.getName());

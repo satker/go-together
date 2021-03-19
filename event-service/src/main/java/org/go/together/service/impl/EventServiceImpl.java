@@ -37,9 +37,9 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
             createEventLikes(entity);
             createRouteInfo(entity, dto);
         } else if (crudOperation == CrudOperation.DELETE) {
-            asyncEnricher.add(() -> groupPhotoCrudProducer.delete(entity.getGroupPhotoId()));
-            asyncEnricher.add(() -> eventLikesCrudProducer.delete(entity.getId()));
-            asyncEnricher.add(() -> routeInfoCrudProducer.delete(entity.getRouteInfoId()));
+            asyncEnricher.add("groupPhotoDeletion", () -> groupPhotoCrudProducer.delete(entity.getGroupPhotoId()));
+            asyncEnricher.add("eventLikesDeletion", () -> eventLikesCrudProducer.delete(entity.getId()));
+            asyncEnricher.add("routeInfoDeletion", () -> routeInfoCrudProducer.delete(entity.getRouteInfoId()));
         }
         return entity;
     }
@@ -47,14 +47,14 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
     private void createRouteInfo(Event entity, EventDto dto) {
         GroupRouteInfoDto routeInfo = dto.getRouteInfo();
         routeInfo.setGroupId(entity.getId());
-        asyncEnricher.add(() ->
+        asyncEnricher.add("routeInfoCreate", () ->
                 entity.setRouteInfoId(routeInfoCrudProducer.create(routeInfo).getId()));
     }
 
     private void updateRouteInfo(Event entity, EventDto dto) {
         GroupRouteInfoDto routeInfo = dto.getRouteInfo();
         routeInfo.setGroupId(entity.getId());
-        asyncEnricher.add(() ->
+        asyncEnricher.add("routeInfoUpdate", () ->
                 entity.setRouteInfoId(routeInfoCrudProducer.update(routeInfo).getId()));
     }
 
@@ -62,14 +62,14 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
         EventLikeDto eventLikeDto = new EventLikeDto();
         eventLikeDto.setEventId(entity.getId());
         eventLikeDto.setUsers(Collections.emptySet());
-        asyncEnricher.add(() -> eventLikesCrudProducer.create(eventLikeDto));
+        asyncEnricher.add("eventLikesCreate", () -> eventLikesCrudProducer.create(eventLikeDto));
     }
 
     private void createContent(Event entity, EventDto dto) {
         GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
         groupPhotoDto.setGroupId(entity.getId());
         groupPhotoDto.setCategory(PhotoCategory.EVENT);
-        asyncEnricher.add(() ->
+        asyncEnricher.add("groupPhotoCreate", () ->
                 entity.setGroupPhotoId(groupPhotoCrudProducer.create(groupPhotoDto).getId()));
     }
 
@@ -77,7 +77,7 @@ public class EventServiceImpl extends CommonCrudService<EventDto, Event> impleme
         GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
         groupPhotoDto.setGroupId(entity.getId());
         groupPhotoDto.setCategory(PhotoCategory.EVENT);
-        asyncEnricher.add(() ->
+        asyncEnricher.add("groupPhotoUpdate", () ->
                 entity.setGroupPhotoId(groupPhotoCrudProducer.update(groupPhotoDto).getId()));
     }
 

@@ -1,6 +1,7 @@
 package org.go.together.mapper;
 
 import lombok.RequiredArgsConstructor;
+import org.go.together.base.CommonMapper;
 import org.go.together.base.Mapper;
 import org.go.together.dto.*;
 import org.go.together.kafka.producers.CrudProducer;
@@ -13,35 +14,31 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class UserMapper implements Mapper<UserDto, SystemUser> {
+public class UserMapper extends CommonMapper<UserDto, SystemUser> {
     private final CrudProducer<LocationDto> locationProducer;
     private final CrudProducer<GroupPhotoDto> groupPhotoProducer;
     private final Mapper<LanguageDto, Language> languageMapper;
     private final Mapper<InterestDto, Interest> interestMapper;
 
     @Override
-    public UserDto entityToDto(SystemUser entity) {
+    public UserDto toDto(SystemUser entity) {
         UserDto userDTO = new UserDto();
         userDTO.setDescription(entity.getDescription());
         userDTO.setFirstName(entity.getFirstName());
         userDTO.setId(entity.getId());
-        userDTO.setLanguages(entity.getLanguages().stream()
-                .map(languageMapper::entityToDto)
-                .collect(Collectors.toSet()));
+        userDTO.setLanguages(languageMapper.entitiesToDtos(entity.getLanguages()));
         userDTO.setLastName(entity.getLastName());
-        userDTO.setLocation(locationProducer.read(entity.getLocationId()));
         userDTO.setLogin(entity.getLogin());
         userDTO.setMail(entity.getMail());
         userDTO.setRole(entity.getRole());
-        userDTO.setInterests(entity.getInterests().stream()
-                .map(interestMapper::entityToDto)
-                .collect(Collectors.toSet()));
-        userDTO.setGroupPhoto(groupPhotoProducer.read(entity.getGroupPhoto()));
+        userDTO.setInterests(interestMapper.entitiesToDtos(entity.getInterests()));
+        asyncMapper.add("userLocationRead", () -> userDTO.setLocation(locationProducer.read(entity.getLocationId())));
+        asyncMapper.add("userGroupPhotoRead", () -> userDTO.setGroupPhoto(groupPhotoProducer.read(entity.getGroupPhoto())));
         return userDTO;
     }
 
     @Override
-    public SystemUser dtoToEntity(UserDto dto) {
+    public SystemUser toEntity(UserDto dto) {
         SystemUser user = new SystemUser();
         user.setId(dto.getId());
         user.setMail(dto.getMail());
