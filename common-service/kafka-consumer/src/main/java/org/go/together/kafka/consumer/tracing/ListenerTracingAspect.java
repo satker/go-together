@@ -48,7 +48,11 @@ public class ListenerTracingAspect {
 
     @Around("anyCrudMethod()")
     public Object wrapCrudMethod(ProceedingJoinPoint pjp) throws Throwable {
-        Span span = tracer.newChild(tracer.nextSpan().context()).name(pjp.getSignature().getName()).start();
+        Span currentSpan = tracer.currentSpan();
+        if (currentSpan == null) {
+            return pjp.proceed();
+        }
+        Span span = tracer.newChild(currentSpan.context()).name(pjp.getSignature().getName()).start();
         try (Tracer.SpanInScope ws = tracer.withSpanInScope(span)) {
             return pjp.proceed();
         } catch (RuntimeException | Error e) {
@@ -86,7 +90,7 @@ public class ListenerTracingAspect {
         ConsumerRecord<Long, ?> message = getMessage(pjp);
         KafkaListener kafkaListenerAnnotation = getKafkaListenerAnnotation(pjp);
         long parentId = bytesToLong(getHeaderValue(message, PARENT_SPAN_ID));
-        TraceContext context = TraceContext.newBuilder().parentId(parentId).traceId(message.key()).spanId(random.nextLong()).build();
+        TraceContext context = TraceContext.newBuilder().traceId(message.key()).spanId(parentId).build();
         return tracer.newChild(context)
                 .kind(Span.Kind.CONSUMER)
                 .tag("listener.class", pjp.getTarget().getClass().getSimpleName())
