@@ -123,8 +123,10 @@ public abstract class CommonCrudService<D extends Dto, E extends IdentifiedEntit
     }
 
     private E enrich(E entity, D dto, CrudOperation crudOperation) {
+        log.info("Enrich " + getServiceName() + " started with id: " + entity.getId());
         E enrichedEntity = enrichEntity(entity, dto, crudOperation);
         asyncEnricher.startAndAwait();
+        log.info("Enriched " + getServiceName() + " with id: " + entity.getId() + " successful");
         return enrichedEntity;
     }
 

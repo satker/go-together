@@ -3,7 +3,6 @@ package org.go.together.kafka.consumer.tracing;
 import brave.Span;
 import brave.Tracer;
 import brave.propagation.TraceContext;
-import brave.propagation.TraceContextOrSamplingFlags;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.header.Header;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -88,7 +87,7 @@ public class ListenerTracingAspect {
         KafkaListener kafkaListenerAnnotation = getKafkaListenerAnnotation(pjp);
         long parentId = bytesToLong(getHeaderValue(message, PARENT_SPAN_ID));
         TraceContext context = TraceContext.newBuilder().parentId(parentId).traceId(message.key()).spanId(random.nextLong()).build();
-        return tracer.nextSpan(TraceContextOrSamplingFlags.newBuilder(context).build())
+        return tracer.newChild(context)
                 .kind(Span.Kind.CONSUMER)
                 .tag("listener.class", pjp.getTarget().getClass().getSimpleName())
                 .tag("listener.method", pjp.getSignature().getName())
