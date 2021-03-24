@@ -95,41 +95,43 @@ public class UserServiceImpl extends CommonCrudService<UserDto, SystemUser> impl
             Optional<SystemUser> user = updatePassword(entity);
 
             Role role = user.map(SystemUser::getRole).orElse(Role.ROLE_USER);
-
-            LocationDto locationDto = dto.getLocation();
-            IdDto route = locationProducer.update(locationDto);
-            entity.setLocationId(route.getId());
-
-            GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
-            groupPhotoDto.setGroupId(entity.getId());
-            groupPhotoDto.setCategory(PhotoCategory.USER);
-            IdDto groupPhotoId = groupPhotoProducer.update(groupPhotoDto);
-            entity.setGroupPhoto(groupPhotoId.getId());
-
             entity.setRole(role);
+
+            asyncEnricher.add("groupPhotoUpdate", () -> updateGroupPhoto(entity, dto));
+            asyncEnricher.add("locationUpdate", () -> entity.setLocationId(locationProducer.update(dto.getLocation()).getId()));
         } else if (crudOperation == CrudOperation.CREATE) {
             updatePassword(entity);
-
-            LocationDto locationDto = dto.getLocation();
-            IdDto route = locationProducer.create(locationDto);
-            entity.setLocationId(route.getId());
-
-            GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
-            groupPhotoDto.setGroupId(entity.getId());
-            groupPhotoDto.setCategory(PhotoCategory.USER);
-            IdDto groupPhotoId = groupPhotoProducer.create(groupPhotoDto);
-            entity.setGroupPhoto(groupPhotoId.getId());
             entity.setRole(Role.ROLE_USER);
-            EventLikeDto eventLikeDto = new EventLikeDto();
-            eventLikeDto.setEventId(entity.getId());
-            eventLikeDto.setUsers(Collections.emptySet());
-            eventLikeService.create(eventLikeDto);
+            createEventLike(entity);
+            asyncEnricher.add("locationCreate", () -> entity.setLocationId(locationProducer.create(dto.getLocation()).getId()));
+            asyncEnricher.add("groupPhotoCreate", () -> createGroupPhoto(entity, dto));
         } else if (crudOperation == CrudOperation.DELETE) {
-            locationProducer.delete(entity.getLocationId());
-            groupPhotoProducer.delete(entity.getGroupPhoto());
-            eventLikeService.deleteByUserId(entity.getId());
+            asyncEnricher.add("locationDelete", () -> locationProducer.delete(entity.getLocationId()));
+            asyncEnricher.add("groupPhotoDelete", () -> groupPhotoProducer.delete(entity.getGroupPhoto()));
+            asyncEnricher.add("eventLikeDelete", () -> eventLikeService.deleteByUserId(entity.getId()));
         }
         return entity;
+    }
+
+    private void updateGroupPhoto(SystemUser entity, UserDto dto) {
+        GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
+        groupPhotoDto.setGroupId(entity.getId());
+        groupPhotoDto.setCategory(PhotoCategory.USER);
+        entity.setGroupPhoto(groupPhotoProducer.update(groupPhotoDto).getId());
+    }
+
+    private void createGroupPhoto(SystemUser entity, UserDto dto) {
+        GroupPhotoDto groupPhotoDto = dto.getGroupPhoto();
+        groupPhotoDto.setGroupId(entity.getId());
+        groupPhotoDto.setCategory(PhotoCategory.USER);
+        entity.setGroupPhoto(groupPhotoProducer.create(groupPhotoDto).getId());
+    }
+
+    private void createEventLike(SystemUser entity) {
+        EventLikeDto eventLikeDto = new EventLikeDto();
+        eventLikeDto.setEventId(entity.getId());
+        eventLikeDto.setUsers(Collections.emptySet());
+        eventLikeService.create(eventLikeDto);
     }
 
     private Optional<SystemUser> updatePassword(SystemUser entity) {

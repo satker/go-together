@@ -59,11 +59,11 @@ public class EventLikeServiceImpl extends CommonCrudService<EventLikeDto, EventL
 
     @Override
     public void deleteByUserId(UUID userId) {
-        ((EventLikeRepository) repository).findByUserId(userId).stream()
+        Set<EventLike> eventLikes = ((EventLikeRepository) repository).findByUserId(userId).stream()
                 .peek(eventLike -> {
                     eventLike.getUsers().removeIf(user -> user.getId().equals(userId));
                     eventLike.setUsers(eventLike.getUsers());
-                }).map(eventLike -> mapper.entityToDto(eventLike))
-                .forEach(super::update);
+                }).collect(Collectors.toSet());
+        mapper.entitiesToDtos(eventLikes).forEach(super::update);
     }
 }

@@ -2,7 +2,7 @@ package org.go.together.mapper;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.go.together.base.Mapper;
+import org.go.together.base.CommonMapper;
 import org.go.together.dto.ContentDto;
 import org.go.together.dto.PhotoDto;
 import org.go.together.model.Photo;
@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Component
-public class PhotoMapper implements Mapper<PhotoDto, Photo> {
-    public PhotoDto entityToDto(Photo photo) {
+public class PhotoMapper extends CommonMapper<PhotoDto, Photo> {
+    public PhotoDto toDto(Photo photo) {
         PhotoDto photoDto = new PhotoDto();
         if (StringUtils.isNotBlank(photo.getPathName())) {
             try {
@@ -31,7 +31,7 @@ public class PhotoMapper implements Mapper<PhotoDto, Photo> {
         return photoDto;
     }
 
-    public Photo dtoToEntity(PhotoDto photoDto) {
+    public Photo toEntity(PhotoDto photoDto) {
         UUID id = photoDto.getId() != null ? photoDto.getId() : UUID.randomUUID();
         Photo photo = new Photo();
         photo.setId(id);

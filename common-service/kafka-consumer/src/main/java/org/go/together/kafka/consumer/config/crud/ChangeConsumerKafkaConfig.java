@@ -16,7 +16,7 @@ import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.Map;
 
-import static org.go.together.enums.TopicKafkaPostfix.CHANGE;
+import static org.go.together.interfaces.TopicKafkaPostfix.CHANGE;
 import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
 
 public abstract class ChangeConsumerKafkaConfig<D extends Dto> extends ValidateConsumerKafkaConfig<D> {

@@ -1,6 +1,7 @@
 package org.go.together.mapper;
 
 import lombok.RequiredArgsConstructor;
+import org.go.together.base.CommonMapper;
 import org.go.together.base.Mapper;
 import org.go.together.dto.CountryDto;
 import org.go.together.dto.PlaceDto;
@@ -15,11 +16,11 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class PlaceMapper implements Mapper<PlaceDto, Place> {
+public class PlaceMapper extends CommonMapper<PlaceDto, Place> {
     private final Mapper<CountryDto, Country> countryMapper;
     private final LocationRepository locationRepository;
 
-    public PlaceDto entityToDto(Place place) {
+    public PlaceDto toDto(Place place) {
         PlaceDto placeDto = new PlaceDto();
         placeDto.setCountry(countryMapper.entityToDto(place.getCountry()));
         placeDto.setId(place.getId());
@@ -31,7 +32,7 @@ public class PlaceMapper implements Mapper<PlaceDto, Place> {
         return placeDto;
     }
 
-    public Place dtoToEntity(PlaceDto placeDto) {
+    public Place toEntity(PlaceDto placeDto) {
         Place place = new Place();
         place.setId(placeDto.getId());
         Country country = countryMapper.dtoToEntity(placeDto.getCountry());

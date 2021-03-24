@@ -7,7 +7,8 @@ import org.springframework.context.annotation.Configuration;
 @EnableAutoConfiguration
 @Configuration
 @ComponentScan({
-        "org.go.together.validation"
+        "org.go.together.validation",
+        "org.go.together.async"
 })
 public class ValidatorContext {
 }

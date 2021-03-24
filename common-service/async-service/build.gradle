@@ -1,0 +1,41 @@
+buildscript {
+    ext {
+        springBootVersion = '2.4.2'
+        lombokVersion='1.18.18'
+        springKafkaVersion='2.6.5'
+        sleuthVersion='3.0.1'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+plugins {
+    id 'java'
+}
+
+group 'org.go.together'
+version '1.0.1.SNAPSHOT'
+
+sourceCompatibility = 15
+targetCompatibility = 15
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile (
+            "org.projectlombok:lombok:${lombokVersion}",
+            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+            "org.springframework.kafka:spring-kafka:${springKafkaVersion}",
+            "org.springframework.cloud:spring-cloud-starter-sleuth:${sleuthVersion}",
+            "org.springframework.cloud:spring-cloud-sleuth-zipkin:${sleuthVersion}",
+            'org.apache.commons:commons-lang3:3.9'
+    )
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    compile project(":common-service:exception-service")
+    compile project(":common-service:interfaces-service")
+}

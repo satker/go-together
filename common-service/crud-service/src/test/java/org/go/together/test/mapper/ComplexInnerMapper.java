@@ -1,14 +1,14 @@
 package org.go.together.test.mapper;
 
-import org.go.together.base.Mapper;
+import org.go.together.base.CommonMapper;
 import org.go.together.test.dto.ComplexInnerDto;
 import org.go.together.test.entities.ComplexInnerEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ComplexInnerMapper implements Mapper<ComplexInnerDto, ComplexInnerEntity> {
+public class ComplexInnerMapper extends CommonMapper<ComplexInnerDto, ComplexInnerEntity> {
     @Override
-    public ComplexInnerDto entityToDto(ComplexInnerEntity entity) {
+    public ComplexInnerDto toDto(ComplexInnerEntity entity) {
         ComplexInnerDto complexInnerDto = new ComplexInnerDto();
         complexInnerDto.setId(entity.getId());
         complexInnerDto.setName(entity.getName());
@@ -16,7 +16,7 @@ public class ComplexInnerMapper implements Mapper<ComplexInnerDto, ComplexInnerE
     }
 
     @Override
-    public ComplexInnerEntity dtoToEntity(ComplexInnerDto dto) {
+    public ComplexInnerEntity toEntity(ComplexInnerDto dto) {
         ComplexInnerEntity complexInnerEntity = new ComplexInnerEntity();
         complexInnerEntity.setId(dto.getId());
         complexInnerEntity.setName(dto.getName());

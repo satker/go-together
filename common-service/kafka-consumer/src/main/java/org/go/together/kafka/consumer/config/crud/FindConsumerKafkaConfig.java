@@ -18,7 +18,7 @@ import org.springframework.util.backoff.FixedBackOff;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.go.together.enums.TopicKafkaPostfix.FIND;
+import static org.go.together.interfaces.TopicKafkaPostfix.FIND;
 import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
 
 public abstract class FindConsumerKafkaConfig implements CustomConsumerConfig {

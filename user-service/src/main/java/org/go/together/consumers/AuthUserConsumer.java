@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 
-import static org.go.together.enums.TopicKafkaPostfix.FIND;
 import static org.go.together.enums.UserServiceInfo.AUTH_USER;
+import static org.go.together.interfaces.TopicKafkaPostfix.FIND;
 import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
 
 @Component

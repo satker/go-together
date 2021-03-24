@@ -16,7 +16,7 @@ import org.springframework.util.backoff.FixedBackOff;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.go.together.enums.TopicKafkaPostfix.READ;
+import static org.go.together.interfaces.TopicKafkaPostfix.READ;
 import static org.go.together.kafka.consumer.constants.ConsumerBeanConfigName.LISTENER_FACTORY;
 
 public abstract class ReadConsumerKafkaConfig<D extends Dto> extends ChangeConsumerKafkaConfig<D> {

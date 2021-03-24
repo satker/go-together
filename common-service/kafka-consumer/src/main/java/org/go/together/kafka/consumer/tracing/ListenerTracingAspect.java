@@ -3,7 +3,6 @@ package org.go.together.kafka.consumer.tracing;
 import brave.Span;
 import brave.Tracer;
 import brave.propagation.TraceContext;
-import brave.propagation.TraceContextOrSamplingFlags;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.header.Header;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -41,9 +40,32 @@ public class ListenerTracingAspect {
         // NOSONAR
     }
 
+    @Pointcut("execution(public * org.go.together.base.CrudService.*(..)) || " +
+            "execution(public * org.go.together.base.FindService.*(..))")
+    private void anyCrudMethod() {
+        // NOSONAR
+    }
+
+    @Around("anyCrudMethod()")
+    public Object wrapCrudMethod(ProceedingJoinPoint pjp) throws Throwable {
+        Span currentSpan = tracer.currentSpan();
+        if (currentSpan == null) {
+            return pjp.proceed();
+        }
+        Span span = tracer.newChild(currentSpan.context()).name(pjp.getSignature().getName()).start();
+        try (Tracer.SpanInScope ws = tracer.withSpanInScope(span)) {
+            return pjp.proceed();
+        } catch (RuntimeException | Error e) {
+            span.error(e);
+            throw e;
+        } finally { // note the scope is independent of the span
+            span.finish();
+        }
+    }
+
     @Around("anyKafkaConsumerMethod()")
     public Object wrapProducerFactory(ProceedingJoinPoint pjp) throws Throwable {
-        Span span = getSpan(pjp);
+        Span span = getKafkaSpan(pjp);
         try (Tracer.SpanInScope ws = tracer.withSpanInScope(span)) {
             return pjp.proceed();
         } catch (RuntimeException | Error e) {
@@ -64,12 +86,12 @@ public class ListenerTracingAspect {
         return method.getAnnotation(KafkaListener.class);
     }
 
-    private Span getSpan(ProceedingJoinPoint pjp) {
+    private Span getKafkaSpan(ProceedingJoinPoint pjp) {
         ConsumerRecord<Long, ?> message = getMessage(pjp);
         KafkaListener kafkaListenerAnnotation = getKafkaListenerAnnotation(pjp);
         long parentId = bytesToLong(getHeaderValue(message, PARENT_SPAN_ID));
-        TraceContext context = TraceContext.newBuilder().parentId(parentId).traceId(message.key()).spanId(random.nextLong()).build();
-        return tracer.nextSpan(TraceContextOrSamplingFlags.newBuilder(context).build())
+        TraceContext context = TraceContext.newBuilder().traceId(message.key()).spanId(parentId).build();
+        return tracer.newChild(context)
                 .kind(Span.Kind.CONSUMER)
                 .tag("listener.class", pjp.getTarget().getClass().getSimpleName())
                 .tag("listener.method", pjp.getSignature().getName())

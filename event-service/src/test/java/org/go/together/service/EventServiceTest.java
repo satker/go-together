@@ -89,5 +89,7 @@ public class EventServiceTest extends CrudServiceCommonTest<Event, EventDto> {
         assertEquals(dto.getStartDate(), savedObject.getStartDate());
         assertEquals(dto.getGroupPhoto(), savedObject.getGroupPhoto());
         assertEquals(dto.getPeopleCount(), savedObject.getPeopleCount());
+        assertEquals(dto.getRouteInfo(), savedObject.getRouteInfo());
+        assertEquals(dto.getGroupPhoto(), savedObject.getGroupPhoto());
     }
 }

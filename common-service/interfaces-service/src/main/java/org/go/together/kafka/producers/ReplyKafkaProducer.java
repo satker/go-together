@@ -35,7 +35,8 @@ public interface ReplyKafkaProducer<T, R> {
         try {
             return result.get(1500, TimeUnit.MILLISECONDS).value();
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new ApplicationException("Kafka exception. Cannot send request to " + targetTopic);
+            throw new ApplicationException("Kafka exception. Cannot send request to " +
+                    targetTopic + ": " + e.getMessage());
         }
     }
 

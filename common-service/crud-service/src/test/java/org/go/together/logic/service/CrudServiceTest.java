@@ -119,9 +119,9 @@ class CrudServiceTest extends CrudServiceCommonTest<TestEntity, TestDto> {
                 .skip(2)
                 .limit(3)
                 .collect(Collectors.toSet());
-        Set<ManyJoinDto> manyJoinDtos = testDto.getManyJoinEntities();
+        Collection<ManyJoinDto> manyJoinDtos = testDto.getManyJoinEntities();
         manyJoinDtos.addAll(newManyJoinDtos);
-        testDto.setManyJoinEntities(manyJoinDtos);
+        testDto.setManyJoinEntities(new HashSet<>(manyJoinDtos));
 
         testDto.setJoinTestEntities(testDto.getJoinTestEntities().stream()
                 .skip(4)

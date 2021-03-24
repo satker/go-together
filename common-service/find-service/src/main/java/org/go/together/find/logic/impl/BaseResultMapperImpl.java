@@ -9,7 +9,9 @@ import org.go.together.interfaces.Identified;
 import org.go.together.model.IdentifiedEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -19,10 +21,10 @@ public class BaseResultMapperImpl<D extends Dto, E extends IdentifiedEntity> imp
         if (values != null
                 && !values.isEmpty()
                 && values.iterator().next() instanceof IdentifiedEntity) {
-            values = values.stream()
+            List<E> entites = values.stream()
                     .map(Identified::<E>cast)
-                    .map(mapper::entityToDto)
                     .collect(Collectors.toList());
+            values = Arrays.asList(mapper.entitiesToDtos(entites).toArray());
         }
         return values;
     }
