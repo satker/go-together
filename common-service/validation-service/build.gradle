@@ -1,7 +1,8 @@
 buildscript {
     ext {
-        lombokVersion='1.18.18'
-        springBootVersion = '2.4.2'
+        lombokVersion='1.18.20'
+        springBootVersion = '2.5.1'
+        sleuthVersion = '3.0.3'
     }
     repositories {
         mavenCentral()
@@ -20,16 +21,18 @@ repositories {
 }
 
 dependencies {
-    compile (
+    implementation (
             'org.apache.commons:commons-lang3:3.9',
             "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
             "org.projectlombok:lombok:${lombokVersion}",
+            "org.springframework.cloud:spring-cloud-starter-sleuth:${sleuthVersion}"
     )
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
-    compile project(":common-service:async-service")
-    compile project(":common-service:exception-service")
+    implementation project(":common-service:async-service")
+    implementation project(":common-service:exception-service")
+    implementation project(":common-service:interfaces-service")
 }
 
 test {

@@ -1,10 +1,10 @@
 buildscript {
     ext {
-        springBootVersion = '2.4.2'
-        springCloudDependenciesVersion = '2020.0.1'
+        springBootVersion = '2.5.1'
+        springCloudDependenciesVersion = '2020.0.3'
         dependencyManagementVersion = '1.0.11.RELEASE'
-        lombokVersion='1.18.18'
-        postgresDriver='42.2.18'
+        lombokVersion='1.18.20'
+        postgresDriver='42.2.21'
     }
 }
 
@@ -24,30 +24,46 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = 15
-targetCompatibility = 15
+sourceCompatibility = 14
+targetCompatibility = 14
 
 dependencies {
-    compile (
+    implementation (
             "org.springframework.boot:spring-boot-starter-web",
             "org.springframework.boot:spring-boot-starter-data-jpa",
             "org.springframework.boot:spring-boot-starter-actuator",
+            "org.springframework.boot:spring-boot-starter-test",
 
             "org.springframework.cloud:spring-cloud-starter-config",
             "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client",
             "org.springframework.cloud:spring-cloud-starter-openfeign",
+
+            "org.springframework.cloud:spring-cloud-starter-sleuth",
+
+            "org.springframework.kafka:spring-kafka"
     )
 
-    compile(
+    implementation (
             "org.postgresql:postgresql:${postgresDriver}",
-            "org.projectlombok:lombok:${lombokVersion}"
+            "org.projectlombok:lombok:${lombokVersion}",
+            "org.apache.commons:commons-lang3:3.9",
+            "uk.co.jemos.podam:podam:7.2.3.RELEASE"
     )
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
-    compile project(":location-service-client")
-    compile project(":common-service:notification-service")
-    compile project(":common-service:crud-service")
-    testCompile project(":common-service:crud-service-tests")
+    implementation project(":common-service:notification-service")
+    implementation project(":content-service-client")
+    implementation project(":common-service:crud-service")
+    implementation project(":common-service:find-service")
+    implementation project(":common-service:interfaces-service")
+    implementation project(":common-service:exception-service")
+    implementation project(":common-service:repository-service")
+    implementation project(":common-service:kafka-consumer")
+    implementation project(":common-service:kafka-producer")
+    implementation project(":common-service:validation-service")
+    testImplementation project(":common-service:crud-service-tests")
+
+    implementation project(":location-service-client")
 }
 
 dependencyManagement {

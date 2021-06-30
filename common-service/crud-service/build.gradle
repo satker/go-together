@@ -1,7 +1,8 @@
 buildscript {
     ext {
-        springBootVersion = '2.4.2'
-        lombokVersion='1.18.18'
+        springBootVersion = '2.5.1'
+        lombokVersion='1.18.20'
+        sleuthVersion='3.0.3'
     }
     repositories {
         mavenCentral()
@@ -18,30 +19,40 @@ plugins {
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
-sourceCompatibility = 15
-targetCompatibility = 15
+sourceCompatibility = 14
+targetCompatibility = 14
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile (
+    implementation (
             "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
+
+            "org.springframework.cloud:spring-cloud-starter-sleuth:${sleuthVersion}",
+
             "org.junit.jupiter:junit-jupiter-engine:5.2.0",
+            "org.apache.commons:commons-lang3:3.9",
+            "uk.co.jemos.podam:podam:7.2.3.RELEASE",
 
             "org.projectlombok:lombok:${lombokVersion}",
     )
 
-    compile project(":common-service:find-service")
-    compile project(":common-service:kafka-consumer")
-    compile project(":common-service:validation-service")
-    testCompile project(":common-service:notification-service")
+    implementation project(":common-service:find-service")
+    implementation project(":common-service:kafka-producer")
+    implementation project(":common-service:validation-service")
+    implementation project(":common-service:interfaces-service")
+    implementation project(":common-service:repository-service")
+    implementation project(":common-service:exception-service")
+
+    testImplementation project(":common-service:notification-service")
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    compile project(":common-service:async-service")
-    testCompile project(":common-service:crud-service-tests")
+    implementation project(":common-service:async-service")
+    testImplementation project(":common-service:crud-service-tests")
 }
 
 test {

@@ -1,7 +1,7 @@
 buildscript {
     ext {
-        springBootVersion = '2.4.2'
-        springKafkaVersion='2.6.5'
+        springBootVersion = '2.5.1'
+        springKafkaVersion='2.7.2'
     }
     repositories {
         mavenCentral()
@@ -18,22 +18,23 @@ plugins {
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
-sourceCompatibility = 15
-targetCompatibility = 15
+sourceCompatibility = 14
+targetCompatibility = 14
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile (
+    implementation (
             "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
             "org.junit.jupiter:junit-jupiter-engine:5.2.0",
             "uk.co.jemos.podam:podam:7.2.3.RELEASE",
             "com.h2database:h2:1.4.200",
             "org.springframework.kafka:spring-kafka-test:${springKafkaVersion}"
     )
-    compile project(":common-service:interfaces-service")
+    implementation project(":common-service:interfaces-service")
+    implementation project(":common-service:exception-service")
 }
 
 test {

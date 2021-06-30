@@ -1,7 +1,8 @@
 buildscript {
     ext {
-        lombokVersion='1.18.18'
-        springBootVersion = '2.4.2'
+        lombokVersion='1.18.20'
+        springBootVersion = '2.5.1'
+        sleuthVersion='3.0.3'
     }
     repositories {
         mavenCentral()
@@ -15,23 +16,30 @@ plugins {
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
-sourceCompatibility = 15
-targetCompatibility = 15
+sourceCompatibility = 14
+targetCompatibility = 14
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile(
+    implementation (
             "org.projectlombok:lombok:${lombokVersion}",
             "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
             "org.junit.jupiter:junit-jupiter-engine:5.2.0",
+            "org.apache.commons:commons-lang3:3.9",
+            "com.fasterxml.jackson.core:jackson-databind:2.0.1",
+            "org.springframework.cloud:spring-cloud-starter-sleuth:${sleuthVersion}"
     )
 
-    testCompile ('junit:junit:4.12')
-    compile project(":notification-service-client")
-    compile project(":common-service:exception-service")
+    testImplementation ('junit:junit:4.12')
+    implementation project(":notification-service-client")
+
+    implementation project(":common-service:kafka-producer")
+    implementation project(":common-service:exception-service")
+    implementation project(":common-service:interfaces-service")
+
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }

@@ -1,9 +1,9 @@
 buildscript {
     ext {
-        springBootVersion = '2.4.2'
-        springCloudDependenciesVersion = '2020.0.1'
+        springBootVersion = '2.5.1'
+        springCloudDependenciesVersion = '2020.0.3'
         dependencyManagementVersion = '1.0.11.RELEASE'
-        lombokVersion='1.18.18'
+        lombokVersion='1.18.20'
         jsonWebTokenVersion = '0.9.1'
         jaxbApiVersion = '2.1'
         h2Version='1.4.200'
@@ -19,22 +19,25 @@ plugins {
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
-sourceCompatibility = 15
-targetCompatibility = 15
+sourceCompatibility = 14
+targetCompatibility = 14
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile(
+    implementation(
+            "org.springframework.boot:spring-boot-starter-web",
             "org.springframework.boot:spring-boot-starter-security",
 
             "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client",
             "org.springframework.cloud:spring-cloud-starter-config",
+
+            "org.springframework.kafka:spring-kafka"
     )
 
-    compile(
+    implementation(
             "io.jsonwebtoken:jjwt:${jsonWebTokenVersion}",
             "javax.xml.bind:jaxb-api:${jaxbApiVersion}",
             "com.h2database:h2:${h2Version}",
@@ -42,8 +45,12 @@ dependencies {
     )
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
-    compile project(":auth-service-client")
-    compile project(":user-service-client")
+    implementation project(":common-service:exception-service")
+    implementation project(":common-service:interfaces-service")
+    implementation project(":common-service:kafka-producer")
+
+    implementation project(":auth-service-client")
+    implementation project(":user-service-client")
 }
 
 dependencyManagement {

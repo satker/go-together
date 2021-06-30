@@ -1,26 +1,33 @@
 buildscript {
     ext {
-        lombokVersion='1.18.18'
+        springBootVersion = '2.5.1'
+        dependencyManagementVersion = '1.0.11.RELEASE'
+        lombokVersion='1.18.20'
     }
 }
 plugins {
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
     id 'java'
 }
 
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
 
-sourceCompatibility = 15
-targetCompatibility = 15
+sourceCompatibility = 14
+targetCompatibility = 14
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile "org.projectlombok:lombok:${lombokVersion}"
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
+    implementation "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
-    compile project(":common-service:kafka-producer")
-    compile project(":location-service-client")
+    implementation project(":location-service-client")
+    implementation project(":common-service:kafka-producer")
+    implementation project(":common-service:interfaces-service")
 }

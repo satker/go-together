@@ -23,12 +23,12 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = 15
-targetCompatibility = 15
+sourceCompatibility = 14
+targetCompatibility = 14
 
 
 dependencies {
-    compile(
+    implementation (
             "org.springframework.boot:spring-boot-starter-security",
 
             "org.springframework.cloud:spring-cloud-starter-netflix-zuul",
@@ -36,10 +36,10 @@ dependencies {
             "org.springframework.cloud:spring-cloud-netflix-eureka-server",
     )
 
-    compile (
+    implementation (
             "io.jsonwebtoken:jjwt:${jsonWebTokenVersion}",
     )
-    compile project(":auth-service-client")
+    implementation project(":auth-service-client")
 }
 
 dependencyManagement {

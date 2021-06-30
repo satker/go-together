@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springCloudDependenciesVersion = '2020.0.1'
+        springCloudDependenciesVersion = '2020.0.3'
         dependencyManagementVersion = '1.0.11.RELEASE'
     }
 }
@@ -12,8 +12,8 @@ plugins {
 group 'org.go.together'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 15
-targetCompatibility = 15
+sourceCompatibility = 14
+targetCompatibility = 14
 
 
 repositories {
