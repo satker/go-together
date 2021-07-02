@@ -2,16 +2,16 @@ buildscript {
     ext {
         springBootVersion = '2.5.1'
         lombokVersion='1.18.20'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        dependencyManagementVersion = '1.0.11.RELEASE'
+        springCloudDependenciesVersion = '2020.0.3'
     }
 }
 
-apply plugin: 'java'
+plugins {
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
+    id 'java'
+}
 
 group 'org.go.together'
 version '1.0.1.SNAPSHOT'
@@ -25,9 +25,11 @@ repositories {
 
 dependencies {
     implementation (
-            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-web",
+            "org.springframework.boot:spring-boot-starter-data-jpa",
+            "org.springframework.boot:spring-boot-starter-test"
+    )
+    implementation(
             "org.junit.jupiter:junit-jupiter-engine:5.2.0",
 
             "org.projectlombok:lombok:${lombokVersion}",
@@ -35,11 +37,16 @@ dependencies {
 
             'org.apache.commons:commons-lang3:3.9'
     )
-
     implementation project(":common-service:interfaces-service")
     implementation project(":common-service:exception-service")
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudDependenciesVersion}"
+    }
 }
 
 test {

@@ -2,17 +2,14 @@ buildscript {
     ext {
         springBootVersion = '2.5.1'
         lombokVersion='1.18.20'
-        springKafkaVersion='2.7.2'
-        sleuthVersion='3.0.3'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        dependencyManagementVersion = '1.0.11.RELEASE'
+        springCloudDependenciesVersion = '2020.0.3'
     }
 }
+
 plugins {
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
     id 'java'
 }
 
@@ -28,13 +25,21 @@ repositories {
 
 dependencies {
     implementation (
+            "org.springframework.boot:spring-boot-starter-web",
+            "org.springframework.kafka:spring-kafka",
+            "org.springframework.cloud:spring-cloud-starter-sleuth"
+    )
+    implementation(
             "org.projectlombok:lombok:${lombokVersion}",
-            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
-            "org.springframework.kafka:spring-kafka:${springKafkaVersion}",
-            "org.springframework.cloud:spring-cloud-starter-sleuth:${sleuthVersion}",
             "org.apache.commons:commons-lang3:3.9"
     )
     implementation("jakarta.persistence:jakarta.persistence-api:2.2.3")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     implementation project(":common-service:exception-service")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudDependenciesVersion}"
+    }
 }

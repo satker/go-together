@@ -2,14 +2,14 @@ buildscript {
     ext {
         lombokVersion='1.18.20'
         springBootVersion = '2.5.1'
-        sleuthVersion = '3.0.3'
-    }
-    repositories {
-        mavenCentral()
+        dependencyManagementVersion = '1.0.11.RELEASE'
+        springCloudDependenciesVersion = '2020.0.3'
     }
 }
 
 plugins {
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
     id 'java'
 }
 
@@ -22,10 +22,12 @@ repositories {
 
 dependencies {
     implementation (
-            'org.apache.commons:commons-lang3:3.9',
-            "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
-            "org.projectlombok:lombok:${lombokVersion}",
-            "org.springframework.cloud:spring-cloud-starter-sleuth:${sleuthVersion}"
+            "org.springframework.boot:spring-boot-starter-test",
+            "org.springframework.cloud:spring-cloud-starter-sleuth"
+    )
+    implementation(
+            "org.apache.commons:commons-lang3:3.9",
+            "org.projectlombok:lombok:${lombokVersion}"
     )
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
@@ -33,6 +35,12 @@ dependencies {
     implementation project(":common-service:async-service")
     implementation project(":common-service:exception-service")
     implementation project(":common-service:interfaces-service")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudDependenciesVersion}"
+    }
 }
 
 test {

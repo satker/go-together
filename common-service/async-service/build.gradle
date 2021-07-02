@@ -1,18 +1,16 @@
 buildscript {
     ext {
         springBootVersion = '2.5.1'
+        dependencyManagementVersion = '1.0.11.RELEASE'
+        springCloudDependenciesVersion = '2020.0.3'
         lombokVersion='1.18.20'
-        springKafkaVersion='2.7.2'
-        sleuthVersion='3.0.3'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        commonLangVersion='3.9'
     }
 }
+
 plugins {
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
     id 'java'
 }
 
@@ -28,14 +26,24 @@ repositories {
 
 dependencies {
     implementation (
+            "org.springframework.boot:spring-boot-starter-web",
+
+            "org.springframework.kafka:spring-kafka",
+
+            "org.springframework.cloud:spring-cloud-starter-sleuth",
+            "org.springframework.cloud:spring-cloud-sleuth-zipkin"
+    )
+    implementation(
             "org.projectlombok:lombok:${lombokVersion}",
-            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
-            "org.springframework.kafka:spring-kafka:${springKafkaVersion}",
-            "org.springframework.cloud:spring-cloud-starter-sleuth:${sleuthVersion}",
-            "org.springframework.cloud:spring-cloud-sleuth-zipkin:${sleuthVersion}",
-            'org.apache.commons:commons-lang3:3.9'
+            "org.apache.commons:commons-lang3:${commonLangVersion}"
     )
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     implementation project(":common-service:exception-service")
     implementation project(":common-service:interfaces-service")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudDependenciesVersion}"
+    }
 }

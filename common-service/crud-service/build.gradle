@@ -1,18 +1,16 @@
 buildscript {
     ext {
         springBootVersion = '2.5.1'
+        dependencyManagementVersion = '1.0.11.RELEASE'
+        springCloudDependenciesVersion = '2020.0.3'
         lombokVersion='1.18.20'
-        sleuthVersion='3.0.3'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        commonLangVersion='3.9'
     }
 }
 
 plugins {
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
     id 'java'
 }
 
@@ -28,17 +26,18 @@ repositories {
 
 dependencies {
     implementation (
-            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
-            "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-web",
+            "org.springframework.boot:spring-boot-starter-data-jpa",
+            "org.springframework.boot:spring-boot-starter-test",
 
-            "org.springframework.cloud:spring-cloud-starter-sleuth:${sleuthVersion}",
-
+            "org.springframework.cloud:spring-cloud-starter-sleuth"
+    )
+    implementation(
             "org.junit.jupiter:junit-jupiter-engine:5.2.0",
-            "org.apache.commons:commons-lang3:3.9",
+            "org.apache.commons:commons-lang3:${commonLangVersion}",
             "uk.co.jemos.podam:podam:7.2.3.RELEASE",
 
-            "org.projectlombok:lombok:${lombokVersion}",
+            "org.projectlombok:lombok:${lombokVersion}"
     )
 
     implementation project(":common-service:find-service")
@@ -53,6 +52,12 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     implementation project(":common-service:async-service")
     testImplementation project(":common-service:crud-service-tests")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudDependenciesVersion}"
+    }
 }
 
 test {

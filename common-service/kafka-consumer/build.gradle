@@ -2,17 +2,14 @@ buildscript {
     ext {
         springBootVersion = '2.5.1'
         lombokVersion='1.18.20'
-        springKafkaVersion='2.7.2'
-        sleuthVersion='3.0.3'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        dependencyManagementVersion = '1.0.11.RELEASE'
+        springCloudDependenciesVersion = '2020.0.3'
     }
 }
+
 plugins {
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
     id 'java'
 }
 
@@ -25,10 +22,16 @@ repositories {
 
 dependencies {
     implementation (
-            "org.springframework.kafka:spring-kafka:${springKafkaVersion}",
-            "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
-            "org.springframework.cloud:spring-cloud-starter-sleuth:${sleuthVersion}"
+            "org.springframework.kafka:spring-kafka",
+            "org.springframework.boot:spring-boot-starter-web",
+            "org.springframework.cloud:spring-cloud-starter-sleuth"
     )
 
     implementation project(":common-service:interfaces-service")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudDependenciesVersion}"
+    }
 }

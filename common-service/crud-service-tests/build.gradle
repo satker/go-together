@@ -1,17 +1,14 @@
 buildscript {
     ext {
         springBootVersion = '2.5.1'
-        springKafkaVersion='2.7.2'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        dependencyManagementVersion = '1.0.11.RELEASE'
+        springCloudDependenciesVersion = '2020.0.3'
     }
 }
 
 plugins {
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}"
     id 'java'
 }
 
@@ -26,15 +23,23 @@ repositories {
 }
 
 dependencies {
-    implementation (
-            "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
+    implementation(
+            "org.springframework.boot:spring-boot-starter-test",
+            "org.springframework.kafka:spring-kafka-test"
+    )
+    implementation(
             "org.junit.jupiter:junit-jupiter-engine:5.2.0",
             "uk.co.jemos.podam:podam:7.2.3.RELEASE",
             "com.h2database:h2:1.4.200",
-            "org.springframework.kafka:spring-kafka-test:${springKafkaVersion}"
     )
     implementation project(":common-service:interfaces-service")
     implementation project(":common-service:exception-service")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudDependenciesVersion}"
+    }
 }
 
 test {
