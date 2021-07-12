@@ -9,6 +9,7 @@ import org.go.together.service.interfaces.MessageService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ContextConfiguration(classes = RepositoryContext.class)
+@EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9804", "port=9804"})
 public class MessageServiceTest extends CrudServiceCommonTest<Message, MessageDto> {
     @Autowired
     private MessageService messageService;

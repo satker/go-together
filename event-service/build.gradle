@@ -60,12 +60,15 @@ dependencies {
     implementation project(":common-service:validation-service")
     implementation project(":common-service:kafka-consumer")
     implementation project(":common-service:kafka-producer")
-    testImplementation project(":common-service:crud-service-tests")
 
     implementation project(":content-service-client")
     implementation project(":route-info-service-client")
     implementation project(":event-service-client")
     implementation project(":user-service-client")
+
+    testImplementation project(":common-service:crud-service-tests")
+
+    testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 
 dependencyManagement {

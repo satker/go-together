@@ -15,11 +15,13 @@ import org.go.together.repository.interfaces.NotificationReceiverRepository;
 import org.go.together.repository.interfaces.NotificationRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.UUID;
 
 @ContextConfiguration(classes = RepositoryContext.class)
+@EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9806", "port=9806"})
 public class NotificationReceiverMessageServiceTest
         extends CrudServiceCommonTest<NotificationReceiverMessage, NotificationReceiverMessageDto> {
     private static final String CREATED = "Created";

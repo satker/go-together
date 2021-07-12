@@ -11,6 +11,7 @@ import org.go.together.service.interfaces.NotificationService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collection;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(classes = RepositoryContext.class)
+@EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9805", "port=9805"})
 public class NotificationMessageServiceTest extends CrudServiceCommonTest<NotificationMessage, NotificationMessageDto> {
     @Autowired
     private NotificationMessageRepository notificationMessageRepository;

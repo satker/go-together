@@ -30,7 +30,7 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-test"
     )
     implementation(
-            "org.junit.jupiter:junit-jupiter-engine:5.2.0",
+            "org.junit.jupiter:junit-jupiter-engine:5.7.2",
 
             "org.projectlombok:lombok:${lombokVersion}",
             "com.h2database:h2:1.4.200",

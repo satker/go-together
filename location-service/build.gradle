@@ -61,7 +61,10 @@ dependencies {
     implementation project(":common-service:kafka-consumer")
     implementation project(":common-service:kafka-producer")
     implementation project(":common-service:validation-service")
+
     testImplementation project(":common-service:crud-service-tests")
+
+    testImplementation("org.springframework.kafka:spring-kafka-test")
 
     implementation project(":location-service-client")
 }

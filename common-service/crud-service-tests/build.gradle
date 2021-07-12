@@ -24,11 +24,10 @@ repositories {
 
 dependencies {
     implementation(
-            "org.springframework.boot:spring-boot-starter-test",
-            "org.springframework.kafka:spring-kafka-test"
+            "org.springframework.boot:spring-boot-starter-test"
     )
     implementation(
-            "org.junit.jupiter:junit-jupiter-engine:5.2.0",
+            "org.junit.jupiter:junit-jupiter-engine:5.7.2",
             "uk.co.jemos.podam:podam:7.2.3.RELEASE",
             "com.h2database:h2:1.4.200",
     )

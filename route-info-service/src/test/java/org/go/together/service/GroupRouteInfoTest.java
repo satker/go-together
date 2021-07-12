@@ -9,6 +9,7 @@ import org.go.together.model.GroupRouteInfo;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collection;
@@ -23,6 +24,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
+@EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9800", "port=9800"})
 public class GroupRouteInfoTest extends CrudServiceCommonTest<GroupRouteInfo, GroupRouteInfoDto> {
     @Autowired
     private CrudProducer<LocationDto> locationProducer;

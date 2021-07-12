@@ -3,6 +3,7 @@ buildscript {
         springBootVersion = '2.5.1'
         dependencyManagementVersion = '1.0.11.RELEASE'
         lombokVersion='1.18.20'
+        springCloudDependenciesVersion = '2020.0.3'
     }
 }
 plugins {
@@ -22,7 +23,10 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation(
+            "org.springframework.boot:spring-boot-starter-web",
+            "org.springframework.cloud:spring-cloud-starter-sleuth"
+    )
 
     implementation "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
@@ -30,4 +34,10 @@ dependencies {
     implementation project(":location-service-client")
     implementation project(":common-service:kafka-producer")
     implementation project(":common-service:interfaces-service")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudDependenciesVersion}"
+    }
 }

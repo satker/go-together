@@ -7,6 +7,7 @@ import org.go.together.model.Country;
 import org.go.together.service.interfaces.CountryService;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collection;
@@ -14,6 +15,7 @@ import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ContextConfiguration(classes = RepositoryContext.class)
+@EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9094", "port=9094"})
 class CountryServiceTest extends CrudServiceCommonTest<Country, CountryDto> {
     @Test
     void findCountriesLike() {

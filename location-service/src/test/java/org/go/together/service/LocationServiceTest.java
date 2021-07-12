@@ -13,6 +13,7 @@ import org.go.together.repository.interfaces.PlaceRepository;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collections;
@@ -20,6 +21,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ContextConfiguration(classes = RepositoryContext.class)
+@EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9803", "port=9803"})
 class LocationServiceTest extends CrudServiceCommonTest<Location, LocationDto> {
     @Autowired
     private CountryRepository countryRepository;

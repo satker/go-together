@@ -11,6 +11,7 @@ import org.go.together.model.RouteInfo;
 import org.go.together.tests.CrudServiceCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ContextConfiguration;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -18,6 +19,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = RepositoryContext.class)
+@EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9812", "port=9812"})
 public class RouteInfoServiceTest extends CrudServiceCommonTest<RouteInfo, RouteInfoDto> {
     @Autowired
     private CrudProducer<LocationDto> locationProducer;

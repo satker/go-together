@@ -25,17 +25,19 @@ repositories {
 
 dependencies {
     implementation (
-            "org.springframework.boot:spring-boot-starter-test",
+            "org.springframework.boot:spring-boot-starter-web",
             "org.springframework.cloud:spring-cloud-starter-sleuth"
     )
     implementation(
             "org.projectlombok:lombok:${lombokVersion}",
-            "org.junit.jupiter:junit-jupiter-engine:5.2.0",
-            "org.apache.commons:commons-lang3:3.9",
-            "com.fasterxml.jackson.core:jackson-databind:2.0.1",
+            "org.junit.jupiter:junit-jupiter-engine:5.7.2",
+            "org.apache.commons:commons-lang3:3.9"
     )
 
-    testImplementation ('junit:junit:4.12')
+    testImplementation (
+            "org.springframework.boot:spring-boot-starter-test",
+            'junit:junit:4.12'
+    )
     implementation project(":notification-service-client")
 
     implementation project(":common-service:kafka-producer")

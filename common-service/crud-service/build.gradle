@@ -33,7 +33,7 @@ dependencies {
             "org.springframework.cloud:spring-cloud-starter-sleuth"
     )
     implementation(
-            "org.junit.jupiter:junit-jupiter-engine:5.2.0",
+            "org.junit.jupiter:junit-jupiter-engine:5.7.2",
             "org.apache.commons:commons-lang3:${commonLangVersion}",
             "uk.co.jemos.podam:podam:7.2.3.RELEASE",
 
@@ -46,12 +46,15 @@ dependencies {
     implementation project(":common-service:interfaces-service")
     implementation project(":common-service:repository-service")
     implementation project(":common-service:exception-service")
+    implementation project(":common-service:async-service")
 
-    testImplementation project(":common-service:notification-service")
     testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    implementation project(":common-service:async-service")
+
+    testImplementation project(":common-service:notification-service")
     testImplementation project(":common-service:crud-service-tests")
+
+    testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 
 dependencyManagement {
